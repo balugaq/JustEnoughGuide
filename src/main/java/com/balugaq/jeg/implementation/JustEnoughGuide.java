@@ -20,6 +20,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdater;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -137,10 +138,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.listenerManager = new ListenerManager(this);
         this.listenerManager.onLoad();
 
-        /*
-        getLogger().info("尝试自动更新...");
-        tryUpdate();
-         */
+        if (getConfigManager().isAutoUpdate() && getDescription().getVersion().startsWith("DEV - ")) {
+            new BlobBuildUpdater(this, getFile(), "JustEnoughGuide", "Dev").start();
+        }
 
         getLogger().info("Registering commands...");
         this.commandManager = new CommandManager(this);
