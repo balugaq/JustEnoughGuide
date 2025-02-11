@@ -25,9 +25,9 @@ import java.lang.reflect.Method;
 @UtilityClass
 public final class GuideUtil {
     private static final ItemStack BOOK_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(new CustomItemStack(Material.NETHER_STAR, "&e&l收藏物列表"));
+            ItemStackUtil.getCleanItem(new CustomItemStack(Material.NETHER_STAR, "&e&lCollected"));
     private static final ItemStack ITEM_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(new CustomItemStack(Material.WRITABLE_BOOK, "&e&l收藏物品"));
+            ItemStackUtil.getCleanItem(new CustomItemStack(Material.WRITABLE_BOOK, "&e&lCollecting"));
 
     /**
      * Open the main menu of the guide for the given player and mode.

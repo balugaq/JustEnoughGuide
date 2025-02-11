@@ -7,6 +7,7 @@ import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.ItemStackUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
@@ -51,14 +52,14 @@ public class RTSSearchGroup extends FlexItemGroup {
     public static final Map<Player, Integer> RTS_PAGES = new ConcurrentHashMap<>();
     public static final Map<Player, AnvilInventory> RTS_PLAYERS = new ConcurrentHashMap<>();
     public static final Map<Player, String> RTS_SEARCH_TERMS = new ConcurrentHashMap<>();
-    public static final Function<Player, ItemStack> BACK_ICON = (player) -> ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单");
+    public static final Function<Player, ItemStack> BACK_ICON = (player) -> ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(player, "", "&fLeft Click: &7Go back to previous Page", "&fShift + left Click: &7Go back to Main Menu"));
     public static final ItemStack INPUT_TEXT_ICON = new CustomItemStack(
             Material.PAPER,
-            "&f搜索: &7在上方输入搜索词",
+            "&fReal Time Search: &7Type text above",
             "&fNote:",
-            "&7 - &e左侧物品为返回键",
-            "&7 - &e中间物品为按键上一页",
-            "&7 - &e右侧物品为按键下一页"
+            "&7 - &eThe left side one is the back button",
+            "&7 - &eThe middle one is the page up button",
+            "&7 - &eThe right side one is the page down button"
     );
     public static final ItemStack AIR_ICON = new ItemStack(Material.AIR);
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
@@ -138,7 +139,7 @@ public class RTSSearchGroup extends FlexItemGroup {
                 .itemRight(INPUT_TEXT_ICON)
                 .itemOutput(AIR_ICON)
                 .text("")
-                .title("在下方输入搜索内容")
+                .title("Type text below here")
                 .onClose((stateSnapshot) -> {
                     RTSEvents.CloseRTSEvent event = new RTSEvents.CloseRTSEvent(player, stateSnapshot, guideMode);
                     Bukkit.getPluginManager().callEvent(event);

@@ -17,12 +17,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
 @Getter
 public class RTSBackpackManager extends AbstractManager {
     private static final int IDENTIFIER_SLOT = 53;
+    @Deprecated
     private static final String BACKPACK_NAME = "JEGRTSBackpack";
     private static final NamespacedKey STATUS_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "status");
     private static final String OPEN_STATUS = "open";
@@ -45,32 +47,29 @@ public class RTSBackpackManager extends AbstractManager {
 
         PlayerBackpack b = null;
         // find an existing backpack
-        Set<PlayerBackpack> backpacks = Slimefun.getDatabaseManager().getProfileDataController().getBackpacks(player.getUniqueId().toString());
+        Collection<PlayerBackpack> backpacks = profile.getPlayerData().getBackpacks().values();
         if (backpacks != null && !backpacks.isEmpty()) {
             for (PlayerBackpack backpack : backpacks) {
-                if (backpack.getName().equals(BACKPACK_NAME)) {
-                    // check if identifier is valid
-                    ItemStack identifierItem = backpack.getInventory().getItem(IDENTIFIER_SLOT);
-                    if (identifierItem == null || identifierItem.getType() == Material.AIR) {
-                        continue;
-                    }
-                    if (!isIdentifier(identifierItem, player)) {
-                        continue;
-                    }
-
-                    b = backpack;
-                    break;
+                // check if identifier is valid
+                ItemStack identifierItem = backpack.getInventory().getItem(IDENTIFIER_SLOT);
+                if (identifierItem == null || identifierItem.getType() == Material.AIR) {
+                    continue;
                 }
+                if (!isIdentifier(identifierItem, player)) {
+                    continue;
+                }
+
+                b = backpack;
+                break;
             }
         }
 
         // create a new backpack
         if (b == null) {
-            b = Slimefun.getDatabaseManager().getProfileDataController().createBackpack(player, BACKPACK_NAME, profile.nextBackpackNum(), 54);
+            b = profile.createBackpack(54);
         }
         Inventory inventory = b.getInventory();
         setIdentifier(player, inventory, IDENTIFIER_SLOT, true);
-        Slimefun.getDatabaseManager().getProfileDataController().saveBackpackInventory(b, IDENTIFIER_SLOT);
         ItemStack[] contents = getStorageContents(player.getInventory());
         for (int i = 0; i < contents.length; i++) {
             ItemStack itemStack = contents[i];
@@ -78,9 +77,8 @@ public class RTSBackpackManager extends AbstractManager {
                 continue;
             }
             inventory.setItem(i, itemStack);
-            Slimefun.getDatabaseManager().getProfileDataController().saveBackpackInventory(b, i);
         }
-        b.setInventory(inventory);
+        profile.save();
     }
 
     public void clearInventoryFor(Player player) {
@@ -97,51 +95,48 @@ public class RTSBackpackManager extends AbstractManager {
             return;
         }
 
-        Set<PlayerBackpack> backpacks = Slimefun.getDatabaseManager().getProfileDataController().getBackpacks(profile.getUUID().toString());
+        Collection<PlayerBackpack> backpacks = profile.getPlayerData().getBackpacks().values();
         if (backpacks == null || backpacks.isEmpty()) {
             return;
         }
 
         for (PlayerBackpack backpack : backpacks) {
-            if (backpack.getName().equals(BACKPACK_NAME)) {
-                Inventory inventory = backpack.getInventory();
-                ItemStack[] contents = inventory.getContents();
+            Inventory inventory = backpack.getInventory();
+            ItemStack[] contents = inventory.getContents();
 
-                ItemStack identifierItem = contents[IDENTIFIER_SLOT];
-                if (identifierItem == null || identifierItem.getType() == Material.AIR) {
-                    continue;
-                }
-
-                if (!isIdentifier(identifierItem, player)) {
-                    continue;
-                }
-
-                if (!isOpenIdentifier(identifierItem)) {
-                    return;
-                }
-
-                // found the backpack, now restore it
-                for (int i = 0; i < 36; i++) {
-                    ItemStack itemStack = contents[i];
-                    if (itemStack == null || itemStack.getType() == Material.AIR) {
-                        player.getInventory().setItem(i, new ItemStack(Material.AIR));
-                        continue;
-                    }
-                    player.getInventory().setItem(i, itemStack.clone());
-                }
-
-                // clear the backpack
-                for (int i = 0; i < contents.length; i++) {
-                    if (i != IDENTIFIER_SLOT) {
-                        backpack.getInventory().setItem(i, new ItemStack(Material.AIR));
-                        Slimefun.getDatabaseManager().getProfileDataController().saveBackpackInventory(backpack, i);
-                    }
-                }
-                setIdentifier(player, backpack.getInventory(), IDENTIFIER_SLOT, false);
-                Slimefun.getDatabaseManager().getProfileDataController().saveBackpackInventory(backpack, IDENTIFIER_SLOT);
-
-                break;
+            ItemStack identifierItem = contents[IDENTIFIER_SLOT];
+            if (identifierItem == null || identifierItem.getType() == Material.AIR) {
+                continue;
             }
+
+            if (!isIdentifier(identifierItem, player)) {
+                continue;
+            }
+
+            if (!isOpenIdentifier(identifierItem)) {
+                return;
+            }
+
+            // found the backpack, now restore it
+            for (int i = 0; i < 36; i++) {
+                ItemStack itemStack = contents[i];
+                if (itemStack == null || itemStack.getType() == Material.AIR) {
+                    player.getInventory().setItem(i, new ItemStack(Material.AIR));
+                    continue;
+                }
+                player.getInventory().setItem(i, itemStack.clone());
+            }
+
+            // clear the backpack
+            for (int i = 0; i < contents.length; i++) {
+                if (i != IDENTIFIER_SLOT) {
+                    backpack.getInventory().setItem(i, new ItemStack(Material.AIR));
+                }
+            }
+            setIdentifier(player, backpack.getInventory(), IDENTIFIER_SLOT, false);
+            profile.save();
+
+            break;
         }
     }
 

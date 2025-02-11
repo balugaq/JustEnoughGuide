@@ -23,16 +23,16 @@ public class GroupSetup {
     public static void setup() {
         guideGroup = new JEGGuideGroup(
                 new NamespacedKey(JustEnoughGuide.getInstance(), "jeg_guide_group"),
-                new CustomItemStack(Material.KNOWLEDGE_BOOK, "&bJEG 使用指南"));
+                new CustomItemStack(Material.KNOWLEDGE_BOOK, "&bJEG Usage Guide"));
         guideGroup.register(JustEnoughGuide.getInstance());
         hiddenItemsGroup = new HiddenItemsGroup(
                 new NamespacedKey(JustEnoughGuide.getInstance(), "hidden_items_group"),
-                new CustomItemStack(Material.BARRIER, "&c隐藏物品"));
+                new CustomItemStack(Material.BARRIER, "&cHidden Items"));
         hiddenItemsGroup.register(JustEnoughGuide.getInstance());
         if (SpecialMenuProvider.ENABLED_Nexcavate) {
             nexcavateItemsGroup = new NexcavateItemsGroup(
                     new NamespacedKey(JustEnoughGuide.getInstance(), "nexvacate_items_group"),
-                    new CustomItemStack(Material.BLACKSTONE, "&6Nexvacate 物品"));
+                    new CustomItemStack(Material.BLACKSTONE, "&6Nexvacate Items"));
             nexcavateItemsGroup.register(JustEnoughGuide.getInstance());
         }
     }

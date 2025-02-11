@@ -45,12 +45,12 @@ public class CacheCommand implements JEGCommand {
             case 3 -> {
                 switch (args[1]) {
                     case "1" -> {
-                        List<String> result = new ArrayList<>(SearchGroup.CACHE.keySet().stream().sorted().map(String::valueOf).toList());
+                        List<String> result = new ArrayList<>(SearchGroup.EN_CACHE.keySet().stream().sorted().map(String::valueOf).toList());
                         result.add("clear");
                         return result;
                     }
                     case "2" -> {
-                        List<String> result = new ArrayList<>(SearchGroup.CACHE2.keySet().stream().sorted().map(String::valueOf).toList());
+                        List<String> result = new ArrayList<>(SearchGroup.EN_CACHE2.keySet().stream().sorted().map(String::valueOf).toList());
                         result.add("clear");
                         return result;
                     }
@@ -94,14 +94,14 @@ public class CacheCommand implements JEGCommand {
             return;
         }
         String section = args[1];
-        Map<Character, Reference<Set<SlimefunItem>>> cache;
+        Map<String, Reference<Set<SlimefunItem>>> cache;
         String command = args[2];
         switch (section) {
             case "1" -> {
-                cache = SearchGroup.CACHE;
+                cache = SearchGroup.EN_CACHE;
             }
             case "2" -> {
-                cache = SearchGroup.CACHE2;
+                cache = SearchGroup.EN_CACHE2;
             }
             default -> {
                 sender.sendMessage(ChatColor.RED + "Invalid section number. Please choose 1 or 2.");
@@ -116,7 +116,7 @@ public class CacheCommand implements JEGCommand {
                 return;
             }
 
-            Character key = command.charAt(0);
+            String key = command;
             sender.sendMessage(ChatColor.GREEN + "Checking cache " + section + " for " + key + "...");
             if (cache.containsKey(key)) {
                 Integer size = null;

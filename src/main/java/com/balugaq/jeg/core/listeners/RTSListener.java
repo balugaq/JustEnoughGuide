@@ -17,10 +17,10 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -146,7 +146,7 @@ public class RTSListener implements Listener {
     public void onRTS(RTSEvents.SearchTermChangeEvent event) {
         Player player = event.getPlayer();
         SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(event.getGuideMode());
-        SearchGroup searchGroup = new SearchGroup(implementation, player, event.getNewSearchTerm(), JustEnoughGuide.getConfigManager().isPinyinSearch(), true);
+        SearchGroup searchGroup = new SearchGroup(implementation, player, event.getNewSearchTerm(), false, true);
         if (isRTSPlayer(player)) {
             synchronized (RTSSearchGroup.RTS_SEARCH_GROUPS) {
                 RTSSearchGroup.RTS_SEARCH_GROUPS.put(player, searchGroup);
@@ -359,7 +359,7 @@ public class RTSListener implements Listener {
                                 int originalAmount = meta.getPersistentDataContainer().getOrDefault(CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, 0);
                                 int totalAmount = originalAmount + addAmount;
                                 meta.getPersistentDataContainer().set(CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, totalAmount);
-                                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ItemStackHelper.getDisplayName(clonedItem) + " &c已拿取物品 x" + totalAmount));
+                                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ItemUtils.getItemName(clonedItem) + " &cTaken x" + totalAmount));
                                 itemStack.setItemMeta(meta);
                             }
                         } else {

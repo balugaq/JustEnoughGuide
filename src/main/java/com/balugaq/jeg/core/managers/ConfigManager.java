@@ -48,8 +48,8 @@ public class ConfigManager extends AbstractManager {
         this.CHEAT_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.cheat-improvements", true);
         this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", true);
         this.BOOKMARK = plugin.getConfig().getBoolean("improvements.bookmark", true);
-        this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide");
-        this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide");
+        this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun Guide &7(Chest GUI) &8Advanced");
+        this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced");
         this.RTS_SEARCH = plugin.getConfig().getBoolean("improvements.rts-search", true);
     }
 
