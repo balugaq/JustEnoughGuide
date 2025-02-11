@@ -10,6 +10,7 @@ import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.LocalHelper;
@@ -741,10 +742,13 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                 if (!Slimefun.getRegistry().getCurrentlyResearchingPlayers().contains(p.getUniqueId())) {
                                     if (profile.hasUnlocked(research)) {
                                         // re-open
-                                        p.closeInventory();
                                         GuideUtil.removeLastEntry(profile.getGuideHistory());
-                                        displayItem(menu, profile, p, item, output, recipeType, recipe, task);
-                                        menu.open(p);
+                                        if (item instanceof SlimefunItem slimefunItem) {
+                                            displayItem(profile, slimefunItem, true, true);
+                                        } else if (item instanceof ItemStack itemStack) {
+                                            displayItem(profile, itemStack, 0, true);
+                                        }
+                                        Debug.debug("1 Re-opening guide page for " + p.getName());
                                     } else {
                                         PlayerPreResearchEvent event = new PlayerPreResearchEvent(p, research, sfItem);
                                         Bukkit.getPluginManager().callEvent(event);
@@ -753,10 +757,13 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                                 // unlock research
                                                 this.unlockItem(p, sfItem, (p2) -> {
                                                     // re-open
-                                                    p2.closeInventory();
                                                     GuideUtil.removeLastEntry(profile.getGuideHistory());
-                                                    displayItem(menu, profile, p2, item, output, recipeType, recipe, task);
-                                                    menu.open(p2);
+                                                    if (item instanceof SlimefunItem slimefunItem) {
+                                                        displayItem(profile, slimefunItem, true, true);
+                                                    } else if (item instanceof ItemStack itemStack) {
+                                                        displayItem(profile, itemStack, 0, true);
+                                                    }
+                                                    Debug.debug("2 Re-opening guide page for " + p2.getName());
                                                 });
                                             } else {
                                                 Slimefun.getLocalization().sendMessage(p, "messages.not-enough-xp", true);
