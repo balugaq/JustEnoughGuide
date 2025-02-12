@@ -24,6 +24,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
+import io.github.thebusybiscuit.slimefun4.core.services.localization.LanguagePreset;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
@@ -34,6 +35,8 @@ import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
+import net.guizhanss.slimefuntranslation.SlimefunTranslation;
+import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -185,35 +188,37 @@ public class SearchGroup extends FlexItemGroup {
     /**
      * Checks if the search filter is applicable.
      *
+     * @param player       The player.
      * @param slimefunItem The Slimefun item.
      * @param searchTerm   The search term.
      * @param pinyin       Whether the search term is in Pinyin.
      * @return True if the search filter is applicable.
      */
     @ParametersAreNonnullByDefault
-    public static boolean isSearchFilterApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
+    public static boolean isSearchFilterApplicable(Player player, SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
         if (slimefunItem == null) {
             return false;
         }
-        String itemName = ChatColor.stripColor(slimefunItem.getItemName()).toLowerCase(Locale.ROOT);
+        String itemName = ChatColor.stripColor(SlimefunOfficialSupporter.getTranslatedItemName(player, slimefunItem)).toLowerCase(Locale.ROOT);
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
     /**
      * Checks if the search filter is applicable.
      *
+     * @param player     The player.
      * @param itemStack  The item stack.
      * @param searchTerm The search term.
      * @param pinyin     Whether the search term is in Pinyin.
      * @return True if the search filter is applicable.
      */
     @ParametersAreNonnullByDefault
-    public static boolean isSearchFilterApplicable(ItemStack itemStack, String searchTerm, boolean pinyin) {
+    public static boolean isSearchFilterApplicable(Player player, ItemStack itemStack, String searchTerm, boolean pinyin) {
         if (itemStack == null) {
             return false;
         }
         String itemName =
-                ChatColor.stripColor(ItemUtils.getItemName(itemStack)).toLowerCase(Locale.ROOT);
+                ChatColor.stripColor(ItemUtils.getItemName(SlimefunOfficialSupporter.translateItem(player, itemStack))).toLowerCase(Locale.ROOT);
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
@@ -801,7 +806,7 @@ public class SearchGroup extends FlexItemGroup {
             int index = i + this.page * MAIN_CONTENT.length - MAIN_CONTENT.length;
             if (index < this.slimefunItemList.size()) {
                 SlimefunItem slimefunItem = slimefunItemList.get(index);
-                ItemStack itemstack = ItemStackUtil.getCleanItem(new CustomItemStack(slimefunItem.getItem(), meta -> {
+                ItemStack itemstack = ItemStackUtil.getCleanItem(new CustomItemStack(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
                     ItemGroup itemGroup = slimefunItem.getItemGroup();
                     List<String> additionLore = List.of(
                             "",
@@ -821,7 +826,7 @@ public class SearchGroup extends FlexItemGroup {
                             ItemFlag.HIDE_ENCHANTS,
                             JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 }));
-                chestMenu.addItem(MAIN_CONTENT[i], ItemStackUtil.getCleanItem(itemstack), (pl, slot, itm, action) -> {
+                chestMenu.addItem(MAIN_CONTENT[i], ItemStackUtil.getCleanItem(SlimefunOfficialSupporter.translateItem(player, itemstack)), (pl, slot, itm, action) -> {
                     try {
                         if (implementation.getMode() != SlimefunGuideMode.SURVIVAL_MODE
                                 && (pl.isOp() || pl.hasPermission("slimefun.cheat.items"))) {
@@ -943,7 +948,19 @@ public class SearchGroup extends FlexItemGroup {
             boolean first = true;
             for (String word : words) {
                 Debug.debug("Word: " + word);
-                List<String> fixedWords = findMostSimilar(word, EN_THRESHOLD);
+                List<String> fixedWords = List.of();
+                if (words.length == 1) {
+                    // maybe a language that not split by space, should change the fixedWords
+                    String language = Slimefun.getLocalization().getLanguage(player).getId();
+                    if (isContinuousScriptLanguage(language)) {
+                        // Find continuous script language, should change the fixedWords
+                        fixedWords = List.of(word);
+                    } else {
+                        fixedWords = findMostSimilar(word, EN_THRESHOLD);
+                    }
+                } else {
+                    fixedWords = findMostSimilar(word, EN_THRESHOLD);
+                }
                 if (fixedWords.isEmpty()) {
                     Debug.debug("No fixed words found.");
                     // fallback
@@ -1049,5 +1066,15 @@ public class SearchGroup extends FlexItemGroup {
             EN_CACHE_ROLLBACK.put(target, mostSimilar);
         }
         return mostSimilar;
+    }
+
+    public static boolean isContinuousScriptLanguage(String language) {
+        return language.startsWith("zh") ||
+                language.startsWith("ja") ||
+                language.startsWith("ko") ||
+                language.startsWith("th") ||
+                language.startsWith("vi") ||
+                language.startsWith("he") ||
+                language.startsWith("fa");
     }
 }

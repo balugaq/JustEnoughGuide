@@ -47,7 +47,7 @@ public class ConfigManager extends AbstractManager {
         this.DEBUG = plugin.getConfig().getBoolean("debug", false);
         this.SURVIVAL_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.survival-improvements", true);
         this.CHEAT_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.cheat-improvements", true);
-        this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", true);
+        this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", false);
         this.BOOKMARK = plugin.getConfig().getBoolean("improvements.bookmark", true);
         this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun Guide &7(Chest GUI) &8Advanced");
         this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced");

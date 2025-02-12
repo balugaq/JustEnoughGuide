@@ -178,6 +178,7 @@ startup:
   java-version-too-old: "Java too old! Please use Java {recommended_version} or above!"
   environment-check-failed: "Environment check failed!"
   integrating-other-plugins: "Integrating with other plugins..."
+  hook-slimefun-translation: "Hooked into SlimefunTranslation..."
   register-listeners: "Registering listeners..."
   register-commands: "Registering commands..."
   register-commands-failed: "Registering commands failed!"

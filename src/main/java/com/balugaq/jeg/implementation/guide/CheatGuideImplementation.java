@@ -454,7 +454,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                     index,
                     ItemStackUtil.getCleanItem(new CustomItemStack(
                             ChestMenuUtils.getNoPermissionItem(),
-                            sfitem.getItemName(),
+                            SlimefunOfficialSupporter.getTranslatedItemName(p, sfitem),
                             message.toArray(new String[0]))));
             menu.addMenuClickHandler(index, ChestMenuUtils.getEmptyClickHandler());
         } else if (!isCheatMode() && research != null && !profile.hasUnlocked(research)) {
@@ -462,7 +462,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                     index,
                     ItemStackUtil.getCleanItem(new CustomItemStack(
                             ChestMenuUtils.getNoPermissionItem(),
-                            "&f" + ItemUtils.getItemName(sfitem.getItem()),
+                            "&f" + SlimefunOfficialSupporter.getTranslatedItemName(p, sfitem),
                             "&7" + sfitem.getId(),
                             "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
                             "",

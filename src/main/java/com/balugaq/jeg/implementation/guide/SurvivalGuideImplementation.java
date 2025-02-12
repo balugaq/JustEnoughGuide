@@ -146,7 +146,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                 ? item
                                 : new CustomItemStack(new CustomItemStack(
                                 Material.BARRIER,
-                                ItemUtils.getItemName(item),
+                                SlimefunOfficialSupporter.getTranslatedItemName(p, slimefunItem),
                                 "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
                                 "",
                                 lore), meta -> {
@@ -158,7 +158,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                 ? item
                                 : new CustomItemStack(new CustomItemStack(
                                 Material.BARRIER,
-                                ItemUtils.getItemName(item),
+                                SlimefunOfficialSupporter.getTranslatedItemName(p, slimefunItem),
                                 "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
                                 "",
                                 lore,
@@ -436,7 +436,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                     index,
                     ItemStackUtil.getCleanItem(new CustomItemStack(
                             ChestMenuUtils.getNoPermissionItem(),
-                            "&f" + ItemUtils.getItemName(sfitem.getItem()),
+                            "&f" + SlimefunOfficialSupporter.getTranslatedItemName(p, sfitem),
                             "&7" + sfitem.getId(),
                             "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
                             "",

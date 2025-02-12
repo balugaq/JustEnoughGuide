@@ -25,6 +25,8 @@ import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunG
 import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdater;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
+import net.guizhanss.slimefuntranslation.SlimefunTranslation;
+import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,6 +81,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private @Nullable MinecraftVersion minecraftVersion;
     @Getter
     private int javaVersion;
+    @Getter
+    @Nullable
+    private Boolean interceptSearch_SlimefunTranslation;
 
     public JustEnoughGuide() {
         this.username = "balugaq";
@@ -215,6 +220,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             }
         }
 
+        if (getIntegrationManager().isEnabledSlimefunTranslation()) {
+            Object value = ReflectionUtil.getValue(SlimefunTranslation.getConfigService(), "interceptSearch");
+            if (value instanceof Boolean bool) {
+                interceptSearch_SlimefunTranslation = bool;
+                ReflectionUtil.setValue(SlimefunTranslation.getConfigService(), "interceptSearch", false);
+            }
+        }
+
         getLogger().info(Lang.getStartup("enabled-jeg"));
     }
 
@@ -234,6 +247,13 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 field.set(Slimefun.getRegistry(), newGuides);
             } catch (IllegalAccessException ignored) {
 
+            }
+        }
+
+        // Rollback SlimefunTranslation interceptSearch
+        if (getIntegrationManager().isEnabledSlimefunTranslation()) {
+            if (interceptSearch_SlimefunTranslation != null) {
+                ReflectionUtil.setValue(SlimefunTranslation.getConfigService(), "interceptSearch", interceptSearch_SlimefunTranslation);
             }
         }
 
