@@ -54,8 +54,7 @@ import java.util.logging.Level;
 @NotDisplayInSurvivalMode
 @NotDisplayInCheatMode
 public class ItemMarkGroup extends FlexItemGroup {
-    private static final ItemStack ICON_BACKGROUND =
-            new CustomItemStack(Material.GREEN_STAINED_GLASS_PANE, "&a&lCollect Item", "", "&7Left-click to collect the item!");
+    private static final ItemStack ICON_BACKGROUND = Lang.getIcon("item-mark-background", Material.GREEN_STAINED_GLASS_PANE);
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
     private final int BACK_SLOT;
     private final int SEARCH_SLOT;

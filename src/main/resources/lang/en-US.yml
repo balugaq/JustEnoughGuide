@@ -8,6 +8,11 @@ icon:
       - "&7 - &eThe middle one is the page up button"
       - "&7 - &eThe right side one is the page down button"
 
+  item-mark-background:
+    name: "&a&lCollect Item"
+    lore:
+      - ""
+      - "&7Left-click to collect the item!"
   usage-guide:
     name: "&bJEG Usage Guide"
   hidden-items:
