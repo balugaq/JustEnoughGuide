@@ -10,6 +10,7 @@ import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
@@ -737,12 +738,12 @@ public class SearchGroup extends FlexItemGroup {
             @NotNull PlayerProfile playerProfile,
             @NotNull SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu =
-                new ChestMenu("Searching: %item%".replace("%item%", ChatUtils.crop(ChatColor.WHITE, searchTerm)));
+                new ChestMenu(Lang.getGuideMessage("searching", "item_name", ChatUtils.crop(ChatColor.WHITE, searchTerm)));
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1));
 
-        chestMenu.addItem(BACK_SLOT, ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(player, "", "&fLeft Click: &7Go back to previous Page", "&fShift + left Click: &7Go back to Main Menu")));
+        chestMenu.addItem(BACK_SLOT, SlimefunOfficialSupporter.getBackButton(player));
         chestMenu.addMenuClickHandler(BACK_SLOT, (pl, s, is, action) -> {
             GuideHistory guideHistory = playerProfile.getGuideHistory();
             if (action.isShiftClicked()) {
@@ -877,32 +878,30 @@ public class SearchGroup extends FlexItemGroup {
         return filterItems(p, searchTerm, pinyin);
     }
 
-    /**
-     * Prints an error message.
-     *
-     * @param p The player.
-     * @param x The exception.
-     */
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, Throwable x) {
-        p.sendMessage("&4An internal server error has occurred. Please inform an admin, check the console for further info.");
-        JAVA_PLUGIN.getLogger().log(Level.SEVERE, "An internal server error has occurred.", x);
+        p.sendMessage(Lang.getError("internal-error"));
+        JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, Lang.getError("error-occurred"), x);
+        JustEnoughGuide.getInstance().getLogger().warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
-    /**
-     * Prints an error message.
-     *
-     * @param p    The player.
-     * @param item The Slimefun item.
-     * @param x    The exception.
-     */
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, SlimefunItem item, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
+        p.sendMessage(Lang.getError("internal-error"));
+        item.error(Lang.getError("item-error"), x);
+        JustEnoughGuide.getInstance()
+                .getLogger()
+                .warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
     public @NotNull List<SlimefunItem> filterItems(@NotNull Player player, @NotNull String searchTerm, boolean pinyin) {

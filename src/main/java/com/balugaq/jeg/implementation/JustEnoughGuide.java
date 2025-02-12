@@ -6,9 +6,11 @@ import com.balugaq.jeg.core.managers.ConfigManager;
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.core.managers.ListenerManager;
 import com.balugaq.jeg.core.managers.RTSBackpackManager;
+import com.balugaq.jeg.core.services.LocalizationService;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.GroupSetup;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
@@ -72,6 +74,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     @Getter
     private @Nullable RTSBackpackManager rtsBackpackManager;
     @Getter
+    private @Nullable LocalizationService localizationService;
+    @Getter
     private @Nullable MinecraftVersion minecraftVersion;
     @Getter
     private int javaVersion;
@@ -121,20 +125,26 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.configManager = new ConfigManager(this);
         this.configManager.onLoad();
 
+        getLogger().info("Loading localization...");
+        this.localizationService = new LocalizationService(this);
+        String language = getConfigManager().getLanguage();
+        this.localizationService.addLanguage(language);
+        this.localizationService.addLanguage("en-US"); // Default language
+
         // Checking environment compatibility
         boolean isCompatible = environmentCheck();
 
         if (!isCompatible) {
-            getLogger().warning("Environment check failed!");
+            getLogger().severe(Lang.getStartup("environment-check-failed"));
             onDisable();
             return;
         }
 
-        getLogger().info("Integrating with other plugins...");
+        getLogger().info(Lang.getStartup("integrating-other-plugins"));
         this.integrationManager = new IntegrationManager(this);
         this.integrationManager.onLoad();
 
-        getLogger().info("Registering listeners...");
+        getLogger().info(Lang.getStartup("register-listeners"));
         this.listenerManager = new ListenerManager(this);
         this.listenerManager.onLoad();
 
@@ -142,19 +152,19 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             new BlobBuildUpdater(this, getFile(), "JustEnoughGuide", "Dev").start();
         }
 
-        getLogger().info("Registering commands...");
+        getLogger().info(Lang.getStartup("register-commands"));
         this.commandManager = new CommandManager(this);
         this.commandManager.onLoad();
 
         if (!commandManager.registerCommands()) {
-            getLogger().warning("Registering commands failed！");
+            getLogger().warning(Lang.getStartup("register-commands-failed"));
         }
 
         final boolean survivalOverride = getConfigManager().isSurvivalImprovement();
         final boolean cheatOverride = getConfigManager().isCheatImprovement();
         if (survivalOverride || cheatOverride) {
-            getLogger().info("Enabled guide override!");
-            getLogger().info("Overriding guide...");
+            getLogger().info(Lang.getStartup("enabled-guide-override"));
+            getLogger().info(Lang.getStartup("override-guide"));
             Field field = ReflectionUtil.getField(Slimefun.getRegistry().getClass(), "guides");
             if (field != null) {
                 field.setAccessible(true);
@@ -172,16 +182,16 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
                 }
             }
-            getLogger().info(survivalOverride ? "Replaced survival guide!" : "Not replacing survival guide!");
-            getLogger().info(cheatOverride ? "Replaced cheat guide!" : "Not replacing cheat guide!");
+            getLogger().info(survivalOverride ? Lang.getStartup("replaced-survival-guide") : Lang.getStartup("not-replaced-survival-guide"));
+            getLogger().info(cheatOverride ? Lang.getStartup("replaced-cheat-guide") : Lang.getStartup("not-replaced-cheat-guide"));
 
-            getLogger().info("Loading collect groups...");
+            getLogger().info(Lang.getStartup("loading-bookmark"));
             this.bookmarkManager = new BookmarkManager(this);
             this.bookmarkManager.onLoad();
 
-            getLogger().info("Loading guide group...");
+            getLogger().info(Lang.getStartup("loading-guide-group"));
             GroupSetup.setup();
-            getLogger().info("Loaded guide group!");
+            getLogger().info(Lang.getStartup("loaded-guide-group"));
         }
 
         this.rtsBackpackManager = new RTSBackpackManager(this);
@@ -205,22 +215,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             }
         }
 
-        getLogger().info("Enabled JustEnoughGuide");
+        getLogger().info(Lang.getStartup("enabled-jeg"));
     }
-
-    /*
-    public void tryUpdate() {
-        try {
-            if (configManager.isAutoUpdate() && getDescription().getVersion().startsWith("Build")) {
-                GuizhanUpdater.start(this, getFile(), username, repo, branch);
-            }
-        } catch (NoClassDefFoundError | NullPointerException | UnsupportedClassVersionError e) {
-            getLogger().info("自动更新失败: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-     */
 
     @Override
     public void onDisable() {
@@ -270,6 +266,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.integrationManager = null;
         this.commandManager = null;
         this.listenerManager = null;
+        this.rtsBackpackManager = null;
+        this.localizationService = null;
         this.configManager = null;
 
         // Other fields
@@ -293,12 +291,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return MessageFormat.format("https://github.com/{0}/{1}/issues/", this.username, this.repo);
     }
 
-    public void debug(String message) {
-        if (getConfigManager().isDebug()) {
-            getLogger().warning("[DEBUG] " + message);
-        }
-    }
-
     public @NotNull String getVersion() {
         return getDescription().getVersion();
     }
@@ -307,20 +299,20 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.minecraftVersion = MinecraftVersion.getCurrentVersion();
         this.javaVersion = NumberUtils.getJavaVersion();
         if (minecraftVersion == null) {
-            getLogger().warning("Cannot recognize Minecraft version!");
+            getLogger().warning(Lang.getStartup("null-mc-version"));
             return false;
         }
 
         if (minecraftVersion == MinecraftVersion.UNKNOWN) {
-            getLogger().warning("Cannot recognize Minecraft version!");
+            getLogger().warning(Lang.getStartup("unknown-mc-version"));
         }
 
         if (!minecraftVersion.isAtLeast(RECOMMENDED_MC_VERSION)) {
-            getLogger().warning("Minecraft too old! Please use Minecraft 1." + RECOMMENDED_MC_VERSION.getMajor() + "." + RECOMMENDED_MC_VERSION.getMinor() + " or above!");
+            getLogger().warning(Lang.getStartup("mc-version-too-old", "recommended_major", RECOMMENDED_MC_VERSION.getMajor(), "recommended_minor", RECOMMENDED_MC_VERSION.getMinor()));
         }
 
         if (javaVersion < RECOMMENDED_JAVA_VERSION) {
-            getLogger().warning("Java too old! Please use Java " + RECOMMENDED_JAVA_VERSION + " or above!");
+            getLogger().warning(Lang.getStartup("java-version-too-old", "recommended_version", RECOMMENDED_JAVA_VERSION));
         }
 
         return true;

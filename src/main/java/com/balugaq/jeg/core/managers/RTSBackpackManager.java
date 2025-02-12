@@ -50,11 +50,16 @@ public class RTSBackpackManager extends AbstractManager {
         Collection<PlayerBackpack> backpacks = profile.getPlayerData().getBackpacks().values();
         if (backpacks != null && !backpacks.isEmpty()) {
             for (PlayerBackpack backpack : backpacks) {
+                if (backpack.getInventory().getContents().length < 54) {
+                    continue;
+                }
+
                 // check if identifier is valid
                 ItemStack identifierItem = backpack.getInventory().getItem(IDENTIFIER_SLOT);
                 if (identifierItem == null || identifierItem.getType() == Material.AIR) {
                     continue;
                 }
+
                 if (!isIdentifier(identifierItem, player)) {
                     continue;
                 }
@@ -104,7 +109,7 @@ public class RTSBackpackManager extends AbstractManager {
             Inventory inventory = backpack.getInventory();
             ItemStack[] contents = inventory.getContents();
 
-            ItemStack identifierItem = contents[IDENTIFIER_SLOT];
+            ItemStack identifierItem = inventory.getItem(IDENTIFIER_SLOT);
             if (identifierItem == null || identifierItem.getType() == Material.AIR) {
                 continue;
             }

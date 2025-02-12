@@ -12,6 +12,7 @@ import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
@@ -83,10 +84,10 @@ import java.util.logging.Level;
 @SuppressWarnings({"deprecation", "unused"})
 public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements JEGSlimefunGuideImplementation {
     private static final int RTS_SLOT = 6;
-    private static final ItemStack RTS_ITEM = new CustomItemStack(Material.ANVIL, "&bReal Time Search", "");
+    private static final ItemStack RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
     private static final int MAX_ITEM_GROUPS = 36;
     private static final int SPECIAL_MENU_SLOT = 26;
-    private static final ItemStack SPECIAL_MENU_ITEM = new CustomItemStack(Material.COMPASS, "&bBig Recipe", "", "&aClick to view");
+    private static final ItemStack SPECIAL_MENU_ITEM = Lang.getIcon("guide.special-menu", Material.COMPASS);
     private final int[] recipeSlots = {3, 4, 5, 12, 13, 14, 21, 22, 23};
     private final @NotNull ItemStack item;
 
@@ -121,10 +122,8 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
             ItemGroup itemGroup = slimefunItem.getItemGroup();
             String lore = hasPermission(p, slimefunItem)
-                    ? String.format(
-                    "&fNeeds to be unlocked in " +
-                    (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + " - " + itemGroup.getDisplayName(p))
-                    : "&fNo permission";
+                    ? Lang.getGuideMessage("locked-item", "addon_name", LocalHelper.getAddonName(itemGroup, slimefunItem.getId()), "category_name", itemGroup.getDisplayName(p))
+                    : Lang.getGuideMessage("no-permission");
             return ItemStackUtil.getCleanItem(
                     slimefunItem.canUse(p, false)
                             ? item
@@ -244,11 +243,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                 SlimefunAddon addon = group.getAddon();
 
                 if (addon != null) {
-                    addon.getLogger().log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+                    addon.getLogger().log(Level.SEVERE, x, () -> Lang.getError("could-not-display-item-group", "group", group));
                 } else {
                     JustEnoughGuide.getInstance()
                             .getLogger()
-                            .log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+                            .log(Level.SEVERE, x, () -> Lang.getError("could-not-display-item-group", "group", group));
                 }
             }
         }
@@ -466,9 +465,9 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                             "&7" + sfitem.getId(),
                             "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
                             "",
-                            "&a> Click to unlock",
+                            Lang.getGuideMessage("click-to-unlock"),
                             "",
-                            "&7Cost: &b" + research.getCost() + " Level(s)")));
+                            Lang.getGuideMessage("cost", "cost", research.getCost()))));
             menu.addMenuClickHandler(index, (pl, slot, item, action) -> {
                 research.unlockFromGuide(this, p, profile, sfitem, itemGroup, page);
                 return false;
@@ -601,7 +600,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                     null,
                     null,
                     ItemStackUtil.getCleanItem(
-                            new CustomItemStack(Material.BARRIER, "&4We are somehow unable to show you this Recipe :/")),
+                            new CustomItemStack(Material.BARRIER, Lang.getError("unknown-recipe"))),
                     null,
                     null,
                     null,
@@ -976,7 +975,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         if (!isCheatMode() && history.size() > 1) {
             menu.addItem(
                     slot,
-                    ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(p, "", "&fLeft Click: &7Go back to previous Page", "&fShift + left Click: &7Go back to Main Menu")));
+                    SlimefunOfficialSupporter.getBackButton(p));
 
             menu.addMenuClickHandler(slot, (pl, s, is, action) -> {
                 if (action.isShiftClicked()) {
@@ -1101,10 +1100,9 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, "An error occurred while displaying an item in the guide.", x);
-        JustEnoughGuide.getInstance().getLogger().warning("We are trying to fix \"" + p.getName() + "\" 's guide...");
+        p.sendMessage(Lang.getError("internal-error"));
+        JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, Lang.getError("error-occurred"), x);
+        JustEnoughGuide.getInstance().getLogger().warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
         PlayerProfile profile = PlayerProfile.find(p).orElse(null);
         if (profile == null) {
             return;
@@ -1114,10 +1112,15 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, SlimefunItem item, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
+        p.sendMessage(Lang.getError("internal-error"));
+        item.error(Lang.getError("item-error"), x);
+        JustEnoughGuide.getInstance()
+                .getLogger()
+                .warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 }

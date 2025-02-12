@@ -1,5 +1,6 @@
-# Auto update from Guizhan Build is enabled by default.
+# Auto update from Blob Build is enabled by default.
 auto-update: true
+language: en-US
 
 guide:
   survival-improvements: true
@@ -13,7 +14,7 @@ improvements:
   rts-search: true
 
 # Do not change this value unless you know what you are doing.
-config-version: 1.5
+config-version: 1.6
 
 # Do not change this value unless you know what you are doing.
 debug: false

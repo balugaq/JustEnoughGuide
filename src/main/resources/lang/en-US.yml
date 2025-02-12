@@ -1,0 +1,195 @@
+icon:
+  # RTS
+  input-text:
+    name: "&fReal Time Search: &7Type text above"
+    lore:
+      - "&fNote:"
+      - "&7 - &eThe left side one is the back button"
+      - "&7 - &eThe middle one is the page up button"
+      - "&7 - &eThe right side one is the page down button"
+
+  usage-guide:
+    name: "&bJEG Usage Guide"
+  hidden-items:
+    name: "&bHidden Items"
+  nexcavate-items:
+    name: "&bNexcavate Items"
+  guide:
+    real-time-search:
+      name: "&bReal Time Search"
+      lore:
+        - ""
+    special-menu:
+      name: "&bBig Recipe"
+      lore:
+        - ""
+        - "&aClick to view"
+
+  guide-group:
+    header:
+      name: "&bJEG Guide"
+      lore:
+        - "&bAuthor: balugaq"
+        - "&bJEG improved Slimefun's guides, make it humanizer and more efficient."
+        - "&bLook up the following guides to get started with JEG's enhanced features."
+        - "&bIssue Tracker: https://github.com/balugaq/JustEnoughGuide/issues"
+        - "&bSuggested languages to report issues: "
+        - "&b      English"
+        - "&b      Simplified Chinese"
+        - "&b      Traditional Chinese"
+    feature-search-paging:
+      name: "&bFeature: Search Paging"
+      lore:
+        - "&bIntroduction: You can look up more search results by paging"
+        - "&bClick to try!"
+    feature-bookmark-item:
+      name: "&bFeature: Collect Items"
+      lore:
+        - "&bIntroduction: When viewing a category, as for the supported addons:"
+        - "&b      You can click the \"Book\" icon to collect items in this category."
+        - "&a      Click back button to exit."
+        - "&bClick to try!"
+    feature-view-bookmarked-items:
+      name: "&bFeature: View Collected"
+      lore:
+        - "&bIntroduction: You can view the items you have collected"
+        - "&b      You can click the \"Nether Star\" icon to view the collected items."
+        - "&a      Click back button to exit."
+        - "&bClick to try!"
+    feature-jump-category:
+      name: "&bFeature: Jump Category"
+      lore:
+        - "&bIntroduction: When you view a recipe，You can jump the material's category by simple clicking."
+        - "&b      Like... Shift+Left-click on the material's icon"
+        - "&bClick to try!"
+    feature-quick-research:
+      name: "&bFeature: Quick Research"
+      lore:
+        - "&bIntroduction: You can research items anywhere"
+        - "&bClick to try!"
+    feature-smart-search:
+      name: "&bFeature: Smart Searching"
+      lore:
+        - "&bIntroduction: You can look up a item's producer by searching its name."
+        - "&bClick to try!"
+    feature-search-expansion-by-recipe-item-name:
+      name: "&bFeature: Searching Expansion"
+      lore:
+        - "&bIntroduction: You can prefix text with {flag}<recipe_item_name> to limit the search to a specific range."
+        - "&b      Ex: {flag}Battery can search the item which its recipe contains \"Battery\""
+        - "&c      Allowed to combine different expansions."
+        - "&bClick to try!"
+    feature-search-expansion-by-recipe-type-name:
+      name: "&bFeature: Searching Expansion"
+      lore:
+        - "&bIntroduction: You can prefix text with {flag}<recipe_type_name> to limit the search to a specific range."
+        - "&b      Ex: {flag}crafting.table can search the item which its recipe type name contains \"crafting table\""
+        - "&c      Allowed to combine different expansions."
+        - "&bClick to try!"
+    feature-search-expansion-by-display-item-name:
+      name: "&bFeature: Searching Expansion"
+      lore:
+        - "&bIntroduction: You can prefix text with {flag}<display_item_name> to limit the search to a specific range."
+        - "&b      Ex: {flag}copper.dust can search the item which its recipe display items' name contains \"copper dust\""
+        - "&c      Allowed to combine different expansions."
+        - "&bClick to try!"
+    feature-search-expansion-by-addon-name:
+      name: "&bFeature: Searching Expansion"
+      lore:
+        - "&bIntroduction: You can prefix text with {flag}<addon_name> to limit the search to a specific range."
+        - "&b      Ex: {flag}slimefun can search the item which is from \"Slimefun\""
+        - "&c      Allowed to combine different expansions."
+        - "&bClick to try!"
+    feature-search-expansion-by-item-name:
+      name: "&bFeature: Searching Expansion"
+      lore:
+        - "&bIntroduction: You can prefix text with {flag}<item_name> to limit the search to a specific range."
+        - "&b      Ex: {flag}Battery can search the item which its name contains \"Battery\""
+        - "&c      Allowed to combine different expansions."
+        - "&bClick to try!"
+    feature-search-expansion-by-material-name:
+      name: "&bFeature: Searching Expansion"
+      lore:
+        - "&bIntroduction: You can prefix text with {flag}<material_name> to limit the search to a specific range."
+        - "&b      Ex: {flag}iron can search the item which its type name contains \"iron\""
+        - "&c      Allowed to combine different expansions."
+        - "&bClick to try!"
+  book-mark-button:
+    name: "&e&lCollected"
+  item-mark-button:
+    name: "&e&lCollecting"
+debug:
+  debug-prefix: "&b[Debug] "
+message:
+  command:
+    help:
+      success:
+        - "&aJEG Commands:"
+        - "&a/jeg help - Show this help message"
+        - "&a/jeg reload - Reload JEG plugin"
+        - "&a/jeg cache <section> <key>"
+    reload:
+      start: "&aReloading JEG plugin..."
+      precheck-failed: "&cFailed to reload plugin."
+      success: "&aPlugin has been reloaded."
+      failed: "&cFailed to reload plugin."
+    cache:
+      wrong-usage: "&cUsage: /jeg cache <section> <key>"
+      wrong-cache-section: "&cInvalid section number. Please choose 1 or 2."
+      cache-cleared: "&aCache {section} cleared."
+      checking-cache: "Checking cache {section} for {key}..."
+      items-header: "&aItems: "
+      items-format: "&a - {item_name}"
+      invalid-cache-key: "&cCache for {key} is invalid."
+      valid-cache-key: "&aCache for {key} is valid."
+      cache-size: "&aCache size: {size}"
+      word-set-size: "&aWord set size: {size}"
+    no-permission: "&cYou don't have permission to use this command."
+    unknown-command: "&cUnknown command. Type /jeg help"
+  guide:
+    disabled-item: "&4&lThis Slimefun item is disabled in this world"
+    locked-item: "&fNeeds to be unlocked in {addon_name} - {category_name}"
+    no-permission: "&fNo permission"
+    click-to-unlock: "&a> Click to unlock"
+    cost: "&7Cost: &b{cost} Level(s)"
+    back-button-extra-lore:
+      - ""
+      - "&fLeft Click: &7Go back to previous Page"
+      - "&fShift + left Click: &7Go back to Main Menu"
+    searching: "&bSearching: {item_name}"
+    bookmark-title: "Collected - JEG"
+    addon: "&8{symbol_block} &f{addon_name} - {category_name}"
+    unmark: "&eRight-click to remove from collected"
+    item-mark-title: "Collecting - JEG"
+    mark-item: "&eLeft-click to collect"
+    marked: "&aCollected!"
+
+    # RTS
+    rts-title: "Type text below here"
+startup:
+  null-mc-version: "Cannot recognize Minecraft version!"
+  unknown-mc-version: "Cannot recognize Minecraft version!"
+  mc-version-too-old: "Minecraft too old! Please use Minecraft 1.{recommended_major}.{recommended_minor} or above!"
+  java-version-too-old: "Java too old! Please use Java {recommended_version} or above!"
+  environment-check-failed: "Environment check failed!"
+  integrating-other-plugins: "Integrating with other plugins..."
+  register-listeners: "Registering listeners..."
+  register-commands: "Registering commands..."
+  register-commands-failed: "Registering commands failed!"
+  enabled-guide-override: "Enabled guide override!"
+  override-guide: "Overriding guide..."
+  replaced-survival-guide: "Replaced survival guide!"
+  not-replaced-survival-guide: "Not replacing survival guide!"
+  replaced-cheat-guide: "Replaced cheat guide!"
+  not-replaced-cheat-guide: "Not replacing cheat guide!"
+  loading-bookmark: "Loading collect groups..."
+  loading-guide-group: "Loading guide group..."
+  loaded-guide-group: "Loaded guide group!"
+  enabled-jeg: "Enabled JustEnoughGuide"
+error:
+  could-not-display-item-group: "Could not display item group {group}"
+  unknown-recipe: "&4We are somehow unable to show you this Recipe :/"
+  internal-error: "&4An internal server error has occurred. Please inform an admin, check the console for further info"
+  error-occurred: "An error occurred while displaying an item in the guide."
+  item-error: "This item has caused an error message to be thrown while viewing it in the JustEnoughGuide guide."
+  trying-fix-guide: "We are trying to recover the player \"{player_name}\"'s guide..."
