@@ -84,6 +84,7 @@ import java.util.logging.Level;
 @SuppressWarnings({"deprecation", "unused"})
 public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements JEGSlimefunGuideImplementation {
     private static final int RTS_SLOT = 6;
+    @Deprecated
     private static final ItemStack RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
     private static final int MAX_ITEM_GROUPS = 36;
     private static final int SPECIAL_MENU_SLOT = 26;
@@ -819,7 +820,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         });
 
         if (JustEnoughGuide.getConfigManager().isRTSSearch()) {
-            menu.addItem(RTS_SLOT, ItemStackUtil.getCleanItem(RTS_ITEM), (pl, slot, itemstack, action) -> {
+            menu.addItem(RTS_SLOT, ItemStackUtil.getCleanItem(Lang.RTS_ITEM), (pl, slot, itemstack, action) -> {
                 RTSSearchGroup.newRTSInventoryFor(pl, getMode(), (s, stateSnapshot) -> {
                     if (s == AnvilGUI.Slot.INPUT_LEFT) {
                         // back button clicked

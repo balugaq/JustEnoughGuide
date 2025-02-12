@@ -2,6 +2,7 @@ package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.core.services.LocalizationService;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
@@ -14,6 +15,8 @@ import java.util.List;
 
 @UtilityClass
 public class Lang {
+    public static final ItemStack RAW_RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
+    public static final ItemStack RTS_ITEM = new SlimefunItemStack("_UI_RTS_ICON", RAW_RTS_ITEM);
     public static @Nullable LocalizationService get() {
         return JustEnoughGuide.getInstance().getLocalizationService();
     }

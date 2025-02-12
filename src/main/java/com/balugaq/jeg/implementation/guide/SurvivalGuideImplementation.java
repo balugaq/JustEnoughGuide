@@ -87,6 +87,7 @@ import java.util.logging.Level;
 @SuppressWarnings({"deprecation", "unused"})
 public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implements JEGSlimefunGuideImplementation {
     private static final int RTS_SLOT = 6;
+    @Deprecated
     private static final ItemStack RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
     private static final NamespacedKey UNLOCK_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "unlock_item");
     private static final int MAX_ITEM_GROUPS = 36;
@@ -817,7 +818,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         });
 
         if (JustEnoughGuide.getConfigManager().isRTSSearch()) {
-            menu.addItem(RTS_SLOT, ItemStackUtil.getCleanItem(RTS_ITEM), (pl, slot, itemstack, action) -> {
+            menu.addItem(RTS_SLOT, ItemStackUtil.getCleanItem(Lang.RTS_ITEM), (pl, slot, itemstack, action) -> {
                 RTSSearchGroup.newRTSInventoryFor(pl, getMode(), (s, stateSnapshot) -> {
                     if (s == AnvilGUI.Slot.INPUT_LEFT) {
                         // back button clicked
