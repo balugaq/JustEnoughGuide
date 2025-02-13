@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>EN-3</version>
+    <version>EN-4</version>
 
     <pluginRepositories>
         <pluginRepository>

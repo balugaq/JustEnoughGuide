@@ -15,6 +15,8 @@ import java.util.List;
 
 @UtilityClass
 public class Lang {
+    public static final ItemStack RAW_INPUT_TEXT_ICON = Lang.getIcon("input-text", Material.PAPER);
+    public static final ItemStack INPUT_TEXT_ICON = new SlimefunItemStack("_UI_RTS_INPUT_TEXT_ICON", RAW_INPUT_TEXT_ICON);
     public static final ItemStack RAW_RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
     public static final ItemStack RTS_ITEM = new SlimefunItemStack("_UI_RTS_ICON", RAW_RTS_ITEM);
     public static @Nullable LocalizationService get() {
