@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>74</version>
+    <version>EN-5</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -161,9 +161,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.SlimefunGuguProject</groupId>
+            <groupId>com.github.Slimefun</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>b39097e015</version>
+            <version>RC-37</version>
             <scope>provided</scope>
         </dependency>
 
@@ -202,21 +202,6 @@
             <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
-        <!-- Pinyin Library -->
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>pinyin</artifactId>
-            <version>0.4.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- Chinese localization library -->
-        <dependency>
-            <groupId>net.guizhanss</groupId>
-            <artifactId>GuizhanLibPlugin</artifactId>
-            <version>1.7.6</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Special Menu Provider -->
         <dependency>
@@ -233,6 +218,14 @@
             <artifactId>anvilgui</artifactId>
             <version>1.10.4-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- Slimefun Translation -->
+        <dependency>
+            <groupId>net.guizhanss</groupId>
+            <artifactId>SlimefunTranslation</artifactId>
+            <version>e6da231617</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

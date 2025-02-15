@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings({"unused"})
 public class Debug {
-    private static final String debugPrefix = "[Debug] ";
+    private static final String debugPrefix = Lang.getDebug("debug-prefix");
     private static JavaPlugin plugin;
 
     public static void debug(Object @NotNull ... objects) {
