@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
 import java.util.Optional;
@@ -19,7 +20,7 @@ import java.util.Optional;
  */
 public class SpecialMenuFixListener implements Listener {
     @EventHandler
-    public void onSpecialMenuClose(InventoryCloseEvent event) {
+    public void onSpecialMenuClose(@NotNull InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         Optional<PlayerProfile> optional = PlayerProfile.find(player);
         if (optional.isPresent()) {

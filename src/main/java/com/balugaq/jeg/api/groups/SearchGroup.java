@@ -811,8 +811,8 @@ public class SearchGroup extends FlexItemGroup {
                     List<String> additionLore = List.of(
                             "",
                             ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                    + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + " - "
-                                    + itemGroup.getDisplayName(player));
+                                    + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
+                                    + LocalHelper.getDisplayName(itemGroup, player));
                     if (meta.hasLore() && meta.getLore() != null) {
                         List<String> lore = meta.getLore();
                         lore.addAll(additionLore);

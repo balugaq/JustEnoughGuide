@@ -16,6 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
@@ -39,7 +40,16 @@ public class RTSBackpackManager extends AbstractManager {
         this.OWNER_KEY = new NamespacedKey(plugin, "owner");
     }
 
-    public void saveInventoryBackupFor(Player player) {
+    public static ItemStack @NotNull [] getStorageContents(@NotNull PlayerInventory inventory) {
+        ItemStack[] contents = new ItemStack[36];
+        for (int i = 0; i < 36; i++) {
+            ItemStack itemStack = inventory.getItem(i);
+            contents[i] = itemStack;
+        }
+        return contents;
+    }
+
+    public void saveInventoryBackupFor(@NotNull Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
             return;
@@ -87,7 +97,7 @@ public class RTSBackpackManager extends AbstractManager {
         profile.save();
     }
 
-    public void clearInventoryFor(Player player) {
+    public void clearInventoryFor(@NotNull Player player) {
         ItemStack[] newContents = new ItemStack[player.getInventory().getStorageContents().length];
         for (int i = 0; i < newContents.length; i++) {
             newContents[i] = new ItemStack(Material.AIR);
@@ -95,7 +105,7 @@ public class RTSBackpackManager extends AbstractManager {
         player.getInventory().setStorageContents(newContents);
     }
 
-    public void restoreInventoryFor(Player player) {
+    public void restoreInventoryFor(@NotNull Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
             return;
@@ -149,11 +159,11 @@ public class RTSBackpackManager extends AbstractManager {
         }
     }
 
-    public void setIdentifier(Player player, Inventory inventory, int slot, boolean open) {
+    public void setIdentifier(@NotNull Player player, @NotNull Inventory inventory, int slot, boolean open) {
         inventory.setItem(slot, getIdentifierItem(player, open));
     }
 
-    public ItemStack getIdentifierItem(Player player, boolean open) {
+    public @NotNull ItemStack getIdentifierItem(@NotNull Player player, boolean open) {
         return new CustomItemStack(new CustomItemStack(Material.DIRT, "[RTS]", "[RTS]", "[RTS]", "[RTS]", UUID.randomUUID().toString()), meta -> {
             meta.getPersistentDataContainer().set(OWNER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
             meta.getPersistentDataContainer().set(SERVER_KEY, PersistentDataType.STRING, JustEnoughGuide.getServerUUID().toString());
@@ -165,7 +175,7 @@ public class RTSBackpackManager extends AbstractManager {
         });
     }
 
-    public boolean isIdentifier(ItemStack item, Player player) {
+    public boolean isIdentifier(@Nullable ItemStack item, @NotNull Player player) {
         if (item == null || item.getType() == Material.AIR) {
             return false;
         }
@@ -191,7 +201,7 @@ public class RTSBackpackManager extends AbstractManager {
         return true;
     }
 
-    public boolean isOpenIdentifier(ItemStack item) {
+    public boolean isOpenIdentifier(@Nullable ItemStack item) {
         if (item == null || item.getType() == Material.AIR) {
             return false;
         }
@@ -206,14 +216,5 @@ public class RTSBackpackManager extends AbstractManager {
         }
 
         return false;
-    }
-
-    public static ItemStack[] getStorageContents(PlayerInventory inventory) {
-        ItemStack[] contents = new ItemStack[36];
-        for (int i = 0; i < 36; i++) {
-            ItemStack itemStack = inventory.getItem(i);
-            contents[i] = itemStack;
-        }
-        return contents;
     }
 }

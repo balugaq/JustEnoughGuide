@@ -176,7 +176,7 @@ public class ReflectionUtil {
     }
 
     @Nullable
-    public static Object invokeMethod(@NotNull Object object, @NotNull String methodName, Object... args) {
+    public static Object invokeMethod(@NotNull Object object, @NotNull String methodName, Object @NotNull ... args) {
         try {
             Method method = getMethod(object.getClass(), methodName, args.length);
             if (method != null) {
@@ -190,7 +190,7 @@ public class ReflectionUtil {
     }
 
     @Nullable
-    public static Object invokeStaticMethod(@NotNull Class<?> clazz, @NotNull String methodName, Object... args) {
+    public static Object invokeStaticMethod(@NotNull Class<?> clazz, @NotNull String methodName, Object @NotNull ... args) {
         try {
             Method method = getMethod(clazz, methodName, args.length);
             if (method != null) {

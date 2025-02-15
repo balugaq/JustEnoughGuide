@@ -116,11 +116,11 @@ public class ConfigManager extends AbstractManager {
         return BOOKMARK;
     }
 
-    public String getSurvivalGuideTitle() {
+    public @NotNull String getSurvivalGuideTitle() {
         return SURVIVAL_GUIDE_TITLE;
     }
 
-    public String getCheatGuideTitle() {
+    public @NotNull String getCheatGuideTitle() {
         return CHEAT_GUIDE_TITLE;
     }
 

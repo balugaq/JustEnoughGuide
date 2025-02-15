@@ -1,9 +1,11 @@
 package com.balugaq.jeg.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 public class UUIDUtils {
-    public static byte[] toByteArray(UUID uuid) {
+    public static byte[] toByteArray(@NotNull UUID uuid) {
         long mostSigBits = uuid.getMostSignificantBits();
         long leastSigBits = uuid.getLeastSignificantBits();
         byte[] bytes = new byte[16];

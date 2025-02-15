@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -129,7 +130,7 @@ public class RTSSearchGroup extends FlexItemGroup {
         return newRTSInventoryFor(player, guideMode, null, null, presetSearchTerm);
     }
 
-    public static Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode, BiConsumer<Integer, AnvilGUI.StateSnapshot> clickHandler, int[] slots, String presetSearchTerm) {
+    public static Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode, @Nullable BiConsumer<Integer, AnvilGUI.StateSnapshot> clickHandler, int @Nullable [] slots, @Nullable String presetSearchTerm) {
         AnvilGUI.Builder builder = new AnvilGUI.Builder()
                 .plugin(SearchGroup.JAVA_PLUGIN)
                 .itemLeft(BACK_ICON.apply(player))
@@ -180,7 +181,7 @@ public class RTSSearchGroup extends FlexItemGroup {
     }
 
     @Override
-    public void open(Player player, PlayerProfile playerProfile, SlimefunGuideMode slimefunGuideMode) {
+    public void open(@NotNull Player player, @NotNull PlayerProfile playerProfile, @NotNull SlimefunGuideMode slimefunGuideMode) {
         GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
         newRTSInventoryFor(player, slimefunGuideMode, (s, stateSnapshot) -> {
             if (s == AnvilGUI.Slot.INPUT_LEFT) {

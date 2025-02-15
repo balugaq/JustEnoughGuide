@@ -91,27 +91,27 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.branch = "en-master";
     }
 
-    public static BookmarkManager getBookmarkManager() {
+    public static @Nullable BookmarkManager getBookmarkManager() {
         return getInstance().bookmarkManager;
     }
 
-    public static CommandManager getCommandManager() {
+    public static @Nullable CommandManager getCommandManager() {
         return getInstance().commandManager;
     }
 
-    public static ConfigManager getConfigManager() {
+    public static @Nullable ConfigManager getConfigManager() {
         return getInstance().configManager;
     }
 
-    public static IntegrationManager getIntegrationManager() {
+    public static @Nullable IntegrationManager getIntegrationManager() {
         return getInstance().integrationManager;
     }
 
-    public static ListenerManager getListenerManager() {
+    public static @Nullable ListenerManager getListenerManager() {
         return getInstance().listenerManager;
     }
 
-    public static MinecraftVersion getMCVersion() {
+    public static @Nullable MinecraftVersion getMCVersion() {
         return getInstance().minecraftVersion;
     }
 

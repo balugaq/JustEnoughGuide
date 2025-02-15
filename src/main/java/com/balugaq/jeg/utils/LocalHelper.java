@@ -4,6 +4,8 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,11 +17,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class LocalHelper {
-    private static final String def = "Unknown addon";
-    private static final Map<String, Map<String, SlimefunItemStack>> rscItems = new HashMap<>();
-    private static final Map<String, String> addonLocals = new HashMap<>();
+    public static final String def = "Unknown addon";
+    public static final Map<String, Map<String, SlimefunItemStack>> rscItems = new HashMap<>();
+    public static final Map<String, String> addonLocals = new HashMap<>();
     // depends on rsc addons' info.yml
-    private static final Map<String, Set<String>> rscLocals = new HashMap<>();
+    public static final Map<String, Set<String>> rscLocals = new HashMap<>();
 
     static {
         addonLocals.put("Slimefun", "Slimefun");
@@ -392,5 +394,15 @@ public class LocalHelper {
         }
 
         return def;
+    }
+
+    @NotNull
+    public static String getDisplayName(@NotNull ItemGroup itemGroup, @NotNull Player player) {
+        ItemMeta meta = itemGroup.getItem(player).getItemMeta();
+        if (meta == null) {
+            return def;
+        }
+
+        return meta.getDisplayName();
     }
 }

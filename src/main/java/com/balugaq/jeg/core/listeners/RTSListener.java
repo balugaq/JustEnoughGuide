@@ -50,6 +50,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +74,7 @@ public class RTSListener implements Listener {
         return openingPlayers.containsKey(player);
     }
 
-    public static boolean isFakeItem(ItemStack itemStack) {
+    public static boolean isFakeItem(@Nullable ItemStack itemStack) {
         if (itemStack != null && itemStack.getType() != Material.AIR) {
             if (itemStack.getItemMeta().getPersistentDataContainer().get(FAKE_ITEM_KEY, PersistentDataType.STRING) != null) {
                 return true;
@@ -81,7 +83,7 @@ public class RTSListener implements Listener {
         return false;
     }
 
-    public static void quitRTS(Player player) {
+    public static void quitRTS(@NotNull Player player) {
         if (isRTSPlayer(player)) {
             synchronized (openingPlayers) {
                 openingPlayers.remove(player);
@@ -114,7 +116,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onOpenRTS(RTSEvents.OpenRTSEvent event) {
+    public void onOpenRTS(RTSEvents.@NotNull OpenRTSEvent event) {
         Player player = event.getPlayer();
         synchronized (openingPlayers) {
             openingPlayers.put(player, event.getGuideMode());
@@ -144,7 +146,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onRTS(RTSEvents.SearchTermChangeEvent event) {
+    public void onRTS(RTSEvents.@NotNull SearchTermChangeEvent event) {
         Player player = event.getPlayer();
         SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(event.getGuideMode());
         SearchGroup searchGroup = new SearchGroup(implementation, player, event.getNewSearchTerm(), false, true);
@@ -167,8 +169,8 @@ public class RTSListener implements Listener {
                         List<String> additionLore = List.of(
                                 "",
                                 ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + " - "
-                                        + itemGroup.getDisplayName(player));
+                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
+                                        + LocalHelper.getDisplayName(itemGroup, player));
                         if (meta.hasLore() && meta.getLore() != null) {
                             List<String> lore = meta.getLore();
                             lore.addAll(additionLore);
@@ -210,7 +212,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onRTSPageChange(RTSEvents.PageChangeEvent event) {
+    public void onRTSPageChange(RTSEvents.@NotNull PageChangeEvent event) {
         Player player = event.getPlayer();
         int page = event.getNewPage();
         SearchGroup searchGroup = RTSSearchGroup.RTS_SEARCH_GROUPS.get(player);
@@ -224,8 +226,8 @@ public class RTSListener implements Listener {
                         List<String> additionLore = List.of(
                                 "",
                                 ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + " - "
-                                        + itemGroup.getDisplayName(player));
+                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
+                                        + LocalHelper.getDisplayName(itemGroup, player));
                         if (meta.hasLore() && meta.getLore() != null) {
                             List<String> lore = meta.getLore();
                             lore.addAll(additionLore);
@@ -263,13 +265,13 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onCloseRTS(RTSEvents.CloseRTSEvent event) {
+    public void onCloseRTS(RTSEvents.@NotNull CloseRTSEvent event) {
         Player player = event.getPlayer();
         quitRTS(player);
     }
 
     @EventHandler
-    public void restore(PlayerJoinEvent event) {
+    public void restore(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
         quitRTS(player);
         ItemStack[] itemStacks = player.getInventory().getContents();
@@ -283,7 +285,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void restore(PlayerRespawnEvent event) {
+    public void restore(@NotNull PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -291,7 +293,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    public void onQuit(@NotNull PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -299,7 +301,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
+    public void onDeath(@NotNull PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -309,7 +311,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onOpenInventory(InventoryOpenEvent event) {
+    public void onOpenInventory(@NotNull InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -317,7 +319,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onLookup(InventoryClickEvent event) {
+    public void onLookup(@NotNull InventoryClickEvent event) {
         Player player = (Player) event.getView().getPlayer();
         if (isRTSPlayer(player)) {
             InventoryAction action = event.getAction();
@@ -342,8 +344,7 @@ public class RTSListener implements Listener {
                         profile.getGuideHistory().add(back, 1);
                         implementation.displayItem(profile, slimefunItem, true);
                         quitRTS(player);
-                    }
-                    else if (mode == SlimefunGuideMode.CHEAT_MODE) {
+                    } else if (mode == SlimefunGuideMode.CHEAT_MODE) {
                         if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
                             if (slimefunItem instanceof MultiBlockMachine) {
                                 Slimefun.getLocalization().sendMessage(player, "guide.cheat.no-multiblocks");
@@ -375,7 +376,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
+    public void onInteract(@NotNull PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -389,7 +390,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent event) {
+    public void onDrop(@NotNull PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -403,7 +404,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
+    public void onBlockPlace(@NotNull BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -417,7 +418,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onSwapHand(PlayerSwapHandItemsEvent event) {
+    public void onSwapHand(@NotNull PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -437,7 +438,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onAsyncChat(AsyncPlayerChatEvent event) {
+    public void onAsyncChat(@NotNull AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -446,7 +447,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
+    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -455,7 +456,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+    public void onArmorStandManipulate(@NotNull PlayerArmorStandManipulateEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -464,7 +465,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onChat(PlayerChatEvent event) {
+    public void onChat(@NotNull PlayerChatEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -473,7 +474,7 @@ public class RTSListener implements Listener {
     }
 
     @EventHandler
-    public void onArmor(PlayerItemConsumeEvent event) {
+    public void onArmor(@NotNull PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);

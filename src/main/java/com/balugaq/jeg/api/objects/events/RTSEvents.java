@@ -28,7 +28,7 @@ public class RTSEvents {
             this.guideMode = guideMode;
         }
 
-        public static HandlerList getHandlerList() {
+        public static @NotNull HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -60,7 +60,7 @@ public class RTSEvents {
             this.presetSearchTerm = presetSearchTerm;
         }
 
-        public static HandlerList getHandlerList() {
+        public static @NotNull HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -91,7 +91,7 @@ public class RTSEvents {
             this.guideMode = guideMode;
         }
 
-        public static HandlerList getHandlerList() {
+        public static @NotNull HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -119,7 +119,7 @@ public class RTSEvents {
             this.guideMode = guideMode;
         }
 
-        public static HandlerList getHandlerList() {
+        public static @NotNull HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -159,7 +159,7 @@ public class RTSEvents {
             this.guideMode = guideMode;
         }
 
-        public static HandlerList getHandlerList() {
+        public static @NotNull HandlerList getHandlerList() {
             return HANDLERS;
         }
 
