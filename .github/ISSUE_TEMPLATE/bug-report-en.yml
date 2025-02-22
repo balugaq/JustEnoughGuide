@@ -2,7 +2,6 @@ name: Bug Report
 description: Report bugs or issues for this plugin
 labels: [ "bug" ]
 assignees:
-  - ytdd9527
   - balugaq
 body:
   - type: markdown

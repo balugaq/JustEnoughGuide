@@ -125,4 +125,27 @@ public class Debug {
             plugin = JustEnoughGuide.getInstance();
         }
     }
+
+    public static void trace(@NotNull Throwable e) {
+        trace(e, null);
+    }
+
+    public static void trace(@NotNull Throwable e, @Nullable String doing) {
+        trace(e, doing, null);
+    }
+
+    public static void trace(@NotNull Throwable e, @Nullable String doing, @Nullable Integer code) {
+        plugin.getLogger().severe("DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
+        if (code != null) {
+            plugin.getLogger().severe("Error code: " + code);
+        }
+        plugin.getLogger().severe("If you are sure that this is a JustEnoughGuide bug, please report to " + JustEnoughGuide.getInstance().getBugTrackerURL());
+        if (doing != null) {
+            plugin.getLogger().severe("An unexpected error occurred while " + doing);
+        } else {
+            plugin.getLogger().severe("An unexpected error occurred.");
+        }
+
+        e.printStackTrace();
+    }
 }

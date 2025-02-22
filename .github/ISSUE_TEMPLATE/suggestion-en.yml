@@ -2,7 +2,6 @@ name: Development Suggestion Feedback
 description: Submit development suggestions
 labels: [ "suggestion" ]
 assignees:
-  - ytdd9527
   - balugaq
 body:
   - type: markdown
