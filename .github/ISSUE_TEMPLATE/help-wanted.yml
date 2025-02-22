@@ -2,7 +2,6 @@ name: 请求帮助
 description: 请求帮助
 labels: [ "help wanted" ]
 assignees:
-  - ytdd9527
   - balugaq
 body:
   - type: markdown

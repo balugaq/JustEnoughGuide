@@ -2,7 +2,6 @@ name: 开发建议反馈
 description: 提出开发建议
 labels: [ "suggestion" ]
 assignees:
-  - ytdd9527
   - balugaq
 body:
   - type: markdown

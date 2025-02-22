@@ -2,7 +2,6 @@ name: Request Help
 description: Request help
 labels: [ "help wanted" ]
 assignees:
-  - ytdd9527
   - balugaq
 body:
   - type: markdown
