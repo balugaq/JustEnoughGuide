@@ -32,12 +32,12 @@ jobs:
           apiToken: ${{ secrets.BLOB_BUILDS_API_TOKEN }}
           releaseNotes: ${{ github.event.head_commit.message }}
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
+          files: |
+            build.zip
