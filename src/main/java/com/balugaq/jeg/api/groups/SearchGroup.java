@@ -13,6 +13,9 @@ import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.ReflectionUtil;
+import com.balugaq.jeg.utils.SpecialMenuProvider;
+import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
+import com.github.houbb.pinyin.util.PinyinHelper;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -33,6 +36,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import me.matl114.logitech.SlimefunItem.CustomSlimefunItem;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import net.guizhanss.slimefuntranslation.SlimefunTranslation;
@@ -518,7 +522,17 @@ public class SearchGroup extends FlexItemGroup {
                         if (slimefunItem instanceof AContainer ac) {
                             displayRecipes = ac.getDisplayRecipes();
                         } else if (slimefunItem instanceof MultiBlockMachine mb) {
-                            displayRecipes = mb.getDisplayRecipes();
+                            try {
+                                displayRecipes = mb.getDisplayRecipes();
+                            } catch (Throwable e) {
+                                Debug.trace(e, "searching");
+                            }
+                        } else if (SpecialMenuProvider.ENABLED_LogiTech && slimefunItem instanceof CustomSlimefunItem csi) {
+                            try {
+                                displayRecipes = csi.getDisplayRecipes();
+                            } catch (Throwable e) {
+                                Debug.trace(e, "searching");
+                            }
                         }
                         if (displayRecipes != null) {
                             for (ItemStack itemStack : displayRecipes) {
