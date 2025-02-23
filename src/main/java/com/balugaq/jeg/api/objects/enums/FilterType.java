@@ -26,7 +26,7 @@ public enum FilterType {
         }
 
         for (ItemStack itemStack : recipe) {
-            if (SearchGroup.isSearchFilterApplicable(itemStack, lowerFilterValue, false)) {
+            if (SearchGroup.isSearchFilterApplicable(player, itemStack, lowerFilterValue, false)) {
                 return true;
             }
         }
@@ -39,7 +39,7 @@ public enum FilterType {
             return false;
         }
 
-        return SearchGroup.isSearchFilterApplicable(recipeTypeIcon, lowerFilterValue, false);
+        return SearchGroup.isSearchFilterApplicable(player, recipeTypeIcon, lowerFilterValue, false);
     }),
     BY_DISPLAY_ITEM_NAME("%", (player, item, lowerFilterValue, pinyin) -> {
         List<ItemStack> display = null;
@@ -64,7 +64,7 @@ public enum FilterType {
         if (display != null) {
             try {
                 for (ItemStack itemStack : display) {
-                    if (SearchGroup.isSearchFilterApplicable(itemStack, lowerFilterValue, false)) {
+                    if (SearchGroup.isSearchFilterApplicable(player, itemStack, lowerFilterValue, false)) {
                         return true;
                     }
                 }
@@ -98,7 +98,7 @@ public enum FilterType {
         return false;
     }),
     BY_ITEM_NAME("!", (player, item, lowerFilterValue, pinyin) -> {
-        if (SearchGroup.isSearchFilterApplicable(item, lowerFilterValue, pinyin)) {
+        if (SearchGroup.isSearchFilterApplicable(player, item, lowerFilterValue, pinyin)) {
             return true;
         }
         return false;

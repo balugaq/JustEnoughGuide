@@ -2,6 +2,7 @@ package com.balugaq.jeg.core.commands;
 
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.interfaces.JEGCommand;
+import com.balugaq.jeg.utils.Lang;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -45,12 +46,12 @@ public class CacheCommand implements JEGCommand {
             case 3 -> {
                 switch (args[1]) {
                     case "1" -> {
-                        List<String> result = new ArrayList<>(SearchGroup.CACHE.keySet().stream().sorted().map(String::valueOf).toList());
+                        List<String> result = new ArrayList<>(SearchGroup.EN_CACHE.keySet().stream().sorted().map(String::valueOf).toList());
                         result.add("clear");
                         return result;
                     }
                     case "2" -> {
-                        List<String> result = new ArrayList<>(SearchGroup.CACHE2.keySet().stream().sorted().map(String::valueOf).toList());
+                        List<String> result = new ArrayList<>(SearchGroup.EN_CACHE2.keySet().stream().sorted().map(String::valueOf).toList());
                         result.add("clear");
                         return result;
                     }
@@ -90,21 +91,21 @@ public class CacheCommand implements JEGCommand {
 
     private void onCheck(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length < 3) {
-            sender.sendMessage(ChatColor.RED + "Usage: /jeg cache <section> <key>");
+            sender.sendMessage(Lang.getCommandMessage("cache", "wrong-usage"));
             return;
         }
         String section = args[1];
-        Map<Character, Reference<Set<SlimefunItem>>> cache;
+        Map<String, Reference<Set<SlimefunItem>>> cache;
         String command = args[2];
         switch (section) {
             case "1" -> {
-                cache = SearchGroup.CACHE;
+                cache = SearchGroup.EN_CACHE;
             }
             case "2" -> {
-                cache = SearchGroup.CACHE2;
+                cache = SearchGroup.EN_CACHE2;
             }
             default -> {
-                sender.sendMessage(ChatColor.RED + "Invalid section number. Please choose 1 or 2.");
+                sender.sendMessage(Lang.getCommandMessage("cache", "wrong-cache-section"));
                 return;
             }
         }
@@ -112,12 +113,12 @@ public class CacheCommand implements JEGCommand {
         if (cache != null) {
             if ("clear".equalsIgnoreCase(command)) {
                 cache.clear();
-                sender.sendMessage(ChatColor.GREEN + "Cache " + section + " cleared.");
+                sender.sendMessage(Lang.getCommandMessage("cache", "cache-cleared", "section", section));
                 return;
             }
 
-            Character key = command.charAt(0);
-            sender.sendMessage(ChatColor.GREEN + "Checking cache " + section + " for " + key + "...");
+            String key = command;
+            sender.sendMessage(Lang.getCommandMessage("cache", "checking-cache", "section", section, "key", key));
             if (cache.containsKey(key)) {
                 Integer size = null;
                 Reference<Set<SlimefunItem>> ref = cache.get(key);
@@ -125,24 +126,24 @@ public class CacheCommand implements JEGCommand {
                     Set<SlimefunItem> set = ref.get();
                     if (set != null) {
                         size = set.size();
-                        sender.sendMessage(ChatColor.GREEN + "Items: ");
+                        sender.sendMessage(Lang.getCommandMessage("cache", "items-header"));
                         for (SlimefunItem item : set) {
-                            sender.sendMessage(ChatColor.GREEN + " - " + item.getItemName());
+                            sender.sendMessage(Lang.getCommandMessage("cache", "items-format", "item_name", item.getItemName()));
                         }
                     }
                 }
 
-                sender.sendMessage(ChatColor.GREEN + "Cache for " + key + " is valid.");
-                sender.sendMessage(ChatColor.GREEN + "Cache size: " + cache.size());
+                sender.sendMessage(Lang.getCommandMessage("cache", "valid-cache-key", "key", key));
+                sender.sendMessage(Lang.getCommandMessage("cache", "cache-size", "size", size));
                 if (size != null) {
-                    sender.sendMessage(ChatColor.GREEN + "Character set size: " + size);
+                    sender.sendMessage(Lang.getCommandMessage("cache", "word-set-size", "size", size));
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "Cache for " + key + " is invalid.");
+                sender.sendMessage(Lang.getCommandMessage("cache", "invalid-cache-key", "key", key));
                 return;
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "Invalid section number. Please choose 1 or 2.");
+            sender.sendMessage(Lang.getCommandMessage("cache", "wrong-cache-section"));
         }
     }
 }
