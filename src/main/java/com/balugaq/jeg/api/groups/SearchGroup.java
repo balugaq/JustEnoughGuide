@@ -958,10 +958,11 @@ public class SearchGroup extends FlexItemGroup {
             int beforeSize = merge.size();
             Debug.debug("Search term: " + actualSearchTerm);
             String[] words = actualSearchTerm.split(SPLIT);
-            boolean first = true;
+            Set<SlimefunItem> currentResults = new HashSet<>(items);
+
             for (String word : words) {
                 Debug.debug("Word: " + word);
-                List<String> fixedWords = List.of();
+                List<String> fixedWords;
                 if (words.length == 1) {
                     // maybe a language that not split by space, should change the fixedWords
                     String language = Slimefun.getLocalization().getLanguage(player).getId();
@@ -974,23 +975,29 @@ public class SearchGroup extends FlexItemGroup {
                 } else {
                     fixedWords = findMostSimilar(word, EN_THRESHOLD);
                 }
+
+                Set<SlimefunItem> wordMatches = new HashSet<>();
                 if (fixedWords.isEmpty()) {
                     Debug.debug("No fixed words found.");
                     // fallback
                     if (re_search_when_cache_failed) {
-                        merge.addAll(filterItems(FilterType.BY_ITEM_NAME, word, false, new HashSet<>(items)));
-                        merge.addAll(filterItems(FilterType.BY_DISPLAY_ITEM_NAME, word, false, new HashSet<>(items)));
+                        wordMatches.addAll(filterItems(FilterType.BY_ITEM_NAME, word, false, new HashSet<>(items)));
+                        wordMatches.addAll(filterItems(FilterType.BY_DISPLAY_ITEM_NAME, word, false, new HashSet<>(items)));
                     }
                 } else {
                     Debug.debug("Fixed words: " + fixedWords);
                     for (String candidate : fixedWords) {
-                        merge.addAll(filterItems(FilterType.BY_ITEM_NAME, candidate, false, new HashSet<>(items)));
-                        merge.addAll(filterItems(FilterType.BY_DISPLAY_ITEM_NAME, candidate, false, new HashSet<>(items)));
+                        wordMatches.addAll(filterItems(FilterType.BY_ITEM_NAME, candidate, false, new HashSet<>(items)));
+                        wordMatches.addAll(filterItems(FilterType.BY_DISPLAY_ITEM_NAME, candidate, false, new HashSet<>(items)));
                     }
                 }
+
+                currentResults.retainAll(wordMatches);
             }
 
+            merge.addAll(currentResults);
             int afterSize = merge.size();
+
             // fallback
             if (beforeSize == afterSize) {
                 Debug.debug("Same size, fallback to search by name.");
