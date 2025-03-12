@@ -8,6 +8,7 @@ import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
@@ -233,7 +234,8 @@ public class HiddenItemsGroup extends FlexItemGroup {
                 if (implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
                         && research != null
                         && !playerProfile.hasUnlocked(research)) {
-                    itemstack = ItemStackUtil.getCleanItem(new CustomItemStack(
+                    
+                    itemstack = ItemStackUtil.getCleanItem(Converter.getItem(
                             ChestMenuUtils.getNoPermissionItem(),
                             "&f" + ItemUtils.getItemName(slimefunItem.getItem()),
                             "&7" + slimefunItem.getId(),
@@ -248,7 +250,7 @@ public class HiddenItemsGroup extends FlexItemGroup {
                         return false;
                     };
                 } else {
-                    itemstack = ItemStackUtil.getCleanItem(new CustomItemStack(slimefunItem.getItem(), meta -> {
+                    itemstack = ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem(), meta -> {
                         ItemGroup itemGroup = slimefunItem.getItemGroup();
                         List<String> additionLore = List.of(
                                 "",

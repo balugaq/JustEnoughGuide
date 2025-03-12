@@ -17,7 +17,7 @@ body:
       label: 检查项目
       description: 在汇报之前，你需要确认
       options:
-        - label: 你已经寻找过[已知问题列表](https://github.com/ytdd9527/JustEnoughGuide/issues)，且没有找到相同的建议
+        - label: 你已经寻找过[已知问题列表](https://github.com/balugaq/JustEnoughGuide/issues)，且没有找到相同的建议
           required: true
 
   - type: textarea

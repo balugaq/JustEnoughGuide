@@ -18,7 +18,7 @@ body:
       label: Checklist
       description: Before reporting, you need to confirm
       options:
-        - label: You have searched the [list of known issues](https://github.com/ytdd9527/JustEnoughGuide/issues) and have not found the same suggestion
+        - label: You have searched the [list of known issues](https://github.com/balugaq/JustEnoughGuide/issues) and have not found the same suggestion
           required: true
 
   - type: textarea

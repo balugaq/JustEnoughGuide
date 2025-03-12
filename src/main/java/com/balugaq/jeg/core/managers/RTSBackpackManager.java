@@ -2,6 +2,7 @@ package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -164,7 +165,7 @@ public class RTSBackpackManager extends AbstractManager {
     }
 
     public @NotNull ItemStack getIdentifierItem(@NotNull Player player, boolean open) {
-        return new CustomItemStack(new CustomItemStack(Material.DIRT, "[RTS]", "[RTS]", "[RTS]", "[RTS]", UUID.randomUUID().toString()), meta -> {
+        return Converter.getItem(Converter.getItem(Material.DIRT, "[RTS]", "[RTS]", "[RTS]", "[RTS]", UUID.randomUUID().toString()), meta -> {
             meta.getPersistentDataContainer().set(OWNER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
             meta.getPersistentDataContainer().set(SERVER_KEY, PersistentDataType.STRING, JustEnoughGuide.getServerUUID().toString());
             if (open) {
