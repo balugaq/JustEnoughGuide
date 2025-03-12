@@ -31,9 +31,7 @@ public class SlimefunOfficialSupporter {
     }
 
     public static ItemStack translateItem(@NotNull Player player, @NotNull ItemStack itemStack) {
-        if (itemStack instanceof SlimefunItemStack) {
-            itemStack = ItemStackUtil.getCleanItem(itemStack);
-        }
+        itemStack = Converter.getItem(itemStack);
         if (JustEnoughGuide.getIntegrationManager().isEnabledSlimefunTranslation()) {
             SlimefunTranslationAPI.translateItem(SlimefunTranslationAPI.getUser(player), itemStack);
         }
