@@ -2,6 +2,7 @@ package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.core.services.LocalizationService;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import lombok.experimental.UtilityClass;
@@ -123,25 +124,25 @@ public class Lang {
     public static @NotNull ItemStack getIcon(String path, Material material) {
         String iconName = getString("icon." + path + ".name");
         String[] iconLore = getStringArray("icon." + path + ".lore");
-        return new CustomItemStack(material, iconName, iconLore);
+        return Converter.getItem(material, iconName, iconLore);
     }
 
     public static @NotNull ItemStack getIcon(String path, Material material, Object... args) {
         String iconName = getString("icon." + path + ".name", args);
         String[] iconLore = getStringArray("icon." + path + ".lore", args);
-        return new CustomItemStack(material, iconName, iconLore);
+        return Converter.getItem(material, iconName, iconLore);
     }
 
     public static @NotNull ItemStack getGuideGroupIcon(String path, Material material) {
         String iconName = getString("icon.guide-group." + path + ".name");
         String[] iconLore = getStringArray("icon.guide-group." + path + ".lore");
-        return new CustomItemStack(material, iconName, iconLore);
+        return Converter.getItem(material, iconName, iconLore);
     }
 
     public static @NotNull ItemStack getGuideGroupIcon(String path, Material material, Object... args) {
         String iconName = getString("icon.guide-group." + path + ".name", args);
         String[] iconLore = getStringArray("icon.guide-group." + path + ".lore", args);
-        return new CustomItemStack(material, iconName, iconLore);
+        return Converter.getItem(material, iconName, iconLore);
     }
 
     public static @NotNull String[] getCommandSuccess(String command) {

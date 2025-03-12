@@ -16,6 +16,7 @@ import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -128,7 +129,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
             return ItemStackUtil.getCleanItem(
                     slimefunItem.canUse(p, false)
                             ? item
-                            : new CustomItemStack(
+                            : Converter.getItem(
                             Material.BARRIER,
                             ItemUtils.getItemName(item),
                             "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
@@ -359,7 +360,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
             menu.addItem(
                     index,
-                    ItemStackUtil.getCleanItem(new CustomItemStack(
+                    ItemStackUtil.getCleanItem(Converter.getItem(
                             Material.BARRIER,
                             "&4"
                                     + Slimefun.getLocalization().getMessage(p, "guide.locked")
@@ -452,7 +453,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
             List<String> message = Slimefun.getPermissionsService().getLore(sfitem);
             menu.addItem(
                     index,
-                    ItemStackUtil.getCleanItem(new CustomItemStack(
+                    ItemStackUtil.getCleanItem(Converter.getItem(
                             ChestMenuUtils.getNoPermissionItem(),
                             SlimefunOfficialSupporter.getTranslatedItemName(p, sfitem),
                             message.toArray(new String[0]))));
@@ -460,7 +461,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         } else if (!isCheatMode() && research != null && !profile.hasUnlocked(research)) {
             menu.addItem(
                     index,
-                    ItemStackUtil.getCleanItem(new CustomItemStack(
+                    ItemStackUtil.getCleanItem(Converter.getItem(
                             ChestMenuUtils.getNoPermissionItem(),
                             "&f" + SlimefunOfficialSupporter.getTranslatedItemName(p, sfitem),
                             "&7" + sfitem.getId(),
@@ -601,7 +602,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                     null,
                     null,
                     ItemStackUtil.getCleanItem(
-                            new CustomItemStack(Material.BARRIER, Lang.getError("unknown-recipe"))),
+                            Converter.getItem(Material.BARRIER, Lang.getError("unknown-recipe"))),
                     null,
                     null,
                     null,
@@ -696,7 +697,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         if (wiki.isPresent()) {
             menu.addItem(
                     8,
-                    ItemStackUtil.getCleanItem(new CustomItemStack(
+                    ItemStackUtil.getCleanItem(Converter.getItem(
                             Material.KNOWLEDGE_BOOK,
                             ChatColor.WHITE + Slimefun.getLocalization().getMessage(p, "guide.tooltips.wiki"),
                             "",
@@ -1010,7 +1011,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                 for (int i = 27; i < 36; i++) {
                     menu.replaceExistingItem(
                             i,
-                            ItemStackUtil.getCleanItem(new CustomItemStack(
+                            ItemStackUtil.getCleanItem(Converter.getItem(
                                     ChestMenuUtils.getBackground(), sfItem.getRecipeSectionLabel(p))));
                     menu.addMenuClickHandler(i, ChestMenuUtils.getEmptyClickHandler());
                 }

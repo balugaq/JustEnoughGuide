@@ -3,6 +3,7 @@ package com.balugaq.jeg.core.services;
 import com.balugaq.jeg.api.objects.Language;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ItemStackUtil;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import com.google.common.base.Preconditions;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -337,7 +338,7 @@ public class LocalizationService {
     @Nonnull
     @ParametersAreNonnullByDefault
     public ItemStack getItemStack(String key, Material material) {
-        return ItemStackUtil.getCleanItem(new CustomItemStack(material, this.getString(key + KEY_NAME), this.getStringArray(key + KEY_LORE)));
+        return ItemStackUtil.getCleanItem(Converter.getItem(material, this.getString(key + KEY_NAME), this.getStringArray(key + KEY_LORE)));
     }
 
     @Nonnull

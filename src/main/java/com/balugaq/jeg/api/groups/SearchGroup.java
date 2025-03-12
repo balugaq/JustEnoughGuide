@@ -15,6 +15,7 @@ import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -818,7 +819,7 @@ public class SearchGroup extends FlexItemGroup {
             int index = i + this.page * MAIN_CONTENT.length - MAIN_CONTENT.length;
             if (index < this.slimefunItemList.size()) {
                 SlimefunItem slimefunItem = slimefunItemList.get(index);
-                ItemStack itemstack = ItemStackUtil.getCleanItem(new CustomItemStack(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
+                ItemStack itemstack = ItemStackUtil.getCleanItem(Converter.getItem(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
                     ItemGroup itemGroup = slimefunItem.getItemGroup();
                     List<String> additionLore = List.of(
                             "",

@@ -1,6 +1,7 @@
 package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 @UtilityClass
 public class SlimefunOfficialSupporter {
     public static ItemStack getBackButton(Player player) {
-        return ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(player, Lang.getStringArray("message.guide.back-button-extra-lore")));
+        return Converter.getItem(ChestMenuUtils.getBackButton(player, Lang.getStringArray("message.guide.back-button-extra-lore")));
     }
     public static boolean isShowHiddenItemGroups() {
         return Slimefun.getCfg().getBoolean("guide.show-hidden-item-groups-in-search");

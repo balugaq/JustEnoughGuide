@@ -10,6 +10,7 @@ import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -164,7 +165,7 @@ public class RTSListener implements Listener {
                 int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
                 if (index < searchGroup.slimefunItemList.size()) {
                     SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
-                    ItemStack itemStack = ItemStackUtil.getCleanItem(new CustomItemStack(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
+                    ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
                         ItemGroup itemGroup = slimefunItem.getItemGroup();
                         List<String> additionLore = List.of(
                                 "",
@@ -221,7 +222,7 @@ public class RTSListener implements Listener {
                 int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
                 if (index < searchGroup.slimefunItemList.size()) {
                     SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
-                    ItemStack itemStack = ItemStackUtil.getCleanItem(new CustomItemStack(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
+                    ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
                         ItemGroup itemGroup = slimefunItem.getItemGroup();
                         List<String> additionLore = List.of(
                                 "",
