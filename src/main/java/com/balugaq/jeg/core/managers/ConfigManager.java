@@ -127,7 +127,8 @@ public class ConfigManager extends AbstractManager {
     public boolean isRTSSearch() {
         return RTS_SEARCH;
     }
-    public String getLanguage() {
+
+    public @NotNull String getLanguage() {
         return LANGUAGE;
     }
 }

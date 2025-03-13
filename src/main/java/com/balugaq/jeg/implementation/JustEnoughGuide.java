@@ -26,7 +26,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdat
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
 import net.guizhanss.slimefuntranslation.SlimefunTranslation;
-import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

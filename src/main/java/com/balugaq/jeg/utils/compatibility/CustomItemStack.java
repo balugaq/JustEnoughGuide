@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 @ApiStatus.Experimental
 public class CustomItemStack implements Cloneable {
-    private final ItemStack delegate;
+    private final @NotNull ItemStack delegate;
 
     public CustomItemStack(@NotNull ItemStack item) {
         this.delegate = item.clone();
@@ -107,15 +107,15 @@ public class CustomItemStack implements Cloneable {
     }
 
     // 委托方法封装
-    public ItemStack getDelegate() {
+    public @NotNull ItemStack getDelegate() {
         return delegate.clone();
     }
 
-    public Material getType() {
+    public @NotNull Material getType() {
         return delegate.getType();
     }
 
-    public void setType(Material material) {
+    public void setType(@NotNull Material material) {
         delegate.setType(material);
     }
 
@@ -131,7 +131,7 @@ public class CustomItemStack implements Cloneable {
         return delegate.hasItemMeta();
     }
 
-    public ItemMeta getItemMeta() {
+    public @Nullable ItemMeta getItemMeta() {
         return delegate.getItemMeta();
     }
 

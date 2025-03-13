@@ -7,7 +7,6 @@ import com.balugaq.jeg.utils.compatibility.Converter;
 import com.google.common.base.Preconditions;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -22,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,18 +56,18 @@ public class LocalizationService {
     private static final String MSG_MATERIAL_NULL = "Material cannot be null";
     private static final String MSG_ITEMSTACK_NULL = "ItemStack cannot be null";
     private static final String MSG_TEXTURE_NULL = "Texture cannot be null";
-    private final JavaPlugin plugin;
-    private final String langFolderName;
-    private final File langFolder;
-    private final List<String> languages;
-    private final Map<String, Language> langMap;
+    private final @NotNull JavaPlugin plugin;
+    private final @NotNull String langFolderName;
+    private final @NotNull File langFolder;
+    private final @NotNull List<String> languages;
+    private final @NotNull Map<String, Language> langMap;
     @Getter
     private String idPrefix = "";
     private String itemGroupKey = "categories";
     private String itemsKey = "items";
     private String recipesKey = "recipes";
-    private String colorTagRegex = "<[a-zA-Z0-9_]+>";
-    private Pattern pattern = Pattern.compile(this.colorTagRegex);
+    private @NotNull String colorTagRegex = "<[a-zA-Z0-9_]+>";
+    private @NotNull Pattern pattern = Pattern.compile(this.colorTagRegex);
 
     @ParametersAreNonnullByDefault
     public LocalizationService(JavaPlugin plugin) {
@@ -255,7 +255,7 @@ public class LocalizationService {
         return this.getItemBy(this.itemGroupKey, id, itemStack);
     }
 
-    public ItemStack getItem(String id, Material material, String... extraLore) {
+    public @NotNull ItemStack getItem(@NotNull String id, @NotNull Material material, String... extraLore) {
         return this.getItemBy(this.itemsKey, id, material, extraLore);
     }
 
@@ -305,7 +305,7 @@ public class LocalizationService {
         this.recipesKey = recipesKey;
     }
 
-    private <T extends ItemStack> T appendLore(@Nonnull T itemStack, @Nullable String... extraLore) {
+    private <T extends ItemStack> @NotNull T appendLore(@Nonnull T itemStack, @Nullable String... extraLore) {
         Preconditions.checkArgument(itemStack != null, MSG_ITEMSTACK_NULL);
         if (extraLore != null && extraLore.length != 0) {
             ItemMeta meta = itemStack.getItemMeta();

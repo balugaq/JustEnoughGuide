@@ -13,8 +13,8 @@ import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.ReflectionUtil;
-import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -26,20 +26,16 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
-import io.github.thebusybiscuit.slimefun4.core.services.localization.LanguagePreset;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.RandomizedSet;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.matl114.logitech.SlimefunItem.CustomSlimefunItem;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
-import net.guizhanss.slimefuntranslation.SlimefunTranslation;
-import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -695,6 +691,75 @@ public class SearchGroup extends FlexItemGroup {
         return false;
     }
 
+    public static int levenshteinDistance(@NotNull String s1, @NotNull String s2) {
+        if (s1.length() > s2.length()) {
+            String temp = s1;
+            s1 = s2;
+            s2 = temp;
+        }
+
+        int[] distances = new int[s1.length() + 1];
+        for (int i = 0; i <= s1.length(); i++) {
+            distances[i] = i;
+        }
+
+        for (int i = 1; i <= s2.length(); i++) {
+            int[] prevDistances = distances.clone();
+            distances[0] = i;
+            for (int j = 1; j <= s1.length(); j++) {
+                int cost = (s1.charAt(j - 1) == s2.charAt(i - 1)) ? 0 : 1;
+                distances[j] = Math.min(Math.min(distances[j - 1] + 1, prevDistances[j] + 1), prevDistances[j - 1] + cost);
+            }
+        }
+
+        return distances[s1.length()];
+    }
+
+    public static List<String> findMostSimilar(@NotNull String target, int threshold) {
+        if (EN_CACHE_ROLLBACK.containsKey(target)) {
+            return EN_CACHE_ROLLBACK.get(target);
+        }
+
+        PriorityQueue<Map.Entry<String, Integer>> minHeap = new PriorityQueue<>(5, (a, b) -> b.getValue() - a.getValue());
+
+        for (String s : EN_WORDS) {
+            int distance = levenshteinDistance(s, target);
+            if (distance == 0) {
+                return List.of(s);
+            }
+
+            if (distance <= threshold) {
+                Map.Entry<String, Integer> entry = new AbstractMap.SimpleEntry<>(s, distance);
+                if (minHeap.size() < MAX_FIX_TIMES) {
+                    minHeap.offer(entry);
+                } else if (distance < minHeap.peek().getValue()) {
+                    minHeap.poll();
+                    minHeap.offer(entry);
+                }
+            }
+        }
+
+        List<String> mostSimilar = new ArrayList<>();
+        while (!minHeap.isEmpty()) {
+            mostSimilar.add(0, minHeap.poll().getKey());
+        }
+
+        synchronized (EN_CACHE_ROLLBACK) {
+            EN_CACHE_ROLLBACK.put(target, mostSimilar);
+        }
+        return mostSimilar;
+    }
+
+    public static boolean isContinuousScriptLanguage(@NotNull String language) {
+        return language.startsWith("zh") ||
+                language.startsWith("ja") ||
+                language.startsWith("ko") ||
+                language.startsWith("th") ||
+                language.startsWith("vi") ||
+                language.startsWith("he") ||
+                language.startsWith("fa");
+    }
+
     /**
      * Always returns false.
      *
@@ -1027,74 +1092,5 @@ public class SearchGroup extends FlexItemGroup {
     public @NotNull Set<SlimefunItem> filterItems(@NotNull FilterType filterType, @NotNull String filterValue, boolean pinyin, @NotNull Set<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream().filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin)).collect(Collectors.toSet());
-    }
-
-    public static int levenshteinDistance(String s1, String s2) {
-        if (s1.length() > s2.length()) {
-            String temp = s1;
-            s1 = s2;
-            s2 = temp;
-        }
-
-        int[] distances = new int[s1.length() + 1];
-        for (int i = 0; i <= s1.length(); i++) {
-            distances[i] = i;
-        }
-
-        for (int i = 1; i <= s2.length(); i++) {
-            int[] prevDistances = distances.clone();
-            distances[0] = i;
-            for (int j = 1; j <= s1.length(); j++) {
-                int cost = (s1.charAt(j - 1) == s2.charAt(i - 1)) ? 0 : 1;
-                distances[j] = Math.min(Math.min(distances[j - 1] + 1, prevDistances[j] + 1), prevDistances[j - 1] + cost);
-            }
-        }
-
-        return distances[s1.length()];
-    }
-
-    public static List<String> findMostSimilar(String target, int threshold) {
-        if (EN_CACHE_ROLLBACK.containsKey(target)) {
-            return EN_CACHE_ROLLBACK.get(target);
-        }
-
-        PriorityQueue<Map.Entry<String, Integer>> minHeap = new PriorityQueue<>(5, (a, b) -> b.getValue() - a.getValue());
-
-        for (String s : EN_WORDS) {
-            int distance = levenshteinDistance(s, target);
-            if (distance == 0) {
-                return List.of(s);
-            }
-
-            if (distance <= threshold) {
-                Map.Entry<String, Integer> entry = new AbstractMap.SimpleEntry<>(s, distance);
-                if (minHeap.size() < MAX_FIX_TIMES) {
-                    minHeap.offer(entry);
-                } else if (distance < minHeap.peek().getValue()) {
-                    minHeap.poll();
-                    minHeap.offer(entry);
-                }
-            }
-        }
-
-        List<String> mostSimilar = new ArrayList<>();
-        while (!minHeap.isEmpty()) {
-            mostSimilar.add(0, minHeap.poll().getKey());
-        }
-
-        synchronized (EN_CACHE_ROLLBACK) {
-            EN_CACHE_ROLLBACK.put(target, mostSimilar);
-        }
-        return mostSimilar;
-    }
-
-    public static boolean isContinuousScriptLanguage(String language) {
-        return language.startsWith("zh") ||
-                language.startsWith("ja") ||
-                language.startsWith("ko") ||
-                language.startsWith("th") ||
-                language.startsWith("vi") ||
-                language.startsWith("he") ||
-                language.startsWith("fa");
     }
 }

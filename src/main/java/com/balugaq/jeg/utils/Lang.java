@@ -4,7 +4,6 @@ import com.balugaq.jeg.core.services.LocalizationService;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,9 +16,10 @@ import java.util.List;
 @UtilityClass
 public class Lang {
     public static final ItemStack RAW_INPUT_TEXT_ICON = Lang.getIcon("input-text", Material.PAPER);
-    public static final ItemStack INPUT_TEXT_ICON = new SlimefunItemStack("_UI_RTS_INPUT_TEXT_ICON", RAW_INPUT_TEXT_ICON);
+    public static final ItemStack INPUT_TEXT_ICON = Converter.getItem(new SlimefunItemStack("_UI_RTS_INPUT_TEXT_ICON", RAW_INPUT_TEXT_ICON));
     public static final ItemStack RAW_RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
-    public static final ItemStack RTS_ITEM = new SlimefunItemStack("_UI_RTS_ICON", RAW_RTS_ITEM);
+    public static final ItemStack RTS_ITEM = Converter.getItem(new SlimefunItemStack("_UI_RTS_ICON", RAW_RTS_ITEM));
+
     public static @Nullable LocalizationService get() {
         return JustEnoughGuide.getInstance().getLocalizationService();
     }
@@ -27,14 +27,15 @@ public class Lang {
     public static @NotNull String getString(@NotNull String path) {
         return get().getString(path);
     }
+
     public static @NotNull String getString(@NotNull String path, Object... args) {
         return decorate(get().getString(path), args);
     }
 
-    public static @NotNull String decorate(String text, Object... args) {
-        for (int i = 0; i < args.length; i+=2) {
+    public static @NotNull String decorate(String text, Object @NotNull ... args) {
+        for (int i = 0; i < args.length; i += 2) {
             String key = "{" + args[i] + "}";
-            String value = String.valueOf(args[i+1]);
+            String value = String.valueOf(args[i + 1]);
             text = text.replace(key, value);
         }
 
@@ -44,6 +45,7 @@ public class Lang {
     public static @NotNull List<String> getStringList(@NotNull String path) {
         return get().getStringList(path);
     }
+
     public static @NotNull List<String> getStringList(@NotNull String path, Object... args) {
         List<String> raw = get().getStringList(path);
         List<String> decorated = new ArrayList<>();
@@ -54,10 +56,11 @@ public class Lang {
         return decorated;
     }
 
-    public static @NotNull String[] getStringArray(@NotNull String path) {
+    public static @NotNull String @NotNull [] getStringArray(@NotNull String path) {
         return get().getStringList(path).toArray(new String[0]);
     }
-    public static @NotNull String[] getStringArray(@NotNull String path, Object... args) {
+
+    public static @NotNull String @NotNull [] getStringArray(@NotNull String path, Object... args) {
         List<String> raw = get().getStringList(path);
         List<String> decorated = new ArrayList<>();
         for (String s : raw) {
@@ -91,11 +94,11 @@ public class Lang {
         return decorate(get().getString("message." + path), args);
     }
 
-    public static @NotNull String[] getItemLore(String itemId) {
+    public static @NotNull String @NotNull [] getItemLore(String itemId) {
         return get().getStringList("item." + itemId + ".lore").toArray(new String[0]);
     }
 
-    public static @NotNull String[] getItemLore(String itemId, Object... args) {
+    public static @NotNull String @NotNull [] getItemLore(String itemId, Object... args) {
         List<String> raw = get().getStringList("item." + itemId + ".lore");
         List<String> decorated = new ArrayList<>();
         for (String s : raw) {
@@ -121,25 +124,25 @@ public class Lang {
         return decorate(get().getString("shutdown." + path), args);
     }
 
-    public static @NotNull ItemStack getIcon(String path, Material material) {
+    public static @NotNull ItemStack getIcon(String path, @NotNull Material material) {
         String iconName = getString("icon." + path + ".name");
         String[] iconLore = getStringArray("icon." + path + ".lore");
         return Converter.getItem(material, iconName, iconLore);
     }
 
-    public static @NotNull ItemStack getIcon(String path, Material material, Object... args) {
+    public static @NotNull ItemStack getIcon(String path, @NotNull Material material, Object... args) {
         String iconName = getString("icon." + path + ".name", args);
         String[] iconLore = getStringArray("icon." + path + ".lore", args);
         return Converter.getItem(material, iconName, iconLore);
     }
 
-    public static @NotNull ItemStack getGuideGroupIcon(String path, Material material) {
+    public static @NotNull ItemStack getGuideGroupIcon(String path, @NotNull Material material) {
         String iconName = getString("icon.guide-group." + path + ".name");
         String[] iconLore = getStringArray("icon.guide-group." + path + ".lore");
         return Converter.getItem(material, iconName, iconLore);
     }
 
-    public static @NotNull ItemStack getGuideGroupIcon(String path, Material material, Object... args) {
+    public static @NotNull ItemStack getGuideGroupIcon(String path, @NotNull Material material, Object... args) {
         String iconName = getString("icon.guide-group." + path + ".name", args);
         String[] iconLore = getStringArray("icon.guide-group." + path + ".lore", args);
         return Converter.getItem(material, iconName, iconLore);

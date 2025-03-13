@@ -6,7 +6,6 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.SlimefunItemUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 

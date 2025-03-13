@@ -23,7 +23,6 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
@@ -264,14 +263,14 @@ public class ItemMarkGroup extends FlexItemGroup {
                         && !playerProfile.hasUnlocked(research)) {
 
                     itemstack = ItemStackUtil.getCleanItem(Converter.getItem(
-                                    ChestMenuUtils.getNoPermissionItem(),
-                                    "&f" + ItemUtils.getItemName(slimefunItem.getItem()),
-                                    "&7" + slimefunItem.getId(),
-                                    "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
-                                    "",
-                                    Lang.getGuideMessage("click-to-unlock"),
-                                    "",
-                                    Lang.getGuideMessage("cost", "cost", research.getCost())));
+                            ChestMenuUtils.getNoPermissionItem(),
+                            "&f" + ItemUtils.getItemName(slimefunItem.getItem()),
+                            "&7" + slimefunItem.getId(),
+                            "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
+                            "",
+                            Lang.getGuideMessage("click-to-unlock"),
+                            "",
+                            Lang.getGuideMessage("cost", "cost", research.getCost())));
                     handler = (pl, slot, item, action) -> {
                         research.unlockFromGuide(implementation, pl, playerProfile, slimefunItem, itemGroup, page);
                         return false;

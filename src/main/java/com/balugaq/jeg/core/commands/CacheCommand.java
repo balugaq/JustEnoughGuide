@@ -5,7 +5,6 @@ import com.balugaq.jeg.api.interfaces.JEGCommand;
 import com.balugaq.jeg.utils.Lang;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
