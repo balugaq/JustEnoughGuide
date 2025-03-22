@@ -5,6 +5,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
+import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -48,6 +49,7 @@ public class SpecialMenuProvider {
     public static @Nullable Method methodMenuUtils_createItemRecipeDisplay = null;
     public static @Nullable Method methodMenuFactory_buildGuide = null;
     public static @Nullable Method methodCustomMenu_open = null;
+    public static @Nullable Class<? extends RecipeDisplayItem> classLogiTech_CustomSlimefunItem = null;
     // InfinityExpansion
     public static @Nullable Method methodInfinityGroup_openInfinityRecipe = null;
     public static @Nullable Object objectInfinityExpansion_INFINITY = null;
@@ -137,6 +139,12 @@ public class SpecialMenuProvider {
             }
         } catch (ClassNotFoundException ignored) {
         }
+
+        SlimefunItem item = SlimefunItem.getById("LOGITECH_BUG");
+        if (item != null) {
+            classLogiTech_CustomSlimefunItem = (Class<? extends RecipeDisplayItem>) ReflectionUtil.getClass(item.getClass(), "CustomSlimefunItem");
+        }
+
         // InfinityExpansion
         try {
             Constructor<?> constructor = ReflectionUtil.getConstructor(Class.forName("io.github.mooy1.infinityexpansion.categories.InfinityGroup$BackEntry"), BlockMenu.class, PlayerProfile.class, SlimefunGuideImplementation.class);

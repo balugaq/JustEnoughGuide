@@ -123,6 +123,16 @@ public class ReflectionUtil {
         return null;
     }
 
+    public static @Nullable Class<?> getClass(@NotNull Class<?> clazz, String className) {
+        while (clazz != Object.class) {
+            if (clazz.getSimpleName().equals(className)) {
+                return clazz;
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return null;
+    }
+
     public static @Nullable Object getValue(@NotNull Object object, @NotNull String fieldName) {
         try {
             Field field = getField(object.getClass(), fieldName);

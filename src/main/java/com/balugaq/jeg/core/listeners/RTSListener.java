@@ -6,9 +6,12 @@ import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
+import com.balugaq.jeg.utils.compatibility.Converter;
+import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -18,6 +21,8 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
@@ -28,8 +33,10 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -39,6 +46,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -49,10 +57,13 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -115,9 +126,26 @@ public class RTSListener implements Listener {
         }
     }
 
+    public static String getHash(ItemStack item) {
+        if (item != null && (item.getType() == Material.PLAYER_HEAD || item.getType() == Material.PLAYER_WALL_HEAD)) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta instanceof SkullMeta) {
+                try {
+                    URL t = ((SkullMeta) meta).getOwnerProfile().getTextures().getSkin();
+                    String path = t.getPath();
+                    String[] parts = path.split("/");
+                    return parts[parts.length - 1];
+                } catch (Throwable ignored) {
+                }
+            }
+        }
+        return null;
+    }
+
     @EventHandler
     public void onOpenRTS(RTSEvents.@NotNull OpenRTSEvent event) {
         Player player = event.getPlayer();
+        Debug.debug("[RTS] Opening for " + player.getName());
         synchronized (openingPlayers) {
             openingPlayers.put(player, event.getGuideMode());
         }
@@ -148,6 +176,7 @@ public class RTSListener implements Listener {
     @EventHandler
     public void onRTS(RTSEvents.@NotNull SearchTermChangeEvent event) {
         Player player = event.getPlayer();
+        Debug.debug("[RTS] Searching for " + player.getName());
         SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(event.getGuideMode());
         SearchGroup searchGroup = new SearchGroup(implementation, player, event.getNewSearchTerm(), false, true);
         if (isRTSPlayer(player)) {
@@ -164,38 +193,8 @@ public class RTSListener implements Listener {
                 int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
                 if (index < searchGroup.slimefunItemList.size()) {
                     SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
-                    ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
-                        ItemGroup itemGroup = slimefunItem.getItemGroup();
-                        List<String> additionLore = List.of(
-                                "",
-                                ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                                        + LocalHelper.getDisplayName(itemGroup, player));
-                        if (meta.hasLore() && meta.getLore() != null) {
-                            List<String> lore = meta.getLore();
-                            lore.addAll(additionLore);
-                            meta.setLore(lore);
-                        } else {
-                            meta.setLore(additionLore);
-                        }
-
-                        meta.addItemFlags(
-                                ItemFlag.HIDE_ATTRIBUTES,
-                                ItemFlag.HIDE_ENCHANTS,
-                                JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-
-                        Set<NamespacedKey> keys = new HashSet<>(meta.getPersistentDataContainer().getKeys());
-                        for (NamespacedKey key : keys) {
-                            meta.getPersistentDataContainer().remove(key);
-                        }
-                        meta.getPersistentDataContainer().set(FAKE_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId());
-
-                        if (meta.hasDisplayName()) {
-                            String name = meta.getDisplayName();
-                            meta.setDisplayName(" " + name + " ");
-                        }
-                    }));
-                    player.getInventory().setItem(FILL_ORDER[i], itemStack);
+                    ItemStack fake = getFakeItem(slimefunItem, player);
+                    player.getInventory().setItem(FILL_ORDER[i], fake);
                 } else {
                     player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
                 }
@@ -214,6 +213,7 @@ public class RTSListener implements Listener {
     @EventHandler
     public void onRTSPageChange(RTSEvents.@NotNull PageChangeEvent event) {
         Player player = event.getPlayer();
+        Debug.debug("[RTS] Changing page for " + player.getName());
         int page = event.getNewPage();
         SearchGroup searchGroup = RTSSearchGroup.RTS_SEARCH_GROUPS.get(player);
         if (searchGroup != null) {
@@ -221,39 +221,9 @@ public class RTSListener implements Listener {
                 int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
                 if (index < searchGroup.slimefunItemList.size()) {
                     SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
-                    ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
-                        ItemGroup itemGroup = slimefunItem.getItemGroup();
-                        List<String> additionLore = List.of(
-                                "",
-                                ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                                        + LocalHelper.getDisplayName(itemGroup, player));
-                        if (meta.hasLore() && meta.getLore() != null) {
-                            List<String> lore = meta.getLore();
-                            lore.addAll(additionLore);
-                            meta.setLore(lore);
-                        } else {
-                            meta.setLore(additionLore);
-                        }
+                    ItemStack fake = getFakeItem(slimefunItem, player);
 
-                        meta.addItemFlags(
-                                ItemFlag.HIDE_ATTRIBUTES,
-                                ItemFlag.HIDE_ENCHANTS,
-                                JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-
-                        Set<NamespacedKey> keys = new HashSet<>(meta.getPersistentDataContainer().getKeys());
-                        for (NamespacedKey key : keys) {
-                            meta.getPersistentDataContainer().remove(key);
-                        }
-                        meta.getPersistentDataContainer().set(FAKE_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId());
-
-                        if (meta.hasDisplayName()) {
-                            String name = meta.getDisplayName();
-                            meta.setDisplayName(" " + name + " ");
-                        }
-                    }));
-
-                    player.getInventory().setItem(FILL_ORDER[i], itemStack);
+                    player.getInventory().setItem(FILL_ORDER[i], fake);
                 } else {
                     player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
                 }
@@ -375,7 +345,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(@NotNull PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -389,7 +359,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onDrop(@NotNull PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -403,7 +373,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockPlace(@NotNull BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -417,7 +387,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onSwapHand(@NotNull PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -437,7 +407,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onAsyncChat(@NotNull AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -446,7 +416,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -455,7 +425,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onArmorStandManipulate(@NotNull PlayerArmorStandManipulateEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -464,7 +434,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onChat(@NotNull PlayerChatEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -473,7 +443,7 @@ public class RTSListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onArmor(@NotNull PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
@@ -484,5 +454,109 @@ public class RTSListener implements Listener {
         if (isFakeItem(itemStack)) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInventoryClick(@NotNull InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        if (!isRTSPlayer(player)) {
+            ItemStack itemStack = event.getCurrentItem();
+            if (itemStack != null && isFakeItem(itemStack)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPickup(@NotNull EntityPickupItemEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (isRTSPlayer(player)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onRightClick(@NotNull PlayerRightClickEvent event) {
+        Player player = event.getPlayer();
+        if (isRTSPlayer(player)) {
+            event.cancel();
+            return;
+        } else {
+            ItemStack itemStack = event.getItem();
+            if (itemStack != null && isFakeItem(itemStack)) {
+                event.cancel();
+                return;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInteractEntity(@NotNull PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        if (isRTSPlayer(player)) {
+            event.setCancelled(true);
+            return;
+        } else {
+            ItemStack itemStack = player.getInventory().getItem(event.getHand());
+            if (itemStack != null && isFakeItem(itemStack)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @Contract("null, _ -> null; _, null -> null; !null, !null -> !null")
+    public ItemStack getFakeItem(@Nullable SlimefunItem slimefunItem, @Nullable Player player) {
+        if (slimefunItem == null || player == null) {
+            return null;
+        }
+
+        ItemStack legacy = slimefunItem.getItem();
+        Material material = legacy.getType();
+        ItemStack itemStack;
+        if (material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD) {
+            String hash = getHash(legacy);
+            if (hash != null) {
+                itemStack = PlayerHead.getItemStack(PlayerSkin.fromHashCode(hash));
+            } else {
+                itemStack = new ItemStack(material);
+            }
+        } else {
+            itemStack = new ItemStack(material);
+        }
+        itemStack.setAmount(legacy.getAmount());
+
+        ItemMeta legacyMeta = legacy.getItemMeta();
+        ItemMeta meta = itemStack.getItemMeta();
+
+        ItemGroup itemGroup = slimefunItem.getItemGroup();
+        List<String> additionLore = List.of(
+                "",
+                ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
+                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
+                        + LocalHelper.getDisplayName(itemGroup, player));
+        if (legacyMeta.hasLore() && legacyMeta.getLore() != null) {
+            List<String> lore = legacyMeta.getLore();
+            lore.addAll(additionLore);
+            meta.setLore(lore);
+        } else {
+            meta.setLore(additionLore);
+        }
+
+        meta.addItemFlags(
+                ItemFlag.HIDE_ATTRIBUTES,
+                ItemFlag.HIDE_ENCHANTS,
+                JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+
+        meta.getPersistentDataContainer().set(FAKE_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId());
+
+        if (legacyMeta.hasDisplayName()) {
+            String name = legacyMeta.getDisplayName();
+            meta.setDisplayName(" " + name + " ");
+        }
+
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 }
