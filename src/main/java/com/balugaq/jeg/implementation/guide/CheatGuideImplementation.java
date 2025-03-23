@@ -14,6 +14,7 @@ import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
+import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -85,10 +86,11 @@ import java.util.logging.Level;
 public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements JEGSlimefunGuideImplementation {
     private static final int RTS_SLOT = 6;
     @Deprecated
-    private static final ItemStack RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
+    private static final ItemStack RTS_ITEM = Lang.RTS_ITEM;
     private static final int MAX_ITEM_GROUPS = 36;
     private static final int SPECIAL_MENU_SLOT = 26;
-    private static final ItemStack SPECIAL_MENU_ITEM = Lang.getIcon("guide.special-menu", Material.COMPASS);
+    @Deprecated
+    private static final ItemStack SPECIAL_MENU_ITEM = Lang.SPECIAL_MENU_ITEM;
     private final int[] recipeSlots = {3, 4, 5, 12, 13, 14, 21, 22, 23};
     private final @NotNull ItemStack item;
 
@@ -729,7 +731,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
 
         if (maybeSpecial && SpecialMenuProvider.isSpecialItem(item)) {
-            menu.addItem(SPECIAL_MENU_SLOT, SPECIAL_MENU_ITEM, (pl, slot, itemstack, action) -> {
+            menu.addItem(SPECIAL_MENU_SLOT, Lang.SPECIAL_MENU_ITEM, (pl, slot, itemstack, action) -> {
                 try {
                     SpecialMenuProvider.open(profile.getPlayer(), profile, getMode(), item);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

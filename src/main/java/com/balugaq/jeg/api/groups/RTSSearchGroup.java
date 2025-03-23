@@ -9,6 +9,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -53,10 +54,9 @@ public class RTSSearchGroup extends FlexItemGroup {
     public static final Map<Player, Integer> RTS_PAGES = new ConcurrentHashMap<>();
     public static final Map<Player, AnvilInventory> RTS_PLAYERS = new ConcurrentHashMap<>();
     public static final Map<Player, String> RTS_SEARCH_TERMS = new ConcurrentHashMap<>();
+    public static final ItemStack INPUT_TEXT_ICON = Lang.INPUT_TEXT_ICON;
 
     public static final Function<Player, ItemStack> BACK_ICON = SlimefunOfficialSupporter::getBackButton;
-    @Deprecated
-    public static final ItemStack INPUT_TEXT_ICON = Lang.getIcon("input-text", Material.PAPER);
     public static final ItemStack AIR_ICON = new ItemStack(Material.AIR);
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
 

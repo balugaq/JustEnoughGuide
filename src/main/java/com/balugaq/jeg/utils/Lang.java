@@ -19,6 +19,9 @@ public class Lang {
     public static final ItemStack INPUT_TEXT_ICON = Converter.getItem(new SlimefunItemStack("_UI_RTS_INPUT_TEXT_ICON", RAW_INPUT_TEXT_ICON));
     public static final ItemStack RAW_RTS_ITEM = Lang.getIcon("guide.real-time-search", Material.ANVIL);
     public static final ItemStack RTS_ITEM = Converter.getItem(new SlimefunItemStack("_UI_RTS_ICON", RAW_RTS_ITEM));
+    public static final ItemStack RAW_SPECIAL_MENU_ITEM = Lang.getIcon("guide.special-menu", Material.COMPASS);
+    public static final ItemStack SPECIAL_MENU_ITEM = Converter.getItem(new SlimefunItemStack("_UI_SPECIAL_MENU_ICON", RAW_SPECIAL_MENU_ITEM));
+
 
     public static @Nullable LocalizationService get() {
         return JustEnoughGuide.getInstance().getLocalizationService();
