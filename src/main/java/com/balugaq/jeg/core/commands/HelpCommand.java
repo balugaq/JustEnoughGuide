@@ -1,8 +1,8 @@
 package com.balugaq.jeg.core.commands;
 
 import com.balugaq.jeg.api.interfaces.JEGCommand;
+import com.balugaq.jeg.utils.Lang;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -63,9 +63,6 @@ public class HelpCommand implements JEGCommand {
     }
 
     private void onHelp(@NotNull CommandSender sender) {
-        sender.sendMessage(ChatColor.GREEN + "JEG Commands:");
-        sender.sendMessage(ChatColor.GREEN + "/jeg help - Show this help message");
-        sender.sendMessage(ChatColor.GREEN + "/jeg reload - Reload JEG plugin");
-        sender.sendMessage(ChatColor.GREEN + "/jeg cache <section> <key>");
+        sender.sendMessage(Lang.getCommandSuccess("help"));
     }
 }

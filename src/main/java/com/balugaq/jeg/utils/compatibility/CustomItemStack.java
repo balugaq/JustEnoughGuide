@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 @ApiStatus.Experimental
 public class CustomItemStack implements Cloneable {
-    private final ItemStack delegate;
+    private final @NotNull ItemStack delegate;
 
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack.
@@ -192,7 +192,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the delegate Bukkit ItemStack
      */
-    public ItemStack getDelegate() {
+    public @NotNull ItemStack getDelegate() {
         return delegate.clone();
     }
 
@@ -201,7 +201,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the Material of the item
      */
-    public Material getType() {
+    public @NotNull Material getType() {
         return delegate.getType();
     }
 
@@ -210,7 +210,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @param material the Material to set
      */
-    public void setType(Material material) {
+    public void setType(@NotNull Material material) {
         delegate.setType(material);
     }
 
@@ -246,7 +246,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the item metadata
      */
-    public ItemMeta getItemMeta() {
+    public @Nullable ItemMeta getItemMeta() {
         return delegate.getItemMeta();
     }
 

@@ -55,7 +55,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     default void openBookMarkGroup(@NotNull Player player, @NotNull PlayerProfile profile) {
         List<SlimefunItem> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
         if (items == null || items.isEmpty()) {
-            player.sendMessage(ChatColor.RED + "你还没有收藏任何物品!");
+            player.sendMessage(ChatColor.RED + "You haven't collected any items yet!");
             return;
         }
         new BookmarkGroup(this, player, items).open(player, profile, getMode());

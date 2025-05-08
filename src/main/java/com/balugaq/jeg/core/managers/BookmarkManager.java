@@ -3,12 +3,9 @@ package com.balugaq.jeg.core.managers;
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
-import com.xzavier0722.mc.plugin.slimefun4.storage.controller.ProfileDataController;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.config.SlimefunDatabaseManager;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,16 +19,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * This class is responsible for managing bookmarks.
  * It provides methods to add, remove, get, and clear bookmarks.
- * This feature is based on CN-Slimefun4's {@link SlimefunDatabaseManager}
- * to create a backpack for each player and store their bookmarks in it.
  *
  * @author balugaq
  * @since 1.1
@@ -40,9 +33,8 @@ import java.util.function.Function;
 @Getter
 public class BookmarkManager extends AbstractManager {
     private static final int DATA_ITEM_SLOT = 0;
+    @Deprecated
     private static final String BACKPACK_NAME = "JEGBookmarkBackpack";
-    private static final @Nullable ProfileDataController controller =
-            Slimefun.getDatabaseManager().getProfileDataController();
     private final @NotNull NamespacedKey BOOKMARKS_KEY;
     private final @NotNull Plugin plugin;
 
@@ -58,6 +50,10 @@ public class BookmarkManager extends AbstractManager {
         }
 
         addBookmark0(player, backpack, slimefunItem);
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+        if (profile != null) {
+            profile.save();
+        }
     }
 
     private void addBookmark0(
@@ -79,9 +75,6 @@ public class BookmarkManager extends AbstractManager {
         }));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
-        operateController(controller -> {
-            controller.saveBackpackInventory(backpack, DATA_ITEM_SLOT);
-        });
     }
 
     @Nullable
@@ -126,6 +119,10 @@ public class BookmarkManager extends AbstractManager {
         }
 
         removeBookmark0(backpack, slimefunItem);
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+        if (profile != null) {
+            profile.save();
+        }
     }
 
     private void removeBookmark0(@NotNull PlayerBackpack backpack, @NotNull SlimefunItem slimefunItem) {
@@ -144,9 +141,6 @@ public class BookmarkManager extends AbstractManager {
         }));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
-        operateController(controller -> {
-            controller.saveBackpackInventory(backpack, DATA_ITEM_SLOT);
-        });
     }
 
     public void clearBookmarks(@NotNull Player player) {
@@ -156,6 +150,10 @@ public class BookmarkManager extends AbstractManager {
         }
 
         clearBookmarks0(backpack);
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+        if (profile != null) {
+            profile.save();
+        }
     }
 
     private void clearBookmarks0(@NotNull PlayerBackpack backpack) {
@@ -169,9 +167,6 @@ public class BookmarkManager extends AbstractManager {
         }));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
-        operateController(controller -> {
-            controller.saveBackpackInventory(backpack, DATA_ITEM_SLOT);
-        });
     }
 
     @Nullable
@@ -186,63 +181,56 @@ public class BookmarkManager extends AbstractManager {
 
     @Nullable
     public PlayerBackpack createBackpack(@NotNull Player player) {
-        PlayerProfile profile = operateController(controller -> {
-            return controller.getProfile(player);
-        });
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
             return null;
         }
 
-        PlayerBackpack backpack = operateController(controller -> {
-            return controller.createBackpack(player, BACKPACK_NAME, profile.nextBackpackNum(), 9);
-        });
+        PlayerBackpack backpack = profile.createBackpack(9);
         if (backpack == null) {
             return null;
         }
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, markItemAsBookmarksItem(new ItemStack(Material.DIRT), player));
-        operateController(controller -> {
-            controller.saveBackpackInventory(backpack, DATA_ITEM_SLOT);
-        });
+        backpack.markDirty();
+        profile.save();
         return backpack;
     }
 
     @Nullable
     public PlayerBackpack getBookmarkBackpack(@NotNull Player player) {
-        PlayerProfile profile = operateController(controller -> {
-            return controller.getProfile(player);
-        });
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
             return null;
         }
 
-        Set<PlayerBackpack> backpacks = operateController(controller -> {
-            return controller.getBackpacks(profile.getUUID().toString());
-        });
+        Collection<PlayerBackpack> backpacks = profile.getPlayerData().getBackpacks().values();
         if (backpacks == null || backpacks.isEmpty()) {
             return null;
         }
 
         for (PlayerBackpack backpack : backpacks) {
-            if (backpack.getName().equals(BACKPACK_NAME)) {
-                Inventory inventory = backpack.getInventory();
-                ItemStack[] contents = inventory.getContents();
+            Inventory inventory = backpack.getInventory();
+            ItemStack[] contents = inventory.getContents();
 
-                ItemStack bookmarksItem = contents[DATA_ITEM_SLOT];
-                if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
-                    return null;
+            ItemStack bookmarksItem = contents[DATA_ITEM_SLOT];
+            if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
+                continue;
+            }
+
+            if (!isBookmarksItem(bookmarksItem, player)) {
+                continue;
+            }
+
+            boolean pass = true;
+            for (int i = 0; i < contents.length; i++) {
+                if (i != DATA_ITEM_SLOT && contents[i] != null && contents[i].getType() != Material.AIR) {
+                    pass = false;
+                    break;
                 }
+            }
 
-                if (!isBookmarksItem(bookmarksItem, player)) {
-                    return null;
-                }
-
-                for (int i = 0; i < contents.length; i++) {
-                    if (i != DATA_ITEM_SLOT && contents[i] != null && contents[i].getType() != Material.AIR) {
-                        return null;
-                    }
-                }
-
+            if (pass) {
                 return backpack;
             }
         }
@@ -281,18 +269,5 @@ public class BookmarkManager extends AbstractManager {
             itemMeta.getPersistentDataContainer().remove(BOOKMARKS_KEY);
             itemStack.setItemMeta(itemMeta);
         }
-    }
-
-    private void operateController(@NotNull Consumer<ProfileDataController> consumer) {
-        if (controller != null) {
-            consumer.accept(controller);
-        }
-    }
-
-    private <T, R> @Nullable R operateController(@NotNull Function<ProfileDataController, R> function) {
-        if (controller != null) {
-            return function.apply(controller);
-        }
-        return null;
     }
 }

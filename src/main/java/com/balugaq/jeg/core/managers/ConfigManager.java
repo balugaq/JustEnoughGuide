@@ -38,6 +38,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean BEGINNER_OPTION;
     private final @NotNull String SURVIVAL_GUIDE_TITLE;
     private final @NotNull String CHEAT_GUIDE_TITLE;
+    private final @NotNull String LANGUAGE;
     private final @NotNull JavaPlugin plugin;
 
     public ConfigManager(@NotNull JavaPlugin plugin) {
@@ -47,12 +48,13 @@ public class ConfigManager extends AbstractManager {
         this.DEBUG = plugin.getConfig().getBoolean("debug", false);
         this.SURVIVAL_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.survival-improvements", true);
         this.CHEAT_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.cheat-improvements", true);
-        this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", true);
+        this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", false);
         this.BOOKMARK = plugin.getConfig().getBoolean("improvements.bookmark", true);
-        this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide");
-        this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide");
+        this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun Guide &7(Chest GUI) &8Advanced");
+        this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced");
         this.RTS_SEARCH = plugin.getConfig().getBoolean("improvements.rts-search", true);
         this.BEGINNER_OPTION = plugin.getConfig().getBoolean("improvements.beginner-option", true);
+        this.LANGUAGE = plugin.getConfig().getString("language", "en-US");
     }
 
     private void setupDefaultConfig() {
@@ -130,5 +132,9 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isRTSSearch() {
         return RTS_SEARCH;
+    }
+
+    public @NotNull String getLanguage() {
+        return LANGUAGE;
     }
 }

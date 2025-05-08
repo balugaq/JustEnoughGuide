@@ -1,20 +1,21 @@
-# Auto update from Guizhan Build is enabled by default.
+# Auto update from Blob Build is enabled by default.
 auto-update: true
+language: en-US
 
 guide:
   survival-improvements: true
   cheat-improvements: true
-  survival-guide-title: "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide"
-  cheat-guide-title: "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide"
+  survival-guide-title: "&2&lSlimefun Guide &7(Chest GUI) &8Advanced"
+  cheat-guide-title: "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced"
 
 improvements:
-  pinyin-search: true
+  pinyin-search: false # deprecated
   bookmark: true
   rts-search: true
   beginner-option: true
 
 # Do not change this value unless you know what you are doing.
-config-version: 1.5
+config-version: 1.6
 
 # Do not change this value unless you know what you are doing.
 debug: false

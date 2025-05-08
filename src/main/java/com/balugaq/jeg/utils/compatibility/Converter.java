@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 @ApiStatus.Experimental
 public class Converter {
     public static final ItemStack AIR = new ItemStack(Material.AIR);
-    public static final ItemGetter methodHandleSlimefunItemStack_item = createItemGetter();
+    public static final @Nullable ItemGetter methodHandleSlimefunItemStack_item = createItemGetter();
 
     /**
      * Converts a SlimefunItemStack to a Bukkit ItemStack.
@@ -38,7 +38,7 @@ public class Converter {
      * @param itemStack the Bukkit ItemStack to convert
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(ItemStack itemStack) {
+    public static @NotNull ItemStack getItem(@NotNull ItemStack itemStack) {
         return new CustomItemStack(itemStack).asBukkit();
     }
 
@@ -48,7 +48,7 @@ public class Converter {
      * @param material the Material to convert
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(Material material) {
+    public static @NotNull ItemStack getItem(@NotNull Material material) {
         return new CustomItemStack(material).asBukkit();
     }
 
@@ -176,7 +176,7 @@ public class Converter {
      *
      * @return the created ItemGetter
      */
-    private static ItemGetter createItemGetter() {
+    private static @Nullable ItemGetter createItemGetter() {
         try {
             MethodHandles.Lookup lookup = MethodHandles.lookup();
             MethodType mt = MethodType.methodType(ItemStack.class);

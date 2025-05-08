@@ -7,8 +7,14 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.ItemStackUtil;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
+import com.balugaq.jeg.utils.compatibility.Converter;
+import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
+import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -19,10 +25,12 @@ import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -211,7 +219,7 @@ public class RTSListener implements Listener {
         Player player = event.getPlayer();
         Debug.debug("[RTS] Searching for " + player.getName());
         SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(event.getGuideMode());
-        SearchGroup searchGroup = new SearchGroup(implementation, player, event.getNewSearchTerm(), JustEnoughGuide.getConfigManager().isPinyinSearch(), true);
+        SearchGroup searchGroup = new SearchGroup(implementation, player, event.getNewSearchTerm(), false, true);
         if (isRTSPlayer(player)) {
             synchronized (RTSSearchGroup.RTS_SEARCH_GROUPS) {
                 RTSSearchGroup.RTS_SEARCH_GROUPS.put(player, searchGroup);
@@ -404,7 +412,7 @@ public class RTSListener implements Listener {
                                 int originalAmount = meta.getPersistentDataContainer().getOrDefault(CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, 0);
                                 int totalAmount = originalAmount + addAmount;
                                 meta.getPersistentDataContainer().set(CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, totalAmount);
-                                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ItemStackHelper.getDisplayName(clonedItem) + " &c已拿取物品 x" + totalAmount));
+                                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ItemUtils.getItemName(clonedItem) + " &cTaken x" + totalAmount));
                                 itemStack.setItemMeta(meta);
                             }
                         } else {

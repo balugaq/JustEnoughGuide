@@ -1,8 +1,8 @@
 package com.balugaq.jeg.core.commands;
 
 import com.balugaq.jeg.api.interfaces.JEGCommand;
+import com.balugaq.jeg.utils.Lang;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -43,12 +43,12 @@ public class JEGCommands implements TabExecutor {
             @NotNull String label,
             @NotNull String @NotNull [] args) {
         if (!sender.isOp()) {
-            sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+            sender.sendMessage(Lang.getCommandMessage("no-permission"));
             return false;
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Unknown command. Type /jeg help");
+            sender.sendMessage(Lang.getCommandMessage("unknown-command"));
             return true;
         }
 

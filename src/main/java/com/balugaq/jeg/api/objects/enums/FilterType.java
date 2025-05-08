@@ -27,7 +27,7 @@ public enum FilterType {
         }
 
         for (ItemStack itemStack : recipe) {
-            if (SearchGroup.isSearchFilterApplicable(itemStack, lowerFilterValue, false)) {
+            if (SearchGroup.isSearchFilterApplicable(player, itemStack, lowerFilterValue, false)) {
                 return true;
             }
         }
@@ -40,7 +40,7 @@ public enum FilterType {
             return false;
         }
 
-        return SearchGroup.isSearchFilterApplicable(recipeTypeIcon, lowerFilterValue, false);
+        return SearchGroup.isSearchFilterApplicable(player, recipeTypeIcon, lowerFilterValue, false);
     }),
     BY_DISPLAY_ITEM_NAME("%", (player, item, lowerFilterValue, pinyin) -> {
         List<ItemStack> display = null;
@@ -56,7 +56,7 @@ public enum FilterType {
             }
         } else {
             try {
-                if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item)) {
+                if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item)) {
                     RecipeDisplayItem csi = (RecipeDisplayItem) item;
                     display = csi.getDisplayRecipes();
                 }
@@ -68,7 +68,7 @@ public enum FilterType {
         if (display != null) {
             try {
                 for (ItemStack itemStack : display) {
-                    if (SearchGroup.isSearchFilterApplicable(itemStack, lowerFilterValue, false)) {
+                    if (SearchGroup.isSearchFilterApplicable(player, itemStack, lowerFilterValue, false)) {
                         return true;
                     }
                 }
@@ -96,7 +96,16 @@ public enum FilterType {
         SlimefunAddon addon = item.getAddon();
         String localAddonName = LocalHelper.getAddonName(addon, item.getId()).toLowerCase();
         String originModName = (addon == null ? "Slimefun" : addon.getName()).toLowerCase();
-        return localAddonName.contains(lowerFilterValue) || originModName.contains(lowerFilterValue);
+        if (localAddonName.contains(lowerFilterValue) || originModName.contains(lowerFilterValue)) {
+            return true;
+        }
+        return false;
+    }),
+    BY_ITEM_NAME("!", (player, item, lowerFilterValue, pinyin) -> {
+        if (SearchGroup.isSearchFilterApplicable(player, item, lowerFilterValue, pinyin)) {
+            return true;
+        }
+        return false;
     }),
     BY_ITEM_NAME("!", (player, item, lowerFilterValue, pinyin) -> SearchGroup.isSearchFilterApplicable(item, lowerFilterValue, pinyin)),
     BY_MATERIAL_NAME("~", (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue));

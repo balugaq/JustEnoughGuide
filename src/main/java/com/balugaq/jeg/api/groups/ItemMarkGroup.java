@@ -1,6 +1,5 @@
 package com.balugaq.jeg.api.groups;
 
-import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
@@ -9,7 +8,9 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
+import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -53,8 +54,7 @@ import java.util.logging.Level;
 @NotDisplayInSurvivalMode
 @NotDisplayInCheatMode
 public class ItemMarkGroup extends FlexItemGroup {
-    private static final ItemStack ICON_BACKGROUND =
-            Converter.getItem(Material.GREEN_STAINED_GLASS_PANE, "&a&l添加收藏物", "", "&7左键物品添加到收藏中");
+    private static final ItemStack ICON_BACKGROUND = Lang.getIcon("item-mark-background", Material.GREEN_STAINED_GLASS_PANE);
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
     private final int BACK_SLOT;
     private final int SEARCH_SLOT;
@@ -192,7 +192,7 @@ public class ItemMarkGroup extends FlexItemGroup {
             @NotNull Player player,
             @NotNull PlayerProfile playerProfile,
             @NotNull SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("添加收藏物 - JEG");
+        ChestMenu chestMenu = new ChestMenu(Lang.getGuideMessage("item-mark-title"));
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1));
@@ -261,13 +261,6 @@ public class ItemMarkGroup extends FlexItemGroup {
                 if (implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
                         && research != null
                         && !playerProfile.hasUnlocked(research)) {
-                    String lore;
-
-                    if (VaultIntegration.isEnabled()) {
-                        lore = String.format("%.2f", research.getCurrencyCost()) + " 游戏币";
-                    } else {
-                        lore = research.getLevelCost() + " 级经验";
-                    }
 
                     itemstack = ItemStackUtil.getCleanItem(Converter.getItem(
                             ChestMenuUtils.getNoPermissionItem(),
@@ -275,10 +268,9 @@ public class ItemMarkGroup extends FlexItemGroup {
                             "&7" + slimefunItem.getId(),
                             "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
                             "",
-                            "&a> 单击解锁",
+                            Lang.getGuideMessage("click-to-unlock"),
                             "",
-                            "&7需要 &b",
-                            lore));
+                            Lang.getGuideMessage("cost", "cost", research.getCost())));
                     handler = (pl, slot, item, action) -> {
                         research.unlockFromGuide(implementation, pl, playerProfile, slimefunItem, itemGroup, page);
                         return false;
@@ -289,9 +281,9 @@ public class ItemMarkGroup extends FlexItemGroup {
                         List<String> additionLore = List.of(
                                 "",
                                 ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                                        + LocalHelper.getDisplayName(itemGroup, player),
-                                ChatColor.YELLOW + "左键点击以收藏物品");
+                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + " - "
+                                        + itemGroup.getDisplayName(player),
+                                Lang.getGuideMessage("mark-item"));
                         if (meta.hasLore() && meta.getLore() != null) {
                             List<String> lore = meta.getLore();
                             lore.addAll(additionLore);
@@ -308,7 +300,7 @@ public class ItemMarkGroup extends FlexItemGroup {
                     handler = (pl, slot, itm, action) -> {
                         try {
                             JustEnoughGuide.getBookmarkManager().addBookmark(pl, slimefunItem);
-                            pl.sendMessage(ChatColor.GREEN + "已添加到收藏列表!");
+                            pl.sendMessage(Lang.getGuideMessage("marked"));
                             pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
                         } catch (Exception | LinkageError x) {
                             printErrorMessage(pl, slimefunItem, x);
@@ -375,35 +367,33 @@ public class ItemMarkGroup extends FlexItemGroup {
      */
     @ParametersAreNonnullByDefault
     private boolean isItemGroupAccessible(Player p, SlimefunItem slimefunItem) {
-        return Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch()
+        return SlimefunOfficialSupporter.isShowHiddenItemGroups()
                 || slimefunItem.getItemGroup().isAccessible(p);
     }
 
-    /**
-     * Print error message to player.
-     *
-     * @param p The player who open the guide.
-     * @param x The exception to print.
-     */
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, Throwable x) {
-        p.sendMessage("&4服务器发生了一个内部错误. 请联系管理员处理.");
-        JAVA_PLUGIN.getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
+        p.sendMessage(Lang.getError("internal-error"));
+        JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, Lang.getError("error-occurred"), x);
+        JustEnoughGuide.getInstance().getLogger().warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
-    /**
-     * Print error message to player.
-     *
-     * @param p    The player who open the guide.
-     * @param item The SlimefunItem to print.
-     * @param x    The exception to print.
-     */
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, SlimefunItem item, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
+        p.sendMessage(Lang.getError("internal-error"));
+        item.error(Lang.getError("item-error"), x);
+        JustEnoughGuide.getInstance()
+                .getLogger()
+                .warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 }

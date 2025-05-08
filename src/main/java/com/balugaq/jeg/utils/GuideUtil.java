@@ -1,6 +1,5 @@
 package com.balugaq.jeg.utils;
 
-import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
@@ -24,10 +23,8 @@ import java.lang.reflect.Method;
  */
 @UtilityClass
 public final class GuideUtil {
-    private static final ItemStack BOOK_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(Material.NETHER_STAR, "&e&l收藏物列表"));
-    private static final ItemStack ITEM_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(Material.WRITABLE_BOOK, "&e&l收藏物品"));
+    private static final ItemStack BOOK_MARK_MENU_BUTTON = Lang.getIcon("book-mark-button", Material.NETHER_STAR);
+    private static final ItemStack ITEM_MARK_MENU_BUTTON = Lang.getIcon("item-mark-button", Material.WRITABLE_BOOK);
 
     /**
      * Open the main menu of the guide for the given player and mode.
