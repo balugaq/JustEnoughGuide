@@ -19,6 +19,11 @@ import java.util.Optional;
  * @since 1.3
  */
 public class SpecialMenuFixListener implements Listener {
+    /**
+     * Fixes the bug where the special menu is not closed properly.
+     *
+     * @param event The event.
+     */
     @EventHandler
     public void onSpecialMenuClose(@NotNull InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();

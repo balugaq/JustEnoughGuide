@@ -135,6 +135,7 @@ public class Debug {
     }
 
     public static void trace(@NotNull Throwable e, @Nullable String doing, @Nullable Integer code) {
+        init();
         plugin.getLogger().severe("DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
         if (code != null) {
             plugin.getLogger().severe("Error code: " + code);

@@ -35,6 +35,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean PINYIN_SEARCH;
     private final boolean BOOKMARK;
     private final boolean RTS_SEARCH;
+    private final boolean BEGINNER_OPTION;
     private final @NotNull String SURVIVAL_GUIDE_TITLE;
     private final @NotNull String CHEAT_GUIDE_TITLE;
     private final @NotNull String LANGUAGE;
@@ -52,6 +53,7 @@ public class ConfigManager extends AbstractManager {
         this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun Guide &7(Chest GUI) &8Advanced");
         this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced");
         this.RTS_SEARCH = plugin.getConfig().getBoolean("improvements.rts-search", true);
+        this.BEGINNER_OPTION = plugin.getConfig().getBoolean("improvements.beginner-option", true);
         this.LANGUAGE = plugin.getConfig().getString("language", "en-US");
     }
 
@@ -114,6 +116,10 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isBookmark() {
         return BOOKMARK;
+    }
+
+    public boolean isBeginnerOption() {
+        return BEGINNER_OPTION;
     }
 
     public @NotNull String getSurvivalGuideTitle() {

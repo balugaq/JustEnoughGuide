@@ -242,7 +242,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                     return false;
                 });
 
-        String flag_recipe_item_name = FilterType.BY_RECIPE_ITEM_NAME.getFlag();
+        String flag_recipe_item_name = FilterType.BY_RECIPE_ITEM_NAME.getSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Lang.getGuideGroupIcon("feature-search-expansion-by-recipe-item-name", Material.LODESTONE, "flag", flag_recipe_item_name),
@@ -256,7 +256,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                     return false;
                 });
 
-        String flag_recipe_type_name = FilterType.BY_RECIPE_TYPE_NAME.getFlag();
+        String flag_recipe_type_name = FilterType.BY_RECIPE_TYPE_NAME.getSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Lang.getGuideGroupIcon("feature-search-expansion-by-recipe-type-name", Material.LODESTONE, "flag", flag_recipe_type_name),
@@ -270,7 +270,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                     return false;
                 });
 
-        String flag_display_item_name = FilterType.BY_DISPLAY_ITEM_NAME.getFlag();
+        String flag_display_item_name = FilterType.BY_DISPLAY_ITEM_NAME.getSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Lang.getGuideGroupIcon("feature-search-expansion-by-display-item-name", Material.LODESTONE, "flag", flag_display_item_name),
@@ -284,7 +284,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                     return false;
                 });
 
-        String flag_addon_name = FilterType.BY_ADDON_NAME.getFlag();
+        String flag_addon_name = FilterType.BY_ADDON_NAME.getSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Lang.getGuideGroupIcon("feature-search-expansion-by-addon-name", Material.LODESTONE, "flag", flag_addon_name),
@@ -298,7 +298,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                     return false;
                 });
 
-        String flag_item_name = FilterType.BY_ITEM_NAME.getFlag();
+        String flag_item_name = FilterType.BY_ITEM_NAME.getSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Lang.getGuideGroupIcon("feature-search-expansion-by-item-name", Material.LODESTONE, "flag", flag_item_name),
@@ -312,7 +312,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                     return false;
                 });
 
-        String flag_material_name = FilterType.BY_MATERIAL_NAME.getFlag();
+        String flag_material_name = FilterType.BY_MATERIAL_NAME.getSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Lang.getGuideGroupIcon("feature-search-expansion-by-material-name", Material.LODESTONE, "flag", flag_material_name),

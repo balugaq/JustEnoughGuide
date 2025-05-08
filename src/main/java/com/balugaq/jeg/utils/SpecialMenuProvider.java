@@ -10,8 +10,6 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.experimental.UtilityClass;
-import me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu;
-import me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Bukkit;
@@ -50,6 +48,8 @@ public class SpecialMenuProvider {
     public static @Nullable Method methodMenuFactory_buildGuide = null;
     public static @Nullable Method methodCustomMenu_open = null;
     public static @Nullable Class<? extends RecipeDisplayItem> classLogiTech_CustomSlimefunItem = null;
+    public static @Nullable Class<?> classLogitech_CustomMenu = null;
+    public static @Nullable Class<?> interfaceLogitech_CustomMenuHandler = null;
     // InfinityExpansion
     public static @Nullable Method methodInfinityGroup_openInfinityRecipe = null;
     public static @Nullable Object objectInfinityExpansion_INFINITY = null;
@@ -122,6 +122,14 @@ public class SpecialMenuProvider {
                 methodMenuUtils_createItemRecipeDisplay = method;
             }
         } catch (ClassNotFoundException ignored) {
+            try {
+                Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.utils.MenuUtils"), "createItemRecipeDisplay", 3);
+                if (method != null) {
+                    method.setAccessible(true);
+                    methodMenuUtils_createItemRecipeDisplay = method;
+                }
+            } catch (ClassNotFoundException ignored2) {
+            }
         }
         try {
             Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.MenuFactory"), "buildGuide");
@@ -130,6 +138,30 @@ public class SpecialMenuProvider {
                 methodMenuFactory_buildGuide = method;
             }
         } catch (ClassNotFoundException ignored) {
+            try {
+                Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.MenuFactory"), "buildGuide");
+                if (method != null) {
+                    method.setAccessible(true);
+                    methodMenuFactory_buildGuide = method;
+                }
+            } catch (ClassNotFoundException ignored2) {
+                try {
+                    Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.utils.util_class.MenuClass.MenuFactory"), "buildGuide");
+                    if (method != null) {
+                        method.setAccessible(true);
+                        methodMenuFactory_buildGuide = method;
+                    }
+                } catch (ClassNotFoundException ignored3) {
+                    try {
+                        Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.utils.util_class.menu_class.MenuFactory"), "buildGuide");
+                        if (method != null) {
+                            method.setAccessible(true);
+                            methodMenuFactory_buildGuide = method;
+                        }
+                    } catch (ClassNotFoundException ignored4) {
+                    }
+                }
+            }
         }
         try {
             Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu"), "open");
@@ -138,11 +170,73 @@ public class SpecialMenuProvider {
                 methodCustomMenu_open = method;
             }
         } catch (ClassNotFoundException ignored) {
+            try {
+                Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu"), "open");
+                if (method != null) {
+                    method.setAccessible(true);
+                    methodCustomMenu_open = method;
+                }
+            } catch (ClassNotFoundException ignored2) {
+                try {
+                    Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenu"), "open");
+                    if (method != null) {
+                        method.setAccessible(true);
+                        methodCustomMenu_open = method;
+                    }
+                } catch (ClassNotFoundException ignored3) {
+                    try {
+                        Method method = ReflectionUtil.getMethod(Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenu"), "open");
+                        if (method != null) {
+                            method.setAccessible(true);
+                            methodCustomMenu_open = method;
+                        }
+                    } catch (ClassNotFoundException ignored4) {
+                    }
+                }
+            }
         }
 
-        SlimefunItem item = SlimefunItem.getById("LOGITECH_BUG");
-        if (item != null) {
-            classLogiTech_CustomSlimefunItem = (Class<? extends RecipeDisplayItem>) ReflectionUtil.getClass(item.getClass(), "CustomSlimefunItem");
+        try {
+            classLogiTech_CustomSlimefunItem = (Class<? extends RecipeDisplayItem>) Class.forName("me.matl114.logitech.SlimefunItem.CustomSlimefunItem");
+        } catch (ClassNotFoundException | ClassCastException ignored) {
+            try {
+                classLogiTech_CustomSlimefunItem = (Class<? extends RecipeDisplayItem>) Class.forName("me.matl114.logitech.core.CustomSlimefunItem");
+            } catch (ClassNotFoundException | ClassCastException ignored2) {
+            }
+        }
+
+        try {
+            classLogitech_CustomMenu = Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu");
+        } catch (ClassNotFoundException ignored) {
+            try {
+                classLogitech_CustomMenu = Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu");
+            } catch (ClassNotFoundException ignored2) {
+                try {
+                    classLogitech_CustomMenu = Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenu");
+                } catch (ClassNotFoundException ignored3) {
+                    try {
+                        classLogitech_CustomMenu = Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenu");
+                    } catch (ClassNotFoundException ignored4) {
+                    }
+                }
+            }
+        }
+
+        try {
+            interfaceLogitech_CustomMenuHandler = Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler");
+        } catch (ClassNotFoundException ignored) {
+            try {
+                interfaceLogitech_CustomMenuHandler = Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenuHandler");
+            } catch (ClassNotFoundException ignored2) {
+                try {
+                    interfaceLogitech_CustomMenuHandler = Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenuHandler");
+                } catch (ClassNotFoundException ignored3) {
+                    try {
+                        interfaceLogitech_CustomMenuHandler = Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenuHandler");
+                    } catch (ClassNotFoundException ignored4) {
+                    }
+                }
+            }
         }
 
         // InfinityExpansion
@@ -207,13 +301,20 @@ public class SpecialMenuProvider {
         Debug.debug("methodPlayerProgress_get: " + (methodPlayerProgress_get != null));
         Debug.debug("methodNEGUI_openRecipe: " + (methodNEGUI_openRecipe != null));
         Debug.debug("methodNEGUI_openResearchScreen: " + (methodNEGUI_openResearchScreen != null));
+        Debug.debug("methodNexcavateRegistry_getResearchMap: " + (methodNexcavateRegistry_getResearchMap != null));
+        Debug.debug("objectNexcavate_registry: " + (objectNexcavate_registry != null));
         Debug.debug("-------------LogiTech-------------");
         Debug.debug("methodMenuUtils_createItemRecipeDisplay: " + (methodMenuUtils_createItemRecipeDisplay != null));
         Debug.debug("methodMenuFactory_build: " + (methodMenuFactory_buildGuide != null));
         Debug.debug("methodCustomMenu_open: " + (methodCustomMenu_open != null));
+        Debug.debug("classLogitech_CustomMenu: " + (classLogitech_CustomMenu != null));
+        Debug.debug("classLogiTech_CustomSlimefunItem: " + (classLogiTech_CustomSlimefunItem != null));
+        Debug.debug("interfaceLogitech_CustomMenuHandler: " + (interfaceLogitech_CustomMenuHandler != null));
         Debug.debug("-------------InfinityExpansion----------");
         Debug.debug("methodInfinityGroup_openInfinityRecipe: " + (methodInfinityGroup_openInfinityRecipe != null));
+        Debug.debug("objectInfinityExpansion_INFINITY: " + (objectInfinityExpansion_INFINITY != null));
         Debug.debug("constructorInfinityExpansion_BackEntry: " + (constructorInfinityExpansion_BackEntry != null));
+        Debug.debug("classInfinityExpansion_Singularity: " + (classInfinityExpansion_Singularity != null));
         Debug.debug("-------------ObsidianExpansion----------");
         Debug.debug("methodObsidianExpansion_openFORGERecipe: " + (methodObsidianExpansion_openFORGERecipe != null));
         Debug.debug("constructorObsidianExpansion_BackEntry: " + (constructorObsidianExpansion_BackEntry != null));
@@ -340,7 +441,17 @@ public class SpecialMenuProvider {
             return;
         }
 
-        Object menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, new CustomMenuHandlerImpl(), null);
+        Object menuFactory;
+        try {
+            menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, new CustomMenuHandlerImpl_Utils(), null);
+        } catch (Throwable ignored) {
+            try {
+                menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, new CustomMenuHandlerImpl_utils(), null);
+            } catch (Throwable ignored2) {
+                menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, null, null);
+            }
+        }
+
         if (menuFactory == null) {
             return;
         }
@@ -539,9 +650,27 @@ public class SpecialMenuProvider {
      * @author balugaq
      * @since 1.3
      */
-    public class CustomMenuHandlerImpl implements CustomMenuHandler {
+    public class CustomMenuHandlerImpl_Utils implements me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler {
         @Override
-        public ChestMenu.@NotNull MenuClickHandler getInstance(CustomMenu menu) {
+        public ChestMenu.@NotNull MenuClickHandler getInstance(me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu menu) {
+            return (p, s, i, a) -> {
+                PlayerProfile.find(p).ifPresent(playerProfile -> {
+                    playerProfile.getGuideHistory().goBack(Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE));
+                });
+                return false;
+            };
+        }
+    }
+
+    /**
+     * A better back implementation for the LogiTech special menu.
+     *
+     * @author balugaq
+     * @since 1.5
+     */
+    public class CustomMenuHandlerImpl_utils implements me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenuHandler {
+        @Override
+        public ChestMenu.@NotNull MenuClickHandler getInstance(me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu menu) {
             return (p, s, i, a) -> {
                 PlayerProfile.find(p).ifPresent(playerProfile -> {
                     playerProfile.getGuideHistory().goBack(Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE));

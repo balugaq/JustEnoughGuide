@@ -48,12 +48,12 @@ public class ListenerManager extends AbstractManager {
     }
 
     @Override
-    public void onLoad() {
+    public void load() {
         registerListeners();
     }
 
     @Override
-    public void onUnload() {
+    public void unload() {
         unregisterListeners();
     }
 }

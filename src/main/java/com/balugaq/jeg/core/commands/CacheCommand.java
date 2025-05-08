@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,15 @@ import java.util.Set;
  */
 @Getter
 public class CacheCommand implements JEGCommand {
-    private final Plugin plugin;
+    private @Nonnull
+    final Plugin plugin;
 
-    public CacheCommand(Plugin plugin) {
+    /**
+     * Constructs a new CacheCommand instance.
+     *
+     * @param plugin The plugin instance.
+     */
+    public CacheCommand(@Nonnull Plugin plugin) {
         this.plugin = plugin;
     }
 

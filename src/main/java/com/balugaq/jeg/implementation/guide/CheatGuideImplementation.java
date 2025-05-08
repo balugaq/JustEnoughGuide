@@ -17,6 +17,8 @@ import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
+import com.balugaq.jeg.utils.clickhandler.BeginnerUtils;
+import com.balugaq.jeg.utils.clickhandler.GroupLinker;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -146,6 +148,20 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         return Slimefun.getPermissionsService().hasPermission(p, item);
     }
 
+    public static boolean isTaggedGroupType(@NotNull ItemGroup itemGroup) {
+        Class<?> clazz = itemGroup.getClass();
+        return clazz == ItemGroup.class
+                || clazz == SubItemGroup.class
+                || clazz == NestedItemGroup.class
+                || clazz == LockedItemGroup.class
+                || clazz == SeasonalItemGroup.class
+                || clazz == SearchGroup.class
+                || itemGroup instanceof BookmarkRelocation
+                || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
+                || clazz.getName().endsWith("DummyItemGroup")
+                || clazz.getName().endsWith("SubGroup");
+    }
+
     @Override
     public @NotNull SlimefunGuideMode getMode() {
         return SlimefunGuideMode.CHEAT_MODE;
@@ -260,6 +276,12 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         return groups;
     }
 
+    /**
+     * Opens the main menu of the guide for a player.
+     *
+     * @param profile The player profile associated with the player.
+     * @param page    The page number to open.
+     */
     @Override
     public void openMainMenu(@NotNull PlayerProfile profile, int page) {
         Player p = profile.getPlayer();
@@ -761,21 +783,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
         MenuClickHandler clickHandler = (pl, slot, itemstack, action) -> {
             try {
-                if (!action.isRightClicked() && action.isShiftClicked()) {
-                    // Open the item's item group if exists
-                    final SlimefunItem sfItem = SlimefunItem.getByItem(itemstack);
-                    if (sfItem != null) {
-                        final ItemGroup itemGroup = sfItem.getItemGroup();
-                        if (itemGroup != null) {
-                            int page = 1;
-                            if (isTaggedGroupType(itemGroup)) {
-                                page = (itemGroup.getItems().indexOf(sfItem) / 36) + 1;
-                            }
-                            openItemGroup(profile, itemGroup, page);
-                            return false;
-                        }
-                    }
-                }
                 if (itemstack != null && itemstack.getType() != Material.BARRIER) {
                     displayItem(profile, itemstack, 0, true);
                 }
@@ -790,6 +797,8 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         for (int i = 0; i < 9; i++) {
             ItemStack recipeItem = getDisplayItem(p, isSlimefunRecipe, recipe[i]);
             menu.addItem(recipeSlots[i], ItemStackUtil.getCleanItem(recipeItem), clickHandler);
+            BeginnerUtils.applyBeginnersGuide(this, menu, recipeSlots[i]);
+            GroupLinker.applyGroupLinker(this, menu, recipeSlots[i]);
 
             if (recipeItem != null && item instanceof MultiBlockMachine) {
                 for (Tag<Material> tag : MultiBlock.getSupportedTags()) {
@@ -802,7 +811,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         }
 
         menu.addItem(10, ItemStackUtil.getCleanItem(recipeType.getItem(p)), ChestMenuUtils.getEmptyClickHandler());
+        BeginnerUtils.applyBeginnersGuide(this, menu, 10);
+        GroupLinker.applyGroupLinker(this, menu, 10);
         menu.addItem(16, ItemStackUtil.getCleanItem(output), ChestMenuUtils.getEmptyClickHandler());
+        BeginnerUtils.applyBeginnersGuide(this, menu, 16);
+        GroupLinker.applyGroupLinker(this, menu, 16);
     }
 
     @ParametersAreNonnullByDefault
@@ -846,23 +859,25 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                                     RTSSearchGroup.RTS_PAGES.put(pl, newPage);
                                 }
                             }
-                        }
-                    } else if (s == AnvilGUI.Slot.OUTPUT) {
-                        // next page button clicked
-                        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
-                        if (rts != null) {
-                            int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
-                            int newPage = Math.min((rts.slimefunItemList.size() - 1) / RTSListener.FILL_ORDER.length + 1, oldPage + 1);
-                            RTSEvents.PageChangeEvent event = new RTSEvents.PageChangeEvent(pl, RTSSearchGroup.RTS_PLAYERS.get(pl), oldPage, newPage, getMode());
-                            Bukkit.getPluginManager().callEvent(event);
-                            if (!event.isCancelled()) {
-                                synchronized (RTSSearchGroup.RTS_PAGES) {
-                                    RTSSearchGroup.RTS_PAGES.put(pl, newPage);
+                        } else if (s == AnvilGUI.Slot.OUTPUT) {
+                            // next page button clicked
+                            SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
+                            if (rts != null) {
+                                int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
+                                int newPage = Math.min((rts.slimefunItemList.size() - 1) / RTSListener.FILL_ORDER.length + 1, oldPage + 1);
+                                RTSEvents.PageChangeEvent event = new RTSEvents.PageChangeEvent(pl, RTSSearchGroup.RTS_PLAYERS.get(pl), oldPage, newPage, getMode());
+                                Bukkit.getPluginManager().callEvent(event);
+                                if (!event.isCancelled()) {
+                                    synchronized (RTSSearchGroup.RTS_PAGES) {
+                                        RTSSearchGroup.RTS_PAGES.put(pl, newPage);
+                                    }
                                 }
                             }
                         }
-                    }
-                }, new int[]{AnvilGUI.Slot.INPUT_LEFT, AnvilGUI.Slot.INPUT_RIGHT, AnvilGUI.Slot.OUTPUT}, null);
+                    }, new int[]{AnvilGUI.Slot.INPUT_LEFT, AnvilGUI.Slot.INPUT_RIGHT, AnvilGUI.Slot.OUTPUT}, null);
+                } catch (Throwable ignored) {
+                    p.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
+                }
                 return false;
             });
         }
@@ -956,20 +971,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                         });
             }
         }
-    }
-
-    private boolean isTaggedGroupType(@NotNull ItemGroup itemGroup) {
-        Class<?> clazz = itemGroup.getClass();
-        return clazz == ItemGroup.class
-                || clazz == SubItemGroup.class
-                || clazz == NestedItemGroup.class
-                || clazz == LockedItemGroup.class
-                || clazz == SeasonalItemGroup.class
-                || clazz == SearchGroup.class
-                || itemGroup instanceof BookmarkRelocation
-                || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
-                || clazz.getName().endsWith("DummyItemGroup")
-                || clazz.getName().endsWith("SubGroup");
     }
 
     private void addBackButton(@NotNull ChestMenu menu, int slot, @NotNull Player p, @NotNull PlayerProfile profile) {
@@ -1085,6 +1086,8 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                     displayItem(profile, itemstack, 0, true);
                     return false;
                 });
+                BeginnerUtils.applyBeginnersGuide(this, menu, slot);
+                GroupLinker.applyGroupLinker(this, menu, slot);
             }
         } else {
             menu.replaceExistingItem(slot, ItemStackUtil.getCleanItem(null));

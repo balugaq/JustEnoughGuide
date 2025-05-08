@@ -109,10 +109,23 @@ public class RTSSearchGroup extends FlexItemGroup {
     private final String presetSearchTerm;
     private final int page;
 
+    /**
+     * Creates a new RTS search group for a player with a specific preset search term.
+     *
+     * @param anvilInventory   The anvil inventory used for the search.
+     * @param presetSearchTerm The preset search term to initialize the search with.
+     */
     public RTSSearchGroup(AnvilInventory anvilInventory, String presetSearchTerm) {
         this(anvilInventory, presetSearchTerm, 1);
     }
 
+    /**
+     * Creates a new RTS search group for a player with a specific preset search term and page.
+     *
+     * @param anvilInventory   The anvil inventory used for the search.
+     * @param presetSearchTerm The preset search term to initialize the search with.
+     * @param page             The initial page number for the search results.
+     */
     public RTSSearchGroup(AnvilInventory anvilInventory, String presetSearchTerm, int page) {
         super(new NamespacedKey(JAVA_PLUGIN, "jeg_rts_search_group_" + UUID.randomUUID()), new ItemStack(Material.BARRIER));
         this.anvilInventory = anvilInventory;
@@ -120,6 +133,13 @@ public class RTSSearchGroup extends FlexItemGroup {
         this.page = page;
     }
 
+    /**
+     * Creates a new RTS inventory for a player in a specific guide mode.
+     *
+     * @param player    The player for whom the inventory is created.
+     * @param guideMode The guide mode (e.g., CHEAT_MODE, SURVIVAL_MODE).
+     * @return The created inventory.
+     */
     public static Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode) {
         return newRTSInventoryFor(player, guideMode, null);
     }
@@ -178,6 +198,13 @@ public class RTSSearchGroup extends FlexItemGroup {
         return false;
     }
 
+    /**
+     * Opens the RTS search group for a player with a specific guide mode.
+     *
+     * @param player            The player who is opening the search group.
+     * @param playerProfile     The player profile associated with the player.
+     * @param slimefunGuideMode The guide mode (e.g., CHEAT_MODE, SURVIVAL_MODE).
+     */
     @Override
     public void open(@NotNull Player player, @NotNull PlayerProfile playerProfile, @NotNull SlimefunGuideMode slimefunGuideMode) {
         GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
