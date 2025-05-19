@@ -1,20 +1,39 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
-import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
-import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
-import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
-import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
-import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -23,14 +42,11 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -240,7 +256,7 @@ public class RTSListener implements Listener {
                     player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
                 }
             }
-            /**
+            /*
              * Page buttons' icons.
              * For page buttons' click handler see {@link SurvivalGuideImplementation#createHeader(Player, PlayerProfile, ChestMenu)}
              * or {@link CheatGuideImplementation#createHeader(Player, PlayerProfile, ChestMenu)}
@@ -592,7 +608,7 @@ public class RTSListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         if (!isRTSPlayer(player)) {
             ItemStack itemStack = event.getCurrentItem();
-            if (itemStack != null && isFakeItem(itemStack)) {
+            if (isFakeItem(itemStack)) {
                 event.setCancelled(true);
             }
         }
@@ -625,7 +641,7 @@ public class RTSListener implements Listener {
             return;
         } else {
             ItemStack itemStack = event.getItem();
-            if (itemStack != null && isFakeItem(itemStack)) {
+            if (isFakeItem(itemStack)) {
                 event.cancel();
                 return;
             }
@@ -645,7 +661,7 @@ public class RTSListener implements Listener {
             return;
         } else {
             ItemStack itemStack = player.getInventory().getItem(event.getHand());
-            if (itemStack != null && isFakeItem(itemStack)) {
+            if (isFakeItem(itemStack)) {
                 event.setCancelled(true);
                 return;
             }

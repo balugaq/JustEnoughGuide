@@ -1,4 +1,18 @@
 icon:
+  options:
+    beginners-guide:
+      name-1: "&bBeginner's Guide: "
+      name-enabled: "&aEnabled"
+      name-disabled: "&4Disabled"
+      lore-1:
+        - ""
+        - "&7Whenever you see a item"
+        - "&7Shift+Right-click to search it"
+        - ""
+      last-lore-1: "&7\u21E8 &eClick to "
+      last-lore-disable: "disable"
+      last-lore-enable: "enable"
+      last-lore-last: " Beginner's Guide"
   # RTS
   input-text:
     name: "&fReal Time Search: &7Type text above"
@@ -64,8 +78,14 @@ icon:
     feature-jump-category:
       name: "&bFeature: Jump Category"
       lore:
-        - "&bIntroduction: When you view a recipe，You can jump the material's category by simple clicking."
+        - "&bIntroduction: When you view a recipe, you can jump the material's category by simple clicking."
         - "&b      Like... Shift+Left-click on the material's icon"
+        - "&bClick to try!"
+    feature-quick-search:
+      name: "&bFeature: Quick Search"
+      lore:
+        - "&bIntroduction: When you view a item, you can search the item directly instead of remembering the name"
+        - "&b      Shift+Right-click on the item"
         - "&bClick to try!"
     feature-quick-research:
       name: "&bFeature: Quick Research"

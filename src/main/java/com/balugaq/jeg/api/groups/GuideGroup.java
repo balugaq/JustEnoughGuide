@@ -1,10 +1,37 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
-import com.google.common.base.Preconditions;
+import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
@@ -15,7 +42,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,8 +70,6 @@ import java.util.Set;
 @Getter
 @NotDisplayInCheatMode
 public abstract class GuideGroup extends FlexItemGroup {
-    private static final int PREVIOUS_SLOT = 46;
-    private static final int NEXT_SLOT = 52;
     private final Map<Integer, Set<Integer>> slots = new HashMap<>();
     private final Map<Integer, Map<Integer, ItemStack>> contents = new HashMap<>();
     private final Map<Integer, Map<Integer, ChestMenu.MenuClickHandler>> clickHandlers = new HashMap<>();
@@ -86,13 +110,6 @@ public abstract class GuideGroup extends FlexItemGroup {
             @Range(from = 9, to = 44) int slot,
             @NotNull ItemStack itemStack,
             @NotNull ChestMenu.MenuClickHandler handler) {
-        Preconditions.checkArgument(slot >= 9 && slot <= 44, "Slot must be between 9 and 44");
-        Preconditions.checkArgument(itemStack != null, "Item must not be null");
-        Preconditions.checkArgument(handler != null, "Handler must not be null");
-        Preconditions.checkArgument(itemStack.getType() != Material.AIR, "Item must not be air");
-        Preconditions.checkArgument(itemStack.getType().isItem(), "Item must be an item");
-        Preconditions.checkArgument(
-                slots.size() <= getContentSlots().length, "Too many guides in this group. Maximum of 36 allowed.");
 
         slots.computeIfAbsent(page, k -> new HashSet<>()).add(slot);
         contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, itemStack);
@@ -214,18 +231,20 @@ public abstract class GuideGroup extends FlexItemGroup {
         if (guide instanceof JEGSlimefunGuideImplementation jeg) {
             ChestMenu menu = new ChestMenu(getDisplayName(player));
             if (isClassic()) {
-                jeg.createHeader(player, playerProfile, menu);
+                jeg.createHeader(player, playerProfile, menu, Formats.helper);
             }
-            menu.addItem(getBackSlot(), ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(player)));
-            menu.addMenuClickHandler(getBackSlot(), (pl, s, is, action) -> {
-                GuideHistory guideHistory = playerProfile.getGuideHistory();
-                if (action.isShiftClicked()) {
-                    SlimefunGuide.openMainMenu(playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                } else {
-                    guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE));
-                }
-                return false;
-            });
+            for (var ss : Formats.helper.getChars('b')) {
+                menu.addItem(ss, ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(player)));
+                menu.addMenuClickHandler(ss, (pl, s, is, action) -> {
+                    GuideHistory guideHistory = playerProfile.getGuideHistory();
+                    if (action.isShiftClicked()) {
+                        SlimefunGuide.openMainMenu(playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                    } else {
+                        guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                    }
+                    return false;
+                });
+            }
 
             for (Map.Entry<Integer, ItemStack> entry : contents.getOrDefault(page, new LinkedHashMap<>()).entrySet()) {
                 menu.addItem(entry.getKey(), entry.getValue());
@@ -235,31 +254,39 @@ public abstract class GuideGroup extends FlexItemGroup {
                 menu.addMenuClickHandler(entry.getKey(), entry.getValue());
             }
 
-            menu.addItem(
-                    PREVIOUS_SLOT,
-                    ItemStackUtil.getCleanItem(ChestMenuUtils.getPreviousButton(
-                            player, page, (this.contents.size() - 1) / 36 + 1)));
-            menu.addMenuClickHandler(PREVIOUS_SLOT, (p, slot, item, action) -> {
-                if (page - 1 < 1) {
+            for (var s : Formats.helper.getChars('P')) {
+                menu.addItem(
+                        s,
+                        ItemStackUtil.getCleanItem(ChestMenuUtils.getPreviousButton(
+                                player, page, (this.contents.size() - 1) / 36 + 1)));
+                menu.addMenuClickHandler(s, (p, slot, item, action) -> {
+                    if (page - 1 < 1) {
+                        return false;
+                    }
+                    GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                    open(player, playerProfile, slimefunGuideMode, Math.max(1, page - 1));
                     return false;
-                }
-                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                open(player, playerProfile, slimefunGuideMode, Math.max(1, page - 1));
-                return false;
-            });
+                });
+            }
 
-            menu.addItem(
-                    NEXT_SLOT,
-                    ItemStackUtil.getCleanItem(ChestMenuUtils.getNextButton(
-                            player, page, (this.contents.size() - 1) / 36 + 1)));
-            menu.addMenuClickHandler(NEXT_SLOT, (p, slot, item, action) -> {
-                if (page + 1 > this.contents.size()) {
+            for (var s : Formats.helper.getChars('N')) {
+                menu.addItem(
+                        s,
+                        ItemStackUtil.getCleanItem(ChestMenuUtils.getNextButton(
+                                player, page, (this.contents.size() - 1) / 36 + 1)));
+                menu.addMenuClickHandler(s, (p, slot, item, action) -> {
+                    if (page + 1 > this.contents.size()) {
+                        return false;
+                    }
+                    GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                    open(player, playerProfile, slimefunGuideMode, Math.min(this.contents.size(), page + 1));
                     return false;
-                }
-                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                open(player, playerProfile, slimefunGuideMode, Math.min(this.contents.size(), page + 1));
-                return false;
-            });
+                });
+            }
+
+            GuideUtil.addRTSButton(menu, player, playerProfile, Formats.sub, slimefunGuideMode, guide);
+            GuideUtil.addBookMarkButton(menu, player, playerProfile, Formats.sub, jeg, this);
+            GuideUtil.addItemMarkButton(menu, player, playerProfile, Formats.sub, jeg, this);
 
             menu.open(player);
         } else {
@@ -293,5 +320,6 @@ public abstract class GuideGroup extends FlexItemGroup {
      *
      * @return The slot where the back button should be placed.
      */
+    @Deprecated
     public abstract int getBackSlot();
 }
