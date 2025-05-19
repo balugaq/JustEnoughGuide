@@ -12,6 +12,398 @@ improvements:
   pinyin-search: false # deprecated
   bookmark: true
   rts-search: true
+  beginner-option: true
+
+# Prohibit items with names containing any of the following words when searching for non restrictive words
+blacklist:
+  - "Fast Machines"
+
+# Prohibit any form of searching for items with names containing any of the following words
+banlist: []
+
+shared-words:
+  - "barrel storage" # a group of words, words' group will contain all the search results each other.
+
+custom-format:
+  # Main GUI
+  # B = Background
+  # b = Back
+  # T = Settings
+  # R = RTS (Background if disabled)
+  # C = Collections (Background if disabled)
+  # S = Search
+  # G = Item group
+  # P = Previous page
+  # N = Next page
+  main:
+    - "BTBBBBRSB"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "BPBBCBBNB"
+  # Groups group
+  # B = Background
+  # b = Back
+  # T = Settings
+  # R = RTS (Background if disabled)
+  # C = Collections (Background if disabled)
+  # S = Search
+  # G = Item group
+  # P = Previous page
+  # N = Next page
+  nested-group:
+    - "BbBBBBRSB"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "BPBBCBBNB"
+  # Items group
+  # B = Background
+  # b = Back
+  # T = Settings
+  # R = RTS (Background if disabled)
+  # C = Collections (Background if disabled)
+  # c = Collect item (Background if disabled)
+  # S = Search
+  # i = Item
+  # P = Previous page
+  # N = Next page
+  sub-group:
+    - "BbBBBBRSB"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "BPBcCBBNB"
+  # Recipe display
+  # B = Background
+  # b = Back
+  # T = Settings
+  # R = RTS (Background if disabled)
+  # C = Collections (Background if disabled)
+  # S = Search
+  # r = Material
+  # w = Wiki
+  # t = Recipe type
+  # i = Output item
+  # E = Big recipe
+  recipe:
+    - "b  rrr  w"
+    - " t rrr i "
+    - "   rrr  E"
+  # Recipe display - vanilla item
+  # B = Background
+  # b = Back
+  # T = Settings
+  # R = RTS (Background if disabled)
+  # C = Collections (Background if disabled)
+  # S = Search
+  # r = Material
+  # w = Wiki
+  # t = Recipe type
+  # i = Output item
+  # P = Previous page
+  # N = Next page
+  recipe-vanilla:
+    - "b  rrr  w"
+    - " t rrr i "
+    - "   rrr   "
+    - "BPBBBBBNB"
+  # Recipe display - RecipeDisplayItem
+  # B = Background
+  # b = Back
+  # T = Settings
+  # R = RTS (Background if disabled)
+  # C = Collections (Background if disabled)
+  # S = Search
+  # r = Material
+  # w = Wiki
+  # t = Recipe type
+  # i = Output item
+  # E = Big recipe
+  # P = Previous page
+  # N = Next page
+  # d = Recipe Display
+  recipe-display:
+    - "b  rrr  w"
+    - " t rrr i "
+    - "   rrr  E"
+    - "BPBBBBBNB"
+    - "ddddddddd"
+    - "ddddddddd"
+  # Guide Helper
+  # B = Background
+  # b = Back
+  # T = Settings
+  # R = RTS (Background if disabled)
+  # C = Collections (Background if disabled)
+  # S = Search
+  # R = RTS
+  # S = Search
+  # A = Author Information
+  # h = Feature display
+  # P = Previous page
+  # N = Next page
+  helper:
+    - "BbBBBBRSB"
+    - "B   A   B"
+    - "BhhhhhhhB"
+    - "BhhhhhhhB"
+    - "BhhhhhhhB"
+    - "BPBBCBBNB"
+
+# Support color symbol: &aSlimefun
+local-translate:
+  Slimefun: "Slimefun"
+  ColoredEnderChests: "Colored Ender Chests"
+  DyedBackpacks: "Dyed Backpacks"
+  EnderCargo: "Ender Cargo"
+  EcoPower: "Eco Power"
+  ElectricSpawners: "Electric Spawners"
+  ExoticGarden: "Exotic Garden"
+  ExtraGear: "Extra Gear"
+  ExtraHeads: "Extra Heads"
+  HotbarPets: "Hotbar Pets"
+  luckyblocks-sf: "Lucky Blocks" # Same as SlimefunLuckyBlocks
+  RedstoneConnector: "Redstone Connector"
+  PrivateStorage: "Private Storage"
+  SlimefunOreChunks: "Ore Chunks"
+  SlimyTreeTaps: "Slimy Tree Taps"
+  SoulJars: "Soul Jars"
+  MoreTools: "More Tools"
+  LiteXpansion: "Lite Xpansion"
+  MobCapturer: "Mob Capturer"
+  SoundMuffler: "Sound Muffler"
+  ExtraTools: "Extra Tools"
+  TranscEndence: "TranscEndence"
+  Liquid: "Liquid"
+  SlimefunWarfare: "Warfare"
+  InfernalExpansion: "Infernal Expansion"
+  FluffyMachines: "Fluffy Machines"
+  SlimyRepair: "Slimy Repair"
+  InfinityExpansion: "Infinity Expansion"
+  FoxyMachines: "Foxy Machines"
+  GlobalWarming: "Global Warming"
+  GlobiaMachines: "Globia Machines"
+  DynaTech: "DynaTech"
+  GeneticChickengineering: "Genetic Chickengineering" # Same as GeneticChickengineering-Reborn
+  GeneticChickengineering-Reborn: "Genetic Chickengineering" # Same as GeneticChickengineering
+  ClayTech: "ClayTech" # Same as ClayTech-Fixed
+  ClayTech-Fixed: "ClayTech" # Same as ClayTech
+  SpaceTech: "SpaceTech" # Same as SpaceTech-Fixed
+  SpaceTech-Fixed: "SpaceTech" # Same as SpaceTech
+  FNAmplifications: "FN Amplifications"
+  SimpleMaterialGenerators: "SMG"
+  Netheopoiesis: "Netheopoiesis"
+  Networks: "Networks" # Same as Networks-Changed (sometimes it is NetworksExpansion)
+  EMC2: "EMC2" # Avoid conflict with EquivalencyTech
+  Nexcavate: "Nexcavate"
+  SimpleStorage: "Simple Storage"
+  SimpleUtils: "Simple Utils"
+  AlchimiaVitae: "Alchimia Vitae"
+  SlimeTinker: "SlimeTinker"
+  PotionExpansion: "Potion Expansion"
+  FlowerPower: "FlowerPower"
+  Galactifun: "Galactifun"
+  Galactifun2: "Galactifun2"
+  ElementManipulation: "Element Manipulation"
+  CrystamaeHistoria: "Crystamae Historia"
+  DankTech: "DankTech"
+  DankTech2: "DankTech - 2"
+  Networks-Changed: "Networks" # Same as Networks
+  VillagerUtil: "Villager Util"
+  MissileWarfare: "Missile Warfare"
+  SensibleToolbox: "STB"
+  Endrex: "Endrex"
+  Bump: "Bump"
+  FinalTech: "Final Tech" # Same as FinalTECH
+  FinalTECH: "Final TECH" # Same as FinalTech
+  SlimefunLuckyBlocks: "Lucky Blocks" # Same as luckyblocks-sf
+  FutureTech: "Future Tech"
+  DemonicExpansion: "Demonic Expansion"
+  BedrockTechnology: "Bedrock Technology"
+  SlimefunItemExpansion: "Slimefun Item Expansion"
+  SupplementalServiceableness: "Supplemental Serviceableness"
+  GuizhanCraft: "Guizhan Craft"
+  Magmanimous: "Magmanimous"
+  UltimateGenerators-RC27: "Ultimate Generators" # Same as UltimateGenerators
+  UltimateGenerators: "Ultimate Generators" # Same as UltimateGenerators-RC27" # Same as UltimateGenerators-RC27
+  UltimateGenerators2: "Ultimate Generators 2"
+  CrispyMachine: "Crispy Machine"
+  Chocoholics: "Chocoholics" # Same as ChocoHills
+  ChocoHills: "ChocoHills" # Same as Chocoholics
+  draconic: "Draconic" # Same as DracFun
+  DracFun: "DracFun" # Same as draconic
+  EzSFAddon: "EZ Tech" # Same as EzTech, EzSlimeFunAddon
+  EzTech: "EZ Tech" # Same as EzSFAddon, EzSlimeFunAddon
+  EzSlimeFunAddon: "EZ Tech" # Same as EzSFAddon, EzTech
+  RandomExpansion: "Random Expansion"
+  SlimyBees: "Slimy Bees"
+  ObsidianExpansion: "Obsidian Expansion"
+  EMCTech: "EMC Tech"
+  RelicsOfCthonia: "Relics of Cthonia"
+  Supreme: "Supreme"
+  DyeBench: "DyeBench"
+  MiniBlocks: "MiniBlocks"
+  SpiritsUnchained: "Spirits Unchained"
+  Cultivation: "Cultivation"
+  Gastronomicon: "Gastronomicon"
+  SmallSpace: "Small Space"
+  BetterReactor: "Better Reactor" # Avoid conflict with Fusion
+  VillagerTrade: "Villager Trade"
+  SlimeFrame: "SlimeFrame"
+  AdvancedTech: "Advanced Tech"
+  Quaptics: "Quaptics"
+  CompressionCraft: "Compression Craft"
+  ThermalFun: "Thermal Fun"
+  FastMachines: "Fast Machines"
+  MomoTech: "Momo Tech"
+  LogicTech: "LogicTech" # Same as LogicTECH, a SlimefunCustomizer configuration
+  LogiTech: "LogiTech" # Same as LogiTECH, a Slimefun addon
+  LogicTECH: "LogicTECH" # Same as LogicTech
+  LogiTECH: "LogiTECH" # Same as LogiTech
+  SlimeAEPlugin: "Slime AE 2"
+  SlimeChem: "Slime Chem"
+  WilderNether: "Wilder Nether"
+  MapJammers: "MapJammers"
+  Cakecraft: "Cakecraft" # Same as MyFirstAddon
+  SFMobDrops: "Custom Mob Drops"
+  Drugfun: "Custom Drug"
+  SlimefunNukes: "Slimefun Nukes"
+  SlimeCustomizer: "SlimeCustomizer"
+  RykenSlimeCustomizer: "Ryken SlimefunCustomizer" # Same as RykenSlimefunCustomizer
+  RykenSlimefunCustomizer: "Ryken SlimefunCustomizer" # Same as RykenSlimeCustomizer
+  FinalTECH-Changed: "FinalTECH-Changed"
+  BloodAlchemy: "Blood Alchemy" # Same as BloodyAlchemy
+  Laboratory: "Laboratory"
+  MobEngineering: "Mob Engineering"
+  TsingshanTechnology: "Tsingshan Technology" # Same as TsingshanTechnology-Fixed
+  TsingshanTechnology-Fixed: "Tsingshan Technology" # Same as TsingshanTechnology
+  PomaExpansion: "Poma Expansion"
+  BuildingStaff: "Building Staff"
+  IDreamOfEasy: "I Dream of Easy"
+  Magic8Ball: "Magic 8 Ball"
+  InfinityExpansionAutomation: "Infinity Expansion Automation"
+  ZeroTech: "Zero Tech"
+  Ex-Limus: "Ex-Limus"
+  NotEnoughAddons: "Not Enough Addons"
+  SFWorldEdit: "Slimefun WorldEdit [SW]" # Avoid conflict with SlimefunWorldedit
+  RSCEditor: "RSC Editor"
+  JustEnoughGuide: "Just Enough Guide"
+  SummaryHelper: "Summary Helper"
+  HardcoreSlimefun: "Hardcore Slimefun"
+  SFCalc: "SF Calc"
+  SfChunkInfo: "SF Chunk Info"
+  SlimefunAdvancements: "Slimefun Advancements"
+  SlimeHUD: "Slime HUD"
+  RaySlimefunAddon: "Ray Slimefun Addon"
+  SCrafter: "SC Tech"
+  CrispyMachines: "Crispy Machines"
+  DimensionTraveler: "Dimension Traveler"
+  HardlessMachine: "Hardless Machine"
+  XingChengCraft: "XingChenCraft" # Same as XingChenCraft
+  XingChenCraft: "XingChenCraft" # Same as XingChengCraft
+  DefoLiationTech: "DefoLiation Tech"
+  HaimanTech2: "HaimanTech2"
+  HaimanTech: "HaimanTech"
+  InfiniteExtensionV2: "Infinite Extension V2"
+  InfiniteExtension: "Infinite Extension"
+  OrangeTech: "Orange Tech"
+  GreedAndCreation: "Green and Creation"
+  BocchiTechnology: "Bocchi Technology"
+  OreTech: "Ore Tech"
+  HLGtech: "HLG Tech"
+  InfiniteExtensionV2-Reconfiguration: "Infinite Extension V2-Changed"
+  BigSnakeTech: "Big Snake Tech"
+  EpoTech: "EpoTech"
+  EnchanterLimit: "Enchanter Limit"
+  BlockLimiter: "Block Limiter"
+  SfItemsExporter: "SF Items Exporter"
+  SlimeGlue: "SlimeGlue"
+  KeepSoulbound: "Advanced Soulbound"
+  SlimeFunItemBanned: "Slimefun Item Banned"
+  Azap: "Azap"
+  CringleBosses: "Cringle Boss"
+  SlimefunNotchApple: "Notch Apple"
+  Huolaiy: "Huolaiy"
+  WonderfulTransmitter: "Wonderful Transmitter"
+  OreGeneration: "Ore Generation" # Avoid conflict with Mineralgenerator
+  SlimeSec: "Slime Security"
+  Paradoxium: "Paradoxium"
+  LuckyPandas: "Lucky Pandas"
+  PhoenixSciences: "Phoenix Sciences"
+  DarkMatter: "Dark Matter"
+  GeneticManipulation: "Genetic Manipulation"
+  MoneyAndThings: "Money and Things"
+  BeyondHorizons: "Beyond Horizons"
+  ChestTerminal: "Chest Terminal"
+  Hohenheim: "Hohenheim" # Same as hohenheim
+  BetterFarming: "Better Farming" # Same as betterfarming
+  NewBeginnings: "New Beginnings" # Same as New-Beginnings
+  EndCombat: "End Combat"
+  EnderPanda: "Ender Panda"
+  SlimeVoid: "Slime Void" # Same as SlimefunVoid
+  ArcaneExploration: "Arcane Exploration"
+  MagicXpansion: "Magic Xpansion"
+  SlimeQuest: "Slime Quest"
+  CompressedMachines: "Compressed Machines"
+  DisguiseCookie: "Disguise Cookie"
+  FireSlime: "Fire Slime"
+  NetherEnough: "Nether Enough"
+  BarrelWiper: "Barrel Wiper"
+  BearFluidTanks: "Bear Fluid Tanks"
+  Tofu-Addons: "Tofu Addons"
+  AdditionalWeaponry: "Additional Weaponry"
+  BoxOfChocolates: "Box of Chocolates"
+  MagicPowder: "Magic Powder" # Same as magic-powder
+  XpCreator: "Xp Creator"
+  SlimefunCombat: "Slimefun Combat"
+  ObsidianArmor: "Obsidian Armor" # Same as Obsidian-Armor
+  FinalGenerations: "Final Generations"
+  Fusion: "Fusion" # Avoid conflict with BetterReactor
+  Slimedustry: "Slimedustry"
+  Spikes: "Spikes"
+  SlimeRP: "SlimeRP"
+  Brewery: "Brewery" # Avoid conflict with BreweryMenu
+  EquivalencyTech: "Equivalency Tech" # Avoid conflict with EMC2
+  GeyserHeads: "Geyser Heads"
+  VariousClutter: "Various Clutter"
+  Mineralgenerator: "Mineral Generator" # Avoid conflict with OreGeneration
+  CivilizationEvolution: "AG Tech"
+  RemiliasUtilities: "Remilia's Utilities"
+  BetterChests: "Better Chests"
+  SlimeFood: "Slime Food"
+  SlimeVision: "Slime Vision"
+  WorldeditSlimefun: "Slimefun WorldEdit [WS]" # Avoid conflict with SFWorldedit
+  MinimizeFactory: "Minimize Factory"
+  InfinityCompress: "Infinity Compress"
+  SlimeFrameExtension: "Slime Frame Extension"
+  BreweryMenu: "Brewery Menu" # Avoid conflict with Brewery
+  MySlimefunAddon: "My Slimefun Addon"
+  MyFirstAddon: "Cakecraft" # Same as Cakecraft
+  StackMachine: "Stack Machine" # Avoid conflict with SlimefunStackMachine
+  SlimefunStackMachine: "Slimefun Stack Machine" # Avoid conflict with StackMachine
+  CraftableEnchantments: "Craftable Enchantments"
+  sj_Expansion: "sj's Expansion"
+  SlimefunZT: "SiciliaCraft"
+  SlimefunAddon: "CAPTAINchad12's addon" # Unbelievable...
+  AngleTech: "Angle Tech"
+  magicexpansion: "Magic Expansion" # Same as MagicExpansion
+  MagicExpansion: "Magic Expansion" # Same as magicexpansion
+  SlimefunHopper: "Slimefun Hopper"
+  SlimefunAccessor: "Slimefun Accessor"
+  ExoticGardenComplex: "Exotic Garden" # Same as ExoticGarden
+  magic-powder: "Magic Powder" # Same as MagicPowder
+  Obsidian-Armor: "Obsidian Armor" # Same as ObsidianArmor
+  BloodyAlchemy: "Bloody Alchemy" # Same as BloodAlchemy
+  hohenheim: "Hohenheim" # Same as Hohenheim
+  HALsAddon: "HAL's addon" # Same as slimestack
+  slimestack: "HAL's addon" # Same as HALsAddon
+  SlimefunVoid: "Slimefun Void" # Same as SlimeVoid
+  betterfarming: "Better Farming" # Same as BetterFarming
+  New-Beginnings: "New Beginnings" # Same as NewBeginnings
 
 # Do not change this value unless you know what you are doing.
 config-version: 1.6

@@ -1,3 +1,30 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
@@ -20,6 +47,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * @author balugaq
+ * @since 1.3
+ */
 @Getter
 public class RTSBackpackManager extends AbstractManager {
     private static final int IDENTIFIER_SLOT = 53;
@@ -47,6 +78,11 @@ public class RTSBackpackManager extends AbstractManager {
         return contents;
     }
 
+    /**
+     * Saves the player's inventory backup to a backpack.
+     *
+     * @param player the player whose inventory to back up
+     */
     public void saveInventoryBackupFor(@NotNull Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
@@ -95,6 +131,11 @@ public class RTSBackpackManager extends AbstractManager {
         profile.save();
     }
 
+    /**
+     * Clears the player's inventory.
+     *
+     * @param player the player whose inventory to clear
+     */
     public void clearInventoryFor(@NotNull Player player) {
         ItemStack[] newContents = new ItemStack[player.getInventory().getStorageContents().length];
         for (int i = 0; i < newContents.length; i++) {
@@ -103,6 +144,11 @@ public class RTSBackpackManager extends AbstractManager {
         player.getInventory().setStorageContents(newContents);
     }
 
+    /**
+     * Restores the player's inventory from a backpack.
+     *
+     * @param player the player whose inventory to restore
+     */
     public void restoreInventoryFor(@NotNull Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
@@ -157,10 +203,25 @@ public class RTSBackpackManager extends AbstractManager {
         }
     }
 
+    /**
+     * Sets the identifier item in the inventory.
+     *
+     * @param player    the player
+     * @param inventory the inventory
+     * @param slot      the slot to set the identifier item
+     * @param open      whether the identifier item should indicate an open status
+     */
     public void setIdentifier(@NotNull Player player, @NotNull Inventory inventory, int slot, boolean open) {
         inventory.setItem(slot, getIdentifierItem(player, open));
     }
 
+    /**
+     * Creates and returns the identifier item.
+     *
+     * @param player the player
+     * @param open   whether the identifier item should indicate an open status
+     * @return the identifier item
+     */
     public @NotNull ItemStack getIdentifierItem(@NotNull Player player, boolean open) {
         return Converter.getItem(Converter.getItem(Material.DIRT, "[RTS]", "[RTS]", "[RTS]", "[RTS]", UUID.randomUUID().toString()), meta -> {
             meta.getPersistentDataContainer().set(OWNER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
@@ -173,6 +234,13 @@ public class RTSBackpackManager extends AbstractManager {
         });
     }
 
+    /**
+     * Checks if the item is a valid identifier for the player.
+     *
+     * @param item   the item to check
+     * @param player the player
+     * @return true if the item is a valid identifier, false otherwise
+     */
     public boolean isIdentifier(@Nullable ItemStack item, @NotNull Player player) {
         if (item == null || item.getType() == Material.AIR) {
             return false;
@@ -199,6 +267,12 @@ public class RTSBackpackManager extends AbstractManager {
         return true;
     }
 
+    /**
+     * Checks if the identifier item indicates an open status.
+     *
+     * @param item the identifier item to check
+     * @return true if the identifier item indicates an open status, false otherwise
+     */
     public boolean isOpenIdentifier(@Nullable ItemStack item) {
         if (item == null || item.getType() == Material.AIR) {
             return false;

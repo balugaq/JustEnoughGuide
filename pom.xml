@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>EN-8</version>
+    <version>EN-10</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -111,8 +111,8 @@
                             <style>PALANTIR</style>
                         </palantirJavaFormat>
 
-                        <removeUnusedImports />
-                        <formatAnnotations />
+                        <removeUnusedImports/>
+                        <formatAnnotations/>
                     </java>
                 </configuration>
             </plugin>
@@ -203,16 +203,25 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Special Menu Provider -->
+        <!-- Special Menu Provider me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu -->
         <dependency>
             <groupId>me.matl114</groupId>
-            <artifactId>LogiTech</artifactId>
+            <artifactId>LogiTech1</artifactId>
             <version>1.0.3</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/original-LogiTech v1.0.3.jar</systemPath>
         </dependency>
 
-        <!-- AnvilGUI -->
+        <!-- Special Menu Provider me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu -->
+        <dependency>
+            <groupId>me.matl114</groupId>
+            <artifactId>LogiTech2</artifactId>
+            <version>1.0.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/original-LogiTech v1.0.4.jar</systemPath>
+        </dependency>
+
+        <!-- AnvilGUI 1.16- Paper 1.21.2 / Spigot 1.21.3 -->
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>

@@ -1,20 +1,39 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
-import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
-import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
-import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
-import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
-import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -23,14 +42,11 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -73,6 +89,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The RTSListener class is responsible for handling events related to the Real-Time Search (RTS) mode in JustEnoughGuide.
+ *
+ * @author balugaq
+ * @since 1.4
+ */
 @SuppressWarnings("deprecation")
 @Getter
 public class RTSListener implements Listener {
@@ -83,10 +105,22 @@ public class RTSListener implements Listener {
     public static final Map<Player, List<ItemStack>> cheatItems = new HashMap<>();
     public static final Integer[] FILL_ORDER = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
 
+    /**
+     * Checks if a player is currently in the RTS (Real-Time Search) mode.
+     *
+     * @param player the player to check
+     * @return true if the player is in RTS mode, false otherwise
+     */
     public static boolean isRTSPlayer(Player player) {
         return openingPlayers.containsKey(player);
     }
 
+    /**
+     * Checks if an ItemStack is a fake item used in the RTS system.
+     *
+     * @param itemStack the ItemStack to check
+     * @return true if the itemStack is a fake item, false otherwise
+     */
     public static boolean isFakeItem(@Nullable ItemStack itemStack) {
         if (itemStack != null && itemStack.getType() != Material.AIR) {
             if (itemStack.getItemMeta().getPersistentDataContainer().get(FAKE_ITEM_KEY, PersistentDataType.STRING) != null) {
@@ -96,6 +130,11 @@ public class RTSListener implements Listener {
         return false;
     }
 
+    /**
+     * Quits the RTS mode for a player and restores their inventory.
+     *
+     * @param player the player to quit RTS mode
+     */
     public static void quitRTS(@NotNull Player player) {
         if (isRTSPlayer(player)) {
             synchronized (openingPlayers) {
@@ -128,6 +167,12 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Generates a unique hash for a player head ItemStack.
+     *
+     * @param item the ItemStack to generate a hash for
+     * @return the hash of the player head, or null if the item is not a player head
+     */
     public static String getHash(ItemStack item) {
         if (item != null && (item.getType() == Material.PLAYER_HEAD || item.getType() == Material.PLAYER_WALL_HEAD)) {
             ItemMeta meta = item.getItemMeta();
@@ -144,6 +189,11 @@ public class RTSListener implements Listener {
         return null;
     }
 
+    /**
+     * Handles the event when an RTS is opened for a player.
+     *
+     * @param event the OpenRTSEvent to handle
+     */
     @EventHandler
     public void onOpenRTS(RTSEvents.@NotNull OpenRTSEvent event) {
         Player player = event.getPlayer();
@@ -175,6 +225,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Handles the event when the search term changes in the RTS system.
+     *
+     * @param event the SearchTermChangeEvent to handle
+     */
     @EventHandler
     public void onRTS(RTSEvents.@NotNull SearchTermChangeEvent event) {
         Player player = event.getPlayer();
@@ -201,7 +256,7 @@ public class RTSListener implements Listener {
                     player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
                 }
             }
-            /**
+            /*
              * Page buttons' icons.
              * For page buttons' click handler see {@link SurvivalGuideImplementation#createHeader(Player, PlayerProfile, ChestMenu)}
              * or {@link CheatGuideImplementation#createHeader(Player, PlayerProfile, ChestMenu)}
@@ -212,6 +267,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Handles the event when the page changes in the RTS system.
+     *
+     * @param event the PageChangeEvent to handle
+     */
     @EventHandler
     public void onRTSPageChange(RTSEvents.@NotNull PageChangeEvent event) {
         Player player = event.getPlayer();
@@ -236,12 +296,22 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Handles the event when an RTS is closed.
+     *
+     * @param event the CloseRTSEvent to handle
+     */
     @EventHandler
     public void onCloseRTS(RTSEvents.@NotNull CloseRTSEvent event) {
         Player player = event.getPlayer();
         quitRTS(player);
     }
 
+    /**
+     * Restores the player's inventory when they join the server.
+     *
+     * @param event the PlayerJoinEvent to handle
+     */
     @EventHandler
     public void restore(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -256,6 +326,11 @@ public class RTSListener implements Listener {
         player.getInventory().setContents(itemStacks);
     }
 
+    /**
+     * Restores the player's inventory when they respawn.
+     *
+     * @param event the PlayerRespawnEvent to handle
+     */
     @EventHandler
     public void restore(@NotNull PlayerRespawnEvent event) {
         Player player = event.getPlayer();
@@ -264,6 +339,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Quits the RTS mode for a player when they quit the server.
+     *
+     * @param event the PlayerQuitEvent to handle
+     */
     @EventHandler
     public void onQuit(@NotNull PlayerQuitEvent event) {
         Player player = event.getPlayer();
@@ -272,6 +352,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Quits the RTS mode for a player when they die and keeps their inventory.
+     *
+     * @param event the PlayerDeathEvent to handle
+     */
     @EventHandler
     public void onDeath(@NotNull PlayerDeathEvent event) {
         Player player = event.getEntity();
@@ -282,6 +367,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Quits the RTS mode for a player when they open an inventory.
+     *
+     * @param event the InventoryOpenEvent to handle
+     */
     @EventHandler
     public void onOpenInventory(@NotNull InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
@@ -290,6 +380,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Handles the event when a player clicks on an item in the RTS inventory.
+     *
+     * @param event the InventoryClickEvent to handle
+     */
     @EventHandler
     public void onLookup(@NotNull InventoryClickEvent event) {
         Player player = (Player) event.getView().getPlayer();
@@ -347,6 +442,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels player interactions when they are in RTS mode.
+     *
+     * @param event the PlayerInteractEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(@NotNull PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -361,6 +461,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player tries to drop an item while in RTS mode.
+     *
+     * @param event the PlayerDropItemEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onDrop(@NotNull PlayerDropItemEvent event) {
         Player player = event.getPlayer();
@@ -375,6 +480,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player tries to place a block while in RTS mode.
+     *
+     * @param event the BlockPlaceEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockPlace(@NotNull BlockPlaceEvent event) {
         Player player = event.getPlayer();
@@ -389,6 +499,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player tries to swap items between hands while in RTS mode.
+     *
+     * @param event the PlayerSwapHandItemsEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onSwapHand(@NotNull PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
@@ -409,6 +524,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player sends a chat message while in RTS mode.
+     *
+     * @param event the AsyncPlayerChatEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onAsyncChat(@NotNull AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -418,6 +538,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player tries to execute a command while in RTS mode.
+     *
+     * @param event the PlayerCommandPreprocessEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
@@ -427,6 +552,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player tries to manipulate an armor stand while in RTS mode.
+     *
+     * @param event the PlayerArmorStandManipulateEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onArmorStandManipulate(@NotNull PlayerArmorStandManipulateEvent event) {
         Player player = event.getPlayer();
@@ -436,6 +566,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player sends a chat message while in RTS mode.
+     *
+     * @param event the PlayerChatEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onChat(@NotNull PlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -445,6 +580,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player consumes an item while in RTS mode.
+     *
+     * @param event the PlayerItemConsumeEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onArmor(@NotNull PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
@@ -458,17 +598,27 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player clicks on an item in an inventory while not in RTS mode.
+     *
+     * @param event the InventoryClickEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInventoryClick(@NotNull InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if (!isRTSPlayer(player)) {
             ItemStack itemStack = event.getCurrentItem();
-            if (itemStack != null && isFakeItem(itemStack)) {
+            if (isFakeItem(itemStack)) {
                 event.setCancelled(true);
             }
         }
     }
 
+    /**
+     * Cancels the event when a player picks up an item while in RTS mode.
+     *
+     * @param event the EntityPickupItemEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPickup(@NotNull EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player player) {
@@ -478,6 +628,11 @@ public class RTSListener implements Listener {
         }
     }
 
+    /**
+     * Cancels the event when a player right-clicks while in RTS mode.
+     *
+     * @param event the PlayerRightClickEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onRightClick(@NotNull PlayerRightClickEvent event) {
         Player player = event.getPlayer();
@@ -486,13 +641,18 @@ public class RTSListener implements Listener {
             return;
         } else {
             ItemStack itemStack = event.getItem();
-            if (itemStack != null && isFakeItem(itemStack)) {
+            if (isFakeItem(itemStack)) {
                 event.cancel();
                 return;
             }
         }
     }
 
+    /**
+     * Cancels the event when a player interacts with an entity while in RTS mode.
+     *
+     * @param event the PlayerInteractEntityEvent to handle
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteractEntity(@NotNull PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
@@ -501,13 +661,20 @@ public class RTSListener implements Listener {
             return;
         } else {
             ItemStack itemStack = player.getInventory().getItem(event.getHand());
-            if (itemStack != null && isFakeItem(itemStack)) {
+            if (isFakeItem(itemStack)) {
                 event.setCancelled(true);
                 return;
             }
         }
     }
 
+    /**
+     * Creates a fake ItemStack for a SlimefunItem to display in the RTS inventory.
+     *
+     * @param slimefunItem the SlimefunItem to create a fake item for
+     * @param player       the player for whom the fake item is created
+     * @return the fake ItemStack, or null if the SlimefunItem or player is null
+     */
     @Contract("null, _ -> null; _, null -> null; !null, !null -> !null")
     public ItemStack getFakeItem(@Nullable SlimefunItem slimefunItem, @Nullable Player player) {
         if (slimefunItem == null || player == null) {

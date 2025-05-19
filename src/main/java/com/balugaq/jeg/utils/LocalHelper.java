@@ -1,9 +1,39 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.utils;
 
+import com.balugaq.jeg.api.objects.annotaions.Warn;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -16,9 +46,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author balugaq
+ * @since 1.2
+ */
 public class LocalHelper {
     public static final String def = "Unknown addon";
     public static final Map<String, Map<String, SlimefunItemStack>> rscItems = new HashMap<>();
+    // support color symbol
     public static final Map<String, String> addonLocals = new HashMap<>();
     // depends on rsc addons' info.yml
     public static final Map<String, Set<String>> rscLocals = new HashMap<>();
@@ -144,7 +179,7 @@ public class LocalHelper {
         addonLocals.put("RykenSlimeCustomizer", "Ryken SlimefunCustomizer"); // Same as RykenSlimefunCustomizer
         addonLocals.put("RykenSlimefunCustomizer", "Ryken SlimefunCustomizer"); // Same as RykenSlimeCustomizer
         addonLocals.put("FinalTECH-Changed", "FinalTECH-Changed");
-        addonLocals.put("BloodAlchemy", "Blood Alchemy");
+        addonLocals.put("BloodAlchemy", "Blood Alchemy"); // Same as BloodyAlchemy
         addonLocals.put("Laboratory", "Laboratory");
         addonLocals.put("MobEngineering", "Mob Engineering");
         addonLocals.put("TsingshanTechnology", "Tsingshan Technology"); // Same as TsingshanTechnology-Fixed
@@ -207,12 +242,12 @@ public class LocalHelper {
         addonLocals.put("MoneyAndThings", "Money and Things");
         addonLocals.put("BeyondHorizons", "Beyond Horizons");
         addonLocals.put("ChestTerminal", "Chest Terminal");
-        addonLocals.put("Hohenheim", "Hohenheim");
-        addonLocals.put("BetterFarming", "Better Farming");
-        addonLocals.put("NewBeginnings", "New Beginnings");
+        addonLocals.put("Hohenheim", "Hohenheim"); // Same as hohenheim
+        addonLocals.put("BetterFarming", "Better Farming"); // Same as betterfarming
+        addonLocals.put("NewBeginnings", "New Beginnings"); // Same as New-Beginnings
         addonLocals.put("EndCombat", "End Combat");
         addonLocals.put("EnderPanda", "Ender Panda");
-        addonLocals.put("SlimeVoid", "Slime Void");
+        addonLocals.put("SlimeVoid", "Slime Void"); // Same as SlimefunVoid
         addonLocals.put("ArcaneExploration", "Arcane Exploration");
         addonLocals.put("MagicXpansion", "Magic Xpansion");
         addonLocals.put("SlimeQuest", "Slime Quest");
@@ -225,10 +260,10 @@ public class LocalHelper {
         addonLocals.put("Tofu-Addons", "Tofu Addons");
         addonLocals.put("AdditionalWeaponry", "Additional Weaponry");
         addonLocals.put("BoxOfChocolates", "Box of Chocolates");
-        addonLocals.put("MagicPowder", "Magic Powder");
+        addonLocals.put("MagicPowder", "Magic Powder"); // Same as magic-powder
         addonLocals.put("XpCreator", "Xp Creator");
         addonLocals.put("SlimefunCombat", "Slimefun Combat");
-        addonLocals.put("ObsidianArmor", "Obsidian Armor");
+        addonLocals.put("ObsidianArmor", "Obsidian Armor"); // Same as Obsidian-Armor
         addonLocals.put("FinalGenerations", "Final Generations");
         addonLocals.put("Fusion", "Fusion"); // Avoid conflict with BetterReactor
         addonLocals.put("Slimedustry", "Slimedustry");
@@ -258,6 +293,27 @@ public class LocalHelper {
         addonLocals.put("SlimefunZT", "SiciliaCraft");
         addonLocals.put("SlimefunAddon", "CAPTAINchad12's addon"); // Unbelievable...
         addonLocals.put("AngleTech", "Angle Tech");
+        addonLocals.put("magicexpansion", "Magic Expansion"); // Same as MagicExpansion
+        addonLocals.put("MagicExpansion", "Magic Expansion"); // Same as magicexpansion
+        addonLocals.put("SlimefunHopper", "Slimefun Hopper");
+        addonLocals.put("SlimefunAccessor", "Slimefun Accessor");
+        addonLocals.put("ExoticGardenComplex", "Exotic Garden"); // Same as ExoticGarden
+        addonLocals.put("magic-powder", "Magic Powder"); // Same as MagicPowder
+        addonLocals.put("Obsidian-Armor", "Obsidian Armor"); // Same as ObsidianArmor
+        addonLocals.put("BloodyAlchemy", "Bloody Alchemy"); // Same as BloodAlchemy
+        addonLocals.put("hohenheim", "Hohenheim"); // Same as Hohenheim
+        addonLocals.put("HALsAddon", "HAL's addon"); // Same as slimestack
+        addonLocals.put("slimestack", "HAL's addon"); // Same as HALsAddon
+        addonLocals.put("SlimefunVoid", "Slimefun Void"); // Same as SlimeVoid
+        addonLocals.put("betterfarming", "Better Farming"); // Same as BetterFarming
+        addonLocals.put("New-Beginnings", "New Beginnings"); // Same as NewBeginnings
+        for (var entry : JustEnoughGuide.getConfigManager().getLocalTranslate().entrySet()) {
+            addonLocals.put(entry.getKey(), ChatColor.translateAlternateColorCodes('&', entry.getValue()));
+        }
+    }
+
+    @Warn(reason = "No longer use it in EN version")
+    public static void loadDefault() {
     }
 
     @Nonnull
@@ -325,7 +381,7 @@ public class LocalHelper {
             return getRSCLocalName(itemId);
         }
         String localName = addonLocals.get(addonName);
-        return localName == null ? callback : localName;
+        return ChatColor.translateAlternateColorCodes('&', localName == null ? callback : localName);
     }
 
     public static void addRSCLocal(String rscAddonName, String itemId) {
@@ -382,7 +438,7 @@ public class LocalHelper {
                     rscItems.put(name, read);
                 }
             } catch (Throwable e) {
-                e.printStackTrace();
+                Debug.trace(e);
             }
         }
 

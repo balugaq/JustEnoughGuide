@@ -1,24 +1,54 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.api.objects.enums;
 
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.LocalHelper;
-import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import lombok.Getter;
-import me.matl114.logitech.SlimefunItem.CustomSlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.Reference;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author balugaq
+ * @since 1.1
+ */
 @Getter
 public enum FilterType {
     BY_RECIPE_ITEM_NAME("#", (player, item, lowerFilterValue, pinyin) -> {
@@ -57,9 +87,8 @@ public enum FilterType {
             }
         } else {
             try {
-                if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item)) {
-                    RecipeDisplayItem csi = (RecipeDisplayItem) item;
-                    display = csi.getDisplayRecipes();
+                if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item) && item instanceof RecipeDisplayItem rdi) {
+                    display = rdi.getDisplayRecipes();
                 }
             } catch (Throwable e) {
                 Debug.trace(e, "searching");
@@ -108,19 +137,27 @@ public enum FilterType {
         }
         return false;
     }),
-    BY_MATERIAL_NAME("~", (player, item, lowerFilterValue, pinyin) -> {
-        if (item.getItem().getType().name().toLowerCase().contains(lowerFilterValue)) {
-            return true;
-        }
-        return false;
-    });
+    BY_MATERIAL_NAME("~", (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue));
 
-    private final String flag;
-    private final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;
+    private @Nonnull
+    final String symbol;
+    private @Nonnull
+    final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;
 
-    FilterType(String flag, DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
-        this.flag = flag;
+    /**
+     * Constructs a new FilterType instance with the specified flag and filter function.
+     *
+     * @param symbol The string symbol of the filter type.
+     * @param filter The filter function to determine whether an item matches the filter.
+     */
+    FilterType(@Nonnull String symbol, @Nonnull DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
+        this.symbol = symbol;
         this.filter = filter;
+    }
+
+    @Deprecated
+    public String getFlag() {
+        return symbol;
     }
 
     public interface DiFunction<A, B, C, D, R> {

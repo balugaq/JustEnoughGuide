@@ -1,3 +1,30 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
@@ -9,7 +36,6 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
-import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -41,14 +67,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+/**
+ * @author balugaq
+ * @since 1.3
+ */
 @SuppressWarnings("unused")
 @NotDisplayInSurvivalMode
 @NotDisplayInCheatMode
 @Getter
 public class RTSSearchGroup extends FlexItemGroup {
-    public static final ItemStack PLACEHOLDER = Converter.getItem(Converter.getItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&a", "&a", "&a"), meta -> {
-        meta.getPersistentDataContainer().set(RTSListener.FAKE_ITEM_KEY, PersistentDataType.STRING, "____JEG_FAKE_ITEM____");
-    });
+    public static final ItemStack PLACEHOLDER = Converter.getItem(Converter.getItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&a", "&a", "&a"), meta -> meta.getPersistentDataContainer().set(RTSListener.FAKE_ITEM_KEY, PersistentDataType.STRING, "____JEG_FAKE_ITEM____"));
     // Use RTS_SEARCH_GROUPS, RTS_PAGES, RTS_PLAYERS or RTS_SEARCH_TERMS must be by keyword "synchronized"
     public static final Map<Player, SearchGroup> RTS_SEARCH_GROUPS = new ConcurrentHashMap<>();
     public static final Map<Player, Integer> RTS_PAGES = new ConcurrentHashMap<>();
@@ -109,10 +137,23 @@ public class RTSSearchGroup extends FlexItemGroup {
     private final String presetSearchTerm;
     private final int page;
 
+    /**
+     * Creates a new RTS search group for a player with a specific preset search term.
+     *
+     * @param anvilInventory   The anvil inventory used for the search.
+     * @param presetSearchTerm The preset search term to initialize the search with.
+     */
     public RTSSearchGroup(AnvilInventory anvilInventory, String presetSearchTerm) {
         this(anvilInventory, presetSearchTerm, 1);
     }
 
+    /**
+     * Creates a new RTS search group for a player with a specific preset search term and page.
+     *
+     * @param anvilInventory   The anvil inventory used for the search.
+     * @param presetSearchTerm The preset search term to initialize the search with.
+     * @param page             The initial page number for the search results.
+     */
     public RTSSearchGroup(AnvilInventory anvilInventory, String presetSearchTerm, int page) {
         super(new NamespacedKey(JAVA_PLUGIN, "jeg_rts_search_group_" + UUID.randomUUID()), new ItemStack(Material.BARRIER));
         this.anvilInventory = anvilInventory;
@@ -120,6 +161,13 @@ public class RTSSearchGroup extends FlexItemGroup {
         this.page = page;
     }
 
+    /**
+     * Creates a new RTS inventory for a player in a specific guide mode.
+     *
+     * @param player    The player for whom the inventory is created.
+     * @param guideMode The guide mode (e.g., CHEAT_MODE, SURVIVAL_MODE).
+     * @return The created inventory.
+     */
     public static Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode) {
         return newRTSInventoryFor(player, guideMode, null);
     }
@@ -178,6 +226,13 @@ public class RTSSearchGroup extends FlexItemGroup {
         return false;
     }
 
+    /**
+     * Opens the RTS search group for a player with a specific guide mode.
+     *
+     * @param player            The player who is opening the search group.
+     * @param playerProfile     The player profile associated with the player.
+     * @param slimefunGuideMode The guide mode (e.g., CHEAT_MODE, SURVIVAL_MODE).
+     */
     @Override
     public void open(@NotNull Player player, @NotNull PlayerProfile playerProfile, @NotNull SlimefunGuideMode slimefunGuideMode) {
         GuideUtil.removeLastEntry(playerProfile.getGuideHistory());

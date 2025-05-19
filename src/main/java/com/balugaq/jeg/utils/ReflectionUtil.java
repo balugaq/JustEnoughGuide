@@ -1,3 +1,30 @@
+/*
+ * Copyright (c) 2024-2025 balugaq
+ *
+ * This file is part of JustEnoughGuide, available under MIT license.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * - The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ * - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+ *   removed or altered from any source distribution or documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.balugaq.jeg.utils;
 
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
@@ -10,9 +37,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-
 /**
  * @author Final_ROOT
+ * @author balugaq
+ * @since 1.0
  */
 @SuppressWarnings({"unchecked", "unused"})
 @UtilityClass
@@ -24,7 +52,7 @@ public class ReflectionUtil {
             declaredField.setAccessible(true);
             declaredField.set(object, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            Debug.trace(e);
             return false;
         }
         return true;
@@ -36,19 +64,30 @@ public class ReflectionUtil {
             declaredField.setAccessible(true);
             declaredField.set(null, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            Debug.trace(e);
             return false;
         }
         return true;
     }
 
-    public static <T> @Nullable T getStaticValue(@NotNull Class<T> clazz, @NotNull String field) {
+    public static @Nullable Object getStaticValue(@NotNull Class<?> clazz, @NotNull String field) {
+        try {
+            Field declaredField = clazz.getDeclaredField(field);
+            declaredField.setAccessible(true);
+            return declaredField.get(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Debug.trace(e);
+            return null;
+        }
+    }
+
+    public static <T> @Nullable T getStaticValue(@NotNull Class<?> clazz, @NotNull String field, Class<T> cast) {
         try {
             Field declaredField = clazz.getDeclaredField(field);
             declaredField.setAccessible(true);
             return (T) declaredField.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            Debug.trace(e);
             return null;
         }
     }
@@ -133,6 +172,21 @@ public class ReflectionUtil {
         return null;
     }
 
+    public static <T> @Nullable T getValue(@NotNull Object object, @NotNull String fieldName, Class<T> cast) {
+        try {
+            Field field = getField(object.getClass(), fieldName);
+            if (field != null) {
+                field.setAccessible(true);
+                return (T) field.get(object);
+            }
+        } catch (IllegalAccessException e) {
+            Debug.trace(e);
+            return null;
+        }
+
+        return null;
+    }
+
     public static @Nullable Object getValue(@NotNull Object object, @NotNull String fieldName) {
         try {
             Field field = getField(object.getClass(), fieldName);
@@ -141,7 +195,7 @@ public class ReflectionUtil {
                 return field.get(object);
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Debug.trace(e);
             return null;
         }
 
@@ -180,7 +234,7 @@ public class ReflectionUtil {
         try {
             return clazz.getDeclaredConstructor(parameterTypes);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            Debug.trace(e);
             return null;
         }
     }
@@ -194,7 +248,7 @@ public class ReflectionUtil {
                 return method.invoke(object, args);
             }
         } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            Debug.trace(e);
         }
         return null;
     }
@@ -208,7 +262,7 @@ public class ReflectionUtil {
                 return method.invoke(null, args);
             }
         } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            Debug.trace(e);
         }
         return null;
     }
