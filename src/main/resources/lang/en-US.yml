@@ -175,21 +175,21 @@ icon:
     recipe-complete-mechanism:
       name: "&aMechanism"
       lore:
-        - "",
-        - "&7优先使用玩家背包中的物品进行补全配方"
-        - "&7如果连接了网络，会尝试在网络中获取配方材料（仅网络拓展有效）"
-        - "&7如果连接了AE网络，会尝试在AE网络中获取配方材料"
-        - "&7\"连接\"的解释: "
-        - "&7被进行配方补全的机器界面所对应的机器的东西南北上下任一方向紧贴的方块连接了网络/AE网络"
-        - "&7即视为被进行配方补全的机器界面所对应的机器连接了网络/AE网络（不占用网络/AE网络节点）"
         - ""
-        - "&9===配方书点击机制==="
-        - "&a左键&e点击打开配方书"
-        - "&a右键&e点击可再次补全"
-        - "&e补全后再次&aShift+右键&e点击配方书补全64次"
-        - "&9===补全界面点击机制==="
-        - "&a左键&e点击物品补全1次"
-        - "&a右键&e点击物品补全64次"
+        - "&7Items in the player's inventory are prioritized for recipe completion"
+        - "&7If connected to a network, it will try to get recipe materials from the network (only valid for Networks Expansion)"
+        - "&7If connected to an AE network, it will try to get recipe materials from the AE network"
+        - "&7\"Connected\" explanation: "
+        - "&7If any block in the north, south, east, west, up, or down direction of the machine interface being recipe-completed is adjacent to a network/AE network, it is considered connected"
+        - "&7That is, the machine interface being recipe-completed is considered connected to the network/AE network (does not occupy a network/AE network node)"
+        - ""
+        - "&9===Recipe Book Click Mechanism==="
+        - "&aLeft-click&e to open the Recipe Book"
+        - "&aRight-click&e to complete again"
+        - "&eAfter completion, &aShift+Right-click&e the Recipe Book to complete 64 times"
+        - "&9===Completion Interface Click Mechanism==="
+        - "&aLeft-click&e an item to complete once"
+        - "&aRight-click&e an item to complete 64 times"
     recipe-complete-supported-addons-info:
         name: "&aA part of the machines from the addons below are adapted to use Recipe Complete"
         lore:
@@ -268,8 +268,8 @@ message:
     rts-title: "Type text below here"
 
     # Recipe Complete
-    recipe-complete-left-click: "&a左键&e点击物品补全1次"
-    recipe-complete-right-click: "&a右键&e点击物品补全64次"
+    recipe-complete-left-click: "&aLeft-click&e to complete once"
+    recipe-complete-right-click: "&aRight-click&e to complete 64 times"
 startup:
   null-mc-version: "Cannot recognize Minecraft version!"
   unknown-mc-version: "Cannot recognize Minecraft version!"
