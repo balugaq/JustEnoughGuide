@@ -166,7 +166,7 @@ icon:
     recipe-complete-usage-info:
       name: "&aUsage"
       lore:
-        - "",
+        - ""
         - "&f1. &ePut a Recipe Complete Book into your inventory"
         - "&f2. &eOpen a machine that adapted to use Recipe Complete（ex. Fast Machines）"
         - "&f3. &eLeft-click on the Recipe Complete Book"
