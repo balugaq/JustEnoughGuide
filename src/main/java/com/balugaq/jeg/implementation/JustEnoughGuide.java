@@ -46,9 +46,9 @@ import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.GroupSetup;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
-import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
@@ -66,6 +66,8 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdat
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
 import net.guizhanss.slimefuntranslation.SlimefunTranslation;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -80,14 +82,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import lombok.Getter;
-import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * This is the main class of the JustEnoughGuide plugin.
@@ -96,7 +90,7 @@ import org.jetbrains.annotations.Nullable;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"unused", "Lombok", "deprecation", "ResultOfMethodCallIgnored", "DataFlowIssue"})
+@SuppressWarnings({"unused", "Lombok", "deprecation", "ResultOfMethodCallIgnored"})
 @Getter
 public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public static final int RECOMMENDED_JAVA_VERSION = 17;
@@ -219,13 +213,13 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     }
 
     public static boolean disableAutomaticallyLoadItems() {
-        boolean before = Slimefun.getConfigManager().isAutoLoadingEnabled();
-        Slimefun.getConfigManager().setAutoLoadingMode(false);
+        boolean before = Slimefun.getRegistry().isAutoLoadingEnabled();
+        Slimefun.getRegistry().setAutoLoadingMode(false);
         return before;
     }
 
     public static void setAutomaticallyLoadItems(boolean value) {
-        Slimefun.getConfigManager().setAutoLoadingMode(value);
+        Slimefun.getRegistry().setAutoLoadingMode(value);
     }
 
     /**
@@ -284,7 +278,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
             newGuides.put(
                     SlimefunGuideMode.SURVIVAL_MODE,
-                    survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide());
+                    survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide(SlimefunOfficialSupporter.isShowVanillaRecipes(), SlimefunOfficialSupporter.isShowHiddenItemGroups()));
             newGuides.put(
                     SlimefunGuideMode.CHEAT_MODE,
                     cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide());
@@ -468,7 +462,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      *
      * @return the bug tracker URL
      */
-    @Nullable @Override
+    @Nullable
+    @Override
     public String getBugTrackerURL() {
         return MessageFormat.format("https://github.com/{0}/{1}/issues/", this.username, this.repo);
     }

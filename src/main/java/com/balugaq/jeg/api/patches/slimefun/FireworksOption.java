@@ -29,8 +29,9 @@ package com.balugaq.jeg.api.patches.slimefun;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.config.SlimefunConfigManager;
+import io.github.thebusybiscuit.slimefun4.core.SlimefunRegistry;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
@@ -59,18 +60,10 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
     }
 
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        SlimefunConfigManager cfgManager = Slimefun.getConfigManager();
-        if (cfgManager.isResearchingEnabled() && cfgManager.isResearchFireworkEnabled()) {
+        SlimefunRegistry registry = Slimefun.getRegistry();
+        if (registry.isResearchingEnabled() && registry.isResearchFireworkEnabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
-            ItemStack item = new CustomItemStack(
-                    Material.FIREWORK_ROCKET,
-                    "&b烟花特效: &" + (enabled ? "a启用" : "4禁用"),
-                    "",
-                    "&7你现在可以选择是否",
-                    "&7在解锁一个新物品的时候",
-                    "&7展示烟花特效.",
-                    "",
-                    "&7⇨ &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效");
+            ItemStack item = new CustomItemStack(Material.FIREWORK_ROCKET, "&bFireworks: &" + (enabled ? "aYes" : "4No"), new String[]{"", "&7You can now toggle whether you", "&7will be presented with a big firework", "&7upon researching an item.", "", "&7⇨ &eClick to " + (enabled ? "disable" : "enable") + " your fireworks"});
             return Optional.of(item);
         } else {
             return Optional.empty();

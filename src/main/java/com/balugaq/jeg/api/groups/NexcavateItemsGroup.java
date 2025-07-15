@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.api.groups;
 
-import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
@@ -39,8 +38,8 @@ import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
-import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.Lang;
+import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
@@ -59,8 +58,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -138,7 +135,7 @@ public class NexcavateItemsGroup extends FlexItemGroup {
      * @param page                The page number to display.
      */
     protected NexcavateItemsGroup(@NotNull NexcavateItemsGroup nexcavateItemsGroup, int page) {
-        super(nexcavateItemsGroup.key, Models.NEXCAVATE_ITEMS_GROUP);
+        super(nexcavateItemsGroup.key, Lang.NEXCAVATE_ITEMS_GROUP_ITEM);
         this.page = page;
         this.slimefunItemList = nexcavateItemsGroup.slimefunItemList;
         this.pageMap.put(page, this);

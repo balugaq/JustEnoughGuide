@@ -28,14 +28,6 @@
 package com.balugaq.jeg.utils.compatibility;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import lombok.SneakyThrows;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -45,6 +37,15 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author balugaq
@@ -261,7 +262,8 @@ public class Converter {
      * @return the converted Bukkit ItemStack
      */
     @SuppressWarnings({"RedundantClassCall", "ConstantValue"})
-    @NotNull public static ItemStack asBukkit(@Nullable SlimefunItemStack item) {
+    @NotNull
+    public static ItemStack asBukkit(@Nullable SlimefunItemStack item) {
         if (item == null) {
             return AIR.clone();
         }

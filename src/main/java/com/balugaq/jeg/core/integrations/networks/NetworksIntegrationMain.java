@@ -30,17 +30,18 @@ package com.balugaq.jeg.core.integrations.networks;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 public class NetworksIntegrationMain implements Integration {
-    public static final int[] ENCODER_RECIPE_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 30, 31, 32};
-    public static final int[] CRAFTING_GRID_RECIPE_SLOTS = new int[] {6, 7, 8, 15, 16, 17, 24, 25, 26};
+    public static final int[] ENCODER_RECIPE_SLOTS = new int[]{12, 13, 14, 21, 22, 23, 30, 31, 32};
+    public static final int[] CRAFTING_GRID_RECIPE_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(@NotNull String id, int @NotNull [] slots, boolean unordered) {

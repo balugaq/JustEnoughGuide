@@ -30,15 +30,13 @@ package com.balugaq.jeg.implementation.items;
 import com.balugaq.jeg.api.groups.HiddenItemsGroup;
 import com.balugaq.jeg.api.groups.VanillaItemsGroup;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.Lang;
-import com.balugaq.jeg.utils.SlimefunItemUtil;
-import com.balugaq.jeg.utils.SpecialMenuProvider;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import com.balugaq.jeg.utils.KeyUtil;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 
 /**
  * This class is responsible for registering all the JEG groups.
@@ -64,10 +62,10 @@ public class GroupSetup {
                 new NamespacedKey(JustEnoughGuide.getInstance(), "hidden_items_group"),
                 Lang.getIcon("hidden-items", Material.BARRIER));
         hiddenItemsGroup.register(JustEnoughGuide.getInstance());
-        vanillaItemsGroup = new VanillaItemsGroup(KeyUtil.newKey("vanilla_items_group"), Models.VANILLA_ITEMS_GROUP);
+        vanillaItemsGroup = new VanillaItemsGroup(KeyUtil.newKey("vanilla_items_group"), Lang.VANILLA_ITEMS_GROUP_ITEM);
         vanillaItemsGroup.register(JustEnoughGuide.getInstance());
 
-        jegItemsGroup = new ItemGroup(KeyUtil.newKey("jeg_items_group"), Models.JEG_ITEMS_GROUP);
+        jegItemsGroup = new ItemGroup(KeyUtil.newKey("jeg_items_group"), Lang.JEG_ITEMS_GROUP_ITEM);
         jegItemsGroup.setTier(Integer.MAX_VALUE);
     }
 

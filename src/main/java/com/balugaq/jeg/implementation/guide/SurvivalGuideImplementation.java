@@ -85,14 +85,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.recipes.MinecraftRecip
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.SlimefunGuideItem;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.logging.Level;
-import javax.annotation.ParametersAreNonnullByDefault;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.MenuClickHandler;
 import org.bukkit.Bukkit;
@@ -110,6 +102,15 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.logging.Level;
 
 /**
  * This is JEG's implementation of the Survival Guide.
@@ -136,21 +137,17 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Deprecated
     public static final int SPECIAL_MENU_SLOT = 26;
-
-    private static final ItemStack RTS_ITEM = Lang.RTS_ITEM;
     @Deprecated
     public static final ItemStack SPECIAL_MENU_ITEM = Lang.SPECIAL_MENU_ITEM;
-
-    private static final NamespacedKey UNLOCK_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "unlock_item");
     public static final int[] recipeSlots = Formats.recipe.getChars('r').stream()
             .sorted()
             .limit(9)
             .mapToInt(i -> i)
             .toArray();
-
     public static final int MAX_ITEM_GROUPS = Formats.main.getChars('G').size();
     public static final int MAX_ITEMS = Formats.sub.getChars('i').size();
-
+    private static final ItemStack RTS_ITEM = Lang.RTS_ITEM;
+    private static final NamespacedKey UNLOCK_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "unlock_item");
     public final @NotNull ItemStack item;
 
     public SurvivalGuideImplementation() {
@@ -891,7 +888,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                                 + "\u21E8 "
                                                 + ChatColor.GREEN
                                                 + Slimefun.getLocalization()
-                                                        .getMessage(p, "guide.tooltips.open-itemgroup"))));
+                                                .getMessage(p, "guide.tooltips.open-itemgroup"))));
                 menu.addMenuClickHandler(s, (pl, slot, itemstack, action) -> EventUtil.callEvent(
                                 new GuideEvents.WikiButtonClickEvent(pl, itemstack, slot, action, menu, this))
                         .ifSuccess(() -> {
@@ -929,8 +926,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                     try {
                                         SpecialMenuProvider.open(profile.getPlayer(), profile, getMode(), item);
                                     } catch (InstantiationException
-                                            | IllegalAccessException
-                                            | InvocationTargetException e) {
+                                             | IllegalAccessException
+                                             | InvocationTargetException e) {
                                         Debug.trace(e);
                                     }
                                     return false;

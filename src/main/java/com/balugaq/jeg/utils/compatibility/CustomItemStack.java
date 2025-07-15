@@ -29,9 +29,6 @@ package com.balugaq.jeg.utils.compatibility;
 
 import com.google.common.base.Preconditions;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -43,6 +40,10 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author balugaq

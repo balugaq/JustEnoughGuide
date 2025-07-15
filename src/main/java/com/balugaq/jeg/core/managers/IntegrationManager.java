@@ -28,8 +28,6 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.core.integrations.alchimiavitae.AlchimiaVitaeIntegrationMain;
@@ -58,9 +56,7 @@ import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationM
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import com.balugaq.jeg.utils.Lang;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +64,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * This class is responsible for managing integrations with other plugins.

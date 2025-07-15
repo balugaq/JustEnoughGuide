@@ -70,7 +70,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Randomized
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
@@ -383,73 +382,73 @@ public class SearchGroup extends FlexItemGroup {
                             continue;
                         }
 
-                                        ItemStack[] r = item.getRecipe();
-                                        if (r == null) {
-                                            continue;
-                                        }
+                        ItemStack[] r = item.getRecipe();
+                        if (r == null) {
+                            continue;
+                        }
 
-                                        if (item.isDisabled()) {
-                                            continue;
-                                        }
-                                        AVAILABLE_ITEMS.add(item);
-                                        try {
-                                            String id = item.getId();
-                                            if (!SPECIAL_CACHE.containsKey(id)) {
-                                                Set<String> cache = new HashSet<>();
+                        if (item.isDisabled()) {
+                            continue;
+                        }
+                        AVAILABLE_ITEMS.add(item);
+                        try {
+                            String id = item.getId();
+                            if (!SPECIAL_CACHE.containsKey(id)) {
+                                Set<String> cache = new HashSet<>();
 
-                                                // init cache
-                                                Object Orecipes = ReflectionUtil.getValue(item, "recipes");
-                                                if (Orecipes == null) {
-                                                    Object Omaterial = ReflectionUtil.getValue(item, "material");
-                                                    if (Omaterial == null) {
-                                                        Object ORECIPE_LIST =
-                                                                ReflectionUtil.getValue(item, "RECIPE_LIST");
-                                                        if (ORECIPE_LIST == null) {
-                                                            Object Ooutputs = ReflectionUtil.getValue(item, "outputs");
-                                                            if (Ooutputs == null) {
-                                                                Object OOUTPUTS =
-                                                                        ReflectionUtil.getValue(item, "OUTPUTS");
-                                                                if (OOUTPUTS == null) {
-                                                                    Object Ooutput =
-                                                                            ReflectionUtil.getValue(item, "output");
-                                                                    if (Ooutput == null) {
-                                                                        Object Ogeneration = ReflectionUtil.getValue(
-                                                                                item, "generation");
-                                                                        if (Ogeneration == null) {
-                                                                            Object Otemplates = ReflectionUtil.getValue(
-                                                                                    item, "templates");
-                                                                            if (Otemplates == null) {
-                                                                                continue;
+                                // init cache
+                                Object Orecipes = ReflectionUtil.getValue(item, "recipes");
+                                if (Orecipes == null) {
+                                    Object Omaterial = ReflectionUtil.getValue(item, "material");
+                                    if (Omaterial == null) {
+                                        Object ORECIPE_LIST =
+                                                ReflectionUtil.getValue(item, "RECIPE_LIST");
+                                        if (ORECIPE_LIST == null) {
+                                            Object Ooutputs = ReflectionUtil.getValue(item, "outputs");
+                                            if (Ooutputs == null) {
+                                                Object OOUTPUTS =
+                                                        ReflectionUtil.getValue(item, "OUTPUTS");
+                                                if (OOUTPUTS == null) {
+                                                    Object Ooutput =
+                                                            ReflectionUtil.getValue(item, "output");
+                                                    if (Ooutput == null) {
+                                                        Object Ogeneration = ReflectionUtil.getValue(
+                                                                item, "generation");
+                                                        if (Ogeneration == null) {
+                                                            Object Otemplates = ReflectionUtil.getValue(
+                                                                    item, "templates");
+                                                            if (Otemplates == null) {
+                                                                continue;
+                                                            }
+
+                                                            // RykenSlimeCustomizer
+                                                            // CustomTemplateMachine
+                                                            else if (Otemplates
+                                                                    instanceof List<?> templates) {
+                                                                for (Object template : templates) {
+                                                                    Object _Orecipes =
+                                                                            ReflectionUtil.getValue(
+                                                                                    template,
+                                                                                    "recipes");
+                                                                    if (_Orecipes == null) {
+                                                                        Method method =
+                                                                                ReflectionUtil
+                                                                                        .getMethod(
+                                                                                                template
+                                                                                                        .getClass(),
+                                                                                                "recipes");
+                                                                        if (method != null) {
+                                                                            try {
+                                                                                method.setAccessible(
+                                                                                        true);
+                                                                                _Orecipes =
+                                                                                        method.invoke(
+                                                                                                template);
+                                                                            } catch (
+                                                                                    Exception ignored) {
                                                                             }
-
-                                                                            // RykenSlimeCustomizer
-                                                                            // CustomTemplateMachine
-                                                                            else if (Otemplates
-                                                                                    instanceof List<?> templates) {
-                                                                                for (Object template : templates) {
-                                                                                    Object _Orecipes =
-                                                                                            ReflectionUtil.getValue(
-                                                                                                    template,
-                                                                                                    "recipes");
-                                                                                    if (_Orecipes == null) {
-                                                                                        Method method =
-                                                                                                ReflectionUtil
-                                                                                                        .getMethod(
-                                                                                                                template
-                                                                                                                        .getClass(),
-                                                                                                                "recipes");
-                                                                                        if (method != null) {
-                                                                                            try {
-                                                                                                method.setAccessible(
-                                                                                                        true);
-                                                                                                _Orecipes =
-                                                                                                        method.invoke(
-                                                                                                                template);
-                                                                                            } catch (
-                                                                                                    Exception ignored) {
-                                                                                            }
-                                                                                        }
-                                                                                    }
+                                                                        }
+                                                                    }
 
                                                                     if (_Orecipes instanceof List<?> _recipes) {
                                                                         for (Object _recipe : _recipes) {
@@ -675,17 +674,17 @@ public class SearchGroup extends FlexItemGroup {
                 }
                 SPECIAL_CACHE.put("STONEWORKS_FACTORY", new SoftReference<>(cache));
 
-                                // InfinityExpansion VoidHarvester
-                                SlimefunItem item2 = SlimefunItem.getById("VOID_BIT");
-                                if (item2 != null) {
-                                    Set<String> cache2 = new HashSet<>();
-                                    String s = item2.getItemName();
-                                    if (!inBanlist(s)) {
-                                        cache2.add(s);
-                                        SPECIAL_CACHE.put("VOID_HARVESTER", new SoftReference<>(cache2));
-                                        SPECIAL_CACHE.put("INFINITY_VOID_HARVESTER", new SoftReference<>(cache2));
-                                    }
-                                }
+                // InfinityExpansion VoidHarvester
+                SlimefunItem item2 = SlimefunItem.getById("VOID_BIT");
+                if (item2 != null) {
+                    Set<String> cache2 = new HashSet<>();
+                    String s = item2.getItemName();
+                    if (!inBanlist(s)) {
+                        cache2.add(s);
+                        SPECIAL_CACHE.put("VOID_HARVESTER", new SoftReference<>(cache2));
+                        SPECIAL_CACHE.put("INFINITY_VOID_HARVESTER", new SoftReference<>(cache2));
+                    }
+                }
 
                 // InfinityExpansion MobDataCard
                 label2:
@@ -828,51 +827,51 @@ public class SearchGroup extends FlexItemGroup {
                     }
                 }
 
-                                // FluffyMachines SmartFactory
-                                Set<SlimefunItemStack> ACCEPTED_ITEMS = new HashSet<>(Arrays.asList(
-                                        SlimefunItems.BILLON_INGOT,
-                                        SlimefunItems.SOLDER_INGOT,
-                                        SlimefunItems.NICKEL_INGOT,
-                                        SlimefunItems.COBALT_INGOT,
-                                        SlimefunItems.DURALUMIN_INGOT,
-                                        SlimefunItems.BRONZE_INGOT,
-                                        SlimefunItems.BRASS_INGOT,
-                                        SlimefunItems.ALUMINUM_BRASS_INGOT,
-                                        SlimefunItems.STEEL_INGOT,
-                                        SlimefunItems.DAMASCUS_STEEL_INGOT,
-                                        SlimefunItems.ALUMINUM_BRONZE_INGOT,
-                                        SlimefunItems.CORINTHIAN_BRONZE_INGOT,
-                                        SlimefunItems.GILDED_IRON,
-                                        SlimefunItems.REDSTONE_ALLOY,
-                                        SlimefunItems.HARDENED_METAL_INGOT,
-                                        SlimefunItems.REINFORCED_ALLOY_INGOT,
-                                        SlimefunItems.FERROSILICON,
-                                        SlimefunItems.ELECTRO_MAGNET,
-                                        SlimefunItems.ELECTRIC_MOTOR,
-                                        SlimefunItems.HEATING_COIL,
-                                        SlimefunItems.SYNTHETIC_EMERALD,
-                                        SlimefunItems.GOLD_4K,
-                                        SlimefunItems.GOLD_6K,
-                                        SlimefunItems.GOLD_8K,
-                                        SlimefunItems.GOLD_10K,
-                                        SlimefunItems.GOLD_12K,
-                                        SlimefunItems.GOLD_14K,
-                                        SlimefunItems.GOLD_16K,
-                                        SlimefunItems.GOLD_18K,
-                                        SlimefunItems.GOLD_20K,
-                                        SlimefunItems.GOLD_22K,
-                                        SlimefunItems.GOLD_24K));
-                                Set<String> items = new HashSet<>();
-                                for (SlimefunItemStack slimefunItemStack : ACCEPTED_ITEMS) {
-                                    SlimefunItem slimefunItem = slimefunItemStack.getItem();
-                                    if (slimefunItem != null) {
-                                        String s = slimefunItem.getItemName();
-                                        if (!inBanlist(s)) {
-                                            items.add(s);
-                                        }
-                                    }
-                                }
-                                SPECIAL_CACHE.put("SMART_FACTORY", new SoftReference<>(items));
+                // FluffyMachines SmartFactory
+                Set<SlimefunItemStack> ACCEPTED_ITEMS = new HashSet<>(Arrays.asList(
+                        SlimefunItems.BILLON_INGOT,
+                        SlimefunItems.SOLDER_INGOT,
+                        SlimefunItems.NICKEL_INGOT,
+                        SlimefunItems.COBALT_INGOT,
+                        SlimefunItems.DURALUMIN_INGOT,
+                        SlimefunItems.BRONZE_INGOT,
+                        SlimefunItems.BRASS_INGOT,
+                        SlimefunItems.ALUMINUM_BRASS_INGOT,
+                        SlimefunItems.STEEL_INGOT,
+                        SlimefunItems.DAMASCUS_STEEL_INGOT,
+                        SlimefunItems.ALUMINUM_BRONZE_INGOT,
+                        SlimefunItems.CORINTHIAN_BRONZE_INGOT,
+                        SlimefunItems.GILDED_IRON,
+                        SlimefunItems.REDSTONE_ALLOY,
+                        SlimefunItems.HARDENED_METAL_INGOT,
+                        SlimefunItems.REINFORCED_ALLOY_INGOT,
+                        SlimefunItems.FERROSILICON,
+                        SlimefunItems.ELECTRO_MAGNET,
+                        SlimefunItems.ELECTRIC_MOTOR,
+                        SlimefunItems.HEATING_COIL,
+                        SlimefunItems.SYNTHETIC_EMERALD,
+                        SlimefunItems.GOLD_4K,
+                        SlimefunItems.GOLD_6K,
+                        SlimefunItems.GOLD_8K,
+                        SlimefunItems.GOLD_10K,
+                        SlimefunItems.GOLD_12K,
+                        SlimefunItems.GOLD_14K,
+                        SlimefunItems.GOLD_16K,
+                        SlimefunItems.GOLD_18K,
+                        SlimefunItems.GOLD_20K,
+                        SlimefunItems.GOLD_22K,
+                        SlimefunItems.GOLD_24K));
+                Set<String> items = new HashSet<>();
+                for (SlimefunItemStack slimefunItemStack : ACCEPTED_ITEMS) {
+                    SlimefunItem slimefunItem = slimefunItemStack.getItem();
+                    if (slimefunItem != null) {
+                        String s = slimefunItem.getItemName();
+                        if (!inBanlist(s)) {
+                            items.add(s);
+                        }
+                    }
+                }
+                SPECIAL_CACHE.put("SMART_FACTORY", new SoftReference<>(items));
 
                 /*
                 for (String s : JustEnoughGuide.getConfigManager().getSharedChars()) {
@@ -949,7 +948,7 @@ public class SearchGroup extends FlexItemGroup {
                     }
                 }
 
-                                Debug.debug("Cache initialized.");
+                Debug.debug("Cache initialized.");
 
                 Timer.log();
                 Debug.debug("Search Group initialized.");
@@ -1078,6 +1077,36 @@ public class SearchGroup extends FlexItemGroup {
                 language.startsWith("vi") ||
                 language.startsWith("he") ||
                 language.startsWith("fa");
+    }
+
+    /**
+     * Calculates the name fit score between two strings.
+     *
+     * @param name       The name to calculate the name fit score for.
+     * @param searchTerm The search term
+     * @return The name fit score. Non-negative integer.
+     */
+    public static int nameFit(@NotNull String name, @NotNull String searchTerm) {
+        int distance = levenshteinDistance(searchTerm.toLowerCase(Locale.ROOT), name.toLowerCase(Locale.ROOT));
+        int maxLen = Math.max(searchTerm.length(), name.length());
+
+        int matchScore;
+        if (maxLen == 0) {
+            matchScore = 100;
+        } else {
+            matchScore = (int) (100 * (1 - (double) distance / maxLen));
+        }
+
+        return matchScore;
+    }
+
+    public static @NotNull List<SlimefunItem> sortByNameFit(
+            @NotNull Set<SlimefunItem> origin, @NotNull String searchTerm) {
+        return origin.stream()
+                .sorted(Comparator.comparingInt(item ->
+                        /* Intentionally negative */
+                        -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
+                .toList();
     }
 
     /**
@@ -1472,36 +1501,6 @@ public class SearchGroup extends FlexItemGroup {
         }
 
         return sortByNameFit(merge, actualSearchTerm);
-    }
-
-    /**
-     * Calculates the name fit score between two strings.
-     *
-     * @param name       The name to calculate the name fit score for.
-     * @param searchTerm The search term
-     * @return The name fit score. Non-negative integer.
-     */
-    public static int nameFit(@NotNull String name, @NotNull String searchTerm) {
-        int distance = levenshteinDistance(searchTerm.toLowerCase(Locale.ROOT), name.toLowerCase(Locale.ROOT));
-        int maxLen = Math.max(searchTerm.length(), name.length());
-
-        int matchScore;
-        if (maxLen == 0) {
-            matchScore = 100;
-        } else {
-            matchScore = (int) (100 * (1 - (double) distance / maxLen));
-        }
-
-        return matchScore;
-    }
-
-    public static @NotNull List<SlimefunItem> sortByNameFit(
-            @NotNull Set<SlimefunItem> origin, @NotNull String searchTerm) {
-        return origin.stream()
-                .sorted(Comparator.comparingInt(item ->
-                        /* Intentionally negative */
-                        -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
-                .toList();
     }
 
     /**

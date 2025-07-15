@@ -48,11 +48,6 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.experimental.UtilityClass;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -63,6 +58,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains utility methods for the guide system.
@@ -149,13 +150,13 @@ public final class GuideUtil {
         Class<?> clazz = itemGroup.getClass();
         return !(itemGroup instanceof FlexItemGroup)
                 && (clazz == ItemGroup.class
-                        || clazz == SubItemGroup.class
-                        || clazz == LockedItemGroup.class
-                        || clazz == SeasonalItemGroup.class
-                        || itemGroup instanceof BookmarkRelocation
-                        || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
-                        || clazz.getName().endsWith("DummyItemGroup")
-                        || clazz.getName().endsWith("SubGroup"));
+                || clazz == SubItemGroup.class
+                || clazz == LockedItemGroup.class
+                || clazz == SeasonalItemGroup.class
+                || itemGroup instanceof BookmarkRelocation
+                || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
+                || clazz.getName().endsWith("DummyItemGroup")
+                || clazz.getName().endsWith("SubGroup"));
     }
 
     @SuppressWarnings("deprecation")
@@ -218,7 +219,7 @@ public final class GuideUtil {
                                                             int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
                                                             int newPage = Math.min(
                                                                     (rts.slimefunItemList.size() - 1)
-                                                                                    / RTSListener.FILL_ORDER.length
+                                                                            / RTSListener.FILL_ORDER.length
                                                                             + 1,
                                                                     oldPage + 1);
                                                             RTSEvents.PageChangeEvent event =
@@ -238,10 +239,10 @@ public final class GuideUtil {
                                                         }
                                                     }
                                                 },
-                                                new int[] {
-                                                    AnvilGUI.Slot.INPUT_LEFT,
-                                                    AnvilGUI.Slot.INPUT_RIGHT,
-                                                    AnvilGUI.Slot.OUTPUT
+                                                new int[]{
+                                                        AnvilGUI.Slot.INPUT_LEFT,
+                                                        AnvilGUI.Slot.INPUT_RIGHT,
+                                                        AnvilGUI.Slot.OUTPUT
                                                 },
                                                 null);
                                     } catch (Exception ignored) {
@@ -322,7 +323,8 @@ public final class GuideUtil {
         }
     }
 
-    @NotNull public static List<ItemGroup> getForceHiddens() {
+    @NotNull
+    public static List<ItemGroup> getForceHiddens() {
         return new ArrayList<>(forceHiddens);
     }
 

@@ -33,10 +33,6 @@ import com.balugaq.jeg.api.objects.collection.cooldown.FrequencyWatcher;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
-import java.text.MessageFormat;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -56,6 +52,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.text.MessageFormat;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author balugaq
  * @since 1.7
@@ -68,7 +69,8 @@ public class NamePrinter implements Applier {
     private static final NamePrinter instance = new NamePrinter();
     private static final FrequencyWatcher<UUID> watcher = new FrequencyWatcher<>(1, TimeUnit.MINUTES, 10, 5000);
 
-    private NamePrinter() {}
+    private NamePrinter() {
+    }
 
     public static void applyWith(@NotNull SlimefunGuideImplementation guide, @NotNull ChestMenu menu, int slot) {
         instance.apply(guide, menu, slot);
@@ -78,7 +80,7 @@ public class NamePrinter implements Applier {
     private static void shareSlimefunItem(Player player, String itemName) {
         String playerName = player.getName();
 
-        String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[] {playerName, ChatColors.color(itemName)});
+        String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[]{playerName, ChatColors.color(itemName)});
         TextComponent msg = new TextComponent(sharedMessage);
         msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(CLICK_TO_SEARCH)));
         String s = ChatColor.stripColor(itemName);

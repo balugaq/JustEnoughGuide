@@ -33,7 +33,9 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,7 +67,6 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
         return new NamespacedKey(Slimefun.instance(), "guide_mode");
     }
 
-    @SuppressWarnings("ExtractMethodRecommender")
     @NotNull
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (!p.hasPermission("slimefun.cheat.items")) {
@@ -83,14 +84,14 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
 
                 ItemMeta meta = item.getItemMeta();
                 ChatColor var10001 = ChatColor.GRAY;
-                meta.setDisplayName(var10001 + "Slimefun 指南样式: " + ChatColor.YELLOW + selectedMode.getDisplayName());
-                List<String> lore = new ArrayList<>();
+                meta.setDisplayName(var10001 + "Slimefun Guide Type: " + ChatColor.YELLOW + ChatUtils.humanize(selectedMode.name()));
+                List<String> lore = new ArrayList();
                 lore.add("");
                 var10001 = selectedMode == SlimefunGuideMode.SURVIVAL_MODE ? ChatColor.GREEN : ChatColor.GRAY;
-                lore.add(var10001 + "普通模式");
-                lore.add((selectedMode == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "作弊模式");
+                lore.add(var10001 + "Survival Mode");
+                lore.add((selectedMode == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "Cheat Sheet");
                 lore.add("");
-                lore.add(ChatColor.GRAY + "⇨ " + ChatColor.YELLOW + "单击修改指南样式");
+                lore.add(ChatColor.GRAY + "⇨ " + ChatColor.YELLOW + "Click to change the type");
                 meta.setLore(lore);
                 item.setItemMeta(meta);
                 return Optional.of(item);

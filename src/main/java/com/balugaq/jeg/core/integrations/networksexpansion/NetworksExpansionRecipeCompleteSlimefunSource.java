@@ -32,12 +32,11 @@ import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import java.util.List;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,6 +45,8 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * @author balugaq
@@ -80,7 +81,7 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
                 times = 64;
             }
 
-            BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
+            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
             if (actualMenu == null) {
                 if (callback != null) {
                     callback.run();
@@ -107,7 +108,7 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
-            BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
+            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
             if (actualMenu == null) {
                 if (callback != null) {
                     callback.run();
@@ -223,7 +224,8 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
         return true;
     }
 
-    @Nullable private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
+    @Nullable
+    private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
         ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
         if (i1 != null) {
             return i1;

@@ -33,13 +33,6 @@ import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.config.SlimefunDatabaseManager;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -111,7 +104,8 @@ public class BookmarkManager extends AbstractManager {
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
     }
 
-    @Nullable public List<SlimefunItem> getBookmarkedItems(@NotNull Player player) {
+    @Nullable
+    public List<SlimefunItem> getBookmarkedItems(@NotNull Player player) {
         PlayerBackpack backpack = getBookmarkBackpack(player);
         if (backpack == null) {
             return null;
@@ -201,7 +195,8 @@ public class BookmarkManager extends AbstractManager {
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
     }
 
-    @Nullable public PlayerBackpack getOrCreateBookmarkBackpack(@NotNull Player player) {
+    @Nullable
+    public PlayerBackpack getOrCreateBookmarkBackpack(@NotNull Player player) {
         PlayerBackpack backpack = getBookmarkBackpack(player);
         if (backpack == null) {
             backpack = createBackpack(player);
@@ -269,7 +264,8 @@ public class BookmarkManager extends AbstractManager {
         return null;
     }
 
-    @NotNull public ItemStack markItemAsBookmarksItem(@NotNull ItemStack itemStack, @NotNull Player player) {
+    @NotNull
+    public ItemStack markItemAsBookmarksItem(@NotNull ItemStack itemStack, @NotNull Player player) {
         return ItemStackUtil.getCleanItem(Converter.getItem(itemStack, itemMeta -> itemMeta.getPersistentDataContainer()
                 .set(
                         BOOKMARKS_KEY,

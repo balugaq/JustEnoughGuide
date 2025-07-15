@@ -34,8 +34,8 @@ package com.balugaq.jeg.api.patches.slimefun;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.config.SlimefunConfigManager;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
@@ -68,8 +68,7 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
 
     @NotNull
     public Optional<ItemStack> getDisplayItem(@NotNull Player p, @NotNull ItemStack guide) {
-        SlimefunConfigManager cfgManager = Slimefun.getConfigManager();
-        if (cfgManager.isResearchingEnabled() && !cfgManager.isLearningAnimationDisabled()) {
+        if (SlimefunOfficialSupporter.isResearchingEnabled() && !SlimefunOfficialSupporter.isLearningAnimationDisabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
             String optionState = enabled ? "enabled" : "disabled";
             List<String> lore = Slimefun.getLocalization()

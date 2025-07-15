@@ -33,9 +33,9 @@ import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionInte
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -80,7 +80,7 @@ public class DefaultPlayerInventoryRecipeCompleteSlimefunSource implements Slime
                 times = 64;
             }
 
-            BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
+            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
             if (actualMenu == null) {
                 if (callback != null) {
                     callback.run();
@@ -106,7 +106,7 @@ public class DefaultPlayerInventoryRecipeCompleteSlimefunSource implements Slime
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
-            BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
+            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
             if (actualMenu == null) {
                 if (callback != null) {
                     callback.run();

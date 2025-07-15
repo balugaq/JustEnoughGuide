@@ -108,21 +108,21 @@ public enum FilterType {
             }
         }
 
-                String id = item.getId();
-                Reference<Set<String>> ref = SearchGroup.SPECIAL_CACHE.get(id);
-                if (ref != null) {
-                    Set<String> cache = ref.get();
-                    if (cache != null) {
-                        for (String s : cache) {
-                            if (SearchGroup.isSearchFilterApplicable(s, lowerFilterValue, false)) {
-                                return true;
-                            }
-                        }
+        String id = item.getId();
+        Reference<Set<String>> ref = SearchGroup.SPECIAL_CACHE.get(id);
+        if (ref != null) {
+            Set<String> cache = ref.get();
+            if (cache != null) {
+                for (String s : cache) {
+                    if (SearchGroup.isSearchFilterApplicable(s, lowerFilterValue, false)) {
+                        return true;
                     }
                 }
+            }
+        }
 
-                return false;
-            }),
+        return false;
+    }),
     BY_ADDON_NAME("@", (player, item, lowerFilterValue, pinyin) -> {
         SlimefunAddon addon = item.getAddon();
         String localAddonName = LocalHelper.getAddonName(addon, item.getId()).toLowerCase();
