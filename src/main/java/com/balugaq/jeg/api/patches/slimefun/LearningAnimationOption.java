@@ -35,11 +35,11 @@ package com.balugaq.jeg.api.patches.slimefun;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -77,7 +77,7 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
             String var10001 = Slimefun.getLocalization()
                     .getMessage(p, "guide.options.learning-animation." + optionState + ".click");
             lore.add("&7⇨ " + var10001);
-            ItemStack item = new CustomItemStack(enabled ? Material.MAP : Material.PAPER, lore);
+            ItemStack item = Converter.getItem(enabled ? Material.MAP : Material.PAPER, lore);
             return Optional.of(item);
         } else {
             return Optional.empty();

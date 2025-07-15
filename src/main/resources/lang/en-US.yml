@@ -150,10 +150,16 @@ icon:
     name: "&e&lCollecting"
   nexcavate-items-group:
     name: "&bNexcavate Items"
+    lore:
+      - " "
   vanilla-items-group:
     name: "&7Vanilla Items"
+    lore:
+      - " "
   jeg-items-group:
     name: "&bJEG Items"
+    lore:
+      - " "
   items:
     recipe-complete-guide:
       name: "&bRecipe Complete Book"

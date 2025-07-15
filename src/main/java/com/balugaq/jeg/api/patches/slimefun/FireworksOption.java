@@ -30,11 +30,11 @@ package com.balugaq.jeg.api.patches.slimefun;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -61,7 +61,7 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (SlimefunOfficialSupporter.isResearchingEnabled() && SlimefunOfficialSupporter.isResearchFireworkEnabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
-            ItemStack item = new CustomItemStack(Material.FIREWORK_ROCKET, "&bFireworks: &" + (enabled ? "aYes" : "4No"), new String[]{"", "&7You can now toggle whether you", "&7will be presented with a big firework", "&7upon researching an item.", "", "&7⇨ &eClick to " + (enabled ? "disable" : "enable") + " your fireworks"});
+            ItemStack item = Converter.getItem(Material.FIREWORK_ROCKET, "&bFireworks: &" + (enabled ? "aYes" : "4No"), new String[]{"", "&7You can now toggle whether you", "&7will be presented with a big firework", "&7upon researching an item.", "", "&7⇨ &eClick to " + (enabled ? "disable" : "enable") + " your fireworks"});
             return Optional.of(item);
         } else {
             return Optional.empty();
