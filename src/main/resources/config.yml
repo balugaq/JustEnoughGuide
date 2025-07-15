@@ -25,7 +25,7 @@ blacklist:
   - "Fast Machines"
 
 # Prohibit any form of searching for items with names containing any of the following words
-banlist: []
+banlist: [ ]
 
 shared-words:
   - "barrel storage" # a group of words, words' group will contain all the search results each other.

@@ -65,7 +65,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunG
 import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdater;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
-import net.guizhanss.slimefuntranslation.SlimefunTranslation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

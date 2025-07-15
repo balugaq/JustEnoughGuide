@@ -32,7 +32,6 @@ import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Lang;
-import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -33,10 +33,10 @@ import com.balugaq.jeg.api.objects.collection.cooldown.FrequencyWatcher;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -155,7 +155,7 @@ public class NamePrinter implements Applier {
                     return false;
                 }
 
-                String name = ItemStackHelper.getDisplayName(clickedItemStack);
+                String name = ItemUtils.getItemName(clickedItemStack);
                 shareSlimefunItem(player, name);
 
                 return false;

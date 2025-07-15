@@ -57,7 +57,6 @@ import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslation
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.Lang;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

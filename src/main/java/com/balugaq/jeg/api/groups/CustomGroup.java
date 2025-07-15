@@ -56,7 +56,6 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import lombok.ToString;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -146,7 +145,7 @@ public class CustomGroup extends FlexItemGroup {
             final @NotNull Player player,
             final @NotNull PlayerProfile playerProfile,
             final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu(ItemStackHelper.getDisplayName(configuration.item()));
+        ChestMenu chestMenu = new ChestMenu(ItemUtils.getItemName(configuration.item()));
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));

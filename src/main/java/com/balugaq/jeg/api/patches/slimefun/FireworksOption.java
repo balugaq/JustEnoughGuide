@@ -31,7 +31,6 @@ import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.SlimefunRegistry;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
