@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.groups.NexcavateItemsGroup;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +52,7 @@ public class NexcavateIntegrationMain implements Integration {
     @Override
     public void onEnable() {
         nexcavateItemsGroup =
-                new NexcavateItemsGroup(KeyUtil.newKey("nexcavate_items_group"), Models.NEXCAVATE_ITEMS_GROUP);
+                new NexcavateItemsGroup(KeyUtil.newKey("nexcavate_items_group"), Lang.NEXCAVATE_ITEMS_GROUP_ITEM);
         nexcavateItemsGroup.register(JustEnoughGuide.getInstance());
     }
 
