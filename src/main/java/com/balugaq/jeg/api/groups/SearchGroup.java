@@ -167,7 +167,6 @@ public class SearchGroup extends FlexItemGroup {
 
     @Deprecated
     private static final int SEARCH_SLOT = 7;
-
     @Deprecated
     private static final int PREVIOUS_SLOT = 46;
 
@@ -583,7 +582,28 @@ public class SearchGroup extends FlexItemGroup {
                                 // InfinityExpansion MachineBlock
                                 else if (Orecipes instanceof List<?> recipes) {
                                     if (!isInstance(item, "MachineBlock")) {
-                                        continue;
+                                        if (isInstance(item, "AbstractElectricMachine")) {
+                                            // DynaTech - AbstractElectricMachine
+                                            // recipes -> List<MachineRecipe>
+                                            for (Object recipe : recipes) {
+                                                if (recipe instanceof MachineRecipe machineRecipe) {
+                                                    for (ItemStack input : machineRecipe.getInput()) {
+                                                        String s = ItemUtils.getItemName(input);
+                                                        if (!inBanlist(s)) {
+                                                            cache.add(s);
+                                                        }
+                                                    }
+                                                    for (ItemStack output : machineRecipe.getOutput()) {
+                                                        String s = ItemUtils.getItemName(output);
+                                                        if (!inBanlist(s)) {
+                                                            cache.add(s);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            continue;
+                                        }
                                     }
                                     for (Object recipe : recipes) {
                                         String[] strings = (String[]) ReflectionUtil.getValue(recipe, "strings");
@@ -608,46 +628,26 @@ public class SearchGroup extends FlexItemGroup {
                                             }
                                         }
 
-                                                            ItemStack output = (ItemStack)
-                                                                    ReflectionUtil.getValue(recipe, "output");
-                                                            if (output != null) {
-                                                                String s = ItemStackHelper.getDisplayName(output);
-                                                                if (!inBanlist(s)) {
-                                                                    cache.add(s);
-                                                                }
-                                                            }
-                                                        }
-                                                    } else if (isInstance(item, "AbstractElectricMachine")) {
-                                                        // DynaTech - AbstractElectricMachine
-                                                        // recipes -> List<MachineRecipe>
-                                                        for (Object recipe : recipes) {
-                                                            if (recipe instanceof MachineRecipe machineRecipe) {
-                                                                for (ItemStack input : machineRecipe.getInput()) {
-                                                                    String s = ItemStackHelper.getDisplayName(input);
-                                                                    if (!inBanlist(s)) {
-                                                                        cache.add(s);
-                                                                    }
-                                                                }
-                                                                for (ItemStack output : machineRecipe.getOutput()) {
-                                                                    String s = ItemStackHelper.getDisplayName(output);
-                                                                    if (!inBanlist(s)) {
-                                                                        cache.add(s);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                if (!cache.isEmpty()) {
-                                                    SPECIAL_CACHE.put(id, new SoftReference<>(cache));
-                                                }
+                                        ItemStack output = (ItemStack)
+                                                ReflectionUtil.getValue(recipe, "output");
+                                        if (output != null) {
+                                            String s = ItemUtils.getItemName(output);
+                                            if (!inBanlist(s)) {
+                                                cache.add(s);
                                             }
-                                        } catch (Exception ignored) {
                                         }
-                                    } catch (Exception ignored) {
                                     }
                                 }
+
+                                if (!cache.isEmpty()) {
+                                    SPECIAL_CACHE.put(id, new SoftReference<>(cache));
+                                }
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
 
                 // InfinityExpansion StoneworksFactory
                 Set<Material> materials = new HashSet<>();
@@ -1151,7 +1151,7 @@ public class SearchGroup extends FlexItemGroup {
                     ss,
                     PatchScope.Back.patch(
                             player,
-                            SlimefunOfficialSupporter.getBackButton(player));
+                            SlimefunOfficialSupporter.getBackButton(player)));
             chestMenu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(
                             new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
                     .ifSuccess(() -> {
@@ -1471,11 +1471,37 @@ public class SearchGroup extends FlexItemGroup {
             merge.addAll(items);
         }
 
-        if (pinyin && onlyAscii(searchTerm)) {
-            return sortByPinyinContinuity(merge, actualSearchTerm);
+        return sortByNameFit(merge, actualSearchTerm);
+    }
+
+    /**
+     * Calculates the name fit score between two strings.
+     *
+     * @param name       The name to calculate the name fit score for.
+     * @param searchTerm The search term
+     * @return The name fit score. Non-negative integer.
+     */
+    public static int nameFit(@NotNull String name, @NotNull String searchTerm) {
+        int distance = levenshteinDistance(searchTerm.toLowerCase(Locale.ROOT), name.toLowerCase(Locale.ROOT));
+        int maxLen = Math.max(searchTerm.length(), name.length());
+
+        int matchScore;
+        if (maxLen == 0) {
+            matchScore = 100;
         } else {
-            return sortByNameFit(merge, actualSearchTerm);
+            matchScore = (int) (100 * (1 - (double) distance / maxLen));
         }
+
+        return matchScore;
+    }
+
+    public static @NotNull List<SlimefunItem> sortByNameFit(
+            @NotNull Set<SlimefunItem> origin, @NotNull String searchTerm) {
+        return origin.stream()
+                .sorted(Comparator.comparingInt(item ->
+                        /* Intentionally negative */
+                        -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
+                .toList();
     }
 
     /**
@@ -1492,10 +1518,7 @@ public class SearchGroup extends FlexItemGroup {
             @NotNull String filterValue,
             boolean pinyin,
             @NotNull List<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
-        return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .toList();
+        return filterItems(player, filterType, filterValue, pinyin, items);
     }
 
     /**
@@ -1512,9 +1535,6 @@ public class SearchGroup extends FlexItemGroup {
             @NotNull String filterValue,
             boolean pinyin,
             @NotNull Set<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
-        return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .collect(Collectors.toSet());
+        return filterItems(player, filterType, filterValue, pinyin, items);
     }
 }
