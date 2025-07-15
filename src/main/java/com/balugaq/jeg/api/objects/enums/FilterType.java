@@ -39,8 +39,8 @@ import lombok.Getter;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.lang.ref.Reference;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +49,7 @@ import java.util.Set;
  * @author balugaq
  * @since 1.1
  */
+@SuppressWarnings("ConstantValue")
 @Getter
 public enum FilterType {
     BY_RECIPE_ITEM_NAME("#", (player, item, lowerFilterValue, pinyin) -> {
@@ -81,7 +82,7 @@ public enum FilterType {
             // Fix: Fix NullPointerException occurred when searching items from SlimeFood
             try {
                 display = mb.getDisplayRecipes();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 Debug.trace(e, "searching");
                 return false;
             }
@@ -90,7 +91,7 @@ public enum FilterType {
                 if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item) && item instanceof RecipeDisplayItem rdi) {
                     display = rdi.getDisplayRecipes();
                 }
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 Debug.trace(e, "searching");
                 return false;
             }
@@ -139,9 +140,9 @@ public enum FilterType {
     }),
     BY_MATERIAL_NAME("~", (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue));
 
-    private @Nonnull
+    private @NotNull
     final String symbol;
-    private @Nonnull
+    private @NotNull
     final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;
 
     /**
@@ -150,13 +151,13 @@ public enum FilterType {
      * @param symbol The string symbol of the filter type.
      * @param filter The filter function to determine whether an item matches the filter.
      */
-    FilterType(@Nonnull String symbol, @Nonnull DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
+    FilterType(@NotNull String symbol, @NotNull DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
         this.symbol = symbol;
         this.filter = filter;
     }
 
     @Deprecated
-    public String getFlag() {
+    public @NotNull String getFlag() {
         return symbol;
     }
 

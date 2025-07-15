@@ -32,6 +32,5 @@ package com.balugaq.jeg.api.objects.events;
  * used in JEG and outer connection.
  *
  * @author balugaq
- * @see com.balugaq.jeg.api.objects.events.RTSEvents
  * @since 1.3
  */

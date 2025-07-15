@@ -7,9 +7,6 @@ version: ${project.version}
 api-version: 1.17
 depend:
   - Slimefun
-softdepend:
-  - LogiTech
-  - SlimefunTranslation
 commands:
   justenoughguide:
     aliases:

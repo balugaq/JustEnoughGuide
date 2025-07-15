@@ -28,6 +28,7 @@
 package com.balugaq.jeg.utils.compatibility;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import lombok.SneakyThrows;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -41,17 +42,24 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author balugaq
  * @since 1.4
  */
+@SuppressWarnings("unused")
 @ApiStatus.Experimental
 public class Converter {
     public static final ItemStack AIR = new ItemStack(Material.AIR);
     public static final @Nullable ItemGetter methodHandleSlimefunItemStack_item = createItemGetter();
+
+    public static @NotNull Builder builder() {
+        return new Builder();
+    }
 
     /**
      * Converts a SlimefunItemStack to a Bukkit ItemStack.
@@ -59,7 +67,7 @@ public class Converter {
      * @param slimefunItemStack the SlimefunItemStack to convert
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(SlimefunItemStack slimefunItemStack) {
+    public static @NotNull ItemStack getItem(@NotNull SlimefunItemStack slimefunItemStack) {
         return asBukkit(slimefunItemStack);
     }
 
@@ -90,7 +98,8 @@ public class Converter {
      * @param itemMetaConsumer the consumer to modify the item metadata
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(@NotNull ItemStack itemStack, @NotNull Consumer<ItemMeta> itemMetaConsumer) {
+    public static @NotNull ItemStack getItem(
+            @NotNull ItemStack itemStack, @NotNull Consumer<ItemMeta> itemMetaConsumer) {
         return new CustomItemStack(itemStack, itemMetaConsumer).asBukkit();
     }
 
@@ -98,11 +107,11 @@ public class Converter {
      * Converts a Material to a Bukkit ItemStack with custom metadata.
      *
      * @param material the Material to convert
-     * @param meta     the consumer to modify the item metadata
+     * @param consumer the consumer to modify the item metadata
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(@NotNull Material material, @NotNull Consumer<ItemMeta> meta) {
-        return new CustomItemStack(material, meta).asBukkit();
+    public static @NotNull ItemStack getItem(@NotNull Material material, @NotNull Consumer<ItemMeta> consumer) {
+        return new CustomItemStack(material, consumer).asBukkit();
     }
 
     /**
@@ -113,7 +122,21 @@ public class Converter {
      * @param lore      the lore of the item
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(@NotNull ItemStack itemStack, @Nullable String name, @NotNull String @NotNull ... lore) {
+    public static @NotNull ItemStack getItem(
+            @NotNull ItemStack itemStack, @Nullable String name, @NotNull List<String> lore) {
+        return new CustomItemStack(itemStack, name, lore).asBukkit();
+    }
+
+    /**
+     * Converts a Bukkit ItemStack to another Bukkit ItemStack with a name and lore.
+     *
+     * @param itemStack the Bukkit ItemStack to convert
+     * @param name      the name of the item
+     * @param lore      the lore of the item
+     * @return the converted Bukkit ItemStack
+     */
+    public static @NotNull ItemStack getItem(
+            @NotNull ItemStack itemStack, @Nullable String name, @NotNull String @NotNull ... lore) {
         return new CustomItemStack(itemStack, name, lore).asBukkit();
     }
 
@@ -126,7 +149,8 @@ public class Converter {
      * @param lore      the lore of the item
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(@NotNull ItemStack itemStack, Color color, @Nullable String name, String @NotNull ... lore) {
+    public static @NotNull ItemStack getItem(
+            @NotNull ItemStack itemStack, Color color, @Nullable String name, @NotNull String @NotNull ... lore) {
         return new CustomItemStack(itemStack, color, name, lore).asBukkit();
     }
 
@@ -138,7 +162,8 @@ public class Converter {
      * @param lore     the lore of the item
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(@NotNull Material material, String name, String... lore) {
+    public static @NotNull ItemStack getItem(
+            @NotNull Material material, @Nullable String name, @NotNull String @NotNull ... lore) {
         return new CustomItemStack(material, name, lore).asBukkit();
     }
 
@@ -183,7 +208,8 @@ public class Converter {
      * @param amount    the amount of the item
      * @return the converted Bukkit ItemStack
      */
-    public static @NotNull ItemStack getItem(@NotNull ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
+    public static @NotNull ItemStack getItem(
+            @NotNull ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
         return new CustomItemStack(itemStack, amount).asBukkit();
     }
 
@@ -198,7 +224,8 @@ public class Converter {
         return new CustomItemStack(itemStack, material).asBukkit();
     }
 
-    public static @NotNull ItemStack getItem(@NotNull Material material, @NotNull String name, Consumer<ItemMeta> consumer) {
+    public static @NotNull ItemStack getItem(
+            @NotNull Material material, @NotNull String name, @NotNull Consumer<ItemMeta> consumer) {
         return new CustomItemStack(new CustomItemStack(material, name).asBukkit(), consumer).asBukkit();
     }
 
@@ -207,16 +234,23 @@ public class Converter {
      *
      * @return the created ItemGetter
      */
+    @SneakyThrows
     private static @Nullable ItemGetter createItemGetter() {
         try {
             MethodHandles.Lookup lookup = MethodHandles.lookup();
             MethodType mt = MethodType.methodType(ItemStack.class);
+            @SuppressWarnings("JavaLangInvokeHandleSignature")
             MethodHandle handle = lookup.findVirtual(SlimefunItemStack.class, "item", mt);
             return (ItemGetter) LambdaMetafactory.metafactory(
-                    lookup, "getItem", MethodType.methodType(ItemGetter.class),
-                    handle.type().generic(), handle, handle.type()
-            ).getTarget().invokeExact();
-        } catch (Throwable t) {
+                            lookup,
+                            "getItem",
+                            MethodType.methodType(ItemGetter.class),
+                            handle.type().generic(),
+                            handle,
+                            handle.type())
+                    .getTarget()
+                    .invokeExact();
+        } catch (Exception t) {
             return null;
         }
     }
@@ -227,6 +261,7 @@ public class Converter {
      * @param item the SlimefunItemStack to convert
      * @return the converted Bukkit ItemStack
      */
+    @SuppressWarnings({"RedundantClassCall", "ConstantValue"})
     @NotNull
     public static ItemStack asBukkit(@Nullable SlimefunItemStack item) {
         if (item == null) {
@@ -260,5 +295,140 @@ public class Converter {
     @FunctionalInterface
     public interface ItemGetter {
         ItemStack getItem(SlimefunItemStack item);
+    }
+
+    @SuppressWarnings("unused")
+    public static class Builder {
+        public final List<ItemStack> itemStacks = new ArrayList<>();
+        public boolean ifValue = true;
+        public int index = 0;
+
+        public @NotNull Builder if_(boolean expression) {
+            this.ifValue = expression;
+            return this;
+        }
+
+        public @NotNull Builder thenTryFirst() {
+            this.index = 0;
+            return this;
+        }
+
+        public @NotNull Builder thenTrySecond() {
+            this.index = 1;
+            return this;
+        }
+
+        public @NotNull Builder thenTry(int index) {
+            this.index = index;
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull SlimefunItemStack slimefunItemStack) {
+            itemStacks.add(getItem(slimefunItemStack));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull ItemStack itemStack) {
+            itemStacks.add(getItem(itemStack));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull Material material) {
+            itemStacks.add(getItem(material));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull ItemStack itemStack, @NotNull Consumer<ItemMeta> itemMetaConsumer) {
+            itemStacks.add(getItem(itemStack, itemMetaConsumer));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull Material material, @NotNull Consumer<ItemMeta> itemMetaConsumer) {
+            itemStacks.add(getItem(material, itemMetaConsumer));
+            return this;
+        }
+
+        public @NotNull Builder add(
+                @NotNull ItemStack itemStack, @Nullable String name, @NotNull String @NotNull ... lore) {
+            itemStacks.add(getItem(itemStack, name, lore));
+            return this;
+        }
+
+        public @NotNull Builder add(
+                @NotNull ItemStack itemStack, Color color, @Nullable String name, String @NotNull ... lore) {
+            itemStacks.add(getItem(itemStack, color, name, lore));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull Material material, String name, String... lore) {
+            itemStacks.add(getItem(material, name, lore));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull Material material, String name, @NotNull List<String> lore) {
+            itemStacks.add(getItem(material, name, lore));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull ItemStack itemStack, @NotNull List<String> list) {
+            itemStacks.add(getItem(itemStack, list));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull Material material, @NotNull List<String> list) {
+            itemStacks.add(getItem(material, list));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
+            itemStacks.add(getItem(itemStack, amount));
+            return this;
+        }
+
+        public @NotNull Builder add(@NotNull ItemStack itemStack, @NotNull Material material) {
+            itemStacks.add(getItem(itemStack, material));
+            return this;
+        }
+
+        public @NotNull Builder add(
+                @NotNull Material material, @NotNull String name, @NotNull Consumer<ItemMeta> consumer) {
+            itemStacks.add(getItem(material, name, consumer));
+            return this;
+        }
+
+        public ItemStack thenFirst() {
+            return ifValue ? itemStacks.get(index) : AIR.clone();
+        }
+
+        public ItemStack thenSecond() {
+            return ifValue ? itemStacks.get(index) : AIR.clone();
+        }
+
+        public ItemStack then(int index) {
+            return ifValue ? itemStacks.get(index) : AIR.clone();
+        }
+
+        public ItemStack orElse() {
+            return ifValue ? itemStacks.get(index) : AIR.clone();
+        }
+
+        public ItemStack orElse(int index) {
+            return ifValue ? itemStacks.get(this.index) : itemStacks.get(index);
+        }
+
+        public ItemStack orElse(ItemStack itemStack) {
+            return ifValue ? itemStacks.get(this.index) : itemStack;
+        }
+
+        public ItemStack orElseGet(@NotNull Supplier<ItemStack> supplier) {
+            return ifValue ? itemStacks.get(this.index) : supplier.get();
+        }
+
+        public @NotNull ItemStack findFirst() {
+            return itemStacks.stream()
+                    .filter(itemStack -> itemStack != null && itemStack.getType() != Material.AIR)
+                    .findFirst()
+                    .orElse(AIR.clone());
+        }
     }
 }

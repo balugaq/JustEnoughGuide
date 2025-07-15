@@ -46,6 +46,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.1
  */
+@SuppressWarnings({"ClassCanBeRecord", "deprecation", "SwitchStatementWithTooFewBranches"})
 @Getter
 public class ReloadCommand implements JEGCommand {
     private final Plugin plugin;
@@ -69,15 +70,13 @@ public class ReloadCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String @NotNull [] args) {
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final @NotNull String @NotNull [] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
-                if ("reload".equalsIgnoreCase(args[0])) {
-                    return true;
-                }
+                return "reload".equalsIgnoreCase(args[0]);
             }
         }
         return false;
@@ -85,7 +84,10 @@ public class ReloadCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+            final @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args) {
         onReload(sender);
     }
 
@@ -99,14 +101,14 @@ public class ReloadCommand implements JEGCommand {
 
             plugin.onDisable();
             plugin.onEnable();
-            plugin.reloadConfig();
+            plugin.reloadConfig(); // 1st reload
             SearchGroup.LOADED = false;
             SearchGroup.init();
+            plugin.reloadConfig(); // 2nd reload
             sender.sendMessage(Lang.getCommandMessage("reload", "success"));
         } catch (Throwable e) {
             sender.sendMessage(Lang.getCommandMessage("reload", "failed"));
             Debug.trace(e);
-            return;
         }
     }
 }

@@ -58,6 +58,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -66,7 +67,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementation {
     NamespacedKey UNLOCK_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "unlock_item");
 
@@ -95,12 +96,20 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                 return ItemStackUtil.getCleanItem(
                         slimefunItem.canUse(p, false)
                                 ? item
-                                : Converter.getItem(Converter.getItem(
-                                Material.BARRIER,
-                                ItemUtils.getItemName(item),
-                                "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
-                                "",
-                                lore), meta -> meta.getPersistentDataContainer().set(UNLOCK_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId())));
+                                : Converter.getItem(
+                                Converter.getItem(
+                                        Material.BARRIER,
+                                        ItemUtils.getItemName(item),
+                                        "&4&l"
+                                                + Slimefun.getLocalization()
+                                                .getMessage(p, "guide.locked"),
+                                        "",
+                                        lore),
+                                meta -> meta.getPersistentDataContainer()
+                                        .set(
+                                                UNLOCK_ITEM_KEY,
+                                                PersistentDataType.STRING,
+                                                slimefunItem.getId())));
             } else {
                 return ItemStackUtil.getCleanItem(
                         slimefunItem.canUse(p, false)
@@ -128,7 +137,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         return Slimefun.getPermissionsService().hasPermission(p, item);
     }
 
-    void showItemGroup0(@NotNull ChestMenu menu, @NotNull Player p, @NotNull PlayerProfile profile, ItemGroup group, int index);
+    @ParametersAreNonnullByDefault
+    void showItemGroup0(ChestMenu menu, Player p, PlayerProfile profile, ItemGroup group, int index);
 
     @NotNull
     default ChestMenu create0(@NotNull Player p) {
@@ -145,7 +155,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
      * @param player  The player.
      * @param profile The player profile.
      */
-    default void openBookMarkGroup(@NotNull Player player, @NotNull PlayerProfile profile) {
+    @ParametersAreNonnullByDefault
+    default void openBookMarkGroup(Player player, PlayerProfile profile) {
         List<SlimefunItem> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
         if (items == null || items.isEmpty()) {
             player.sendMessage(ChatColor.RED + "You haven't collected any items yet!");
@@ -161,19 +172,21 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
      * @param player    The player.
      * @param profile   The player profile.
      */
-    default void openItemMarkGroup(
-            @NotNull ItemGroup itemGroup, @NotNull Player player, @NotNull PlayerProfile profile) {
+    @ParametersAreNonnullByDefault
+    default void openItemMarkGroup(ItemGroup itemGroup, Player player, PlayerProfile profile) {
         new ItemMarkGroup(this, itemGroup, player).open(player, profile, getMode());
     }
 
-    void openNestedItemGroup(@NotNull Player p, @NotNull PlayerProfile profile, @NotNull NestedItemGroup nested, int page);
+    @ParametersAreNonnullByDefault
+    void openNestedItemGroup(Player p, PlayerProfile profile, NestedItemGroup nested, int page);
 
+    @ParametersAreNonnullByDefault
     void displaySlimefunItem0(
-            @NotNull ChestMenu menu,
-            @NotNull ItemGroup itemGroup,
-            @NotNull Player p,
-            @NotNull PlayerProfile profile,
-            @NotNull SlimefunItem sfitem,
+            ChestMenu menu,
+            ItemGroup itemGroup,
+            Player p,
+            PlayerProfile profile,
+            SlimefunItem sfitem,
             int page,
             int index);
 
@@ -183,41 +196,47 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     void showMinecraftRecipe0(
             Recipe @NotNull [] recipes,
             int index,
-            @NotNull ItemStack item,
-            @NotNull PlayerProfile profile,
-            @NotNull Player p,
+            final @NotNull ItemStack item,
+            final @NotNull PlayerProfile profile,
+            final @NotNull Player p,
             boolean addToHistory);
 
     <T extends Recipe> void showRecipeChoices0(
-            @NotNull T recipe, ItemStack[] recipeItems, @NotNull AsyncRecipeChoiceTask task);
+            final @NotNull T recipe, ItemStack[] recipeItems, @NotNull AsyncRecipeChoiceTask task);
 
     @ParametersAreNonnullByDefault
     default void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial) {
-        displayItem(profile, item, addToHistory, maybeSpecial, item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe);
+        displayItem(
+                profile,
+                item,
+                addToHistory,
+                maybeSpecial,
+                item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe);
     }
 
     @ParametersAreNonnullByDefault
-    void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial, Format format);
+    void displayItem(
+            PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial, Format format);
 
     void displayItem0(
-            @NotNull ChestMenu menu,
-            @NotNull PlayerProfile profile,
-            @NotNull Player p,
+            final @NotNull ChestMenu menu,
+            final @NotNull PlayerProfile profile,
+            final @NotNull Player p,
             Object item,
             ItemStack output,
-            @NotNull RecipeType recipeType,
+            final @NotNull RecipeType recipeType,
             ItemStack[] recipe,
-            @NotNull AsyncRecipeChoiceTask task);
+            final @NotNull AsyncRecipeChoiceTask task);
 
     void displayItem(
-            @NotNull ChestMenu menu,
-            @NotNull PlayerProfile profile,
-            @NotNull Player p,
+            final @NotNull ChestMenu menu,
+            final @NotNull PlayerProfile profile,
+            final @NotNull Player p,
             Object item,
             ItemStack output,
-            @NotNull RecipeType recipeType,
+            final @NotNull RecipeType recipeType,
             ItemStack[] recipe,
-            @NotNull AsyncRecipeChoiceTask task,
+            final @NotNull AsyncRecipeChoiceTask task,
             Format format);
 
     @ParametersAreNonnullByDefault
@@ -226,17 +245,19 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     @ParametersAreNonnullByDefault
     void createHeader(Player p, PlayerProfile profile, ChestMenu menu, ItemGroup itemGroup);
 
-    void addBackButton0(@NotNull ChestMenu menu, int slot, @NotNull Player p, @NotNull PlayerProfile profile);
+    @ParametersAreNonnullByDefault
+    void addBackButton0(ChestMenu menu, @Range(from = 0, to = 53) int slot, Player p, PlayerProfile profile);
 
     @ParametersAreNonnullByDefault
     void displayRecipes0(Player p, PlayerProfile profile, ChestMenu menu, RecipeDisplayItem sfItem, int page);
 
+    @ParametersAreNonnullByDefault
     void addDisplayRecipe0(
-            @NotNull ChestMenu menu,
-            @NotNull PlayerProfile profile,
-            @NotNull List<ItemStack> recipes,
-            int slot,
-            int i,
+            ChestMenu menu,
+            PlayerProfile profile,
+            List<ItemStack> recipes,
+            @Range(from = 0, to = 53) int slot,
+            int index,
             int page);
 
     @ParametersAreNonnullByDefault

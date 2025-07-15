@@ -1,0 +1,50 @@
+enabled: true
+
+groups:
+  group1:
+    enabled: false
+    tier: 1
+    id: custom-group # [a-z0-9/._-]
+    mode: transfer # transfer / merge
+    display:
+      # material / skull(hash/base64/url)
+      material: glass
+      name: "&aCustom Group"
+    items:
+      - COPPER_INGOT
+    # Format
+    # B = Background
+    # b = Back
+    # R = RTS (Background if disabled)
+    # C = Collections (Background if disabled)
+    # c = Collect item (Background if disabled)
+    # S = Search
+    # i = Item / Item groups
+    # P = Previous Page
+    # N = Next Page
+    formats:
+      - "BbBBBBRSB"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "BPBcCBBNB"
+  group2:
+    enabled: false
+    tier: 2
+    id: custom-group2
+    mode: merge
+    display:
+      material: grass
+      name: "&aCustom Group2"
+    groups:
+      - slimefun:misc
+    items:
+      - ZINC_INGOT
+    formats:
+      - "BbBBBBRSB"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "BPBcCBBNB"

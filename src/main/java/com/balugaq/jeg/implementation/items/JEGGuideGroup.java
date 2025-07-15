@@ -38,6 +38,7 @@ import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -68,20 +69,23 @@ public class JEGGuideGroup extends ClassicGuideGroup {
     public static final int[] BORDER_SLOTS = Formats.helper.getChars('B').stream().mapToInt(i -> i).toArray();
     private static final ItemStack HEADER = Lang.getGuideGroupIcon("header", Material.BEACON);
 
+    @SuppressWarnings("SameParameterValue")
     protected JEGGuideGroup(@NotNull NamespacedKey key, @NotNull ItemStack icon) {
         super(key, icon, Integer.MAX_VALUE);
         for (int slot : BORDER_SLOTS) {
             addGuide(slot, ChestMenuUtils.getBackground());
         }
         boolean loaded = false;
-        for (var s : Formats.helper.getChars('A')) {
+        for (int s : Formats.helper.getChars('A')) {
             addGuide(s, HEADER);
             loaded = true;
         }
 
         if (!loaded) {
             // Well... the user removed my author information
-            throw new ArgumentMissingException("You're not supposed to remove symbol 'A'... Which means Author Information.");
+            throw new ArgumentMissingException(
+                    "You're not supposed to remove symbol 'A'... Which means Author Information. " + "format="
+                            + Formats.helper);
         }
 
         final AtomicInteger index = new AtomicInteger(0);
@@ -92,7 +96,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search a");
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occurred when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -205,8 +209,13 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                             return false;
                         }
 
+                        if (exampleItem.isDisabledIn(p.getWorld())) {
+                            p.sendMessage("§cThe example item has been disabled, unable to display.");
+                            return false;
+                        }
+
                         guide.displayItem(profile, exampleItem, true);
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -245,8 +254,13 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                             return false;
                         }
 
+                        if (exampleItem.isDisabledIn(p.getWorld())) {
+                            p.sendMessage("§cThe example item has been disabled, unable to display.");
+                            return false;
+                        }
+
                         jegGuide.displayItem(profile, exampleItem, true);
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -287,8 +301,13 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 return false;
                             }
 
-                            jegGuide.displayItem(profile, exampleItem, true);
-                        } catch (Throwable e) {
+                            if (exampleItem.isDisabledIn(p.getWorld())) {
+                                p.sendMessage("§cThe example item has been disabled, unable to display.");
+                                return false;
+                            }
+
+                            guide.displayItem(profile, exampleItem, true);
+                        } catch (Exception e) {
                             p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                             Debug.trace(e);
                         }
@@ -301,7 +320,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 Lang.getGuideGroupIcon("feature-smart-search", Material.COMPARATOR), (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search sulfate");
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -315,7 +334,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_recipe_item_name + "battery");
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -329,7 +348,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_recipe_type_name + "crafting table");
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -343,7 +362,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_display_item_name + "copper.dust");
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -371,7 +390,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_item_name + "Battery");
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
@@ -385,19 +404,67 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_material_name + "iron");
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
                         Debug.trace(e);
                     }
                     return false;
                 });
+
+        addGuide(
+                GUIDE_SLOTS[index.getAndIncrement()],
+                Lang.getGuideGroupIcon("feature-name-printing", Material.STONE_PICKAXE),
+                (p, s, i, a) -> {
+                    try {
+                        if (Slimefun.instance() == null) {
+                            p.sendMessage("§cSlimefun disabled. (impossible!)");
+                            return false;
+                        }
+
+                        SlimefunGuideImplementation guide = GuideUtil.getGuide(p, SlimefunGuideMode.SURVIVAL_MODE);
+                        if (!(guide instanceof JEGSlimefunGuideImplementation jegGuide)) {
+                            p.sendMessage("§cFeature disabled.");
+                            return false;
+                        }
+
+                        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+                        if (profile == null) {
+                            p.sendMessage("§cNo PlayerProfile found!");
+                            return false;
+                        }
+
+                        if (!BeginnersGuideOption.isEnabled(p)) {
+                            p.sendMessage("§cYou have to enable BeginnersGuideOption in Guide Settings to use this feature!");
+                            return false;
+                        }
+
+                        SlimefunItem exampleItem = SlimefunItems.ELECTRIC_DUST_WASHER_3.getItem();
+                        if (exampleItem == null) {
+                            p.sendMessage("§cExample item not found! (weird)");
+                            return false;
+                        }
+
+                        if (exampleItem.isDisabledIn(p.getWorld())) {
+                            p.sendMessage("§cThe example item has been disabled, unable to display.");
+                            return false;
+                        }
+
+                        guide.displayItem(profile, exampleItem, true);
+                    } catch (Exception e) {
+                        p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
+                        Debug.trace(e);
+                    }
+                    return false;
+                });
+
+        Formats.helper.renderCustom(this);
     }
 
     public static void doIf(boolean expression, @NotNull Runnable runnable) {
         if (expression) {
             try {
                 runnable.run();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 Debug.trace(e, "loading guide group");
             }
         }

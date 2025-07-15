@@ -28,8 +28,7 @@
 package com.balugaq.jeg.utils.formatter;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ import java.util.List;
  * @since 1.6
  */
 public class RecipeDisplayFormat extends Format {
-    public static List<Integer> fenceShuffle(List<Integer> list) {
+    public static @NotNull List<Integer> fenceShuffle(@NotNull List<Integer> list) {
         int size = list.size();
         int splitPoint = (size + 1) / 2;
 
@@ -63,10 +62,5 @@ public class RecipeDisplayFormat extends Format {
     @Override
     public void loadMapping() {
         loadMapping(JustEnoughGuide.getConfigManager().getRecipeDisplayFormat());
-    }
-
-    @Deprecated
-    public void decorate(ChestMenu menu, Player player) {
-        super.decorate(menu, player);
     }
 }

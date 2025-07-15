@@ -1,0 +1,12 @@
+# More details for the definition: https://rsc.hiworldmc.com/#/format/universal-item-format
+# Symbol: # symbol max length: 1
+#   material_type: # mc (mc/slimefun/none/skull_hash/skull_base64/skull_url)
+#   material: grass # (material/skull(hash/base64/url))
+#   name: "&aTest icon"
+#   lore:
+#     - "Line 1"
+#     - "Line 114514"
+#   modelId: 0 # (CustomModelId)
+#   glow: true/false
+#   color: "0.255.0"
+

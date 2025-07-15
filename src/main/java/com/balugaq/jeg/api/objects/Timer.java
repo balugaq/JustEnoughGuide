@@ -28,8 +28,7 @@
 package com.balugaq.jeg.api.objects;
 
 import com.balugaq.jeg.utils.Debug;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A simple timer class.
@@ -37,9 +36,10 @@ import javax.annotation.Nonnull;
  * @author balugaq
  * @since 1.2
  */
+@SuppressWarnings("unused")
 public class Timer {
     public static long start;
-    public @Nonnull
+    public @NotNull
     final String name;
     public long starts;
 
@@ -48,7 +48,7 @@ public class Timer {
      *
      * @param name The name of the timer.
      */
-    public Timer(@Nonnull String name) {
+    public Timer(@NotNull String name) {
         this.name = name;
     }
 

@@ -45,4 +45,16 @@ public class SlimefunOfficialSupporter {
 
         return slimefunItem.getItemName();
     }
+
+    public static boolean isResearchingEnabled() {
+        return Slimefun.getRegistry().isResearchingEnabled();
+    }
+
+    public static boolean isLearningAnimationDisabled() {
+        return Slimefun.getRegistry().isLearningAnimationDisabled();
+    }
+
+    public static boolean isResearchFireworkEnabled() {
+        return Slimefun.getRegistry().isResearchFireworkEnabled();
+    }
 }

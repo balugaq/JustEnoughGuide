@@ -37,7 +37,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +50,10 @@ import java.util.Set;
  * @author balugaq
  * @since 1.5
  */
+@SuppressWarnings({"ClassCanBeRecord", "deprecation", "ConstantValue"})
 @Getter
 public class CacheCommand implements JEGCommand {
-    private @Nonnull
+    private @NotNull
     final Plugin plugin;
 
     /**
@@ -61,7 +61,7 @@ public class CacheCommand implements JEGCommand {
      *
      * @param plugin The plugin instance.
      */
-    public CacheCommand(@Nonnull Plugin plugin) {
+    public CacheCommand(@NotNull Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -102,15 +102,13 @@ public class CacheCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String @NotNull [] args) {
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final @NotNull String @NotNull [] args) {
         if (sender.isOp()) {
             if (args.length >= 1) {
-                if ("cache".equalsIgnoreCase(args[0])) {
-                    return true;
-                }
+                return "cache".equalsIgnoreCase(args[0]);
             }
         }
         return false;
@@ -118,7 +116,10 @@ public class CacheCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+            final @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String @NotNull [] args) {
         onCheck(sender, args);
     }
 
@@ -173,7 +174,6 @@ public class CacheCommand implements JEGCommand {
                 }
             } else {
                 sender.sendMessage(Lang.getCommandMessage("cache", "invalid-cache-key", "key", key));
-                return;
             }
         } else {
             sender.sendMessage(Lang.getCommandMessage("cache", "wrong-cache-section"));

@@ -27,13 +27,19 @@
 
 package com.balugaq.jeg.api.groups;
 
+import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
+import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
+import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.Lang;
+import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
@@ -52,7 +58,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -74,19 +79,27 @@ import java.util.logging.Level;
  * @since 1.1
  */
 @SuppressWarnings({"deprecation", "unused"})
+@DisplayInCheatMode
 @NotDisplayInSurvivalMode
 public class NexcavateItemsGroup extends FlexItemGroup {
-    private static final List<SlimefunItem> ALL_SLIMEFUN_ITEMS = Slimefun.getRegistry().getAllSlimefunItems();
+    private static final List<SlimefunItem> ALL_SLIMEFUN_ITEMS =
+            Slimefun.getRegistry().getAllSlimefunItems();
+
     @Deprecated
     private static final int BACK_SLOT = 1;
+
     @Deprecated
     private static final int SEARCH_SLOT = 7;
+
     @Deprecated
     private static final int PREVIOUS_SLOT = 46;
+
     @Deprecated
     private static final int NEXT_SLOT = 52;
+
     @Deprecated
     private static final int[] BORDER = new int[]{0, 2, 3, 4, 5, 6, 8, 45, 47, 48, 49, 50, 51, 53};
+
     @Deprecated
     private static final int[] MAIN_CONTENT = new int[]{
             9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -100,6 +113,7 @@ public class NexcavateItemsGroup extends FlexItemGroup {
     private final List<SlimefunItem> slimefunItemList;
     private Map<Integer, NexcavateItemsGroup> pageMap = new LinkedHashMap<>();
 
+    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     @ParametersAreNonnullByDefault
     public NexcavateItemsGroup(NamespacedKey key, ItemStack icon) {
         super(key, icon);
@@ -115,13 +129,13 @@ public class NexcavateItemsGroup extends FlexItemGroup {
     }
 
     /**
-     * Constructor of nexvacateItemsGroup.
+     * Constructor of NexcavateItemsGroup.
      *
-     * @param nexcavateItemsGroup The nexvacateItemsGroup to copy.
+     * @param nexcavateItemsGroup The NexcavateItemsGroup to copy.
      * @param page                The page number to display.
      */
     protected NexcavateItemsGroup(@NotNull NexcavateItemsGroup nexcavateItemsGroup, int page) {
-        super(nexcavateItemsGroup.key, new ItemStack(Material.BARRIER));
+        super(nexcavateItemsGroup.key, Lang.NEXCAVATE_ITEMS_GROUP_ITEM);
         this.page = page;
         this.slimefunItemList = nexcavateItemsGroup.slimefunItemList;
         this.pageMap.put(page, this);
@@ -137,9 +151,9 @@ public class NexcavateItemsGroup extends FlexItemGroup {
      */
     @Override
     public boolean isVisible(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode) {
+            final @NotNull Player player,
+            final @NotNull PlayerProfile playerProfile,
+            final @NotNull SlimefunGuideMode slimefunGuideMode) {
         return true;
     }
 
@@ -152,9 +166,9 @@ public class NexcavateItemsGroup extends FlexItemGroup {
      */
     @Override
     public void open(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode) {
+            final @NotNull Player player,
+            final @NotNull PlayerProfile playerProfile,
+            final @NotNull SlimefunGuideMode slimefunGuideMode) {
         playerProfile.getGuideHistory().add(this, this.page);
         this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
     }
@@ -167,9 +181,9 @@ public class NexcavateItemsGroup extends FlexItemGroup {
      * @param slimefunGuideMode The Slimefun guide mode.
      */
     public void refresh(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode) {
+            final @NotNull Player player,
+            final @NotNull PlayerProfile playerProfile,
+            final @NotNull SlimefunGuideMode slimefunGuideMode) {
         GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
         this.open(player, playerProfile, slimefunGuideMode);
     }
@@ -184,79 +198,104 @@ public class NexcavateItemsGroup extends FlexItemGroup {
      */
     @NotNull
     private ChestMenu generateMenu(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("Nexcavate Items");
+            final @NotNull Player player,
+            final @NotNull PlayerProfile playerProfile,
+            final @NotNull SlimefunGuideMode slimefunGuideMode) {
+        ChestMenu chestMenu = new ChestMenu("文明复兴物品");
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
 
-        for (var ss : Formats.sub.getChars('b')) {
-            chestMenu.addItem(ss, ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(player)));
-            chestMenu.addMenuClickHandler(ss, (pl, s, is, action) -> {
-                GuideHistory guideHistory = playerProfile.getGuideHistory();
-                if (action.isShiftClicked()) {
-                    SlimefunGuide.openMainMenu(playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                } else {
-                    guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE));
-                }
-                return false;
-            });
+        SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode);
+        for (int ss : Formats.sub.getChars('b')) {
+            chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
+            chestMenu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(
+                            new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
+                    .ifSuccess(() -> {
+                        GuideHistory guideHistory = playerProfile.getGuideHistory();
+                        if (action.isShiftClicked()) {
+                            SlimefunGuide.openMainMenu(
+                                    playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                        } else {
+                            guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                        }
+                        return false;
+                    }));
         }
-
-        SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
 
         // Search feature!
-        for (var ss : Formats.sub.getChars('S')) {
-            chestMenu.addItem(ss, ItemStackUtil.getCleanItem(ChestMenuUtils.getSearchButton(player)));
-            chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                pl.closeInventory();
+        for (int ss : Formats.sub.getChars('S')) {
+            chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
+            chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(
+                            new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu, implementation))
+                    .ifSuccess(() -> {
+                        pl.closeInventory();
 
-                Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                ChatInput.waitForPlayer(
-                        JAVA_PLUGIN,
-                        pl,
-                        msg -> implementation.openSearch(
-                                playerProfile, msg, implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE));
+                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                        ChatInput.waitForPlayer(
+                                JAVA_PLUGIN,
+                                pl,
+                                msg -> implementation.openSearch(
+                                        playerProfile,
+                                        msg,
+                                        implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE));
 
-                return false;
-            });
+                        return false;
+                    }));
         }
 
-        for (var ss : Formats.sub.getChars('P')) {
+        for (int ss : Formats.sub.getChars('P')) {
             chestMenu.addItem(
                     ss,
-                    ItemStackUtil.getCleanItem(ChestMenuUtils.getPreviousButton(
-                            player, this.page, (this.slimefunItemList.size() - 1) / Formats.sub.getChars('i').size() + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> {
-                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
-                nexcavateItemsGroup.open(player, playerProfile, slimefunGuideMode);
-                return false;
-            });
+                    PatchScope.PreviousPage.patch(
+                            player,
+                            ChestMenuUtils.getPreviousButton(
+                                    player,
+                                    this.page,
+                                    (this.slimefunItemList.size() - 1)
+                                            / Formats.sub.getChars('i').size()
+                                            + 1)));
+            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
+                            new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu, implementation))
+                    .ifSuccess(() -> {
+                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                        NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
+                        nexcavateItemsGroup.open(player, playerProfile, slimefunGuideMode);
+                        return false;
+                    }));
         }
 
-        for (var ss : Formats.sub.getChars('N')) {
+        for (int ss : Formats.sub.getChars('N')) {
             chestMenu.addItem(
                     ss,
-                    ItemStackUtil.getCleanItem(ChestMenuUtils.getNextButton(
-                            player, this.page, (this.slimefunItemList.size() - 1) / Formats.sub.getChars('i').size() + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> {
-                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(
-                        Math.min(this.page + 1, (this.slimefunItemList.size() - 1) / Formats.sub.getChars('i').size() + 1));
-                nexcavateItemsGroup.open(player, playerProfile, slimefunGuideMode);
-                return false;
-            });
+                    PatchScope.NextPage.patch(
+                            player,
+                            ChestMenuUtils.getNextButton(
+                                    player,
+                                    this.page,
+                                    (this.slimefunItemList.size() - 1)
+                                            / Formats.sub.getChars('i').size()
+                                            + 1)));
+            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
+                            new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu, implementation))
+                    .ifSuccess(() -> {
+                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                        NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(Math.min(
+                                this.page + 1,
+                                (this.slimefunItemList.size() - 1)
+                                        / Formats.sub.getChars('i').size()
+                                        + 1));
+                        nexcavateItemsGroup.open(player, playerProfile, slimefunGuideMode);
+                        return false;
+                    }));
         }
 
-        for (var ss : Formats.sub.getChars('B')) {
-            chestMenu.addItem(ss, ItemStackUtil.getCleanItem(ChestMenuUtils.getBackground()));
+        for (int ss : Formats.sub.getChars('B')) {
+            chestMenu.addItem(ss, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()));
             chestMenu.addMenuClickHandler(ss, ChestMenuUtils.getEmptyClickHandler());
         }
 
-        var contentSlots = Formats.sub.getChars('i');
+        List<Integer> contentSlots = Formats.sub.getChars('i');
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.slimefunItemList.size()) {
@@ -277,11 +316,18 @@ public class NexcavateItemsGroup extends FlexItemGroup {
                             Lang.getGuideMessage("click-to-unlock"),
                             "",
                             Lang.getGuideMessage("cost", "cost", research.getCost())));
-                    handler = (pl, slot, item, action) -> {
-                        research.unlockFromGuide(
-                                implementation, pl, playerProfile, slimefunItem, slimefunItem.getItemGroup(), page);
-                        return false;
-                    };
+                    handler = (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(
+                                    pl, item, slot, action, chestMenu, implementation))
+                            .ifSuccess(() -> {
+                                research.unlockFromGuide(
+                                        implementation,
+                                        pl,
+                                        playerProfile,
+                                        slimefunItem,
+                                        slimefunItem.getItemGroup(),
+                                        page);
+                                return false;
+                            });
                 } else {
                     itemstack = ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem(), meta -> {
                         ItemGroup itemGroup = slimefunItem.getItemGroup();
@@ -295,24 +341,26 @@ public class NexcavateItemsGroup extends FlexItemGroup {
                                 ItemFlag.HIDE_ENCHANTS,
                                 JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                     }));
-                    handler = (pl, slot, itm, action) -> {
-                        try {
-                            if (implementation.getMode() != SlimefunGuideMode.SURVIVAL_MODE
-                                    && (pl.isOp() || pl.hasPermission("slimefun.cheat.items"))) {
-                                pl.getInventory()
-                                        .addItem(slimefunItem.getItem().clone());
-                            } else {
-                                implementation.displayItem(playerProfile, slimefunItem, true);
-                            }
-                        } catch (Exception | LinkageError x) {
-                            printErrorMessage(pl, slimefunItem, x);
-                        }
+                    handler = (pl, slot, itm, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(
+                                    pl, itm, slot, action, chestMenu, implementation))
+                            .ifSuccess(() -> {
+                                try {
+                                    if (implementation.getMode() != SlimefunGuideMode.SURVIVAL_MODE
+                                            && (pl.isOp() || pl.hasPermission("slimefun.cheat.items"))) {
+                                        pl.getInventory()
+                                                .addItem(slimefunItem.getItem().clone());
+                                    } else {
+                                        implementation.displayItem(playerProfile, slimefunItem, true);
+                                    }
+                                } catch (Exception | LinkageError x) {
+                                    printErrorMessage(pl, slimefunItem, x);
+                                }
 
-                        return false;
-                    };
+                                return false;
+                            });
                 }
 
-                chestMenu.addItem(contentSlots.get(i), ItemStackUtil.getCleanItem(itemstack), handler);
+                chestMenu.addItem(contentSlots.get(i), PatchScope.SlimefunItem.patch(player, itemstack), handler);
             }
         }
 
@@ -322,14 +370,15 @@ public class NexcavateItemsGroup extends FlexItemGroup {
             GuideUtil.addItemMarkButton(chestMenu, player, playerProfile, Formats.sub, jeg, this);
         }
 
+        Formats.sub.renderCustom(chestMenu);
         return chestMenu;
     }
 
     /**
-     * Gets the nexvacateItemsGroup by page.
+     * Gets the NexcavateItemsGroup by page.
      *
      * @param page The page number.
-     * @return The nexvacateItemsGroup by page.
+     * @return The NexcavateItemsGroup by page.
      */
     @NotNull
     private NexcavateItemsGroup getByPage(int page) {

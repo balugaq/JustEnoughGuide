@@ -27,8 +27,12 @@
 
 package com.balugaq.jeg.api.interfaces;
 
+import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
+import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
@@ -36,10 +40,11 @@ import java.util.List;
  * Used for relocating the buttons of the guide to a different location.
  *
  * @author balugaq
- * @see com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation
- * @see com.balugaq.jeg.implementation.guide.CheatGuideImplementation
+ * @see SurvivalGuideImplementation
+ * @see CheatGuideImplementation
  * @since 1.1
  */
+@SuppressWarnings("SameReturnValue")
 public interface BookmarkRelocation {
     /**
      * Gets the slot number for the back button in the guide.
@@ -49,6 +54,7 @@ public interface BookmarkRelocation {
      * @return The slot number for the back button.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     default int getBackButtonLegacy(JEGSlimefunGuideImplementation implementation, Player player) {
         return 1;
     }
@@ -61,6 +67,7 @@ public interface BookmarkRelocation {
      * @return The slot number for the search button.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     default int getSearchButtonLegacy(JEGSlimefunGuideImplementation implementation, Player player) {
         return 7;
     }
@@ -73,6 +80,7 @@ public interface BookmarkRelocation {
      * @return The slot number for the previous button.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     default int getPreviousButtonLegacy(JEGSlimefunGuideImplementation implementation, Player player) {
         return 46;
     }
@@ -85,6 +93,7 @@ public interface BookmarkRelocation {
      * @return The slot number for the next button.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     default int getNextButtonLegacy(JEGSlimefunGuideImplementation implementation, Player player) {
         return 52;
     }
@@ -97,6 +106,7 @@ public interface BookmarkRelocation {
      * @return The slot number for the bookmark button.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     default int getBookMarkLegacy(JEGSlimefunGuideImplementation implementation, Player player) {
         return 49;
     }
@@ -109,6 +119,7 @@ public interface BookmarkRelocation {
      * @return The slot number for the item mark button.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     default int getItemMarkLegacy(JEGSlimefunGuideImplementation implementation, Player player) {
         return 48;
     }
@@ -121,6 +132,7 @@ public interface BookmarkRelocation {
      * @return The slot numbers for the border.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     int[] getBorderLegacy(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
@@ -131,6 +143,7 @@ public interface BookmarkRelocation {
      * @return The slot numbers for the main contents.
      */
     @Deprecated
+    @ParametersAreNonnullByDefault
     int[] getMainContentsLegacy(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
@@ -140,7 +153,8 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot number for the back button.
      */
-    List<Integer> getBackButton(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getBackButton(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
      * Gets the slot number for the search button in the guide.
@@ -149,7 +163,8 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot number for the search button.
      */
-    List<Integer> getSearchButton(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getSearchButton(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
      * Gets the slot number for the previous button in the guide.
@@ -158,7 +173,8 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot number for the previous button.
      */
-    List<Integer> getPreviousButton(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getPreviousButton(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
      * Gets the slot number for the next button in the guide.
@@ -167,7 +183,8 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot number for the next button.
      */
-    List<Integer> getNextButton(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getNextButton(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
      * Gets the slot number for the bookmark button in the guide.
@@ -176,7 +193,8 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot number for the bookmark button.
      */
-    List<Integer> getBookMark(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getBookMark(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
      * Gets the slot number for the item mark button in the guide.
@@ -185,7 +203,8 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot number for the item mark button.
      */
-    List<Integer> getItemMark(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getItemMark(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
      * Gets the slot numbers for the border in the guide.
@@ -194,7 +213,8 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot numbers for the border.
      */
-    List<Integer> getBorder(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getBorder(JEGSlimefunGuideImplementation implementation, Player player);
 
     /**
      * Gets the slot numbers for the main contents in the guide.
@@ -203,5 +223,6 @@ public interface BookmarkRelocation {
      * @param player         The player.
      * @return The slot numbers for the main contents.
      */
-    List<Integer> getMainContents(JEGSlimefunGuideImplementation implementation, Player player);
+    @ParametersAreNonnullByDefault
+    @NotNull List<Integer> getMainContents(JEGSlimefunGuideImplementation implementation, Player player);
 }

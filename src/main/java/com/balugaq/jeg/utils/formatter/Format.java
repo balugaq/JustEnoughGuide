@@ -27,93 +27,45 @@
 
 package com.balugaq.jeg.utils.formatter;
 
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.Lang;
-import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.api.groups.GuideGroup;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * @author balugaq
  * @since 1.6
  */
+@SuppressWarnings("unused")
 @Getter
+@ToString
 public abstract class Format {
+    public static final Map<Character, ItemStack> customMapping = new HashMap<>();
     public final Map<Integer, Character> mapping = new HashMap<>();
-    @Deprecated
-    public final Map<Character, ItemStackFormat> formats = new HashMap<>();
+
+    @ToString.Exclude
     public final Map<Character, List<Integer>> cached = new HashMap<>();
+
     @Setter
     public int size = 54;
 
-    public Format() {
-        formats.put('B', new Background());
-        formats.put('R', new RealTimeSearch());
-        formats.put('C', new BookMark());
-        formats.put('c', new ItemMark());
-        //formats.put('E', new BigRecipe());
-
-        formats.put('b', new Back());
-        formats.put('T', new Settings());
-        formats.put('S', new Search());
-
-        formats.put('P', new PagePrevious());
-        formats.put('N', new PageNext());
-        loadMapping();
-    }
-
     public abstract void loadMapping();
 
-    @Deprecated
-    @OverridingMethodsMustInvokeSuper
-    public void decorate(ChestMenu menu, Player player) {
-        for (var entry : mapping.entrySet()) {
-            var format = formats.get(entry.getValue());
-            if (format instanceof ItemStackSupplier supplier) {
-                menu.addItem(entry.getKey(), supplier.get());
-            } else if (format instanceof Back function) {
-                menu.addItem(entry.getKey(), function.apply(player));
-            } else if (format instanceof Settings function) {
-                menu.addItem(entry.getKey(), function.apply(player));
-            } else if (format instanceof Search function) {
-                menu.addItem(entry.getKey(), function.apply(player));
-            }
-        }
-    }
-
-    @Deprecated
-    @OverridingMethodsMustInvokeSuper
-    public void decoratePage(ChestMenu menu, Player player, int page, int maxPage) {
-        for (var entry : mapping.entrySet()) {
-            var format = formats.get(entry.getValue());
-            if (format instanceof PagePrevious function) {
-                menu.addItem(entry.getKey(), function.apply(player, page, maxPage));
-            } else if (format instanceof PageNext function) {
-                menu.addItem(entry.getKey(), function.apply(player, page, maxPage));
-            }
-        }
-    }
-
     @ApiStatus.Obsolete
-    public void loadMapping(List<String> format) {
+    public void loadMapping(@NotNull List<String> format) {
         int index = -1;
-        for (var string : format) {
-            for (var c : string.toCharArray()) {
+        for (String string : format) {
+            for (char c : string.toCharArray()) {
                 index++;
                 if (c != ' ') {
                     mapping.put(index, c);
@@ -123,7 +75,7 @@ public abstract class Format {
     }
 
     @ApiStatus.Obsolete
-    public List<Integer> getChars(String s) {
+    public List<Integer> getChars(@NotNull String s) {
         return getChars(s.toCharArray()[0]);
     }
 
@@ -134,7 +86,7 @@ public abstract class Format {
         }
 
         List<Integer> list = new ArrayList<>();
-        for (var entry : mapping.entrySet()) {
+        for (Map.Entry<Integer, Character> entry : mapping.entrySet()) {
             if (entry.getValue() == c) {
                 list.add(entry.getKey());
             }
@@ -144,118 +96,26 @@ public abstract class Format {
         return list;
     }
 
-    @Deprecated
-    public interface ItemStackCiFunction<A, B, C> extends CiFunction<A, B, C, ItemStack>, ItemStackFormat {
-
-    }
-
-    @Deprecated
-    public interface ItemStackBiFunction<A, B> extends BiFunction<A, B, ItemStack>, ItemStackFormat {
-        ItemStack apply(A a, B b);
-    }
-
-    @Deprecated
-    public interface ItemStackFunction<A> extends Function<A, ItemStack>, ItemStackFormat {
-        ItemStack apply(A a);
-    }
-
-    @Deprecated
-    public interface ItemStackSupplier extends Supplier<ItemStack>, ItemStackFormat {
-        ItemStack get();
-    }
-
-    @Deprecated
-    public interface ItemStackFormat {
-    }
-
-    @Deprecated
-    public interface CiFunction<A, B, C, R> {
-        R apply(A a, B b, C c);
-    }
-
-    @Deprecated
-    public static class Background implements ItemStackSupplier {
-        @Override
-        public ItemStack get() {
-            return ChestMenuUtils.getBackground();
+    @SuppressWarnings("deprecation")
+    public void renderCustom(@NotNull ChestMenu menu) {
+        for (Map.Entry<Character, ItemStack> entry : customMapping.entrySet()) {
+            for (int slot : getChars(entry.getKey())) {
+                menu.addItem(slot, entry.getValue());
+                if (menu.getMenuClickHandler(slot) == null) {
+                    menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
+                }
+            }
         }
     }
 
-    @Deprecated
-    public static class Back implements ItemStackFunction<Player> {
-        @Override
-        public ItemStack apply(Player player) {
-            return SlimefunOfficialSupporter.getBackButton(player);
-        }
-    }
-
-    @Deprecated
-    public static class PagePrevious implements ItemStackCiFunction<Player, Integer, Integer> {
-        @Override
-        public ItemStack apply(Player player, Integer page, Integer maxPage) {
-            return ChestMenuUtils.getPreviousButton(player, page, maxPage);
-        }
-    }
-
-    @Deprecated
-    public static class PageNext implements ItemStackCiFunction<Player, Integer, Integer> {
-        @Override
-        public ItemStack apply(Player player, Integer page, Integer maxPage) {
-            return ChestMenuUtils.getNextButton(player, page, maxPage);
-        }
-    }
-
-    @Deprecated
-    public static class BookMark implements ItemStackSupplier {
-        @Override
-        public ItemStack get() {
-            return JustEnoughGuide.getConfigManager().isBookmark() ?
-                    GuideUtil.getBookMarkMenuButton() :
-                    ChestMenuUtils.getBackground();
-        }
-    }
-
-    @Deprecated
-    public static class ItemMark implements ItemStackSupplier {
-        @Override
-        public ItemStack get() {
-            return JustEnoughGuide.getConfigManager().isBookmark() ?
-                    GuideUtil.getItemMarkMenuButton() :
-                    ChestMenuUtils.getBackground();
-        }
-    }
-
-    @Deprecated
-    public static class Settings implements ItemStackFunction<Player> {
-        @Override
-        public ItemStack apply(Player p) {
-            return ChestMenuUtils.getMenuButton(p);
-        }
-    }
-
-    @Deprecated
-    public static class Search implements ItemStackFunction<Player> {
-        @Override
-        public ItemStack apply(Player p) {
-            return ChestMenuUtils.getSearchButton(p);
-        }
-    }
-
-    @Deprecated
-    public static class RealTimeSearch implements ItemStackSupplier {
-        @Override
-        public ItemStack get() {
-            return JustEnoughGuide.getConfigManager().isRTSSearch() ?
-                    Lang.RTS_ITEM :
-                    ChestMenuUtils.getBackground();
-        }
-    }
-
-    @Deprecated
-    public static class BigRecipe implements ItemStackSupplier {
-        @Override
-        public ItemStack get() {
-            return Lang.SPECIAL_MENU_ITEM;
+    public void renderCustom(@NotNull GuideGroup menu) {
+        for (Map.Entry<Character, ItemStack> entry : customMapping.entrySet()) {
+            for (int slot : getChars(entry.getKey())) {
+                menu.addGuide(slot, entry.getValue());
+                if (menu.getMenuClickHandler(slot) == null) {
+                    menu.addGuide(slot, ChestMenuUtils.getEmptyClickHandler());
+                }
+            }
         }
     }
 }

@@ -36,22 +36,25 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ConstantValue"})
 @UtilityClass
-public class SlimefunItemUtil {
+public class SlimefunRegistryUtil {
     public static @NotNull SlimefunItem registerItem(@NotNull SlimefunItem item, @NotNull SlimefunAddon addon) {
         item.register(addon);
         return item;
     }
 
     public static void unregisterItems(@NotNull SlimefunAddon addon) {
-        for (SlimefunItem item : Slimefun.getRegistry().getAllSlimefunItems()) {
+        List<SlimefunItem> copy = new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems());
+        for (SlimefunItem item : copy) {
             if (item.getAddon().equals(addon)) {
                 unregisterItem(item);
             }
@@ -64,24 +67,44 @@ public class SlimefunItemUtil {
         }
 
         if (item instanceof Radioactive) {
-            Slimefun.getRegistry().getRadioactiveItems().remove(item);
+            synchronized (Slimefun.getRegistry().getRadioactiveItems()) {
+                Slimefun.getRegistry().getRadioactiveItems().remove(item);
+            }
         }
 
         if (item instanceof GEOResource geor) {
-            Slimefun.getRegistry().getGEOResources().remove(geor.getKey());
+            synchronized (Slimefun.getRegistry().getGEOResources()) {
+                Slimefun.getRegistry().getGEOResources().remove(geor.getKey());
+            }
         }
 
-        Slimefun.getRegistry().getTickerBlocks().remove(item.getId());
-        Slimefun.getRegistry().getEnabledSlimefunItems().remove(item);
+        synchronized (Slimefun.getRegistry().getTickerBlocks()) {
+            Slimefun.getRegistry().getTickerBlocks().remove(item.getId());
+        }
+        synchronized (Slimefun.getRegistry().getEnabledSlimefunItems()) {
+            Slimefun.getRegistry().getEnabledSlimefunItems().remove(item);
+        }
 
-        Slimefun.getRegistry().getSlimefunItemIds().remove(item.getId());
-        Slimefun.getRegistry().getAllSlimefunItems().remove(item);
-        Slimefun.getRegistry().getMenuPresets().remove(item.getId());
-        Slimefun.getRegistry().getBarteringDrops().remove(item.getItem());
+        synchronized (Slimefun.getRegistry().getSlimefunItemIds()) {
+            Slimefun.getRegistry().getSlimefunItemIds().remove(item.getId());
+        }
+        synchronized (Slimefun.getRegistry().getAllSlimefunItems()) {
+            Slimefun.getRegistry().getAllSlimefunItems().remove(item);
+        }
+        synchronized (Slimefun.getRegistry().getMenuPresets()) {
+            Slimefun.getRegistry().getMenuPresets().remove(item.getId());
+        }
+        synchronized (Slimefun.getRegistry().getBarteringDrops()) {
+            Slimefun.getRegistry().getBarteringDrops().remove(item.getItem());
+        }
     }
 
     public static void unregisterItemGroups(@NotNull SlimefunAddon addon) {
-        for (ItemGroup itemGroup : Slimefun.getRegistry().getAllItemGroups()) {
+        List<ItemGroup> copy;
+        synchronized (Slimefun.getRegistry().getAllItemGroups()) {
+            copy = new ArrayList<>(Slimefun.getRegistry().getAllItemGroups());
+        }
+        for (ItemGroup itemGroup : copy) {
             if (Objects.equals(itemGroup.getAddon(), addon)) {
                 unregisterItemGroup(itemGroup);
             }
@@ -93,6 +116,8 @@ public class SlimefunItemUtil {
             return;
         }
 
-        Slimefun.getRegistry().getAllItemGroups().remove(itemGroup);
+        synchronized (Slimefun.getRegistry().getAllItemGroups()) {
+            Slimefun.getRegistry().getAllItemGroups().remove(itemGroup);
+        }
     }
 }

@@ -56,7 +56,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecation"})
 @Getter
 public class BookmarkManager extends AbstractManager {
     private static final int DATA_ITEM_SLOT = 0;
@@ -84,7 +84,7 @@ public class BookmarkManager extends AbstractManager {
     }
 
     private void addBookmark0(
-            @NotNull Player player, @NotNull PlayerBackpack backpack, @NotNull SlimefunItem slimefunItem) {
+            final @NotNull Player player, @NotNull PlayerBackpack backpack, @NotNull SlimefunItem slimefunItem) {
         ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
         if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
             bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
@@ -189,7 +189,8 @@ public class BookmarkManager extends AbstractManager {
             return;
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(bookmarksItem, itemMeta -> itemMeta.setLore(new ArrayList<>())));
+        ItemStack itemStack = ItemStackUtil.getCleanItem(
+                Converter.getItem(bookmarksItem, itemMeta -> itemMeta.setLore(new ArrayList<>())));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
     }
@@ -272,6 +273,7 @@ public class BookmarkManager extends AbstractManager {
                         player.getUniqueId().toString())));
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isBookmarksItem(@NotNull ItemStack itemStack, @NotNull Player player) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
@@ -279,11 +281,7 @@ public class BookmarkManager extends AbstractManager {
         }
 
         String uuid = itemMeta.getPersistentDataContainer().get(BOOKMARKS_KEY, PersistentDataType.STRING);
-        if (uuid != null && uuid.equals(player.getUniqueId().toString())) {
-            return true;
-        }
-
-        return false;
+        return uuid != null && uuid.equals(player.getUniqueId().toString());
     }
 
     public void unmarkBookmarksItem(@NotNull ItemStack itemStack) {

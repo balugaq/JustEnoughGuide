@@ -30,6 +30,7 @@ package com.balugaq.jeg.core.managers;
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.api.objects.annotaions.Warn;
 import com.balugaq.jeg.utils.Debug;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -60,17 +61,21 @@ import java.util.Map;
  * @author balugaq
  * @since 1.0
  */
+@SuppressWarnings({"ConstantValue", "unused"})
 public class ConfigManager extends AbstractManager {
     private final boolean AUTO_UPDATE;
     private final boolean DEBUG;
     private final boolean SURVIVAL_IMPROVEMENTS;
     private final boolean CHEAT_IMPROVEMENTS;
+    private final boolean RECIPE_COMPLETE;
     private final boolean PINYIN_SEARCH;
     private final boolean BOOKMARK;
     private final boolean RTS_SEARCH;
     private final boolean BEGINNER_OPTION;
     private final @NotNull String SURVIVAL_GUIDE_TITLE;
     private final @NotNull String CHEAT_GUIDE_TITLE;
+    private final @NotNull String SETTINGS_GUIDE_TITLE;
+    private final @NotNull String CREDITS_GUIDE_TITLE;
     @Warn(reason = "No longer using it in EN version")
     private final @NotNull List<String> SHARED_CHARS;
     private final @NotNull List<String> SHARED_WORDS;
@@ -82,10 +87,15 @@ public class ConfigManager extends AbstractManager {
     private final @NotNull List<String> HELPER_FORMAT;
     private final @NotNull List<String> RECIPE_VANILLA_FORMAT;
     private final @NotNull List<String> RECIPE_DISPLAY_FORMAT;
+    private final @NotNull List<String> SETTINGS_FORMAT;
+    private final @NotNull List<String> CONTRIBUTORS_FORMAT;
     private final @NotNull Map<String, String> LOCAL_TRANSLATE;
     private final @NotNull List<String> BANLIST;
     private final @NotNull String LANGUAGE;
     private final @NotNull JavaPlugin plugin;
+    private final boolean EMC_VALUE_DISPLAY;
+    private final boolean FinalTech_VALUE_DISPLAY;
+    private final boolean FinalTECH_VALUE_DISPLAY;
 
     public ConfigManager(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
@@ -94,13 +104,17 @@ public class ConfigManager extends AbstractManager {
         this.DEBUG = plugin.getConfig().getBoolean("debug", false);
         this.SURVIVAL_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.survival-improvements", true);
         this.CHEAT_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.cheat-improvements", true);
+        this.RECIPE_COMPLETE = plugin.getConfig().getBoolean("guide.recipe-complete", true);
         this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", false);
         this.BOOKMARK = plugin.getConfig().getBoolean("improvements.bookmark", true);
         this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun Guide &7(Chest GUI) &8Advanced");
         this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced");
+        this.SETTINGS_GUIDE_TITLE = plugin.getConfig().getString("guide.settings-guide-title", "Settings & Info");
+        this.CREDITS_GUIDE_TITLE = plugin.getConfig().getString("guide.credits-guide-title", "Slimefun4 Contributors");
         this.RTS_SEARCH = plugin.getConfig().getBoolean("improvements.rts-search", true);
+
         this.BEGINNER_OPTION = plugin.getConfig().getBoolean("improvements.beginner-option", true);
-        var rawBlacklist = plugin.getConfig().getStringList("blacklist");
+        List<String> rawBlacklist = plugin.getConfig().getStringList("blacklist");
         if (rawBlacklist == null || rawBlacklist.isEmpty()) {
             this.BLACKLIST = new ArrayList<>();
             this.BLACKLIST.add("Fast Machines");
@@ -108,7 +122,7 @@ public class ConfigManager extends AbstractManager {
             this.BLACKLIST = rawBlacklist;
         }
 
-        var rawSharedChars = plugin.getConfig().getStringList("shared-chars");
+        List<String> rawSharedChars = plugin.getConfig().getStringList("shared-chars");
         if (rawSharedChars == null || rawSharedChars.isEmpty()) {
             // Deprecated
             this.SHARED_CHARS = new ArrayList<>();
@@ -124,7 +138,7 @@ public class ConfigManager extends AbstractManager {
             this.SHARED_WORDS = rawSharedWords;
         }
 
-        var rawMainFormat = plugin.getConfig().getStringList("custom-format.main");
+        List<String> rawMainFormat = plugin.getConfig().getStringList("custom-format.main");
         if (rawMainFormat == null || rawMainFormat.isEmpty()) {
             this.MAIN_FORMAT = new ArrayList<>();
             this.MAIN_FORMAT.add("BTBBBBRSB");
@@ -137,7 +151,7 @@ public class ConfigManager extends AbstractManager {
             this.MAIN_FORMAT = rawMainFormat;
         }
 
-        var rawNestedGroupFormat = plugin.getConfig().getStringList("custom-format.nested-group");
+        List<String> rawNestedGroupFormat = plugin.getConfig().getStringList("custom-format.nested-group");
         if (rawNestedGroupFormat == null || rawNestedGroupFormat.isEmpty()) {
             this.NESTED_GROUP_FORMAT = new ArrayList<>();
             this.NESTED_GROUP_FORMAT.add("BbBBBBRSB");
@@ -150,7 +164,7 @@ public class ConfigManager extends AbstractManager {
             this.NESTED_GROUP_FORMAT = rawNestedGroupFormat;
         }
 
-        var rawSubGroupFormat = plugin.getConfig().getStringList("custom-format.sub-group");
+        List<String> rawSubGroupFormat = plugin.getConfig().getStringList("custom-format.sub-group");
         if (rawSubGroupFormat == null || rawSubGroupFormat.isEmpty()) {
             this.SUB_GROUP_FORMAT = new ArrayList<>();
             this.SUB_GROUP_FORMAT.add("BbBBBBRSB");
@@ -163,7 +177,7 @@ public class ConfigManager extends AbstractManager {
             this.SUB_GROUP_FORMAT = rawSubGroupFormat;
         }
 
-        var rawRecipeFormat = plugin.getConfig().getStringList("custom-format.recipe");
+        List<String> rawRecipeFormat = plugin.getConfig().getStringList("custom-format.recipe");
         if (rawRecipeFormat == null || rawRecipeFormat.isEmpty()) {
             this.RECIPE_FORMAT = new ArrayList<>();
             this.RECIPE_FORMAT.add("b  rrr  w");
@@ -173,7 +187,7 @@ public class ConfigManager extends AbstractManager {
             this.RECIPE_FORMAT = rawRecipeFormat;
         }
 
-        var rawHelperFormat = plugin.getConfig().getStringList("custom-format.helper");
+        List<String> rawHelperFormat = plugin.getConfig().getStringList("custom-format.helper");
         if (rawHelperFormat == null || rawHelperFormat.isEmpty()) {
             this.HELPER_FORMAT = new ArrayList<>();
             this.HELPER_FORMAT.add("BbBBBBRSB");
@@ -186,7 +200,7 @@ public class ConfigManager extends AbstractManager {
             this.HELPER_FORMAT = rawHelperFormat;
         }
 
-        var rawRecipeVanillaFormat = plugin.getConfig().getStringList("custom-format.recipe-vanilla");
+        List<String> rawRecipeVanillaFormat = plugin.getConfig().getStringList("custom-format.recipe-vanilla");
         if (rawRecipeVanillaFormat == null || rawRecipeVanillaFormat.isEmpty()) {
             this.RECIPE_VANILLA_FORMAT = new ArrayList<>();
             this.RECIPE_VANILLA_FORMAT.add("b  rrr  w");
@@ -197,7 +211,7 @@ public class ConfigManager extends AbstractManager {
             this.RECIPE_VANILLA_FORMAT = rawRecipeVanillaFormat;
         }
 
-        var rawRecipeDisplayFormat = plugin.getConfig().getStringList("custom-format.recipe-display");
+        List<String> rawRecipeDisplayFormat = plugin.getConfig().getStringList("custom-format.recipe-display");
         if (rawRecipeDisplayFormat == null || rawRecipeDisplayFormat.isEmpty()) {
             this.RECIPE_DISPLAY_FORMAT = new ArrayList<>();
             this.RECIPE_DISPLAY_FORMAT.add("b  rrr  w");
@@ -210,15 +224,44 @@ public class ConfigManager extends AbstractManager {
             this.RECIPE_DISPLAY_FORMAT = rawRecipeDisplayFormat;
         }
 
+        List<String> rawSettingsFormat = plugin.getConfig().getStringList("custom-format.settings");
+        if (rawSettingsFormat == null || rawSettingsFormat.isEmpty()) {
+            this.SETTINGS_FORMAT = new ArrayList<>();
+            this.SETTINGS_FORMAT.add("bBsBvBuBW");
+            this.SETTINGS_FORMAT.add("BBBBBBBBB");
+            this.SETTINGS_FORMAT.add("BoooooooB");
+            this.SETTINGS_FORMAT.add("BoooooooB");
+            this.SETTINGS_FORMAT.add("BPBBBBBNB");
+            this.SETTINGS_FORMAT.add("BBlBBBUBB");
+        } else {
+            this.SETTINGS_FORMAT = rawSettingsFormat;
+        }
+
+        List<String> rawContributorsFormat = plugin.getConfig().getStringList("custom-format.contributors");
+        if (rawContributorsFormat == null || rawContributorsFormat.isEmpty()) {
+            this.CONTRIBUTORS_FORMAT = new ArrayList<>();
+            this.CONTRIBUTORS_FORMAT.add("BbBBBBBBB");
+            this.CONTRIBUTORS_FORMAT.add("ppppppppp");
+            this.CONTRIBUTORS_FORMAT.add("ppppppppp");
+            this.CONTRIBUTORS_FORMAT.add("ppppppppp");
+            this.CONTRIBUTORS_FORMAT.add("ppppppppp");
+            this.CONTRIBUTORS_FORMAT.add("BPBBBBBNB");
+        } else {
+            this.CONTRIBUTORS_FORMAT = rawContributorsFormat;
+        }
+
         this.LOCAL_TRANSLATE = new HashMap<>();
-        var c = plugin.getConfig().getConfigurationSection("local-translate");
+        ConfigurationSection c = plugin.getConfig().getConfigurationSection("local-translate");
         if (c != null) {
-            for (var k : c.getKeys(false)) {
+            for (String k : c.getKeys(false)) {
                 this.LOCAL_TRANSLATE.put(k, c.getString(k));
             }
         }
 
         this.BANLIST = plugin.getConfig().getStringList("banlist");
+        this.EMC_VALUE_DISPLAY = plugin.getConfig().getBoolean("improvements.emc-display-option", true);
+        this.FinalTech_VALUE_DISPLAY = plugin.getConfig().getBoolean("improvements.finaltech-emc-display-option", true);
+        this.FinalTECH_VALUE_DISPLAY = plugin.getConfig().getBoolean("improvements.finalTECH-emc-display-option", true);
         this.LANGUAGE = plugin.getConfig().getString("language", "en-US");
     }
 
@@ -295,6 +338,14 @@ public class ConfigManager extends AbstractManager {
         return CHEAT_GUIDE_TITLE;
     }
 
+    public @NotNull String getSettingsGuideTitle() {
+        return SETTINGS_GUIDE_TITLE;
+    }
+
+    public @NotNull String getCreditsGuideTitle() {
+        return CREDITS_GUIDE_TITLE;
+    }
+
     public boolean isRTSSearch() {
         return RTS_SEARCH;
     }
@@ -340,12 +391,36 @@ public class ConfigManager extends AbstractManager {
         return RECIPE_DISPLAY_FORMAT;
     }
 
+    public @NotNull List<String> getSettingsFormat() {
+        return SETTINGS_FORMAT;
+    }
+
+    public @NotNull List<String> getContributorsFormat() {
+        return CONTRIBUTORS_FORMAT;
+    }
+
     public @NotNull Map<String, String> getLocalTranslate() {
         return LOCAL_TRANSLATE;
     }
 
     public @NotNull List<String> getBanlist() {
         return BANLIST;
+    }
+
+    public boolean isRecipeComplete() {
+        return RECIPE_COMPLETE;
+    }
+
+    public boolean isEMCValueDisplay() {
+        return EMC_VALUE_DISPLAY;
+    }
+
+    public boolean isFinalTechValueDisplay() {
+        return FinalTech_VALUE_DISPLAY;
+    }
+
+    public boolean isFinalTECHValueDisplay() {
+        return FinalTECH_VALUE_DISPLAY;
     }
 
     public @NotNull String getLanguage() {

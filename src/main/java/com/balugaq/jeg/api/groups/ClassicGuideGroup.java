@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
  * @author balugaq
  * @since 1.3
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SameParameterValue"})
 @Getter
 @NotDisplayInCheatMode
 public class ClassicGuideGroup extends GuideGroup {

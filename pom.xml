@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2024-2025 balugaq
+  ~
+  ~ This file is part of JustEnoughGuide, available under MIT license.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ - The above copyright notice and this permission notice shall be included in
+  ~   all copies or substantial portions of the Software.
+  ~ - The author's name (balugaq or 大香蕉) and project name (JustEnoughGuide or JEG) shall not be
+  ~   removed or altered from any source distribution or documentation.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  ~
+  -->
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -6,7 +33,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>EN-10</version>
+    <version>EN-11</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -86,6 +113,10 @@
                                     <pattern>net.wesjd.anvilgui</pattern>
                                     <shadedPattern>com.balugaq.jeg.libraries.anvilgui</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.Zrips.CMILib</pattern>
+                                    <shadedPattern>com.balugaq.jeg.libraries.cmilib</shadedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>
@@ -144,7 +175,7 @@
         </repository>
         <repository>
             <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>codemc-snapshots</id>
@@ -155,9 +186,9 @@
     <dependencies>
         <!-- Core -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.20.6-R0.1-SNAPSHOT</version> <!-- DO NOT USE 1.21+ , otherwise RTS will be broken by API breaking change about turning InventoryView from `class` into `interface` -->
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -221,11 +252,52 @@
             <systemPath>${project.basedir}/lib/original-LogiTech v1.0.4.jar</systemPath>
         </dependency>
 
-        <!-- AnvilGUI 1.16- Paper 1.21.2 / Spigot 1.21.3 -->
+        <!-- Recipe Completable compatible -->
+        <dependency>
+            <groupId>com.ytdd9527.networksexpansion</groupId>
+            <artifactId>NetworksExpansion</artifactId>
+            <version>Special-Version-40</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/original-NetworksExpansion vS40.jar</systemPath>
+        </dependency>
+
+        <!-- Recipe Completable compatible -->
+        <dependency>
+            <groupId>me.ddggdd135.slimeae</groupId>
+            <artifactId>SlimeAE</artifactId>
+            <version>Build-72</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/SlimeAE-Build 72.jar</systemPath>
+        </dependency>
+
+        <!-- Custom Icon Color API -->
+        <dependency>
+            <groupId>com.github.Zrips</groupId>
+            <artifactId>CMILib</artifactId>
+            <version>1.4.7.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.TimetownDev</groupId>
+            <artifactId>GuguSlimefunLib</artifactId>
+            <version>afeac968aa</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.sefiraat</groupId>
+            <artifactId>EMCTech</artifactId>
+            <version>Build-8</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/EMCTech-Build 8.jar</systemPath>
+        </dependency>
+
+        <!-- AnvilGUI 1.16+ -->
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.10.4-SNAPSHOT</version>
+            <version>1.10.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 

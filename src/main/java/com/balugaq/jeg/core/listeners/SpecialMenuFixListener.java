@@ -45,6 +45,7 @@ import java.util.Optional;
  * @see SpecialMenuProvider
  * @since 1.3
  */
+@SuppressWarnings("unused")
 public class SpecialMenuFixListener implements Listener {
     /**
      * Fixes the bug where the special menu is not closed properly.
@@ -58,7 +59,8 @@ public class SpecialMenuFixListener implements Listener {
         if (optional.isPresent()) {
             PlayerProfile profile = optional.get();
             try {
-                @SuppressWarnings("unchecked") Deque<Object> queue = (Deque<Object>) ReflectionUtil.getValue(profile.getGuideHistory(), "queue");
+                @SuppressWarnings("unchecked")
+                Deque<Object> queue = (Deque<Object>) ReflectionUtil.getValue(profile.getGuideHistory(), "queue");
                 if (queue == null || queue.isEmpty()) {
                     return;
                 }
@@ -80,7 +82,7 @@ public class SpecialMenuFixListener implements Listener {
                         return;
                     }
                 } while (!queue.isEmpty());
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 Debug.debug(e);
             }
         }

@@ -28,7 +28,7 @@
 package com.balugaq.jeg.utils.compatibility;
 
 import com.google.common.base.Preconditions;
-import org.bukkit.ChatColor;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -49,6 +49,7 @@ import java.util.function.Consumer;
  * @author balugaq
  * @since 1.4
  */
+@SuppressWarnings({"deprecation", "unused"})
 @ApiStatus.Experimental
 public class CustomItemStack implements Cloneable {
     private final @NotNull ItemStack delegate;
@@ -91,6 +92,17 @@ public class CustomItemStack implements Cloneable {
      */
     public CustomItemStack(@NotNull Material material, @NotNull Consumer<ItemMeta> meta) {
         this(new ItemStack(material), meta);
+    }
+
+    /**
+     * Creates a CustomItemStack from a Bukkit ItemStack with a name and lore.
+     *
+     * @param itemStack the Bukkit ItemStack to create from
+     * @param name      the name of the item
+     * @param lore      the lore of the item
+     */
+    public CustomItemStack(@NotNull ItemStack itemStack, @Nullable String name, @NotNull List<String> lore) {
+        this(itemStack, name, lore.toArray(new String[0]));
     }
 
     /**
@@ -215,7 +227,7 @@ public class CustomItemStack implements Cloneable {
      * @return the translated string
      */
     public static @NotNull String color(@NotNull String raw) {
-        return ChatColor.translateAlternateColorCodes('&', Preconditions.checkNotNull(raw, "raw cannot be null"));
+        return ChatColors.color(Preconditions.checkNotNull(raw, "raw cannot be null"));
     }
 
     /**
@@ -357,6 +369,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the cloned CustomItemStack
      */
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public @NotNull CustomItemStack clone() {
         return new CustomItemStack(getDelegate());
     }

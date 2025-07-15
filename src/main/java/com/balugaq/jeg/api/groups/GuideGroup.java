@@ -29,8 +29,10 @@ package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
+import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -46,12 +48,14 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -66,7 +70,7 @@ import java.util.Set;
  * @author balugaq
  * @since 1.3
  */
-@SuppressWarnings({"deprecation", "unused"})
+@SuppressWarnings({"deprecation", "unused", "UnusedReturnValue", "ConstantValue"})
 @Getter
 @NotDisplayInCheatMode
 public abstract class GuideGroup extends FlexItemGroup {
@@ -107,14 +111,72 @@ public abstract class GuideGroup extends FlexItemGroup {
     @NotNull
     public GuideGroup addGuide(
             @Range(from = 1, to = Byte.MAX_VALUE) int page,
-            @Range(from = 9, to = 44) int slot,
-            @NotNull ItemStack itemStack,
-            @NotNull ChestMenu.MenuClickHandler handler) {
+            @Range(from = 0, to = 53) int slot,
+            final @NotNull ItemStack itemStack,
+            final @NotNull ChestMenu.MenuClickHandler handler) {
 
         slots.computeIfAbsent(page, k -> new HashSet<>()).add(slot);
         contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, itemStack);
         clickHandlers.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, handler);
         return this;
+    }
+
+    /**
+     * Add a {@link ChestMenu.MenuClickHandler} to the group
+     *
+     * @param page    the page
+     * @param slot    the slot
+     * @param handler the handler
+     * @return the group itself
+     */
+    @NotNull
+    public GuideGroup addGuide(
+            @Range(from = 1, to = Byte.MAX_VALUE) int page,
+            @Range(from = 0, to = 53) int slot,
+            final @NotNull ChestMenu.MenuClickHandler handler) {
+
+        slots.computeIfAbsent(page, k -> new HashSet<>()).add(slot);
+        contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, item);
+        clickHandlers.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, handler);
+        return this;
+    }
+
+    /**
+     * Add a {@link ChestMenu.MenuClickHandler} to the group
+     *
+     * @param slot    the slot
+     * @param handler the handler
+     * @return the group itself
+     */
+    @NotNull
+    public GuideGroup addGuide(@Range(from = 0, to = 53) int slot, final @NotNull ChestMenu.MenuClickHandler handler) {
+        return addGuide(1, slot, handler);
+    }
+
+    /**
+     * Adds a guide
+     *
+     * @param slot slot
+     * @return the guide itself
+     */
+    @Nullable
+    public ChestMenu.MenuClickHandler getMenuClickHandler(@Range(from = 0, to = 53) int slot) {
+        return getMenuClickHandler(1, slot);
+    }
+
+    /**
+     * Adds a guide
+     *
+     * @param page page number
+     * @param slot slot
+     * @return the guide itself
+     */
+    @Nullable
+    public ChestMenu.MenuClickHandler getMenuClickHandler(
+            @Range(from = 1, to = Byte.MAX_VALUE) int page, @Range(from = 0, to = 53) int slot) {
+        return Optional.ofNullable(clickHandlers.get(page))
+                .orElse(new HashMap<>())
+                .get(slot);
     }
 
     /**
@@ -127,9 +189,9 @@ public abstract class GuideGroup extends FlexItemGroup {
      */
     @NotNull
     public GuideGroup addGuide(
-            @Range(from = 9, to = 44) int slot,
-            @NotNull ItemStack itemStack,
-            @NotNull ChestMenu.MenuClickHandler handler) {
+            @Range(from = 0, to = 53) int slot,
+            final @NotNull ItemStack itemStack,
+            final @NotNull ChestMenu.MenuClickHandler handler) {
         return addGuide(1, slot, itemStack, handler);
     }
 
@@ -141,7 +203,7 @@ public abstract class GuideGroup extends FlexItemGroup {
      * @return The group itself.
      */
     @NotNull
-    public GuideGroup addGuide(@Range(from = 9, to = 44) int slot, @NotNull ItemStack itemStack) {
+    public GuideGroup addGuide(@Range(from = 0, to = 53) int slot, @NotNull ItemStack itemStack) {
         return addGuide(slot, itemStack, ChestMenuUtils.getEmptyClickHandler());
     }
 
@@ -153,7 +215,10 @@ public abstract class GuideGroup extends FlexItemGroup {
      * @return The group itself.
      */
     @NotNull
-    public GuideGroup addGuide(@NotNull ItemStack itemStack, @NotNull ChestMenu.MenuClickHandler handler, @Range(from = 1, to = Byte.MAX_VALUE) int page) {
+    public GuideGroup addGuide(
+            @NotNull ItemStack itemStack,
+            @NotNull ChestMenu.MenuClickHandler handler,
+            @Range(from = 1, to = Byte.MAX_VALUE) int page) {
         return addGuide(findEmptySlot(page), itemStack, handler);
     }
 
@@ -166,6 +231,36 @@ public abstract class GuideGroup extends FlexItemGroup {
     @NotNull
     public GuideGroup addGuide(@NotNull ItemStack itemStack, @Range(from = 1, to = Byte.MAX_VALUE) int page) {
         return addGuide(itemStack, ChestMenuUtils.getEmptyClickHandler(), page);
+    }
+
+    /**
+     * Replace the icon.
+     *
+     * @param slot The slot where the icon should be placed.
+     * @param icon The icon to place.
+     * @return The group itself.
+     */
+    @NotNull
+    public GuideGroup replaceICon(@Range(from = 0, to = 53) int slot, @NotNull ItemStack icon) {
+        return replaceIcon(1, slot, icon);
+    }
+
+    /**
+     * Replace the icon.
+     *
+     * @param page      The page where the icon should be placed.
+     * @param slot      The slot where the icon should be placed.
+     * @param itemStack The icon to place
+     * @return The group itself.
+     */
+    @NotNull
+    public GuideGroup replaceIcon(
+            @Range(from = 1, to = Byte.MAX_VALUE) int page,
+            @Range(from = 0, to = 53) int slot,
+            @NotNull ItemStack itemStack) {
+        slots.computeIfAbsent(page, k -> new HashSet<>()).add(slot);
+        contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, itemStack);
+        return this;
     }
 
     /**
@@ -193,18 +288,17 @@ public abstract class GuideGroup extends FlexItemGroup {
      */
     @Override
     public boolean isVisible(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode) {
+            final @NotNull Player player,
+            final @NotNull PlayerProfile playerProfile,
+            final @NotNull SlimefunGuideMode slimefunGuideMode) {
         return true;
     }
 
     @Override
     public void open(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode
-    ) {
+            final @NotNull Player player,
+            final @NotNull PlayerProfile playerProfile,
+            final @NotNull SlimefunGuideMode slimefunGuideMode) {
         open(player, playerProfile, slimefunGuideMode, 1);
     }
 
@@ -217,9 +311,9 @@ public abstract class GuideGroup extends FlexItemGroup {
      * @param page              The page to open.
      */
     public void open(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode,
+            final @NotNull Player player,
+            final @NotNull PlayerProfile playerProfile,
+            final @NotNull SlimefunGuideMode slimefunGuideMode,
             @Range(from = 1, to = Byte.MAX_VALUE) int page) {
         if (page < 1 || page > this.contents.size()) {
             // Do nothing if the page is out of range.
@@ -233,55 +327,68 @@ public abstract class GuideGroup extends FlexItemGroup {
             if (isClassic()) {
                 jeg.createHeader(player, playerProfile, menu, Formats.helper);
             }
-            for (var ss : Formats.helper.getChars('b')) {
-                menu.addItem(ss, ItemStackUtil.getCleanItem(ChestMenuUtils.getBackButton(player)));
-                menu.addMenuClickHandler(ss, (pl, s, is, action) -> {
-                    GuideHistory guideHistory = playerProfile.getGuideHistory();
-                    if (action.isShiftClicked()) {
-                        SlimefunGuide.openMainMenu(playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                    } else {
-                        guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
-                    }
-                    return false;
-                });
+            for (int ss : Formats.helper.getChars('b')) {
+                menu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
+                menu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(
+                                new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, guide))
+                        .ifSuccess(() -> {
+                            GuideHistory guideHistory = playerProfile.getGuideHistory();
+                            if (action.isShiftClicked()) {
+                                SlimefunGuide.openMainMenu(
+                                        playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                            } else {
+                                guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                            }
+                            return false;
+                        }));
             }
 
-            for (Map.Entry<Integer, ItemStack> entry : contents.getOrDefault(page, new LinkedHashMap<>()).entrySet()) {
-                menu.addItem(entry.getKey(), entry.getValue());
+            for (Map.Entry<Integer, ItemStack> entry :
+                    contents.getOrDefault(page, new LinkedHashMap<>()).entrySet()) {
+                menu.addItem(entry.getKey(), PatchScope.FeatureDisplay.patch(player, entry.getValue()));
             }
 
-            for (Map.Entry<Integer, ChestMenu.MenuClickHandler> entry : clickHandlers.getOrDefault(page, new LinkedHashMap<>()).entrySet()) {
-                menu.addMenuClickHandler(entry.getKey(), entry.getValue());
+            for (Map.Entry<Integer, ChestMenu.MenuClickHandler> entry :
+                    clickHandlers.getOrDefault(page, new LinkedHashMap<>()).entrySet()) {
+                menu.addMenuClickHandler(entry.getKey(), (p, s, i, a) -> EventUtil.callEvent(
+                                new GuideEvents.FeatureButtonClickEvent(p, i, s, a, menu, guide))
+                        .ifSuccess(() -> entry.getValue().onClick(p, s, i, a)));
             }
 
-            for (var s : Formats.helper.getChars('P')) {
+            for (int s : Formats.helper.getChars('P')) {
                 menu.addItem(
                         s,
-                        ItemStackUtil.getCleanItem(ChestMenuUtils.getPreviousButton(
-                                player, page, (this.contents.size() - 1) / 36 + 1)));
-                menu.addMenuClickHandler(s, (p, slot, item, action) -> {
-                    if (page - 1 < 1) {
-                        return false;
-                    }
-                    GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                    open(player, playerProfile, slimefunGuideMode, Math.max(1, page - 1));
-                    return false;
-                });
+                        PatchScope.PreviousPage.patch(
+                                player,
+                                ChestMenuUtils.getPreviousButton(player, page, (this.contents.size() - 1) / 36 + 1)));
+                menu.addMenuClickHandler(s, (p, slot, item, action) -> EventUtil.callEvent(
+                                new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, menu, guide))
+                        .ifSuccess(() -> {
+                            if (page - 1 < 1) {
+                                return false;
+                            }
+                            GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                            open(player, playerProfile, slimefunGuideMode, Math.max(1, page - 1));
+                            return false;
+                        }));
             }
 
-            for (var s : Formats.helper.getChars('N')) {
+            for (int s : Formats.helper.getChars('N')) {
                 menu.addItem(
                         s,
-                        ItemStackUtil.getCleanItem(ChestMenuUtils.getNextButton(
-                                player, page, (this.contents.size() - 1) / 36 + 1)));
-                menu.addMenuClickHandler(s, (p, slot, item, action) -> {
-                    if (page + 1 > this.contents.size()) {
-                        return false;
-                    }
-                    GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                    open(player, playerProfile, slimefunGuideMode, Math.min(this.contents.size(), page + 1));
-                    return false;
-                });
+                        PatchScope.NextPage.patch(
+                                player,
+                                ChestMenuUtils.getNextButton(player, page, (this.contents.size() - 1) / 36 + 1)));
+                menu.addMenuClickHandler(s, (p, slot, item, action) -> EventUtil.callEvent(
+                                new GuideEvents.NextButtonClickEvent(p, item, slot, action, menu, guide))
+                        .ifSuccess(() -> {
+                            if (page + 1 > this.contents.size()) {
+                                return false;
+                            }
+                            GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                            open(player, playerProfile, slimefunGuideMode, Math.min(this.contents.size(), page + 1));
+                            return false;
+                        }));
             }
 
             GuideUtil.addRTSButton(menu, player, playerProfile, Formats.sub, slimefunGuideMode, guide);

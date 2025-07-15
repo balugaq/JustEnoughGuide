@@ -51,6 +51,7 @@ import java.util.UUID;
  * @author balugaq
  * @since 1.3
  */
+@SuppressWarnings({"ConstantValue", "DataFlowIssue"})
 @Getter
 public class RTSBackpackManager extends AbstractManager {
     private static final int IDENTIFIER_SLOT = 53;
@@ -223,15 +224,31 @@ public class RTSBackpackManager extends AbstractManager {
      * @return the identifier item
      */
     public @NotNull ItemStack getIdentifierItem(@NotNull Player player, boolean open) {
-        return Converter.getItem(Converter.getItem(Material.DIRT, "[RTS]", "[RTS]", "[RTS]", "[RTS]", UUID.randomUUID().toString()), meta -> {
-            meta.getPersistentDataContainer().set(OWNER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
-            meta.getPersistentDataContainer().set(SERVER_KEY, PersistentDataType.STRING, JustEnoughGuide.getServerUUID().toString());
-            if (open) {
-                meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, OPEN_STATUS);
-            } else {
-                meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, CLOSE_STATUS);
-            }
-        });
+        return Converter.getItem(
+                Converter.getItem(
+                        Material.DIRT,
+                        "[RTS]",
+                        "[RTS]",
+                        "[RTS]",
+                        "[RTS]",
+                        UUID.randomUUID().toString()),
+                meta -> {
+                    meta.getPersistentDataContainer()
+                            .set(
+                                    OWNER_KEY,
+                                    PersistentDataType.STRING,
+                                    player.getUniqueId().toString());
+                    meta.getPersistentDataContainer()
+                            .set(
+                                    SERVER_KEY,
+                                    PersistentDataType.STRING,
+                                    JustEnoughGuide.getServerUUID().toString());
+                    if (open) {
+                        meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, OPEN_STATUS);
+                    } else {
+                        meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, CLOSE_STATUS);
+                    }
+                });
     }
 
     /**
@@ -241,6 +258,7 @@ public class RTSBackpackManager extends AbstractManager {
      * @param player the player
      * @return true if the item is a valid identifier, false otherwise
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isIdentifier(@Nullable ItemStack item, @NotNull Player player) {
         if (item == null || item.getType() == Material.AIR) {
             return false;
@@ -260,11 +278,7 @@ public class RTSBackpackManager extends AbstractManager {
             return false;
         }
 
-        if (!serverUUID.equals(JustEnoughGuide.getServerUUID().toString())) {
-            return false;
-        }
-
-        return true;
+        return serverUUID.equals(JustEnoughGuide.getServerUUID().toString());
     }
 
     /**
@@ -283,10 +297,6 @@ public class RTSBackpackManager extends AbstractManager {
             return false;
         }
 
-        if (status.equals(OPEN_STATUS)) {
-            return true;
-        }
-
-        return false;
+        return status.equals(OPEN_STATUS);
     }
 }
