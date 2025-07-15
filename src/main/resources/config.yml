@@ -30,7 +30,7 @@ banlist: []
 shared-words:
   - "barrel storage" # a group of words, words' group will contain all the search results each other.
 
-# 是否注册配方补全书
+# Enabled Recipe complete book or not
 recipe-complete: true
 
 custom-format:
@@ -156,19 +156,19 @@ custom-format:
     - "BhhhhhhhB"
     - "BhhhhhhhB"
     - "BPBBCBBNB"
-  # 设置
-  # B = 背景板
-  # b = 返回
-  # s = 贡献者
-  # v = 版本
-  # u = 源代码
-  # W = 维基
-  # o = 指南选项
-  # P = 上一页
-  # l = 附属插件
-  # z = 非官方版提示（官方版则为背景板显示）
-  # U = 该功能暂未推出
-  # N = 下一页
+  # Settings & Info
+  # B = Background
+  # b = Back
+  # s = Contributors
+  # v = Version
+  # u = Source Code
+  # W = Slimefun Wiki
+  # o = Guide option
+  # P = Previous Page
+  # l = Addons
+  # z = Unofficial version tips (Background if official version)
+  # U = Unknown feature
+  # N = Next Page
   settings:
     - "bBsBvBuBW"
     - "BBBBBBBBB"
@@ -176,12 +176,12 @@ custom-format:
     - "BoooooooB"
     - "BBBBBBBBB"
     - "BPlBzBUNB"
-  # 贡献者
-  # B = 背景板
-  # b = 返回
-  # p = 贡献者
-  # P = 上一页
-  # N = 下一页
+  # Contributors
+  # B = Background
+  # b = Back
+  # p = Contributor
+  # P = Previous Page
+  # N = Next Page
   contributors:
     - "BbBBBBBBB"
     - "ppppppppp"

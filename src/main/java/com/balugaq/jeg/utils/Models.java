@@ -40,9 +40,4 @@ import org.bukkit.inventory.ItemStack;
  * @since 1.3
  */
 public class Models {
-    public static final String RECIPE_COMPLETE_BOOK_MECHANISM_1 = "&a左键&e点击打开配方书";
-    public static final String RECIPE_COMPLETE_BOOK_MECHANISM_2 = "&a右键&e点击可再次补全";
-    public static final String RECIPE_COMPLETE_BOOK_MECHANISM_3 = "&e补全后再次&aShift+右键&e点击配方书补全64次";
-    public static final String RECIPE_COMPLETE_GUI_MECHANISM_1 = "&a左键&e点击物品补全1次";
-    public static final String RECIPE_COMPLETE_GUI_MECHANISM_2 = "&a右键&e点击物品补全64次";
 }

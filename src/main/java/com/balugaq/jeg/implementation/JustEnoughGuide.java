@@ -301,14 +301,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 Bukkit.getScheduler()
                         .runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), CustomGroupConfigurations::load, 1L);
             }
-            getLogger().info("物品组加载完毕！");
+            getLogger().info(Lang.getStartup("loaded-guide-group"));
 
             JEGGuideSettings.patchSlimefun();
 
             if (getConfigManager().isBeginnerOption()) {
-                getLogger().info("正在加载新手指南选项...");
+                getLogger().info(Lang.getStartup("loading-beginners-guide-option"));
                 SlimefunGuideSettings.addOption(BeginnersGuideOption.instance());
-                getLogger().info("新手指南选项加载完毕！");
+                getLogger().info(Lang.getStartup("loaded-beginners-guide-option"));
             }
 
             getLogger().info(Lang.getStartup("loaded-guide-group"));
