@@ -30,6 +30,7 @@ package com.balugaq.jeg.core.managers;
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.api.objects.annotaions.Warn;
 import com.balugaq.jeg.utils.Debug;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -108,8 +109,8 @@ public class ConfigManager extends AbstractManager {
         this.BOOKMARK = plugin.getConfig().getBoolean("improvements.bookmark", true);
         this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun Guide &7(Chest GUI) &8Advanced");
         this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced");
-        this.SETTINGS_GUIDE_TITLE = plugin.getConfig().getString("guide.settings-guide-title", "设置 & 详情");
-        this.CREDITS_GUIDE_TITLE = plugin.getConfig().getString("guide.credits-guide-title", "Slimefun4 贡献者");
+        this.SETTINGS_GUIDE_TITLE = plugin.getConfig().getString("guide.settings-guide-title", "Settings & Info");
+        this.CREDITS_GUIDE_TITLE = plugin.getConfig().getString("guide.credits-guide-title", "Slimefun4 Contributors");
         this.RTS_SEARCH = plugin.getConfig().getBoolean("improvements.rts-search", true);
 
         this.BEGINNER_OPTION = plugin.getConfig().getBoolean("improvements.beginner-option", true);

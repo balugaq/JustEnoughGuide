@@ -8,6 +8,8 @@ guide:
   cheat-improvements: true
   survival-guide-title: "&2&lSlimefun Guide &7(Chest GUI) &8Advanced"
   cheat-guide-title: "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced"
+  settings-guide-title: "Settings & Info"
+  credits-guide-title: "Slimefun4 Contributors"
 
 improvements:
   pinyin-search: false # deprecated

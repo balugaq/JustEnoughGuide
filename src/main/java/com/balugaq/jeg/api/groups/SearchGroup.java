@@ -70,6 +70,11 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Randomized
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
@@ -123,30 +128,29 @@ public class SearchGroup extends FlexItemGroup {
     public static final String SPLIT = " ";
     @Deprecated
     @Warn(reason = "No longer using it in EN version")
-    public static final Map<Character, Reference<Set<SlimefunItem>>> CACHE = new HashMap<>(); // fast way for by item name
+    public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE = new Char2ObjectOpenHashMap<>(); // fast way for by item name
     @Deprecated
     @Warn(reason = "No longer using it in EN version")
-    public static final Map<Character, Reference<Set<SlimefunItem>>> CACHE2 = new HashMap<>(); // fast way for by display item name
-    public static final List<String> EN_WORDS = new ArrayList<>();
-    public static final Map<String, List<String>> EN_CACHE_ROLLBACK = new HashMap<>();
-    public static final Map<String, Reference<Set<String>>> SPECIAL_CACHE = new HashMap<>();
+    public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE2 = new Char2ObjectOpenHashMap<>(); // fast way for by display item name
+    public static final ObjectArrayList<String> EN_WORDS = new ObjectArrayList<>(50000);
+    public static final Object2ObjectOpenHashMap<String, List<String>> EN_CACHE_ROLLBACK = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Reference<Set<String>>> SPECIAL_CACHE = new Object2ObjectOpenHashMap<>();
 
     @Deprecated
     @Warn(reason = "No longer using it in EN version")
-    public static final Set<String> SHARED_CHARS = new HashSet<>();
+    public static final ObjectOpenHashSet<String> SHARED_CHARS = new ObjectOpenHashSet<>();
 
-
-    public static final Map<String, Reference<Set<SlimefunItem>>> EN_CACHE = new HashMap<>();
-    public static final Map<String, Reference<Set<SlimefunItem>>> EN_CACHE2 = new HashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Reference<Set<SlimefunItem>>> EN_CACHE = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Reference<Set<SlimefunItem>>> EN_CACHE2 = new Object2ObjectOpenHashMap<>();
     @Deprecated
     @Warn(reason = "No longer using it in EN version")
-    public static final Set<String> BLACKLIST = new HashSet<>();
+    public static final ObjectOpenHashSet<String> BLACKLIST = new ObjectOpenHashSet<>();
 
-    public static final Set<String[]> SHARED_WORDS = new HashSet<>();
+    public static final ObjectOpenHashSet<String[]> SHARED_WORDS = new ObjectOpenHashSet<>();
     public static final Boolean SHOW_HIDDEN_ITEM_GROUPS = SlimefunOfficialSupporter.isShowHiddenItemGroups();
     public static final Integer DEFAULT_HASH_SIZE = 5000;
-    public static final Map<SlimefunItem, Integer> ENABLED_ITEMS = new HashMap<>(DEFAULT_HASH_SIZE);
-    public static final Set<SlimefunItem> AVAILABLE_ITEMS = new HashSet<>(DEFAULT_HASH_SIZE);
+    public static final Object2IntOpenHashMap<SlimefunItem> ENABLED_ITEMS = new Object2IntOpenHashMap<>(DEFAULT_HASH_SIZE);
+    public static final ObjectOpenHashSet<SlimefunItem> AVAILABLE_ITEMS = new ObjectOpenHashSet<>(DEFAULT_HASH_SIZE);
 
     @Deprecated
     public static final Integer[] BORDER = new Integer[]{0, 2, 3, 4, 5, 6, 8, 45, 47, 48, 49, 50, 51, 53};

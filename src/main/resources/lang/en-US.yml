@@ -139,6 +139,11 @@ icon:
         - "&b      Ex: {flag}iron can search the item which its type name contains \"iron\""
         - "&c      Allowed to combine different expansions."
         - "&bClick to try!"
+    feature-name-printing:
+      name: "&bFeature: Name Printing"
+      lore:
+        - "&bIntroduction: You can press Q on any item in the guide to share the item."
+        - "&bClick to try!"
   book-mark-button:
     name: "&e&lCollected"
   item-mark-button:
@@ -151,22 +156,24 @@ icon:
     name: "&bJEG Items"
   items:
     recipe-complete-guide:
-      name: "&b配方补全书"
+      name: "&bRecipe Complete Book"
       lore:
         - ""
-        - "&f点击进行配方补全"
-        - "&a左键&e点击打开配方书"
-        - "&a右键&e点击可再次补全"
-        - "&e补全后再次&aShift+右键&e点击配方书补全64次"
+        - "&fClick to complete recipe"
+        - "&aLeft-click&e on the Recipe Complete Book to open it."
+        - "&aRight-click&e on the Recipe Complete Book to complete recipe again."
+        - "&aShift+Right-click&e on the Recipe Complete Book to complete the recipe 64 times after you completed a recipe"
     recipe-complete-usage-info:
-      name: "&a使用方法"
+      name: "&aUsage"
       lore:
         - "",
-        - "&f1. &e将配方补全书放到物品栏里"
-        - "&f2. &e打开任意一个适配配方补全的机器（如Fast Machines）"
-        - "&f3. &e左键点击配方补全书"
+        - "&f1. &ePut a Recipe Complete Book into your inventory"
+        - "&f2. &eOpen a machine that adapted to use Recipe Complete（ex. Fast Machines）"
+        - "&f3. &eLeft-click on the Recipe Complete Book"
+        - ""
+        - "&fSimply, it's the &7\&a+&7\ &fsymbol in &aJEI &fmod"
     recipe-complete-mechanism:
-      name: "&a机制"
+      name: "&aMechanism"
       lore:
         - "",
         - "&7优先使用玩家背包中的物品进行补全配方"
@@ -184,30 +191,30 @@ icon:
         - "&a左键&e点击物品补全1次"
         - "&a右键&e点击物品补全64次"
     recipe-complete-supported-addons-info:
-        name: "&a对以下附属的部分机器适配了配方补全"
+        name: "&aA part of the machines from the addons below are adapted to use Recipe Complete"
         lore:
-          - "&7如需适配更多可在 JustEnoughGuide GitHub 提交 issue"
+          - "&7Issue at JustEnoughGuide GitHub for more addons below"
           - ""
-          - "&7- &a快捷机器"
-          - "&7- &a乱序技艺 2.0-Preview"
-          - "&7- &a乱序技艺 2.0"
-          - "&7- &a乱序技艺 2.0 改版"
-          - "&7- &a无尽贪婪"
-          - "&7- &a无尽贪婪2"
-          - "&7- &a逻辑工艺"
-          - "&7- &a网络"
-          - "&7- &a网络拓展"
-          - "&7- &a黑曜石科技"
-          - "&7- &a粘液AE"
-          - "&7- &a蓬松机器"
-          - "&7- &a粘液匠魂"
-          - "&7- &a星系"
-          - "&7- &a美食家"
-          - "&7- &aRyken自定义附属"
-          - "&7- &a基岩科技"
-          - "&7- &a炼金术自传"
-          - "&7- &a粘土科技"
-          - "&7- &a无底存储"
+          - "&7- &aFastMachines"
+          - "&7- &aFinalTech 2.0-Preview"
+          - "&7- &aFinalTECH 2.0"
+          - "&7- &aFinalTECH-Changed 2.0"
+          - "&7- &aInfinityExpansion"
+          - "&7- &aInfinityExpansion2"
+          - "&7- &aLogitech"
+          - "&7- &aNetworks"
+          - "&7- &aNetworksExpansion"
+          - "&7- &aObsidianExpansion"
+          - "&7- &aSlimeAE"
+          - "&7- &aFluffyMachines"
+          - "&7- &aSlimeTinker"
+          - "&7- &aGalactifun"
+          - "&7- &aGastronomicon"
+          - "&7- &aRykenSlimefunCustomizer"
+          - "&7- &aBedrockTechnology"
+          - "&7- &aAlchimiaVitae"
+          - "&7- &aClayTech"
+          - "&7- &aDankTech2"
 debug:
   debug-prefix: "&b[Debug] "
 message:
