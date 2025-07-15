@@ -27,32 +27,83 @@
 
 package com.balugaq.jeg.utils.clickhandler;
 
-import com.balugaq.jeg.api.objects.ExtendedClickHandler;
+import com.balugaq.jeg.api.clickhandler.JEGClickHandler;
+import com.balugaq.jeg.api.clickhandler.Processor;
+import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * @author balugaq
  * @since 1.5
  */
 @SuppressWarnings("deprecation")
-public class GroupLinker {
-    public static void applyGroupLinker(SlimefunGuideImplementation guide, ChestMenu menu, int slot) {
-        ChestMenu.MenuClickHandler origin = menu.getMenuClickHandler(slot);
-        if (origin instanceof GroupLinkClickHandler) {
-            return;
+public class GroupLinker implements Applier {
+    private static final GroupLinker instance = new GroupLinker();
+
+    private GroupLinker() {}
+
+    public static void applyWith(@NotNull SlimefunGuideImplementation guide, @NotNull ChestMenu menu, int slot) {
+        instance.apply(guide, menu, slot);
+    }
+
+    @ParametersAreNonnullByDefault
+    public void apply(SlimefunGuideImplementation guide, ChestMenu menu, int slot) {
+        menu.addMenuClickHandler(
+                slot, JEGClickHandler.of(guide, menu, slot).addProcessor(GroupLinkProcessor.getInstance()));
+    }
+
+    @SuppressWarnings("ConstantValue")
+    public static class GroupLinkProcessor extends Processor {
+        @Getter
+        private static final GroupLinkProcessor instance = new GroupLinkProcessor();
+
+        public GroupLinkProcessor() {
+            super(Strategy.HEAD);
         }
 
-        menu.addMenuClickHandler(slot, (GroupLinkClickHandler) (player, clickedSlot, clickedItem, action) -> {
-            if (!action.isRightClicked() && action.isShiftClicked()) {
+        /**
+         * A simple Mixin processor
+         * Handles the events to happen when player clicked.
+         *
+         * @param guide            the guide
+         * @param menu             the menu
+         * @param event            the event
+         * @param player           the player
+         * @param clickedSlot      the clicked slot
+         * @param clickedItemStack the clicked item stack
+         * @param clickAction      the click action
+         * @param processedResult  the processed result, null if the {@link Processor#getStrategy()} is {@link Strategy#HEAD}.
+         * @return false if the process is handled successfully, true and handle other {@link Processor}s otherwise.
+         */
+        @Override
+        public boolean process(
+                final @NotNull SlimefunGuideImplementation guide,
+                final @NotNull ChestMenu menu,
+                final @NotNull InventoryClickEvent event,
+                final @NotNull Player player,
+                @Range(from = 0, to = 53) int clickedSlot,
+                final @Nullable ItemStack clickedItemStack,
+                final @NotNull ClickAction clickAction,
+                final @Nullable Boolean processedResult) {
+            if (!clickAction.isRightClicked() && clickAction.isShiftClicked()) {
                 // Open the item's item group if exists
-                final SlimefunItem sfItem = SlimefunItem.getByItem(clickedItem);
+                final SlimefunItem sfItem = SlimefunItem.getByItem(clickedItemStack);
                 if (sfItem != null) {
                     final ItemGroup itemGroup = sfItem.getItemGroup();
                     if (itemGroup != null) {
@@ -60,21 +111,18 @@ public class GroupLinker {
                         if (GuideUtil.isTaggedGroupType(itemGroup)) {
                             page.set((itemGroup.getItems().indexOf(sfItem) / 36) + 1);
                         }
-                        PlayerProfile.get(player, profile -> guide.openItemGroup(profile, itemGroup, page.get()));
-                        return false;
+                        return EventUtil.callEvent(new GuideEvents.GroupLinkButtonClickEvent(
+                                        player, clickedItemStack, clickedSlot, clickAction, menu, guide))
+                                .ifSuccess(() -> {
+                                    PlayerProfile.get(
+                                            player, profile -> guide.openItemGroup(profile, itemGroup, page.get()));
+                                    return false;
+                                });
                     }
                 }
             }
 
-            // call origin handler
-            if (origin != null) {
-                return origin.onClick(player, clickedSlot, clickedItem, action);
-            } else {
-                return false;
-            }
-        });
-    }
-
-    public interface GroupLinkClickHandler extends ExtendedClickHandler {
+            return true;
+        }
     }
 }

@@ -27,6 +27,13 @@
 
 package com.balugaq.jeg.implementation;
 
+import com.balugaq.jeg.api.CustomGroupConfigurations;
+import com.balugaq.jeg.api.editor.GroupResorter;
+import com.balugaq.jeg.api.groups.SearchGroup;
+import com.balugaq.jeg.api.groups.VanillaItemsGroup;
+import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
+import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
 import com.balugaq.jeg.core.managers.BookmarkManager;
 import com.balugaq.jeg.core.managers.CommandManager;
 import com.balugaq.jeg.core.managers.ConfigManager;
@@ -37,16 +44,20 @@ import com.balugaq.jeg.core.services.LocalizationService;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.GroupSetup;
+import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
 import com.balugaq.jeg.utils.Lang;
+import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
+import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import com.balugaq.jeg.utils.UUIDUtils;
-import com.google.common.base.Preconditions;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
@@ -61,13 +72,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import lombok.Getter;
+import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This is the main class of the JustEnoughGuide plugin.
@@ -76,42 +96,58 @@ import java.util.UUID;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Lombok", "deprecation", "ResultOfMethodCallIgnored", "DataFlowIssue"})
 @Getter
 public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public static final int RECOMMENDED_JAVA_VERSION = 17;
     public static final MinecraftVersion RECOMMENDED_MC_VERSION = MinecraftVersion.MINECRAFT_1_16;
+
     @Getter
-    private static JustEnoughGuide instance;
+    private static JustEnoughGuide instance = null;
+
     @Getter
-    private static UUID serverUUID;
+    private static UUID serverUUID = null;
+
     @Getter
     private final @NotNull String username;
+
     @Getter
     private final @NotNull String repo;
+
     @Getter
     private final @NotNull String branch;
+
     @Getter
-    private BookmarkManager bookmarkManager;
+    private BookmarkManager bookmarkManager = null;
+
     @Getter
-    private CommandManager commandManager;
+    private CommandManager commandManager = null;
+
     @Getter
-    private ConfigManager configManager;
+    private ConfigManager configManager = null;
+
     @Getter
-    private IntegrationManager integrationManager;
+    private IntegrationManager integrationManager = null;
+
     @Getter
-    private ListenerManager listenerManager;
+    private ListenerManager listenerManager = null;
+
     @Getter
-    private RTSBackpackManager rtsBackpackManager;
+    private RTSBackpackManager rtsBackpackManager = null;
+
     @Getter
-    private @Nullable LocalizationService localizationService;
+    private LocalizationService localizationService;
+
     @Getter
-    private @Nullable MinecraftVersion minecraftVersion;
+    private MinecraftVersion minecraftVersion = null;
+
     @Getter
-    private int javaVersion;
+    private int javaVersion = 0;
+
     @Getter
     @Nullable
     private Boolean interceptSearch_SlimefunTranslation;
+
 
     public JustEnoughGuide() {
         this.username = "balugaq";
@@ -139,21 +175,65 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getInstance().listenerManager;
     }
 
+    @Deprecated
     public static MinecraftVersion getMCVersion() {
         return getInstance().minecraftVersion;
     }
 
+    public static MinecraftVersion getMinecraftVersion() {
+        return getInstance().minecraftVersion;
+    }
+
     public static @NotNull JustEnoughGuide getInstance() {
-        Preconditions.checkArgument(instance != null, "JustEnoughGuide has not been enabled yet！");
         return JustEnoughGuide.instance;
+    }
+
+    /// //////////////////////////////////////////////////////////////////////////////
+    ///                                                                           ///
+    /// JEG Recipe Complete Compatible                                            ///
+    ///                                                                           ///
+    /// Related-addons:                                                           ///
+    /// - NetworksExpansion                                                       ///
+    /// - SlimeAEPlugin                                                           ///
+    /// Author balugaq                                                            ///
+    /// Since 1.7                                                                 ///
+    ///                                                                           ///
+    /// //////////////////////////////////////////////////////////////////////////////
+
+    @Deprecated
+    public static void vanillaItemsGroupDisplayableFor(@NotNull Player player, boolean displayable) {
+        VanillaItemsGroup.displayableFor(player, displayable);
+    }
+
+    @Deprecated
+    public static boolean vanillaItemsGroupIsDisplayableFor(@NotNull Player player) {
+        return VanillaItemsGroup.isDisplayableFor(player);
+    }
+
+    public static void postServerStartup(@NotNull Runnable runnable) {
+        Bukkit.getScheduler().runTask(getInstance(), runnable);
+    }
+
+    public static void postServerStartupAsynchronously(Runnable runnable) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(getInstance(), runnable, 1L);
+    }
+
+    public static boolean disableAutomaticallyLoadItems() {
+        boolean before = Slimefun.getConfigManager().isAutoLoadingEnabled();
+        Slimefun.getConfigManager().setAutoLoadingMode(false);
+        return before;
+    }
+
+    public static void setAutomaticallyLoadItems(boolean value) {
+        Slimefun.getConfigManager().setAutoLoadingMode(value);
     }
 
     /**
      * Initializes the plugin and sets up all necessary components.
      */
+    @SuppressWarnings("DuplicateExpressions")
     @Override
     public void onEnable() {
-        Preconditions.checkArgument(instance == null, "JustEnoughGuide has already been enabled!");
         instance = this;
 
         getLogger().info("Loading configuration...");
@@ -201,22 +281,18 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         if (survivalOverride || cheatOverride) {
             getLogger().info(Lang.getStartup("enabled-guide-override"));
             getLogger().info(Lang.getStartup("override-guide"));
-            Field field = ReflectionUtil.getField(Slimefun.getRegistry().getClass(), "guides");
-            if (field != null) {
-                field.setAccessible(true);
+            Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
+            newGuides.put(
+                    SlimefunGuideMode.SURVIVAL_MODE,
+                    survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide());
+            newGuides.put(
+                    SlimefunGuideMode.CHEAT_MODE,
+                    cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide());
 
-                Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
-                newGuides.put(
-                        SlimefunGuideMode.SURVIVAL_MODE,
-                        survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide(SlimefunOfficialSupporter.isShowVanillaRecipes(), SlimefunOfficialSupporter.isShowHiddenItemGroups()));
-                newGuides.put(
-                        SlimefunGuideMode.CHEAT_MODE,
-                        cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide());
-                try {
-                    field.set(Slimefun.getRegistry(), newGuides);
-                } catch (IllegalAccessException ignored) {
-
-                }
+            try {
+                ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
+            } catch (Exception e) {
+                Debug.trace(e);
             }
             getLogger().info(survivalOverride ? Lang.getStartup("replaced-survival-guide") : Lang.getStartup("not-replaced-survival-guide"));
             getLogger().info(cheatOverride ? Lang.getStartup("replaced-cheat-guide") : Lang.getStartup("not-replaced-cheat-guide"));
@@ -227,17 +303,24 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
             getLogger().info(Lang.getStartup("loading-guide-group"));
             GroupSetup.setup();
+            if (survivalOverride) {
+                Bukkit.getScheduler()
+                        .runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), CustomGroupConfigurations::load, 1L);
+            }
+            getLogger().info("物品组加载完毕！");
 
-            getLogger().info("untranslated-checking-newbeginners-guide");
+            JEGGuideSettings.patchSlimefun();
 
             if (getConfigManager().isBeginnerOption()) {
-                getLogger().info("untranslated-loading-newbeginners-guide");
-                SlimefunGuideSettings.addOption(new BeginnersGuideOption());
-                getLogger().info("untranslated-loaded-newbeginners-guide");
+                getLogger().info("正在加载新手指南选项...");
+                SlimefunGuideSettings.addOption(BeginnersGuideOption.instance());
+                getLogger().info("新手指南选项加载完毕！");
             }
 
             getLogger().info(Lang.getStartup("loaded-guide-group"));
         }
+
+        ItemsSetup.setup(this);
 
         this.rtsBackpackManager = new RTSBackpackManager(this);
         this.rtsBackpackManager.load();
@@ -268,6 +351,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             }
         }
 
+        SearchGroup.init();
+
         getLogger().info(Lang.getStartup("enabled-jeg"));
     }
 
@@ -276,21 +361,47 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      */
     @Override
     public void onDisable() {
-        Preconditions.checkArgument(instance != null, "JustEnoughGuide has not been enabled yet!");
+        CustomGroupConfigurations.unload();
+        GroupResorter.rollback();
+
+        getIntegrationManager().shutdownIntegrations();
+
         GroupSetup.shutdown();
+        RecipeCompleteProvider.shutdown();
+        GuideUtil.shutdown();
 
-        Field field = ReflectionUtil.getField(Slimefun.getRegistry().getClass(), "guides");
-        if (field != null) {
-            field.setAccessible(true);
+        /**
+         * Unregister all {@link SlimefunItem}
+         *
+         * @see VanillaItemsGroup
+         * @see ItemsSetup#RECIPE_COMPLETE_GUIDE
+         */
+        SlimefunRegistryUtil.unregisterItems(JustEnoughGuide.getInstance());
 
+        try {
+            @SuppressWarnings("unchecked")
+            List<SlimefunGuideOption<?>> l = (List<SlimefunGuideOption<?>>)
+                    ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options");
+            if (l != null) {
+                List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
+                for (SlimefunGuideOption<?> option : copy) {
+                    if (option.getAddon().equals(JustEnoughGuide.getInstance())) {
+                        l.remove(option);
+                    }
+                }
+            }
+            FinalTECHValueDisplayOption.unboot();
+            JEGGuideSettings.unpatchSlimefun();
+        } catch (Exception ignored) {
+        }
+
+        try {
             Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
             newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide(SlimefunOfficialSupporter.isShowVanillaRecipes(), SlimefunOfficialSupporter.isShowHiddenItemGroups()));
             newGuides.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
-            try {
-                field.set(Slimefun.getRegistry(), newGuides);
-            } catch (IllegalAccessException ignored) {
-
-            }
+            ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
+        } catch (Exception e) {
+            Debug.trace(e);
         }
 
         // Rollback SlimefunTranslation interceptSearch
@@ -357,8 +468,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      *
      * @return the bug tracker URL
      */
-    @Nullable
-    @Override
+    @Nullable @Override
     public String getBugTrackerURL() {
         return MessageFormat.format("https://github.com/{0}/{1}/issues/", this.username, this.repo);
     }

@@ -30,7 +30,42 @@ package com.balugaq.jeg.core.managers;
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Lang;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
+import com.balugaq.jeg.core.integrations.Integration;
+import com.balugaq.jeg.core.integrations.alchimiavitae.AlchimiaVitaeIntegrationMain;
+import com.balugaq.jeg.core.integrations.bedrocktechnology.BedrockTechnologyIntegrationMain;
+import com.balugaq.jeg.core.integrations.claytech.ClayTechIntegrationMain;
+import com.balugaq.jeg.core.integrations.danktech2.DankTech2IntegrationMain;
+import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteSlimefunSource;
+import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteVanillaSource;
+import com.balugaq.jeg.core.integrations.emctech.EMCTechIntegrationMain;
+import com.balugaq.jeg.core.integrations.fastmachines.FastMachinesIntegrationMain;
+import com.balugaq.jeg.core.integrations.finaltechs.finalTECHChangedv3.FinalTECHChangedIntegrationMain;
+import com.balugaq.jeg.core.integrations.finaltechs.finalTECHv2.FinalTECHIntegrationMain;
+import com.balugaq.jeg.core.integrations.finaltechs.finaltechv1.FinalTechIntegrationMain;
+import com.balugaq.jeg.core.integrations.fluffymachines.FluffyMachinesIntegrationMain;
+import com.balugaq.jeg.core.integrations.galacitfun.GalactifunIntegrationMain;
+import com.balugaq.jeg.core.integrations.gastronomicon.GastronomiconIntegrationMain;
+import com.balugaq.jeg.core.integrations.infinityexpansion.InfinityExpansionIntegrationMain;
+import com.balugaq.jeg.core.integrations.infinityexpansion2.InfinityExpansion2IntegrationMain;
+import com.balugaq.jeg.core.integrations.logitech.LogitechIntegrationMain;
+import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
+import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionIntegrationMain;
+import com.balugaq.jeg.core.integrations.nexcavate.NexcavateIntegrationMain;
+import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionIntegrationMain;
+import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.Debug;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,32 +75,218 @@ import org.jetbrains.annotations.NotNull;
  * @author balugaq
  * @since 1.2
  */
+@SuppressWarnings({"unused", "LombokGetterMayBeUsed"})
 @Getter
 public class IntegrationManager extends AbstractManager {
+    private final @NotNull List<Integration> integrations = new ArrayList<>();
     private final @NotNull JavaPlugin plugin;
-    private final boolean enabledNetworksExpansion;
-    private final boolean enabledOreWorkshop;
-    private final boolean enabledSlimefunTranslation;
+
+    @Deprecated
+    private final boolean hasRecipeCompletableWithGuide = false;
+
+    private boolean enabledAlchimiaVitae;
+    private boolean enabledBedrockTechnology;
+    private boolean enabledClayTech;
+    private boolean enabledClayTechFixed;
+    private boolean enabledCMILib;
+    private boolean enabledDankTech2;
+    private boolean enabledEMCTech;
+    private boolean enabledFastMachines;
+    private boolean enabledFinalTech;
+    private boolean enabledFinalTECH;
+    private boolean enabledFinalTECH_Changed;
+    private boolean enabledFluffyMachines;
+    private boolean enabledGalactifun;
+    private boolean enabledGastronomicon;
+    private boolean enabledGuguSlimefunLib;
+    private boolean enabledInfinityExpansion;
+    private boolean enabledInfinityExpansion2;
+    private boolean enabledInfinityExpansion_Changed;
+    private boolean enabledLogiTech;
+    private boolean enabledObsidianExpansion;
+    private boolean enabledNetworks;
+    private boolean enabledNetworksExpansion;
+    private boolean enabledNexcavate;
+    private boolean enabledOreWorkshop;
+    private boolean enabledRykenSlimefunCustomizer;
+    private boolean enabledSlimeAEPlugin;
+    private boolean enabledSlimeFrame;
+    private boolean enabledSlimefunTranslation;
+    private boolean enabledSlimeTinker;
 
     public IntegrationManager(@NotNull JavaPlugin plugin) {
-        boolean tmp;
         this.plugin = plugin;
+        Bukkit.getScheduler()
+                .runTaskLater(
+                        plugin,
+                        () -> {
+                            PluginManager pm = Bukkit.getPluginManager();
+                            try {
+                                Class.forName("com.ytdd9527.networksexpansion.implementation.ExpansionItems");
+                                enabledNetworksExpansion = true;
+                            } catch (ClassNotFoundException e) {
+                                enabledNetworksExpansion = false;
+                            }
 
-        // Check if NetworksExpansion is enabled
+                            this.enabledAlchimiaVitae = pm.isPluginEnabled("AlchimiaVitae");
+                            this.enabledBedrockTechnology = pm.isPluginEnabled("BedrockTechnology");
+                            this.enabledClayTechFixed = pm.isPluginEnabled("ClayTech-Fixed");
+                            this.enabledClayTech = enabledClayTechFixed || pm.isPluginEnabled("ClayTech");
+                            this.enabledCMILib = pm.isPluginEnabled("CMILib");
+                            this.enabledDankTech2 = pm.isPluginEnabled("DankTech2");
+                            this.enabledEMCTech = pm.isPluginEnabled("EMCTech");
+                            this.enabledFastMachines = pm.isPluginEnabled("FastMachines");
+                            this.enabledFinalTech = classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
+                            this.enabledFinalTECH_Changed = pm.isPluginEnabled("FinalTECH-Changed");
+                            this.enabledFinalTECH = enabledFinalTECH_Changed
+                                    || classExists("io.taraxacum.libs.slimefun.dto.ItemValueTable");
+                            this.enabledFluffyMachines = pm.isPluginEnabled("FluffyMachines");
+                            this.enabledGalactifun = pm.isPluginEnabled("Galactifun");
+                            this.enabledGastronomicon = pm.isPluginEnabled("Gastronomicon");
+                            this.enabledGuguSlimefunLib = pm.isPluginEnabled("GuguSlimefunLib");
+                            this.enabledInfinityExpansion_Changed = pm.isPluginEnabled("InfinityExpansion-Changed");
+                            this.enabledInfinityExpansion =
+                                    enabledInfinityExpansion_Changed || pm.isPluginEnabled("InfinityExpansion");
+                            this.enabledInfinityExpansion2 = pm.isPluginEnabled("InfinityExpansion2");
+                            this.enabledLogiTech = pm.isPluginEnabled("LogiTech");
+                            this.enabledNetworks = enabledNetworksExpansion || pm.isPluginEnabled("Networks");
+                            this.enabledNexcavate = pm.isPluginEnabled("Nexcavate");
+                            this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
+                            this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
+                            this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
+                            this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
+                            this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
+                            this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
+
+                            addIntegration(enabledAlchimiaVitae, AlchimiaVitaeIntegrationMain::new);
+                            addIntegration(enabledBedrockTechnology, BedrockTechnologyIntegrationMain::new);
+                            addIntegration(enabledClayTech, ClayTechIntegrationMain::new);
+                            addIntegration(enabledDankTech2, DankTech2IntegrationMain::new);
+                            addIntegration(enabledEMCTech, EMCTechIntegrationMain::new);
+                            addIntegration(enabledFastMachines, FastMachinesIntegrationMain::new);
+                            addIntegration(enabledFinalTech, FinalTechIntegrationMain::new);
+                            addIntegration(enabledFinalTECH, FinalTECHIntegrationMain::new);
+                            addIntegration(enabledFinalTECH_Changed, FinalTECHChangedIntegrationMain::new);
+                            addIntegration(enabledFluffyMachines, FluffyMachinesIntegrationMain::new);
+                            addIntegration(enabledGalactifun, GalactifunIntegrationMain::new);
+                            addIntegration(enabledGastronomicon, GastronomiconIntegrationMain::new);
+                            addIntegration(enabledInfinityExpansion, InfinityExpansionIntegrationMain::new);
+                            addIntegration(enabledInfinityExpansion2, InfinityExpansion2IntegrationMain::new);
+                            addIntegration(enabledLogiTech, LogitechIntegrationMain::new);
+                            addIntegration(enabledNexcavate, NexcavateIntegrationMain::new);
+                            addIntegration(enabledNetworks, NetworksIntegrationMain::new);
+                            addIntegration(enabledNetworksExpansion, NetworksExpansionIntegrationMain::new);
+                            addIntegration(enabledObsidianExpansion, ObsidianExpansionIntegrationMain::new);
+                            addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
+                            addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
+                            addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
+
+                            startupIntegrations();
+
+                            RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteSlimefunSource());
+                            RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteVanillaSource());
+
+                            this.enabledSlimefunTranslation = plugin.getServer().getPluginManager().isPluginEnabled("SlimefunTranslation");
+                            if (enabledSlimefunTranslation) {
+                                JustEnoughGuide.getInstance().getLogger().info(Lang.getStartup("hook-slimefun-translation"));
+                            }
+                        },
+                        1L);
+    }
+
+    public static boolean classExists(@NotNull String className) {
         try {
-            Class.forName("com.ytdd9527.networksexpansion.core.listener.NetworksGuideListener");
-            tmp = true;
+            Class.forName(className);
+            return true;
         } catch (ClassNotFoundException e) {
-            tmp = false;
+            return false;
+        }
+    }
+
+    public static void scheduleRun(@NotNull Runnable runnable) {
+        Bukkit.getScheduler().runTaskLater(JustEnoughGuide.getInstance(), runnable, 2L);
+    }
+
+    @Deprecated
+    public boolean hasRecipeCompletableWithGuide() {
+        return hasRecipeCompletableWithGuide;
+    }
+
+    private void startupIntegrations() {
+        for (Integration integration : integrations) {
+            plugin.getLogger().info("Hooking " + integration.getHookPlugin());
+            try {
+                integration.onEnable();
+            } catch (Throwable e) {
+                Debug.trace(e);
+            }
+        }
+    }
+
+    public void shutdownIntegrations() {
+        for (Integration integration : integrations) {
+            plugin.getLogger().info("Unhooking " + integration.getHookPlugin());
+            try {
+                integration.onDisable();
+            } catch (Throwable e) {
+                Debug.trace(e);
+            }
+        }
+    }
+
+    public boolean isEnabledFinalTech() {
+        return enabledFinalTech;
+    }
+
+    public boolean isEnabledFinalTECH() {
+        return enabledFinalTECH;
+    }
+
+    public boolean isEnabledFinalTECH_Changed() {
+        return enabledFinalTECH_Changed;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public Run addIntegration(boolean enabled, @NotNull Supplier<Integration> supplier) {
+        if (enabled) {
+            Integration integration = supplier.get();
+            integrations.add(integration);
+            return Run.success();
+        } else {
+            return Run.failure();
+        }
+    }
+
+    @Data
+    @RequiredArgsConstructor
+    public static class Run implements Cloneable {
+        public static final Run SUCCESS = new Run(true);
+        public static final Run FAILURE = new Run(false);
+        private final boolean success;
+
+        public static Run success() {
+            return SUCCESS.clone();
         }
 
-        enabledNetworksExpansion = tmp;
+        public static Run failure() {
+            return FAILURE.clone();
+        }
 
-        // Check if OreWorkshop is enabled
-        this.enabledOreWorkshop = plugin.getServer().getPluginManager().isPluginEnabled("OreWorkshop");
-        this.enabledSlimefunTranslation = plugin.getServer().getPluginManager().isPluginEnabled("SlimefunTranslation");
-        if (enabledSlimefunTranslation) {
-            JustEnoughGuide.getInstance().getLogger().info(Lang.getStartup("hook-slimefun-translation"));
+        public Run or(@NotNull Supplier<Run> callable) {
+            if (!success) {
+                return callable.get();
+            } else {
+                return this;
+            }
+        }
+
+        @Override
+        public Run clone() {
+            try {
+                return (Run) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new AssertionError();
+            }
         }
     }
 }

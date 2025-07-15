@@ -31,6 +31,8 @@ import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
+import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -46,6 +48,11 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.experimental.UtilityClass;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -55,10 +62,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This class contains utility methods for the guide system.
@@ -67,8 +71,10 @@ import java.lang.reflect.Method;
  * @author balugaq
  * @since 1.0
  */
+@SuppressWarnings("unused")
 @UtilityClass
 public final class GuideUtil {
+    private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON = Lang.getIcon("book-mark-button", Material.NETHER_STAR);
     private static final ItemStack ITEM_MARK_MENU_BUTTON = Lang.getIcon("item-mark-button", Material.WRITABLE_BOOK);
 
@@ -141,8 +147,8 @@ public final class GuideUtil {
 
     public static boolean isTaggedGroupType(@NotNull ItemGroup itemGroup) {
         Class<?> clazz = itemGroup.getClass();
-        return !(itemGroup instanceof FlexItemGroup) &&
-                (clazz == ItemGroup.class
+        return !(itemGroup instanceof FlexItemGroup)
+                && (clazz == ItemGroup.class
                         || clazz == SubItemGroup.class
                         || clazz == LockedItemGroup.class
                         || clazz == SeasonalItemGroup.class
@@ -152,103 +158,179 @@ public final class GuideUtil {
                         || clazz.getName().endsWith("SubGroup"));
     }
 
-    public static void addRTSButton(ChestMenu menu, Player p, PlayerProfile profile, Format format, SlimefunGuideMode mode, SlimefunGuideImplementation implementation) {
+    @SuppressWarnings("deprecation")
+    public static void addRTSButton(
+            @NotNull ChestMenu menu,
+            @NotNull Player p,
+            @NotNull PlayerProfile profile,
+            @NotNull Format format,
+            SlimefunGuideMode mode,
+            @NotNull SlimefunGuideImplementation implementation) {
         if (JustEnoughGuide.getConfigManager().isRTSSearch()) {
-            for (var ss : format.getChars('R')) {
-                menu.addItem(ss, ItemStackUtil.getCleanItem(Lang.RTS_ITEM), (pl, slot, itemstack, action) -> {
-                    try {
-                        RTSSearchGroup.newRTSInventoryFor(pl, mode, (s, stateSnapshot) -> {
-                            if (s == AnvilGUI.Slot.INPUT_LEFT) {
-                                // back button clicked
-                                GuideHistory history = profile.getGuideHistory();
-                                if (action.isShiftClicked()) {
-                                    implementation.openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
-                                } else {
-                                    history.goBack(implementation);
-                                }
-                                return;
-                            } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
-                                // previous page button clicked
-                                SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
-                                if (rts != null) {
-                                    int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
-                                    int newPage = Math.max(1, oldPage - 1);
-                                    RTSEvents.PageChangeEvent event = new RTSEvents.PageChangeEvent(pl, RTSSearchGroup.RTS_PLAYERS.get(pl), oldPage, newPage, mode);
-                                    Bukkit.getPluginManager().callEvent(event);
-                                    if (!event.isCancelled()) {
-                                        synchronized (RTSSearchGroup.RTS_PAGES) {
-                                            RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-                                        }
-                                    }
-                                }
-                            } else if (s == AnvilGUI.Slot.OUTPUT) {
-                                // next page button clicked
-                                SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
-                                if (rts != null) {
-                                    int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
-                                    int newPage = Math.min((rts.slimefunItemList.size() - 1) / RTSListener.FILL_ORDER.length + 1, oldPage + 1);
-                                    RTSEvents.PageChangeEvent event = new RTSEvents.PageChangeEvent(pl, RTSSearchGroup.RTS_PLAYERS.get(pl), oldPage, newPage, mode);
-                                    Bukkit.getPluginManager().callEvent(event);
-                                    if (!event.isCancelled()) {
-                                        synchronized (RTSSearchGroup.RTS_PAGES) {
-                                            RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-                                        }
-                                    }
-                                }
-                            }
-                        }, new int[]{AnvilGUI.Slot.INPUT_LEFT, AnvilGUI.Slot.INPUT_RIGHT, AnvilGUI.Slot.OUTPUT}, null);
-                    } catch (Throwable ignored) {
-                        p.sendMessage(ChatColor.RED + "Incompatibile version! Unable to open RTS!");
-                    }
-                    return false;
-                });
-            }
-        } else {
-            for (var ss : format.getChars('R')) {
-                menu.addItem(ss, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
-            }
-        }
-    }
-
-    public static void addBookMarkButton(ChestMenu menu, Player p, PlayerProfile profile, Format format, JEGSlimefunGuideImplementation implementation, ItemGroup itemGroup) {
-        if (JustEnoughGuide.getConfigManager().isBookmark()) {
-            BookmarkRelocation b = itemGroup instanceof BookmarkRelocation bookmarkRelocation ? bookmarkRelocation : null;
-            for (var s : b != null ? b.getBookMark(implementation, p) : format.getChars('C')) {
-                menu.addItem(
-                        s,
-                        ItemStackUtil.getCleanItem(getBookMarkMenuButton()),
-                        (pl, slot, itemstack, action) -> {
-                            implementation.openBookMarkGroup(pl, profile);
-                            return false;
-                        });
-            }
-        } else {
-            for (var s : format.getChars('C')) {
-                menu.addItem(
-                        s,
-                        ChestMenuUtils.getBackground(),
-                        ChestMenuUtils.getEmptyClickHandler()
-                );
-            }
-        }
-    }
-
-    public static void addItemMarkButton(ChestMenu menu, Player p, PlayerProfile profile, Format format, JEGSlimefunGuideImplementation implementation, ItemGroup itemGroup) {
-        if (itemGroup != null && JustEnoughGuide.getConfigManager().isBookmark() && isTaggedGroupType(itemGroup)) {
-            BookmarkRelocation b = itemGroup instanceof BookmarkRelocation relocation ? relocation : null;
-            for (var ss : b != null ? b.getItemMark(implementation, p) : format.getChars('c')) {
+            for (int ss : format.getChars('R')) {
                 menu.addItem(
                         ss,
-                        ItemStackUtil.getCleanItem(getItemMarkMenuButton()),
-                        (pl, slot, itemstack, action) -> {
-                            implementation.openItemMarkGroup(itemGroup, pl, profile);
-                            return false;
-                        });
+                        PatchScope.RealTimeSearch.patch(p, Lang.RTS_ITEM),
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.RTSButtonClickEvent(
+                                        pl, itemstack, slot, action, menu, implementation))
+                                .ifSuccess(() -> {
+                                    try {
+                                        RTSSearchGroup.newRTSInventoryFor(
+                                                pl,
+                                                mode,
+                                                (s, stateSnapshot) -> {
+                                                    if (s == AnvilGUI.Slot.INPUT_LEFT) {
+                                                        // back button clicked
+                                                        GuideHistory history = profile.getGuideHistory();
+                                                        if (action.isShiftClicked()) {
+                                                            implementation.openMainMenu(
+                                                                    profile,
+                                                                    profile.getGuideHistory()
+                                                                            .getMainMenuPage());
+                                                        } else {
+                                                            history.goBack(implementation);
+                                                        }
+                                                    } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
+                                                        // previous page button clicked
+                                                        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
+                                                        if (rts != null) {
+                                                            int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
+                                                            int newPage = Math.max(1, oldPage - 1);
+                                                            RTSEvents.PageChangeEvent event =
+                                                                    new RTSEvents.PageChangeEvent(
+                                                                            pl,
+                                                                            RTSSearchGroup.RTS_PLAYERS.get(pl),
+                                                                            oldPage,
+                                                                            newPage,
+                                                                            mode);
+                                                            Bukkit.getPluginManager()
+                                                                    .callEvent(event);
+                                                            if (!event.isCancelled()) {
+                                                                synchronized (RTSSearchGroup.RTS_PAGES) {
+                                                                    RTSSearchGroup.RTS_PAGES.put(pl, newPage);
+                                                                }
+                                                            }
+                                                        }
+                                                    } else if (s == AnvilGUI.Slot.OUTPUT) {
+                                                        // next page button clicked
+                                                        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
+                                                        if (rts != null) {
+                                                            int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
+                                                            int newPage = Math.min(
+                                                                    (rts.slimefunItemList.size() - 1)
+                                                                                    / RTSListener.FILL_ORDER.length
+                                                                            + 1,
+                                                                    oldPage + 1);
+                                                            RTSEvents.PageChangeEvent event =
+                                                                    new RTSEvents.PageChangeEvent(
+                                                                            pl,
+                                                                            RTSSearchGroup.RTS_PLAYERS.get(pl),
+                                                                            oldPage,
+                                                                            newPage,
+                                                                            mode);
+                                                            Bukkit.getPluginManager()
+                                                                    .callEvent(event);
+                                                            if (!event.isCancelled()) {
+                                                                synchronized (RTSSearchGroup.RTS_PAGES) {
+                                                                    RTSSearchGroup.RTS_PAGES.put(pl, newPage);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                new int[] {
+                                                    AnvilGUI.Slot.INPUT_LEFT,
+                                                    AnvilGUI.Slot.INPUT_RIGHT,
+                                                    AnvilGUI.Slot.OUTPUT
+                                                },
+                                                null);
+                                    } catch (Exception ignored) {
+                                        p.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
+                                    }
+                                    return false;
+                                }));
             }
         } else {
-            for (var ss : format.getChars('c')) {
+            for (int ss : format.getChars('R')) {
                 menu.addItem(ss, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
             }
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void addBookMarkButton(
+            @NotNull ChestMenu menu,
+            @NotNull Player p,
+            @NotNull PlayerProfile profile,
+            @NotNull Format format,
+            @NotNull JEGSlimefunGuideImplementation implementation,
+            ItemGroup itemGroup) {
+        if (JustEnoughGuide.getConfigManager().isBookmark()) {
+            BookmarkRelocation b =
+                    itemGroup instanceof BookmarkRelocation bookmarkRelocation ? bookmarkRelocation : null;
+            for (int s : b != null ? b.getBookMark(implementation, p) : format.getChars('C')) {
+                menu.addItem(
+                        s,
+                        PatchScope.BookMark.patch(p, getBookMarkMenuButton()),
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.BookMarkButtonClickEvent(
+                                        pl, itemstack, slot, action, menu, implementation))
+                                .ifSuccess(() -> {
+                                    implementation.openBookMarkGroup(pl, profile);
+                                    return false;
+                                }));
+            }
+        } else {
+            for (int s : format.getChars('C')) {
+                menu.addItem(s, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
+            }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void addItemMarkButton(
+            @NotNull ChestMenu menu,
+            @NotNull Player p,
+            @NotNull PlayerProfile profile,
+            @NotNull Format format,
+            @NotNull JEGSlimefunGuideImplementation implementation,
+            @Nullable ItemGroup itemGroup) {
+        if (itemGroup != null && JustEnoughGuide.getConfigManager().isBookmark() && isTaggedGroupType(itemGroup)) {
+            BookmarkRelocation b = itemGroup instanceof BookmarkRelocation relocation ? relocation : null;
+            for (int ss : b != null ? b.getItemMark(implementation, p) : format.getChars('c')) {
+                menu.addItem(
+                        ss,
+                        PatchScope.ItemMark.patch(p, getItemMarkMenuButton()),
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.ItemMarkButtonClickEvent(
+                                        pl, itemstack, slot, action, menu, implementation))
+                                .ifSuccess(() -> {
+                                    implementation.openItemMarkGroup(itemGroup, pl, profile);
+                                    return false;
+                                }));
+            }
+        } else {
+            for (int ss : format.getChars('c')) {
+                menu.addItem(ss, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
+            }
+        }
+    }
+
+    public static void setForceHiddens(@NotNull ItemGroup itemGroup, boolean forceHidden) {
+        if (forceHidden) {
+            forceHiddens.add(itemGroup);
+        } else {
+            forceHiddens.remove(itemGroup);
+        }
+    }
+
+    @NotNull public static List<ItemGroup> getForceHiddens() {
+        return new ArrayList<>(forceHiddens);
+    }
+
+    public static boolean isForceHidden(@NotNull ItemGroup group) {
+        return forceHiddens.contains(group);
+    }
+
+    public static void shutdown() {
+        forceHiddens.clear();
     }
 }

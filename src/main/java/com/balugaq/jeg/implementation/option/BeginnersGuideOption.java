@@ -27,13 +27,14 @@
 
 package com.balugaq.jeg.implementation.option;
 
+import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
+import java.util.Optional;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -51,18 +52,24 @@ import java.util.Optional;
  * @author balugaq
  * @since 1.5
  */
+@SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 public class BeginnersGuideOption implements SlimefunGuideOption<Boolean> {
+    public static final @NotNull BeginnersGuideOption instance = new BeginnersGuideOption();
 
-    public static @NotNull NamespacedKey key() {
+    public static @NotNull BeginnersGuideOption instance() {
+        return instance;
+    }
+
+    public static @NotNull NamespacedKey key0() {
         return new NamespacedKey(JustEnoughGuide.getInstance(), "beginners_guide");
     }
 
-    public static boolean isEnabled(Player p) {
+    public static boolean isEnabled(@NotNull Player p) {
         return getSelectedOption(p);
     }
 
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key()) || PersistentDataAPI.getByte(p, key()) == (byte) 1;
+    public static boolean getSelectedOption(@NotNull Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
     }
 
     @Override
@@ -72,11 +79,11 @@ public class BeginnersGuideOption implements SlimefunGuideOption<Boolean> {
 
     @Override
     public @NotNull NamespacedKey getKey() {
-        return key();
+        return key0();
     }
 
     @Override
-    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
+    public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = getIcon(enabled);
         return Optional.of(item);
@@ -97,20 +104,20 @@ public class BeginnersGuideOption implements SlimefunGuideOption<Boolean> {
     }
 
     @Override
-    public void onClick(Player p, ItemStack guide) {
+    public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
         setSelectedOption(p, guide, !getSelectedOption(p, guide).orElse(true));
-        SlimefunGuideSettings.openSettings(p, guide);
+        JEGGuideSettings.openSettings(p, guide);
     }
 
     @Override
-    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
+    public @NotNull Optional<Boolean> getSelectedOption(@NotNull Player p, ItemStack guide) {
         NamespacedKey key = getKey();
         boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == (byte) 1;
         return Optional.of(value);
     }
 
     @Override
-    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
+    public void setSelectedOption(@NotNull Player p, ItemStack guide, Boolean value) {
         PersistentDataAPI.setByte(p, getKey(), value ? (byte) 1 : (byte) 0);
     }
 }

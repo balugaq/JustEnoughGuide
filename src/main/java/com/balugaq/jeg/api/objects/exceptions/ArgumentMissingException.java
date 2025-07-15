@@ -31,6 +31,7 @@ package com.balugaq.jeg.api.objects.exceptions;
  * @author balugaq
  * @since 1.6
  */
+@SuppressWarnings("unused")
 public class ArgumentMissingException extends RuntimeException {
     public ArgumentMissingException() {
         super();

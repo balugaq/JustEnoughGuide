@@ -32,24 +32,23 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author balugaq
  * @since 1.2
  */
+@SuppressWarnings({"deprecation", "ExtractMethodRecommender", "unused", "ConstantValue"})
 public class LocalHelper {
     public static final String def = "Unknown addon";
     public static final Map<String, Map<String, SlimefunItemStack>> rscItems = new HashMap<>();
@@ -59,6 +58,15 @@ public class LocalHelper {
     public static final Map<String, Set<String>> rscLocals = new HashMap<>();
 
     static {
+        loadDefault();
+        for (Map.Entry<String, String> entry :
+                JustEnoughGuide.getConfigManager().getLocalTranslate().entrySet()) {
+            addonLocals.put(entry.getKey(), ChatColors.color(entry.getValue()));
+        }
+    }
+
+    @Warn(reason = "No longer use it in EN version")
+    public static void loadDefault() {
         addonLocals.put("Slimefun", "Slimefun");
         addonLocals.put("ColoredEnderChests", "Colored Ender Chests");
         addonLocals.put("DyedBackpacks", "Dyed Backpacks");
@@ -307,81 +315,73 @@ public class LocalHelper {
         addonLocals.put("SlimefunVoid", "Slimefun Void"); // Same as SlimeVoid
         addonLocals.put("betterfarming", "Better Farming"); // Same as BetterFarming
         addonLocals.put("New-Beginnings", "New Beginnings"); // Same as NewBeginnings
-        for (var entry : JustEnoughGuide.getConfigManager().getLocalTranslate().entrySet()) {
-            addonLocals.put(entry.getKey(), ChatColor.translateAlternateColorCodes('&', entry.getValue()));
-        }
+        addonLocals.put("ExLimus", "新手工具"); // Same as Ex-Limus
+        addonLocals.put("Aeterum", "众神之马");
+        addonLocals.put("PoseidonAddon", "浪涌科技");
+        addonLocals.put("Aircraft", "粘液飞机");
+        addonLocals.put("InfinityExpansion2", "无尽贪婪2");
     }
 
-    @Warn(reason = "No longer use it in EN version")
-    public static void loadDefault() {
-    }
-
-    @Nonnull
-    public static String getOfficialAddonName(@Nonnull ItemGroup itemGroup, @Nonnull String itemId) {
+    @NotNull public static String getOfficialAddonName(@NotNull ItemGroup itemGroup, @NotNull String itemId) {
         return getOfficialAddonName(itemGroup.getAddon(), itemId, def);
     }
 
-    @Nonnull
-    public static String getOfficialAddonName(@Nonnull ItemGroup itemGroup, @Nonnull String itemId, @NotNull String callback) {
+    @NotNull public static String getOfficialAddonName(
+            @NotNull ItemGroup itemGroup, @NotNull String itemId, @NotNull String callback) {
         return itemGroup.getAddon() == null ? def : getOfficialAddonName(itemGroup.getAddon(), itemId, callback);
     }
 
-    @Nonnull
-    public static String getOfficialAddonName(@Nullable SlimefunAddon addon, @Nonnull String itemId) {
+    @NotNull public static String getOfficialAddonName(@Nullable SlimefunAddon addon, @NotNull String itemId) {
         return getOfficialAddonName(addon, itemId, def);
     }
 
-    @Nonnull
-    public static String getOfficialAddonName(@Nullable SlimefunAddon addon, @Nonnull String itemId, @NotNull String callback) {
+    @NotNull public static String getOfficialAddonName(
+            @Nullable SlimefunAddon addon, @NotNull String itemId, @NotNull String callback) {
         return getOfficialAddonName(addon == null ? "Slimefun" : addon.getName(), itemId, callback);
     }
 
-    @Nonnull
-    public static String getOfficialAddonName(@Nonnull String addonName, @Nonnull String itemId) {
+    @NotNull public static String getOfficialAddonName(@NotNull String addonName, @NotNull String itemId) {
         return getOfficialAddonName(addonName, itemId, def);
     }
 
-    @Nonnull
-    public static String getOfficialAddonName(@Nonnull String addonName, @Nonnull String itemId, @NotNull String callback) {
+    @NotNull public static String getOfficialAddonName(
+            @NotNull String addonName, @NotNull String itemId, @NotNull String callback) {
         return getAddonName(addonName, itemId, callback) + " (" + addonName + ")";
     }
 
-    @Nonnull
-    public static String getAddonName(@Nonnull ItemGroup itemGroup, @Nonnull String itemId) {
+    @NotNull public static String getAddonName(@NotNull ItemGroup itemGroup, @NotNull String itemId) {
         return getAddonName(itemGroup, itemId, def);
     }
 
-    @Nonnull
-    public static String getAddonName(@Nonnull ItemGroup itemGroup, @Nonnull String itemId, @Nonnull String callback) {
-        return itemGroup.getAddon() == null ? def : getAddonName(itemGroup.getAddon().getName(), itemId, callback);
+    @NotNull public static String getAddonName(@NotNull ItemGroup itemGroup, @NotNull String itemId, @NotNull String callback) {
+        return itemGroup.getAddon() == null
+                ? def
+                : getAddonName(itemGroup.getAddon().getName(), itemId, callback);
     }
 
-    @Nonnull
-    public static String getAddonName(@Nullable SlimefunAddon addon, @Nonnull String itemId) {
+    @NotNull public static String getAddonName(@Nullable SlimefunAddon addon, @NotNull String itemId) {
         return getAddonName(addon, itemId, def);
     }
 
-    @Nonnull
-    public static String getAddonName(@Nullable SlimefunAddon addon, @Nonnull String itemId, @NotNull String callback) {
+    @NotNull public static String getAddonName(@Nullable SlimefunAddon addon, @NotNull String itemId, @NotNull String callback) {
         return getAddonName(addon == null ? addonLocals.get("Slimefun") : addon.getName(), itemId, callback);
     }
 
-    @Nonnull
-    public static String getAddonName(@Nonnull String addonName, @Nonnull String itemId) {
+    @NotNull public static String getAddonName(@NotNull String addonName, @NotNull String itemId) {
         return getAddonName(addonName, itemId, def);
     }
 
-    @Nonnull
-    public static String getAddonName(@Nonnull String addonName, @Nonnull String itemId, @NotNull String callback) {
+    @NotNull public static String getAddonName(@NotNull String addonName, @NotNull String itemId, @NotNull String callback) {
         if (addonName == null) {
             return callback;
         }
 
-        if ("RykenSlimefunCustomizer".equalsIgnoreCase(addonName) || "RykenSlimeCustomizer".equalsIgnoreCase(addonName)) {
+        if ("RykenSlimefunCustomizer".equalsIgnoreCase(addonName)
+                || "RykenSlimeCustomizer".equalsIgnoreCase(addonName)) {
             return getRSCLocalName(itemId);
         }
         String localName = addonLocals.get(addonName);
-        return ChatColor.translateAlternateColorCodes('&', localName == null ? callback : localName);
+        return ChatColors.color(localName == null ? callback : localName);
     }
 
     public static void addRSCLocal(String rscAddonName, String itemId) {
@@ -421,23 +421,31 @@ public class LocalHelper {
                     return def;
                 }
                 Object addonManager = ReflectionUtil.getValue(rsc, "addonManager");
-                Object projectAddons = ReflectionUtil.getValue(addonManager, "projectAddons");
-                @SuppressWarnings("unchecked") Map<Object, Object> map = (Map<Object, Object>) projectAddons;
-                for (Map.Entry<Object, Object> entry : map.entrySet()) {
-                    Object addon = entry.getValue();
-                    Object addonName = ReflectionUtil.getValue(addon, "addonName");
-                    String name = (String) addonName;
-                    Object preloadItems = ReflectionUtil.getValue(addon, "preloadItems");
-                    @SuppressWarnings("unchecked") Map<Object, Object> items = (Map<Object, Object>) preloadItems;
-                    Map<String, SlimefunItemStack> read = new HashMap<>();
-                    for (Map.Entry<Object, Object> itemEntry : items.entrySet()) {
-                        String id = (String) itemEntry.getKey();
-                        SlimefunItemStack item = (SlimefunItemStack) itemEntry.getValue();
-                        read.put(id, item);
+                if (addonManager != null) {
+                    Object projectAddons = ReflectionUtil.getValue(addonManager, "projectAddons");
+                    @SuppressWarnings("unchecked")
+                    Map<Object, Object> map = (Map<Object, Object>) projectAddons;
+                    if (map != null) {
+                        for (Map.Entry<Object, Object> entry : map.entrySet()) {
+                            Object addon = entry.getValue();
+                            Object addonName = ReflectionUtil.getValue(addon, "addonName");
+                            String name = (String) addonName;
+                            Object preloadItems = ReflectionUtil.getValue(addon, "preloadItems");
+                            @SuppressWarnings("unchecked")
+                            Map<Object, Object> items = (Map<Object, Object>) preloadItems;
+                            Map<String, SlimefunItemStack> read = new HashMap<>();
+                            if (items != null) {
+                                for (Map.Entry<Object, Object> itemEntry : items.entrySet()) {
+                                    String id = (String) itemEntry.getKey();
+                                    SlimefunItemStack item = (SlimefunItemStack) itemEntry.getValue();
+                                    read.put(id, item);
+                                }
+                            }
+                            rscItems.put(name, read);
+                        }
                     }
-                    rscItems.put(name, read);
                 }
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 Debug.trace(e);
             }
         }
@@ -452,8 +460,7 @@ public class LocalHelper {
         return def;
     }
 
-    @NotNull
-    public static String getDisplayName(@NotNull ItemGroup itemGroup, @NotNull Player player) {
+    @NotNull public static String getDisplayName(@NotNull ItemGroup itemGroup, @NotNull Player player) {
         ItemMeta meta = itemGroup.getItem(player).getItemMeta();
         if (meta == null) {
             return def;

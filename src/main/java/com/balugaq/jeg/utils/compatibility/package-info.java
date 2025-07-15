@@ -32,8 +32,5 @@ package com.balugaq.jeg.utils.compatibility;
  * with different Slimefun versions.
  *
  * @author balugaq
- * @see com.balugaq.jeg.utils.compatibility.Converter
- * @see com.balugaq.jeg.utils.compatibility.CustomItemStack
- * @see com.balugaq.jeg.utils.compatibility.Sounds
  * @since 1.4
  */

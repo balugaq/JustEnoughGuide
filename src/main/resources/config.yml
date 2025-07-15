@@ -1,3 +1,4 @@
+#file: noinspection GrazieInspection
 # Auto update from Blob Build is enabled by default.
 auto-update: true
 language: en-US
@@ -13,6 +14,9 @@ improvements:
   bookmark: true
   rts-search: true
   beginner-option: true
+  emc-display-option: true
+  finaltech-emc-display-option: true
+  finalTECH-emc-display-option: true
 
 # Prohibit items with names containing any of the following words when searching for non restrictive words
 blacklist:
@@ -23,6 +27,9 @@ banlist: []
 
 shared-words:
   - "barrel storage" # a group of words, words' group will contain all the search results each other.
+
+# 是否注册配方补全书
+recipe-complete: true
 
 custom-format:
   # Main GUI
@@ -45,7 +52,6 @@ custom-format:
   # Groups group
   # B = Background
   # b = Back
-  # T = Settings
   # R = RTS (Background if disabled)
   # C = Collections (Background if disabled)
   # S = Search
@@ -62,7 +68,6 @@ custom-format:
   # Items group
   # B = Background
   # b = Back
-  # T = Settings
   # R = RTS (Background if disabled)
   # C = Collections (Background if disabled)
   # c = Collect item (Background if disabled)
@@ -80,7 +85,6 @@ custom-format:
   # Recipe display
   # B = Background
   # b = Back
-  # T = Settings
   # R = RTS (Background if disabled)
   # C = Collections (Background if disabled)
   # S = Search
@@ -96,7 +100,6 @@ custom-format:
   # Recipe display - vanilla item
   # B = Background
   # b = Back
-  # T = Settings
   # R = RTS (Background if disabled)
   # C = Collections (Background if disabled)
   # S = Search
@@ -114,7 +117,6 @@ custom-format:
   # Recipe display - RecipeDisplayItem
   # B = Background
   # b = Back
-  # T = Settings
   # R = RTS (Background if disabled)
   # C = Collections (Background if disabled)
   # S = Search
@@ -136,7 +138,6 @@ custom-format:
   # Guide Helper
   # B = Background
   # b = Back
-  # T = Settings
   # R = RTS (Background if disabled)
   # C = Collections (Background if disabled)
   # S = Search
@@ -153,6 +154,39 @@ custom-format:
     - "BhhhhhhhB"
     - "BhhhhhhhB"
     - "BPBBCBBNB"
+  # 设置
+  # B = 背景板
+  # b = 返回
+  # s = 贡献者
+  # v = 版本
+  # u = 源代码
+  # W = 维基
+  # o = 指南选项
+  # P = 上一页
+  # l = 附属插件
+  # z = 非官方版提示（官方版则为背景板显示）
+  # U = 该功能暂未推出
+  # N = 下一页
+  settings:
+    - "bBsBvBuBW"
+    - "BBBBBBBBB"
+    - "BoooooooB"
+    - "BoooooooB"
+    - "BBBBBBBBB"
+    - "BPlBzBUNB"
+  # 贡献者
+  # B = 背景板
+  # b = 返回
+  # p = 贡献者
+  # P = 上一页
+  # N = 下一页
+  contributors:
+    - "BbBBBBBBB"
+    - "ppppppppp"
+    - "ppppppppp"
+    - "ppppppppp"
+    - "ppppppppp"
+    - "BPBBBBBNB"
 
 # Support color symbol: &aSlimefun
 local-translate:
@@ -287,7 +321,7 @@ local-translate:
   Magic8Ball: "Magic 8 Ball"
   InfinityExpansionAutomation: "Infinity Expansion Automation"
   ZeroTech: "Zero Tech"
-  Ex-Limus: "Ex-Limus"
+  Ex-Limus: "Ex-Limus" # Same as ExLimus
   NotEnoughAddons: "Not Enough Addons"
   SFWorldEdit: "Slimefun WorldEdit [SW]" # Avoid conflict with SlimefunWorldedit
   RSCEditor: "RSC Editor"
@@ -298,8 +332,8 @@ local-translate:
   SfChunkInfo: "SF Chunk Info"
   SlimefunAdvancements: "Slimefun Advancements"
   SlimeHUD: "Slime HUD"
-  RaySlimefunAddon: "Ray Slimefun Addon"
-  SCrafter: "SC Tech"
+  RaySlimefunAddon: "Ray Slimefun Addon" # Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
+  SCrafter: "SC Tech" # Same as SlimefunZT
   CrispyMachines: "Crispy Machines"
   DimensionTraveler: "Dimension Traveler"
   HardlessMachine: "Hardless Machine"
@@ -387,7 +421,7 @@ local-translate:
   SlimefunStackMachine: "Slimefun Stack Machine" # Avoid conflict with StackMachine
   CraftableEnchantments: "Craftable Enchantments"
   sj_Expansion: "sj's Expansion"
-  SlimefunZT: "SiciliaCraft"
+  SlimefunZT: "SiciliaCraft" # Same as SCraft
   SlimefunAddon: "CAPTAINchad12's addon" # Unbelievable...
   AngleTech: "Angle Tech"
   magicexpansion: "Magic Expansion" # Same as MagicExpansion
@@ -404,9 +438,14 @@ local-translate:
   SlimefunVoid: "Slimefun Void" # Same as SlimeVoid
   betterfarming: "Better Farming" # Same as BetterFarming
   New-Beginnings: "New Beginnings" # Same as NewBeginnings
+  ExLimus: "Ex-Limus" # Same as Ex-Limus
+  Aeterum: "Aeterum"
+  PoseidonAddon: "Poseidon Addon"
+  Aircraft: "Aircraft"
+  InfinityExpansion2: "InfinityExpansion2"
 
 # Do not change this value unless you know what you are doing.
-config-version: 1.6
+config-version: 1.9
 
 # Do not change this value unless you know what you are doing.
 debug: false

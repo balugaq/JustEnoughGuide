@@ -42,6 +42,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.1
  */
+@SuppressWarnings("unused")
 public interface JEGCommand {
     /**
      * This method is used to define a tab complete for a command.
@@ -65,7 +66,10 @@ public interface JEGCommand {
      * @return If the command can be executed.
      */
     default boolean canCommand(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+            final @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args) {
         return false;
     }
 
@@ -78,5 +82,8 @@ public interface JEGCommand {
      * @param args    The arguments of the command.
      */
     void onCommand(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args);
+            final @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args);
 }

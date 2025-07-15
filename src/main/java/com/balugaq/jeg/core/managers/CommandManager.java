@@ -29,15 +29,17 @@ package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.core.commands.CacheCommand;
+import com.balugaq.jeg.core.commands.CategoriesCommand;
+import com.balugaq.jeg.core.commands.DisableCommand;
+import com.balugaq.jeg.core.commands.GTEGCommand;
 import com.balugaq.jeg.core.commands.HelpCommand;
 import com.balugaq.jeg.core.commands.JEGCommands;
 import com.balugaq.jeg.core.commands.ReloadCommand;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import java.util.List;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * This class is responsible for managing the commands of JEG.
@@ -48,15 +50,18 @@ import java.util.List;
 @Getter
 public class CommandManager extends AbstractManager {
 
-    private final JustEnoughGuide plugin;
+    private final @NotNull JustEnoughGuide plugin;
     private final @NotNull JEGCommands commands;
 
-    public CommandManager(JustEnoughGuide plugin) {
+    public CommandManager(@NotNull JustEnoughGuide plugin) {
         this.plugin = plugin;
         this.commands = new JEGCommands(plugin);
         this.commands.addCommand(new HelpCommand(plugin));
         this.commands.addCommand(new ReloadCommand(plugin));
         this.commands.addCommand(new CacheCommand(plugin));
+        this.commands.addCommand(new GTEGCommand(plugin));
+        this.commands.addCommand(new DisableCommand(plugin));
+        this.commands.addCommand(new CategoriesCommand(plugin));
     }
 
     public boolean registerCommands() {

@@ -1,0 +1,50 @@
+enabled: true
+
+groups:
+  group1:
+    enabled: false
+    tier: 1
+    id: custom-group # [a-z0-9/._-]
+    mode: transfer # transfer / merge
+    display:
+      # material / skull(hash/base64/url)
+      material: glass
+      name: "&aCustom Group"
+    items:
+      - COPPER_INGOT
+    # 物品分类
+    # B = 背景板
+    # b = 返回
+    # R = 实时搜索（功能未开启则为背景板显示）
+    # C = 收藏物列表（功能未开启则为背景板显示）
+    # c = 收藏物品（功能未开启则为背景板显示）
+    # S = 搜索
+    # i = 物品
+    # P = 上一页
+    # N = 下一页
+    formats:
+      - "BbBBBBRSB"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "BPBcCBBNB"
+  group2:
+    enabled: false
+    tier: 2
+    id: custom-group2
+    mode: merge
+    display:
+      material: grass
+      name: "&aCustom Group2"
+    groups:
+      - slimefun:misc
+    items:
+      - ZINC_INGOT
+    formats:
+      - "BbBBBBRSB"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "iiiiiiiii"
+      - "BPBcCBBNB"

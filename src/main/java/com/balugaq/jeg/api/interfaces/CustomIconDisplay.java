@@ -25,25 +25,15 @@
  *
  */
 
-package com.balugaq.jeg.core.listeners;
+package com.balugaq.jeg.api.interfaces;
 
-import com.balugaq.jeg.api.groups.SearchGroup;
-import io.github.thebusybiscuit.slimefun4.api.events.SlimefunItemRegistryFinalizedEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author balugaq
- * @since 1.1
+ * @since 1.7
  */
-public class SearchGroupInitListener implements Listener {
-    /**
-     * Initialize the SearchGroup
-     *
-     * @param event The event
-     */
-    @EventHandler
-    public void onInit(SlimefunItemRegistryFinalizedEvent event) {
-        SearchGroup.init();
-    }
+public interface CustomIconDisplay {
+    @NotNull ItemStack getCustomIcon();
 }

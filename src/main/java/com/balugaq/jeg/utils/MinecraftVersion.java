@@ -48,14 +48,9 @@ public enum MinecraftVersion {
     MINECRAFT_1_16_5(16, 5),
     MINECRAFT_1_17(17, 0),
     MINECRAFT_1_17_1(17, 1),
-    MINECRAFT_1_17_2(17, 2),
-    MINECRAFT_1_17_3(17, 3),
-    MINECRAFT_1_17_4(17, 4),
     MINECRAFT_1_18(18, 0),
     MINECRAFT_1_18_1(18, 1),
     MINECRAFT_1_18_2(18, 2),
-    MINECRAFT_1_18_3(18, 3),
-    MINECRAFT_1_18_4(18, 4),
     MINECRAFT_1_19(19, 0),
     MINECRAFT_1_19_1(19, 1),
     MINECRAFT_1_19_2(19, 2),
@@ -75,6 +70,7 @@ public enum MinecraftVersion {
     MINECRAFT_1_21_4(21, 4),
     MINECRAFT_1_21_5(21, 5),
     MINECRAFT_1_21_6(21, 6),
+    MINECRAFT_1_21_7(21, 7),
     MINECRAFT_1_22(22, 0),
     MINECRAFT_1_22_1(22, 1),
     MINECRAFT_1_22_2(22, 2),
@@ -133,5 +129,14 @@ public enum MinecraftVersion {
 
     public boolean isNotUnknown() {
         return this != UNKNOWN;
+    }
+
+    /**
+     * Humanize the version
+     *
+     * @return 1.x.x
+     */
+    public @NotNull String humanize() {
+        return "1." + this.major + "." + this.minor;
     }
 }

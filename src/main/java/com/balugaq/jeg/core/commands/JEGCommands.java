@@ -47,7 +47,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecation", "ConstantValue"})
 @Getter
 public class JEGCommands implements TabExecutor {
     private final JavaPlugin plugin;
@@ -65,10 +65,10 @@ public class JEGCommands implements TabExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String @NotNull [] args) {
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final @NotNull String @NotNull [] args) {
         if (!sender.isOp()) {
             sender.sendMessage(Lang.getCommandMessage("no-permission"));
             return false;
@@ -106,10 +106,10 @@ public class JEGCommands implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String @NotNull [] args) {
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final @NotNull String @NotNull [] args) {
         if (sender.isOp()) {
             List<String> raw = onTabCompleteRaw(sender, args);
             return StringUtil.copyPartialMatches(args[args.length - 1], raw, new ArrayList<>());
