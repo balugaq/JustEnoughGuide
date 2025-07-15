@@ -53,6 +53,7 @@ import com.balugaq.jeg.core.integrations.nexcavate.NexcavateIntegrationMain;
 import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationPluginIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
@@ -156,6 +157,7 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
                             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
                             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
+                            this.enabledSlimefunTranslation = pm.isPluginEnabled("SlimefunTranslation");
                             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
 
                             addIntegration(enabledAlchimiaVitae, AlchimiaVitaeIntegrationMain::new);
@@ -179,17 +181,13 @@ public class IntegrationManager extends AbstractManager {
                             addIntegration(enabledObsidianExpansion, ObsidianExpansionIntegrationMain::new);
                             addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
                             addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
+                            addIntegration(enabledSlimefunTranslation, SlimefunTranslationPluginIntegrationMain::new);
                             addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
 
                             startupIntegrations();
 
                             RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteSlimefunSource());
                             RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteVanillaSource());
-
-                            this.enabledSlimefunTranslation = plugin.getServer().getPluginManager().isPluginEnabled("SlimefunTranslation");
-                            if (enabledSlimefunTranslation) {
-                                JustEnoughGuide.getInstance().getLogger().info(Lang.getStartup("hook-slimefun-translation"));
-                            }
                         },
                         1L);
     }

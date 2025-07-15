@@ -138,11 +138,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     @Getter
     private int javaVersion = 0;
 
-    @Getter
-    @Nullable
-    private Boolean interceptSearch_SlimefunTranslation;
-
-
     public JustEnoughGuide() {
         this.username = "balugaq";
         this.repo = "JustEnoughGuide";
@@ -337,14 +332,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             }
         }
 
-        if (getIntegrationManager().isEnabledSlimefunTranslation()) {
-            Object value = ReflectionUtil.getValue(SlimefunTranslation.getConfigService(), "interceptSearch");
-            if (value instanceof Boolean bool) {
-                interceptSearch_SlimefunTranslation = bool;
-                ReflectionUtil.setValue(SlimefunTranslation.getConfigService(), "interceptSearch", false);
-            }
-        }
-
         SearchGroup.init();
 
         getLogger().info(Lang.getStartup("enabled-jeg"));
@@ -396,13 +383,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
         } catch (Exception e) {
             Debug.trace(e);
-        }
-
-        // Rollback SlimefunTranslation interceptSearch
-        if (getIntegrationManager().isEnabledSlimefunTranslation()) {
-            if (interceptSearch_SlimefunTranslation != null) {
-                ReflectionUtil.setValue(SlimefunTranslation.getConfigService(), "interceptSearch", interceptSearch_SlimefunTranslation);
-            }
         }
 
         // Managers
