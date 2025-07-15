@@ -171,14 +171,14 @@ icon:
         - "&f2. &eOpen a machine that adapted to use Recipe Complete（ex. Fast Machines）"
         - "&f3. &eLeft-click on the Recipe Complete Book"
         - ""
-        - "&fSimply, it's the &7\&a+&7\ &fsymbol in &aJEI &fmod"
+        - "&fSimply, it's the &a+ &fsymbol in &aJEI &fmod"
     recipe-complete-mechanism:
       name: "&aMechanism"
       lore:
         - ""
         - "&7Items in the player's inventory are prioritized for recipe completion"
-        - "&7If connected to a network, it will try to get recipe materials from the network (only valid for Networks Expansion)"
-        - "&7If connected to an AE network, it will try to get recipe materials from the AE network"
+        - "&7If connected to a network, it will try to get recipe materials from the network (both valid for Networks/NetworksExpansion)"
+        - "&7If connected to an AE network, it will try to get recipe materials from the AE network (only valid for SlimeAEPlugin)"
         - "&7\"Connected\" explanation: "
         - "&7If any block in the north, south, east, west, up, or down direction of the machine interface being recipe-completed is adjacent to a network/AE network, it is considered connected"
         - "&7That is, the machine interface being recipe-completed is considered connected to the network/AE network (does not occupy a network/AE network node)"

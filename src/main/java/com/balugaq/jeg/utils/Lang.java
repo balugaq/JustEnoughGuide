@@ -31,9 +31,9 @@ public class Lang {
     public static final SlimefunItemStack RECIPE_COMPLETE_GUIDE = new SlimefunItemStack("JEG_RECIPE_COMPLETE_BOOK", RAW_RECIPE_COMPLETE_GUIDE);
     public static final ItemStack RAW_USAGE_INFO = Lang.getIcon("items.recipe-complete-usage-info", Material.PAPER);
     public static final SlimefunItemStack USAGE_INFO = new SlimefunItemStack("JEG_RECIPE_COMPLETE_USAGE_INFO", RAW_USAGE_INFO);
-    public static final ItemStack RAW_MECHANISM = Lang.getIcon("items.mechanism", Material.PAPER);
+    public static final ItemStack RAW_MECHANISM = Lang.getIcon("items.recipe-complete-mechanism", Material.PAPER);
     public static final SlimefunItemStack MECHANISM = new SlimefunItemStack("JEG_RECIPE_COMPLETE_MECHANISM", RAW_MECHANISM);
-    public static final ItemStack RAW_SUPPORTED_ADDONS_INFO = Lang.getIcon("items.supported-addons-info", Material.PAPER);
+    public static final ItemStack RAW_SUPPORTED_ADDONS_INFO = Lang.getIcon("items.recipe-complete-supported-addons-info", Material.PAPER);
     public static final SlimefunItemStack SUPPORTED_ADDONS_INFO = new SlimefunItemStack("JEG_RECIPE_COMPLETE_SUPPORTED_ADDONS_INFO", RAW_SUPPORTED_ADDONS_INFO);
 
     public static @Nullable LocalizationService get() {
