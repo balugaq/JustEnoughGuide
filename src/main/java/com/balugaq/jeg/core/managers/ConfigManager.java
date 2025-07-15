@@ -290,7 +290,7 @@ public class ConfigManager extends AbstractManager {
     }
 
     @ParametersAreNonnullByDefault
-    private void checkKey(FileConfiguration existingConfig, FileConfiguration resourceConfig, String key) {
+    public static void checkKey(FileConfiguration existingConfig, FileConfiguration resourceConfig, String key) {
         final Object currentValue = existingConfig.get(key);
         final Object newValue = resourceConfig.get(key);
         if (newValue instanceof ConfigurationSection section) {

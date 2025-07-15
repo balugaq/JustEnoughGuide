@@ -28,7 +28,9 @@
 package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,6 +65,11 @@ public class NetworksIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
+        if (!JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion()) {
+            RecipeCompleteProvider.addSource(new NetworksRecipeCompleteSlimefunSource());
+            RecipeCompleteProvider.addSource(new NetworksRecipeCompleteVanillaSource());
+        }
+
         rrc("NTW_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_CRAFTING_GRID", CRAFTING_GRID_RECIPE_SLOTS, false);
     }
