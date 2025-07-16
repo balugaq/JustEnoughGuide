@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.clickhandler.JEGClickHandler;
 import com.balugaq.jeg.api.clickhandler.Processor;
 import com.balugaq.jeg.api.objects.collection.cooldown.FrequencyWatcher;
 import com.balugaq.jeg.utils.ClipboardUtil;
+import com.balugaq.jeg.utils.Lang;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
@@ -64,8 +65,8 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("deprecation")
 public class NamePrinter implements Applier {
     public static final MessageFormat SHARED_ITEM_MESSAGE =
-            new MessageFormat(ChatColors.color("&a{0} &e分享了物品 &7[{1}&r&7]&e <点击搜索>"));
-    public static final String CLICK_TO_SEARCH = ChatColors.color("&e点击搜索物品");
+            new MessageFormat(ChatColors.color(Lang.getMessage("guide.share-item")));
+    public static final String CLICK_TO_SEARCH = ChatColors.color(Lang.getMessage("guide.click-to-search"));
     private static final NamePrinter instance = new NamePrinter();
     private static final FrequencyWatcher<UUID> watcher = new FrequencyWatcher<>(1, TimeUnit.MINUTES, 10, 5000);
 

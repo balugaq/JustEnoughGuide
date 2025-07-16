@@ -277,6 +277,8 @@ message:
     recipe-complete-left-click: "&aLeft-click&e to complete once"
     recipe-complete-right-click: "&aRight-click&e to complete 64 times"
     recipe-complete-last-completed: "&6Last completed: "
+    click-to-search: "&eClick to search"
+    share-item: "&a{0} &eshared &7[{1}&r&7]&e <Click to Search>"
 startup:
   null-mc-version: "Cannot recognize Minecraft version!"
   unknown-mc-version: "Cannot recognize Minecraft version!"
