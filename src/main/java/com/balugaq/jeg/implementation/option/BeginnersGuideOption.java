@@ -97,8 +97,8 @@ public class BeginnersGuideOption implements SlimefunGuideOption<Boolean> {
 
         return Converter.getItem(
                 enabled ? Material.KNOWLEDGE_BOOK : Material.BOOK,
-                Lang.getMessage(lk + "name-1") +
-                        Lang.getMessage(lk + "name-" + (enabled ? "enabled" : "disabled")),
+                Lang.getString(lk + "name-1") +
+                        Lang.getString(lk + "name-" + (enabled ? "enabled" : "disabled")),
                 lore);
     }
 

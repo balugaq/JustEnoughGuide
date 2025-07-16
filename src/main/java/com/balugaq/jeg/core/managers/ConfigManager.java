@@ -30,7 +30,6 @@ package com.balugaq.jeg.core.managers;
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.api.objects.annotaions.Warn;
 import com.balugaq.jeg.utils.Debug;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -265,6 +264,19 @@ public class ConfigManager extends AbstractManager {
         this.LANGUAGE = plugin.getConfig().getString("language", "en-US");
     }
 
+    @ParametersAreNonnullByDefault
+    public static void checkKey(FileConfiguration existingConfig, FileConfiguration resourceConfig, String key) {
+        final Object currentValue = existingConfig.get(key);
+        final Object newValue = resourceConfig.get(key);
+        if (newValue instanceof ConfigurationSection section) {
+            for (String sectionKey : section.getKeys(false)) {
+                checkKey(existingConfig, resourceConfig, key + "." + sectionKey);
+            }
+        } else if (currentValue == null) {
+            existingConfig.set(key, newValue);
+        }
+    }
+
     private void setupDefaultConfig() {
         // config.yml
         final InputStream inputStream = plugin.getResource("config.yml");
@@ -286,19 +298,6 @@ public class ConfigManager extends AbstractManager {
             existingConfig.save(existingFile);
         } catch (IOException e) {
             Debug.trace(e);
-        }
-    }
-
-    @ParametersAreNonnullByDefault
-    private void checkKey(FileConfiguration existingConfig, FileConfiguration resourceConfig, String key) {
-        final Object currentValue = existingConfig.get(key);
-        final Object newValue = resourceConfig.get(key);
-        if (newValue instanceof ConfigurationSection section) {
-            for (String sectionKey : section.getKeys(false)) {
-                checkKey(existingConfig, resourceConfig, key + "." + sectionKey);
-            }
-        } else if (currentValue == null) {
-            existingConfig.set(key, newValue);
         }
     }
 

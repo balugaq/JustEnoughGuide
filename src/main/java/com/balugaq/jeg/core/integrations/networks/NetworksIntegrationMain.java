@@ -28,12 +28,22 @@
 package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
+import io.github.sefiraat.networks.NetworkStorage;
+import io.github.sefiraat.networks.network.NetworkRoot;
+import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author balugaq
@@ -43,6 +53,9 @@ public class NetworksIntegrationMain implements Integration {
     public static final int[] ENCODER_RECIPE_SLOTS = new int[]{12, 13, 14, 21, 22, 23, 30, 31, 32};
     public static final int[] CRAFTING_GRID_RECIPE_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
+    public static final BlockFace[] VALID_FACES = new BlockFace[] {
+        BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    };
 
     public static void rrc(@NotNull String id, int @NotNull [] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
@@ -56,6 +69,30 @@ public class NetworksIntegrationMain implements Integration {
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
+    @Nullable
+    public static NetworkRoot findNearbyNetworkRoot(@NotNull Location location) {
+        NetworkRoot root = null;
+
+        for (BlockFace blockFace : VALID_FACES) {
+            Location clone = location.clone();
+            switch (blockFace) {
+                case NORTH -> clone.set(clone.getBlockX(), clone.getBlockY(), clone.getBlockZ() - 1);
+                case EAST -> clone.set(clone.getBlockX() + 1, clone.getBlockY(), clone.getBlockZ());
+                case SOUTH -> clone.set(clone.getBlockX(), clone.getBlockY(), clone.getBlockZ() + 1);
+                case WEST -> clone.set(clone.getBlockX() - 1, clone.getBlockY(), clone.getBlockZ());
+                case UP -> clone.set(clone.getBlockX(), clone.getBlockY() + 1, clone.getBlockZ());
+                case DOWN -> clone.set(clone.getBlockX(), clone.getBlockY() - 1, clone.getBlockZ());
+            }
+            NodeDefinition def2 = NetworkStorage.getNode(clone);
+            if (def2 != null && def2.getNode() != null) {
+                root = def2.getNode().getRoot();
+                break;
+            }
+        }
+
+        return root;
+    }
+
     @Override
     public @NotNull String getHookPlugin() {
         return "Networks";
@@ -63,6 +100,11 @@ public class NetworksIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
+        if (!JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion()) {
+            RecipeCompleteProvider.addSource(new NetworksRecipeCompleteSlimefunSource());
+            RecipeCompleteProvider.addSource(new NetworksRecipeCompleteVanillaSource());
+        }
+
         rrc("NTW_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_CRAFTING_GRID", CRAFTING_GRID_RECIPE_SLOTS, false);
     }

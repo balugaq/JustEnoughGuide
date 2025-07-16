@@ -37,18 +37,17 @@ import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Lang;
-import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import lombok.SneakyThrows;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -324,7 +323,7 @@ public class RecipeCompletableListener implements Listener {
                     }
                 }
 
-                String itemName = ItemStackHelper.getDisplayName(clickedItemStack);
+                String itemName = ItemUtils.getItemName(clickedItemStack);
                 lore.add("");
                 lore.add(ChatColors.color("&6上次补全物品: " + itemName));
 
@@ -524,3 +523,4 @@ public class RecipeCompletableListener implements Listener {
     public interface RecipeCompletableClickHandler extends ChestMenu.MenuClickHandler, TaggedRecipeCompletable {
     }
 }
+

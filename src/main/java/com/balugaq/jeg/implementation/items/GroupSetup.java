@@ -32,7 +32,6 @@ import com.balugaq.jeg.api.groups.VanillaItemsGroup;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Lang;
-import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import org.bukkit.Material;

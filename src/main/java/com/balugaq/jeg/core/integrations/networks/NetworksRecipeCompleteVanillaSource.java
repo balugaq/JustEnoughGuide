@@ -25,11 +25,11 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.networksexpansion;
+package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
-import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
+import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionIntegrationMain;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.InventoryUtil;
@@ -53,7 +53,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
-public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSource {
+public class NetworksRecipeCompleteVanillaSource implements VanillaSource {
 
     @SuppressWarnings("deprecation")
     @Override
@@ -199,15 +199,14 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
         return true;
     }
 
-    @Nullable
-    private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
+    @Nullable private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
         ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
         if (i1 != null) {
             return i1;
         }
 
         // get from root
-        return root.getItemStack0(player.getLocation(), new ItemRequest(itemStack, 1));
+        return root.getItemStack(new ItemRequest(itemStack, 1));
     }
 
     @Override

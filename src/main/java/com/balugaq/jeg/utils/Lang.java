@@ -21,19 +21,19 @@ public class Lang {
     public static final ItemStack RTS_ITEM = Converter.getItem(new SlimefunItemStack("_UI_RTS_ICON", RAW_RTS_ITEM));
     public static final ItemStack RAW_SPECIAL_MENU_ITEM = Lang.getIcon("guide.special-menu", Material.COMPASS);
     public static final ItemStack SPECIAL_MENU_ITEM = Converter.getItem(new SlimefunItemStack("_UI_SPECIAL_MENU_ICON", RAW_SPECIAL_MENU_ITEM));
-    public static final ItemStack RAW_NEXCAVATE_ITEMS_GROUP_ITEM = Lang.getIcon("icons.nexcavate-items-group", Material.BLACKSTONE);
+    public static final ItemStack RAW_NEXCAVATE_ITEMS_GROUP_ITEM = Lang.getIcon("nexcavate-items-group", Material.BLACKSTONE);
     public static final ItemStack NEXCAVATE_ITEMS_GROUP_ITEM = Converter.getItem(new SlimefunItemStack("JEG_NEXCAVATE_ITEMS_GROUP_ICON", RAW_NEXCAVATE_ITEMS_GROUP_ITEM));
-    public static final ItemStack RAW_VANILLA_ITEMS_GROUP_ITEM = Lang.getIcon("icons.vanilla-items-group", Material.CRAFTING_TABLE);
+    public static final ItemStack RAW_VANILLA_ITEMS_GROUP_ITEM = Lang.getIcon("vanilla-items-group", Material.CRAFTING_TABLE);
     public static final ItemStack VANILLA_ITEMS_GROUP_ITEM = Converter.getItem(new SlimefunItemStack("JEG_VANILLA_ITEMS_GROUP", RAW_VANILLA_ITEMS_GROUP_ITEM));
-    public static final ItemStack RAW_JEG_ITEMS_GROUP_ITEM = Lang.getIcon("icons.jeg-items-group", Material.BOOK);
+    public static final ItemStack RAW_JEG_ITEMS_GROUP_ITEM = Lang.getIcon("jeg-items-group", Material.BOOK);
     public static final ItemStack JEG_ITEMS_GROUP_ITEM = Converter.getItem(new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", RAW_JEG_ITEMS_GROUP_ITEM));
-    public static final ItemStack RAW_RECIPE_COMPLETE_GUIDE = Lang.getIcon("icons.items.recipe-complete-guide", Material.SLIME_BALL);
+    public static final ItemStack RAW_RECIPE_COMPLETE_GUIDE = Lang.getIcon("items.recipe-complete-guide", Material.SLIME_BALL);
     public static final SlimefunItemStack RECIPE_COMPLETE_GUIDE = new SlimefunItemStack("JEG_RECIPE_COMPLETE_BOOK", RAW_RECIPE_COMPLETE_GUIDE);
-    public static final ItemStack RAW_USAGE_INFO = Lang.getIcon("icons.items.recipe-complete-usage-info", Material.PAPER);
+    public static final ItemStack RAW_USAGE_INFO = Lang.getIcon("items.recipe-complete-usage-info", Material.PAPER);
     public static final SlimefunItemStack USAGE_INFO = new SlimefunItemStack("JEG_RECIPE_COMPLETE_USAGE_INFO", RAW_USAGE_INFO);
-    public static final ItemStack RAW_MECHANISM = Lang.getIcon("icons.items.mechanism", Material.PAPER);
+    public static final ItemStack RAW_MECHANISM = Lang.getIcon("items.recipe-complete-mechanism", Material.PAPER);
     public static final SlimefunItemStack MECHANISM = new SlimefunItemStack("JEG_RECIPE_COMPLETE_MECHANISM", RAW_MECHANISM);
-    public static final ItemStack RAW_SUPPORTED_ADDONS_INFO = Lang.getIcon("icons.items.supported-addons-info", Material.PAPER);
+    public static final ItemStack RAW_SUPPORTED_ADDONS_INFO = Lang.getIcon("items.recipe-complete-supported-addons-info", Material.PAPER);
     public static final SlimefunItemStack SUPPORTED_ADDONS_INFO = new SlimefunItemStack("JEG_RECIPE_COMPLETE_SUPPORTED_ADDONS_INFO", RAW_SUPPORTED_ADDONS_INFO);
 
     public static @Nullable LocalizationService get() {

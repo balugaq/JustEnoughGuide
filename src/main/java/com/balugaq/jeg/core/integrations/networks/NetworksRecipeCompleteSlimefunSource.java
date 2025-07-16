@@ -25,22 +25,22 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.networksexpansion;
+package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
-import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
-import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
+import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
+import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionIntegrationMain;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.InventoryUtil;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,25 +53,23 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
-public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSource {
+public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
 
     @SuppressWarnings("deprecation")
     @Override
     public boolean handleable(
-            @NotNull Block block,
-            @NotNull Inventory inventory,
+            @NotNull BlockMenu blockMenu,
             @NotNull Player player,
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        return NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation()) != null;
+        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public boolean openGuide(
-            @NotNull Block block,
-            @NotNull Inventory inventory,
+            @NotNull BlockMenu blockMenu,
             @NotNull Player player,
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
@@ -84,11 +82,25 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
                 times = 64;
             }
 
-            // I think it is runnable
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(block, inventory, lastEvent, ingredientSlots, unordered);
+            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
+            if (actualMenu == null) {
+                if (callback != null) {
+                    callback.run();
+                }
+                return false;
             }
 
+            if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
+                if (callback != null) {
+                    callback.run();
+                }
+                return false;
+            }
+
+            // I think it is runnable
+            for (int i = 0; i < times; i++) {
+                completeRecipeWithGuide(actualMenu, lastEvent, ingredientSlots, unordered);
+            }
             if (callback != null) {
                 callback.run();
             }
@@ -97,17 +109,32 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
+            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
+            if (actualMenu == null) {
+                if (callback != null) {
+                    callback.run();
+                }
+                return;
+            }
+
+            if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
+                if (callback != null) {
+                    callback.run();
+                }
+                return;
+            }
+
             int times = 1;
             if (event.getClickAction().isRightClicked()) {
                 times = 64;
             }
 
             for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(block, inventory, event, ingredientSlots, unordered);
+                completeRecipeWithGuide(actualMenu, event, ingredientSlots, unordered);
             }
 
             player.updateInventory();
-            player.openInventory(inventory);
+            actualMenu.open(player);
             if (callback != null) {
                 callback.run();
             }
@@ -118,12 +145,11 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
 
     @Override
     public boolean completeRecipeWithGuide(
-            @NotNull Block block,
-            @NotNull Inventory inventory,
+            @NotNull BlockMenu blockMenu,
             GuideEvents.@NotNull ItemButtonClickEvent event,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation());
+        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
         if (root == null) {
             return false;
         }
@@ -156,7 +182,7 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
             }
 
             if (!unordered) {
-                ItemStack existing = inventory.getItem(ingredientSlots[i]);
+                ItemStack existing = blockMenu.getItemInSlot(ingredientSlots[i]);
                 if (existing != null && existing.getType() != Material.AIR) {
                     if (existing.getAmount() >= existing.getMaxStackSize()) {
                         continue;
@@ -175,9 +201,9 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
                     ItemStack received = getItemStack(root, player, itemStack);
                     if (received != null && received.getType() != Material.AIR) {
                         if (unordered) {
-                            InventoryUtil.pushItem(inventory, received, ingredientSlots);
+                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots);
                         } else {
-                            InventoryUtil.pushItem(inventory, received, ingredientSlots[i]);
+                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[i]);
                         }
                     }
                 }
@@ -186,9 +212,9 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
                     ItemStack received = getItemStack(root, player, itemStack);
                     if (received != null && received.getType() != Material.AIR) {
                         if (unordered) {
-                            InventoryUtil.pushItem(inventory, received, ingredientSlots);
+                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots);
                         } else {
-                            InventoryUtil.pushItem(inventory, received, ingredientSlots[i]);
+                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[i]);
                         }
                     }
                 }
@@ -199,15 +225,14 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
         return true;
     }
 
-    @Nullable
-    private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
+    @Nullable private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
         ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
         if (i1 != null) {
             return i1;
         }
 
         // get from root
-        return root.getItemStack0(player.getLocation(), new ItemRequest(itemStack, 1));
+        return root.getItemStack(new ItemRequest(itemStack, 1));
     }
 
     @Override

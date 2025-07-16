@@ -1,13 +1,16 @@
 package com.balugaq.jeg.core.services;
 
 import com.balugaq.jeg.api.objects.Language;
+import com.balugaq.jeg.core.managers.ConfigManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.google.common.base.Preconditions;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -124,6 +128,7 @@ public class LocalizationService {
         p.spigot().sendMessage(ChatMessageType.ACTION_BAR, components);
     }
 
+    @SneakyThrows
     public final void addLanguage(@Nonnull String langFilename) {
         Preconditions.checkArgument(langFilename != null, "The language file name should not be null");
         File langFile = new File(this.langFolder, langFilename + ".yml");
@@ -136,11 +141,22 @@ public class LocalizationService {
                 return;
             }
         }
+        FileConfiguration existingConfig = YamlConfiguration.loadConfiguration(langFile);
 
         this.languages.add(langFilename);
         InputStreamReader defaultReader = new InputStreamReader(this.plugin.getResource(resourcePath), StandardCharsets.UTF_8);
         FileConfiguration defaultConfig = YamlConfiguration.loadConfiguration(defaultReader);
         this.langMap.put(langFilename, new Language(langFilename, langFile, defaultConfig));
+
+        for (String key : defaultConfig.getKeys(false)) {
+            ConfigManager.checkKey(existingConfig, defaultConfig, key);
+        }
+
+        try {
+            existingConfig.save(langFile);
+        } catch (IOException e) {
+            Debug.trace(e);
+        }
     }
 
     @Nonnull

@@ -150,10 +150,16 @@ icon:
     name: "&e&lCollecting"
   nexcavate-items-group:
     name: "&bNexcavate Items"
+    lore:
+      - " "
   vanilla-items-group:
     name: "&7Vanilla Items"
+    lore:
+      - " "
   jeg-items-group:
     name: "&bJEG Items"
+    lore:
+      - " "
   items:
     recipe-complete-guide:
       name: "&bRecipe Complete Book"
@@ -171,14 +177,14 @@ icon:
         - "&f2. &eOpen a machine that adapted to use Recipe Complete（ex. Fast Machines）"
         - "&f3. &eLeft-click on the Recipe Complete Book"
         - ""
-        - "&fSimply, it's the &7\&a+&7\ &fsymbol in &aJEI &fmod"
+        - "&fSimply, it's the &a+ &fsymbol in &aJEI &fmod"
     recipe-complete-mechanism:
       name: "&aMechanism"
       lore:
         - ""
         - "&7Items in the player's inventory are prioritized for recipe completion"
-        - "&7If connected to a network, it will try to get recipe materials from the network (only valid for Networks Expansion)"
-        - "&7If connected to an AE network, it will try to get recipe materials from the AE network"
+        - "&7If connected to a network, it will try to get recipe materials from the network (both valid for Networks/NetworksExpansion)"
+        - "&7If connected to an AE network, it will try to get recipe materials from the AE network (only valid for SlimeAEPlugin)"
         - "&7\"Connected\" explanation: "
         - "&7If any block in the north, south, east, west, up, or down direction of the machine interface being recipe-completed is adjacent to a network/AE network, it is considered connected"
         - "&7That is, the machine interface being recipe-completed is considered connected to the network/AE network (does not occupy a network/AE network node)"
@@ -191,30 +197,30 @@ icon:
         - "&aLeft-click&e an item to complete once"
         - "&aRight-click&e an item to complete 64 times"
     recipe-complete-supported-addons-info:
-        name: "&aA part of the machines from the addons below are adapted to use Recipe Complete"
-        lore:
-          - "&7Issue at JustEnoughGuide GitHub for more addons below"
-          - ""
-          - "&7- &aFastMachines"
-          - "&7- &aFinalTech 2.0-Preview"
-          - "&7- &aFinalTECH 2.0"
-          - "&7- &aFinalTECH-Changed 2.0"
-          - "&7- &aInfinityExpansion"
-          - "&7- &aInfinityExpansion2"
-          - "&7- &aLogitech"
-          - "&7- &aNetworks"
-          - "&7- &aNetworksExpansion"
-          - "&7- &aObsidianExpansion"
-          - "&7- &aSlimeAE"
-          - "&7- &aFluffyMachines"
-          - "&7- &aSlimeTinker"
-          - "&7- &aGalactifun"
-          - "&7- &aGastronomicon"
-          - "&7- &aRykenSlimefunCustomizer"
-          - "&7- &aBedrockTechnology"
-          - "&7- &aAlchimiaVitae"
-          - "&7- &aClayTech"
-          - "&7- &aDankTech2"
+      name: "&aA part of the machines from the addons below are adapted to use Recipe Complete"
+      lore:
+        - "&7Issue at JustEnoughGuide GitHub for more addons below"
+        - ""
+        - "&7- &aFastMachines"
+        - "&7- &aFinalTech 2.0-Preview"
+        - "&7- &aFinalTECH 2.0"
+        - "&7- &aFinalTECH-Changed 2.0"
+        - "&7- &aInfinityExpansion"
+        - "&7- &aInfinityExpansion2"
+        - "&7- &aLogitech"
+        - "&7- &aNetworks"
+        - "&7- &aNetworksExpansion"
+        - "&7- &aObsidianExpansion"
+        - "&7- &aSlimeAE"
+        - "&7- &aFluffyMachines"
+        - "&7- &aSlimeTinker"
+        - "&7- &aGalactifun"
+        - "&7- &aGastronomicon"
+        - "&7- &aRykenSlimefunCustomizer"
+        - "&7- &aBedrockTechnology"
+        - "&7- &aAlchimiaVitae"
+        - "&7- &aClayTech"
+        - "&7- &aDankTech2"
 debug:
   debug-prefix: "&b[Debug] "
 message:
