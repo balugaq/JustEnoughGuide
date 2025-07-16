@@ -325,7 +325,7 @@ public class RecipeCompletableListener implements Listener {
 
                 String itemName = ItemUtils.getItemName(clickedItemStack);
                 lore.add("");
-                lore.add(ChatColors.color("&6Last completed: " + itemName));
+                lore.add(ChatColors.color(Lang.getMessage("guide.recipe-complete-last-completed") + itemName));
 
                 if (!applied) {
                     meta.getPersistentDataContainer().set(LAST_RECIPE_COMPLETE_KEY, PersistentDataType.BOOLEAN, true);
