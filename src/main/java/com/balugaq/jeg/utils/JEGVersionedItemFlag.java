@@ -28,10 +28,11 @@
 package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import java.lang.reflect.Field;
 import lombok.experimental.UtilityClass;
 import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Field;
 
 /**
  * This class provides a way to access the ItemFlag constants that were added in different versions of Minecraft.
@@ -52,7 +53,8 @@ public class JEGVersionedItemFlag {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    @NotNull private static ItemFlag getKey(@NotNull String key) {
+    @NotNull
+    private static ItemFlag getKey(@NotNull String key) {
         try {
             Field field = ItemFlag.class.getDeclaredField(key);
             return (ItemFlag) field.get(null);

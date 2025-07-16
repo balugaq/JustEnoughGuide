@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.api.groups;
 
-import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
@@ -39,7 +38,8 @@ import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
-import com.balugaq.jeg.utils.Models;
+import com.balugaq.jeg.utils.Lang;
+import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -57,7 +57,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -135,7 +134,7 @@ public class NexcavateItemsGroup extends FlexItemGroup {
      * @param page                The page number to display.
      */
     protected NexcavateItemsGroup(@NotNull NexcavateItemsGroup nexcavateItemsGroup, int page) {
-        super(nexcavateItemsGroup.key, Models.NEXCAVATE_ITEMS_GROUP);
+        super(nexcavateItemsGroup.key, Lang.NEXCAVATE_ITEMS_GROUP_ITEM);
         this.page = page;
         this.slimefunItemList = nexcavateItemsGroup.slimefunItemList;
         this.pageMap.put(page, this);
@@ -306,13 +305,6 @@ public class NexcavateItemsGroup extends FlexItemGroup {
                 if (implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
                         && research != null
                         && !playerProfile.hasUnlocked(research)) {
-                    String lore;
-
-                    if (VaultIntegration.isEnabled()) {
-                        lore = String.format("%.2f", research.getCurrencyCost()) + " 游戏币";
-                    } else {
-                        lore = research.getLevelCost() + " 级经验";
-                    }
 
                     itemstack = ItemStackUtil.getCleanItem(Converter.getItem(
                             ChestMenuUtils.getNoPermissionItem(),
@@ -320,10 +312,9 @@ public class NexcavateItemsGroup extends FlexItemGroup {
                             "&7" + slimefunItem.getId(),
                             "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
                             "",
-                            "&a> 单击解锁",
+                            Lang.getGuideMessage("click-to-unlock"),
                             "",
-                            "&7需要 &b",
-                            lore));
+                            Lang.getGuideMessage("cost", "cost", research.getCost())));
                     handler = (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(
                                     pl, item, slot, action, chestMenu, implementation))
                             .ifSuccess(() -> {
@@ -415,36 +406,34 @@ public class NexcavateItemsGroup extends FlexItemGroup {
      */
     @ParametersAreNonnullByDefault
     private boolean isItemGroupAccessible(@NotNull Player p, @NotNull SlimefunItem slimefunItem) {
-        return Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch()
+        return SlimefunOfficialSupporter.isShowHiddenItemGroups()
                 || slimefunItem.getItemGroup().isAccessible(p);
     }
 
-    /**
-     * Prints an error message to the player.
-     *
-     * @param p The player.
-     * @param x The exception.
-     */
     @ParametersAreNonnullByDefault
-    private void printErrorMessage(@NotNull Player p, @NotNull Throwable x) {
-        p.sendMessage("&4服务器发生了一个内部错误. 请联系管理员处理.");
-        JAVA_PLUGIN.getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
+    private void printErrorMessage(Player p, Throwable x) {
+        p.sendMessage(Lang.getError("internal-error"));
+        JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, Lang.getError("error-occurred"), x);
+        JustEnoughGuide.getInstance().getLogger().warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
-    /**
-     * Prints an error message to the player.
-     *
-     * @param p    The player.
-     * @param item The Slimefun item.
-     * @param x    The exception.
-     */
     @ParametersAreNonnullByDefault
-    private void printErrorMessage(@NotNull Player p, @NotNull SlimefunItem item, @NotNull Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
+    private void printErrorMessage(Player p, SlimefunItem item, Throwable x) {
+        p.sendMessage(Lang.getError("internal-error"));
+        item.error(Lang.getError("item-error"), x);
+        JustEnoughGuide.getInstance()
+                .getLogger()
+                .warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
     @Override

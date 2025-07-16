@@ -30,16 +30,17 @@ package com.balugaq.jeg.core.integrations.slimetinker;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 public class SlimeTinkerIntegrationMain implements Integration {
-    public static final int[] TINKERS_WORKBENCH_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
+    public static final int[] TINKERS_WORKBENCH_INPUT_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(@NotNull String id, int @NotNull [] slots, boolean unordered) {
