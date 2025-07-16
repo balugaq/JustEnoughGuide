@@ -313,19 +313,19 @@ public class RecipeCompletableListener implements Listener {
 
                 // Patch start
                 boolean applied = meta.getPersistentDataContainer().has(LAST_RECIPE_COMPLETE_KEY);
-                if (lore.size() >= 2 && applied) {
+                if (lore.size() >= 4 && applied) {
                     // Remove last two lines
-                    if (lore.size() >= 2) {
+                    if (lore.size() >= 4) {
                         lore.remove(lore.size() - 1);
                     }
-                    if (lore.size() >= 1) {
+                    if (lore.size() >= 3) {
                         lore.remove(lore.size() - 1);
                     }
                 }
 
                 String itemName = ItemUtils.getItemName(clickedItemStack);
                 lore.add("");
-                lore.add(ChatColors.color("&6上次补全物品: " + itemName));
+                lore.add(ChatColors.color(Lang.getMessage("guide.recipe-complete-last-completed") + itemName));
 
                 if (!applied) {
                     meta.getPersistentDataContainer().set(LAST_RECIPE_COMPLETE_KEY, PersistentDataType.BOOLEAN, true);
