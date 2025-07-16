@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.integrations.networksexpansion;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
+import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.InventoryUtil;
@@ -63,7 +64,7 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        return NetworksExpansionIntegrationMain.findNearbyNetworkRoot(block.getLocation()) != null;
+        return NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation()) != null;
     }
 
     @SuppressWarnings("deprecation")
@@ -122,7 +123,7 @@ public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSour
             GuideEvents.@NotNull ItemButtonClickEvent event,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        NetworkRoot root = NetworksExpansionIntegrationMain.findNearbyNetworkRoot(block.getLocation());
+        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation());
         if (root == null) {
             return false;
         }

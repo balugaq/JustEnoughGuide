@@ -63,7 +63,7 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        return NetworksExpansionIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
+        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
     }
 
     @SuppressWarnings("deprecation")
@@ -149,7 +149,7 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
             GuideEvents.@NotNull ItemButtonClickEvent event,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        NetworkRoot root = NetworksExpansionIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
+        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
         if (root == null) {
             return false;
         }
@@ -225,8 +225,7 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
         return true;
     }
 
-    @Nullable
-    private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
+    @Nullable private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
         ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
         if (i1 != null) {
             return i1;

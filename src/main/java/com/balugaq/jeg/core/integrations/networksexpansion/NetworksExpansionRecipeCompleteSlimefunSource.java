@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.integrations.networksexpansion;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
+import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -62,7 +63,7 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        return NetworksExpansionIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
+        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
     }
 
     @SuppressWarnings("deprecation")
@@ -148,7 +149,7 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
             GuideEvents.@NotNull ItemButtonClickEvent event,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        NetworkRoot root = NetworksExpansionIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
+        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
         if (root == null) {
             return false;
         }

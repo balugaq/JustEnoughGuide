@@ -28,10 +28,6 @@
 package com.balugaq.jeg.api.patches;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
-import com.balugaq.jeg.api.patches.slimefun.FireworksOption;
-import com.balugaq.jeg.api.patches.slimefun.GuideModeOption;
-import com.balugaq.jeg.api.patches.slimefun.LearningAnimationOption;
-import com.balugaq.jeg.api.patches.slimefun.PlayerLanguageOption;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;

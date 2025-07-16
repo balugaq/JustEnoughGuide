@@ -64,7 +64,7 @@ public class NetworksRecipeCompleteVanillaSource implements VanillaSource {
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        return NetworksExpansionIntegrationMain.findNearbyNetworkRoot(block.getLocation()) != null;
+        return NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation()) != null;
     }
 
     @SuppressWarnings("deprecation")
@@ -123,7 +123,7 @@ public class NetworksRecipeCompleteVanillaSource implements VanillaSource {
             GuideEvents.@NotNull ItemButtonClickEvent event,
             int @NotNull [] ingredientSlots,
             boolean unordered) {
-        NetworkRoot root = NetworksExpansionIntegrationMain.findNearbyNetworkRoot(block.getLocation());
+        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation());
         if (root == null) {
             return false;
         }
@@ -199,8 +199,7 @@ public class NetworksRecipeCompleteVanillaSource implements VanillaSource {
         return true;
     }
 
-    @Nullable
-    private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
+    @Nullable private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
         ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
         if (i1 != null) {
             return i1;
