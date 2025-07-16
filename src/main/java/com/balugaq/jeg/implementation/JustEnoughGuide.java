@@ -297,8 +297,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             }
             getLogger().info(Lang.getStartup("loaded-guide-group"));
 
-            JEGGuideSettings.patchSlimefun();
-
             if (getConfigManager().isBeginnerOption()) {
                 getLogger().info(Lang.getStartup("loading-beginners-guide-option"));
                 SlimefunGuideSettings.addOption(BeginnersGuideOption.instance());
@@ -371,7 +369,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 }
             }
             FinalTECHValueDisplayOption.unboot();
-            JEGGuideSettings.unpatchSlimefun();
         } catch (Exception ignored) {
         }
 

@@ -523,3 +523,4 @@ public class RecipeCompletableListener implements Listener {
     public interface RecipeCompletableClickHandler extends ChestMenu.MenuClickHandler, TaggedRecipeCompletable {
     }
 }
+

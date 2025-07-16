@@ -352,31 +352,4 @@ public class JEGGuideSettings {
         return (List<SlimefunGuideOption<?>>)
                 ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
     }
-
-    public static void patchSlimefun() {
-        for (SlimefunGuideOption<?> option : JEGGuideSettings.getOptions()) {
-            NamespacedKey key = option.getKey();
-            if (key.equals(KeyUtil.customKey(Slimefun.instance(), "research_fireworks"))
-                    || key.equals(KeyUtil.customKey(Slimefun.instance(), "guide_mode"))
-                    || key.equals(KeyUtil.customKey(Slimefun.instance(), "research_learning_animation"))
-                    || key.equals(Slimefun.getLocalization().getKey())) {
-                JEGGuideSettings.getPatched().add(option);
-            }
-        }
-
-        for (SlimefunGuideOption<?> option : JEGGuideSettings.getPatched()) {
-            JEGGuideSettings.getOptions().remove(option);
-        }
-
-        SlimefunGuideSettings.addOption(new GuideModeOption());
-        SlimefunGuideSettings.addOption(new FireworksOption());
-        SlimefunGuideSettings.addOption(new PlayerLanguageOption());
-        SlimefunGuideSettings.addOption(new LearningAnimationOption());
-    }
-
-    public static void unpatchSlimefun() {
-        for (SlimefunGuideOption<?> option : JavaUtil.reserve(JEGGuideSettings.getPatched())) {
-            JEGGuideSettings.getOptions().add(0, option);
-        }
-    }
 }
