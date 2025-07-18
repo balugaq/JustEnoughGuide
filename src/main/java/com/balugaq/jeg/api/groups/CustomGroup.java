@@ -32,6 +32,7 @@ import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.objects.CustomGroupConfiguration;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -300,7 +301,7 @@ public class CustomGroup extends FlexItemGroup {
 
                     chestMenu.addItem(contentSlots.get(i), PatchScope.SlimefunItem.patch(player, itemstack), handler);
                 } else if (o instanceof ItemGroup itemGroup) {
-                    if (GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                    if (GuideUtil.getGuide(player, GuideListener.guideModeMap.getOrDefault(player, SlimefunGuideMode.SURVIVAL_MODE))
                             instanceof JEGSlimefunGuideImplementation guide) {
                         guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));
                     }
