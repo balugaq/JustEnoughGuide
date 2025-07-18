@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.Timer;
+import com.balugaq.jeg.api.objects.annotaions.Warn;
 import com.balugaq.jeg.api.objects.enums.FilterType;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
@@ -40,8 +41,10 @@ import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.ReflectionUtil;
+import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.clickhandler.BeginnerUtils;
 import com.balugaq.jeg.utils.clickhandler.GroupLinker;
@@ -49,8 +52,6 @@ import com.balugaq.jeg.utils.clickhandler.NamePrinter;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
-import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
-import com.github.houbb.pinyin.util.PinyinHelper;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -66,13 +67,17 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.RandomizedSet;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -87,6 +92,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -96,6 +103,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -105,7 +113,6 @@ import java.util.stream.Collectors;
 
 /**
  * This group is used to display the search results of the search feature.
- * Supports Pinyin search and page turning.
  *
  * @author balugaq
  * @since 1.0
@@ -116,24 +123,34 @@ import java.util.stream.Collectors;
 public class SearchGroup extends FlexItemGroup {
     @Deprecated
     public static final Integer ACONTAINER_OFFSET = 50000;
-
-    public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE =
-            new Char2ObjectOpenHashMap<>(); // fast way for by item name
-    public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE2 =
-            new Char2ObjectOpenHashMap<>(); // fast way for by display item name
-    public static final Map<String, Reference<Set<String>>> SPECIAL_CACHE = new HashMap<>();
+    public static final Integer EN_THRESHOLD = 2;
+    public static final Integer MAX_FIX_TIMES = 3;
+    public static final String SPLIT = " ";
+    @Deprecated
+    @Warn(reason = "No longer using it in EN version")
+    public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE = new Char2ObjectOpenHashMap<>(); // fast way for by item name
+    @Deprecated
+    @Warn(reason = "No longer using it in EN version")
+    public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE2 = new Char2ObjectOpenHashMap<>(); // fast way for by display item name
+    public static final ObjectArrayList<String> EN_WORDS = new ObjectArrayList<>(50000);
+    public static final Object2ObjectOpenHashMap<String, List<String>> EN_CACHE_ROLLBACK = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Reference<Set<String>>> SPECIAL_CACHE = new Object2ObjectOpenHashMap<>();
 
     @Deprecated
-    public static final Set<String> SHARED_CHARS = new HashSet<>();
+    @Warn(reason = "No longer using it in EN version")
+    public static final ObjectOpenHashSet<String> SHARED_CHARS = new ObjectOpenHashSet<>();
 
+    public static final Object2ObjectOpenHashMap<String, Reference<Set<SlimefunItem>>> EN_CACHE = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Reference<Set<SlimefunItem>>> EN_CACHE2 = new Object2ObjectOpenHashMap<>();
     @Deprecated
-    public static final Set<String> BLACKLIST = new HashSet<>();
+    @Warn(reason = "No longer using it in EN version")
+    public static final ObjectOpenHashSet<String> BLACKLIST = new ObjectOpenHashSet<>();
 
-    public static final Boolean SHOW_HIDDEN_ITEM_GROUPS =
-            Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch();
+    public static final ObjectOpenHashSet<String[]> SHARED_WORDS = new ObjectOpenHashSet<>();
+    public static final Boolean SHOW_HIDDEN_ITEM_GROUPS = SlimefunOfficialSupporter.isShowHiddenItemGroups();
     public static final Integer DEFAULT_HASH_SIZE = 5000;
-    public static final Map<SlimefunItem, Integer> ENABLED_ITEMS = new HashMap<>(DEFAULT_HASH_SIZE);
-    public static final Set<SlimefunItem> AVAILABLE_ITEMS = new HashSet<>(DEFAULT_HASH_SIZE);
+    public static final Object2IntOpenHashMap<SlimefunItem> ENABLED_ITEMS = new Object2IntOpenHashMap<>(DEFAULT_HASH_SIZE);
+    public static final ObjectOpenHashSet<SlimefunItem> AVAILABLE_ITEMS = new ObjectOpenHashSet<>(DEFAULT_HASH_SIZE);
 
     @Deprecated
     public static final Integer[] BORDER = new Integer[]{0, 2, 3, 4, 5, 6, 8, 45, 47, 48, 49, 50, 51, 53};
@@ -153,7 +170,6 @@ public class SearchGroup extends FlexItemGroup {
 
     @Deprecated
     private static final int SEARCH_SLOT = 7;
-
     @Deprecated
     private static final int PREVIOUS_SLOT = 46;
 
@@ -236,35 +252,37 @@ public class SearchGroup extends FlexItemGroup {
     /**
      * Checks if the search filter is applicable.
      *
-     * @param slimefunItem The Slimefun item to check.
+     * @param player       The player.
+     * @param slimefunItem The Slimefun item.
      * @param searchTerm   The search term.
      * @param pinyin       Whether the search term is in Pinyin.
      * @return True if the search filter is applicable, false otherwise.
      */
     @ParametersAreNonnullByDefault
-    public static boolean isSearchFilterApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
+    public static boolean isSearchFilterApplicable(Player player, SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
         if (slimefunItem == null) {
             return false;
         }
-        String itemName = ChatColor.stripColor(slimefunItem.getItemName()).toLowerCase(Locale.ROOT);
+        String itemName = ChatColor.stripColor(SlimefunOfficialSupporter.getTranslatedItemName(player, slimefunItem)).toLowerCase(Locale.ROOT);
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
     /**
      * Checks if the search filter is applicable.
      *
-     * @param itemStack  The item stack to check.
+     * @param player     The player.
+     * @param itemStack  The item stack.
      * @param searchTerm The search term.
      * @param pinyin     Whether the search term is in Pinyin.
      * @return True if the search filter is applicable, false otherwise.
      */
     @ParametersAreNonnullByDefault
-    public static boolean isSearchFilterApplicable(ItemStack itemStack, String searchTerm, boolean pinyin) {
+    public static boolean isSearchFilterApplicable(Player player, ItemStack itemStack, String searchTerm, boolean pinyin) {
         if (itemStack == null) {
             return false;
         }
         String itemName =
-                ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack)).toLowerCase(Locale.ROOT);
+                ChatColor.stripColor(ItemUtils.getItemName(SlimefunOfficialSupporter.translateItem(player, itemStack))).toLowerCase(Locale.ROOT);
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
@@ -288,20 +306,14 @@ public class SearchGroup extends FlexItemGroup {
             return true;
         }
 
+        /* Not using Pinyin in EN version
         if (pinyin) {
             final String pinyinFirstLetter = getPinyin(itemName);
             return pinyinFirstLetter.contains(searchTerm);
         }
+         */
 
         return false;
-    }
-
-    public static String getPinyin(String string) {
-        return getPinyin(string, PinyinStyleEnum.FIRST_LETTER);
-    }
-
-    public static String getPinyin(String string, PinyinStyleEnum style) {
-        return PinyinHelper.toPinyin(string, style, "");
     }
 
     /**
@@ -356,127 +368,98 @@ public class SearchGroup extends FlexItemGroup {
             LOADED = true;
             Debug.debug("Initializing Search Group...");
             Timer.start();
-            Bukkit.getScheduler()
-                    .runTaskLaterAsynchronously(
-                            JAVA_PLUGIN,
-                            () -> {
-                                // Initialize asynchronously
-                                int i = 0;
-                                for (SlimefunItem item : Slimefun.getRegistry().getEnabledSlimefunItems()) {
-                                    try {
-                                        ENABLED_ITEMS.put(item, i);
-                                        i += 1;
-                                        if (item.isHidden() && !SHOW_HIDDEN_ITEM_GROUPS) {
-                                            continue;
-                                        }
+            Bukkit.getScheduler().runTaskAsynchronously(JAVA_PLUGIN, () -> {
+                // Blacklist, intentionally Chinese
+                BLACKLIST.add("Fast Machines");
 
-                                        ItemStack[] r = item.getRecipe();
-                                        if (r == null) {
-                                            continue;
-                                        }
+                synchronized (EN_CACHE_ROLLBACK) {
+                    EN_CACHE_ROLLBACK.clear();
+                }
 
-                                        if (item.isDisabled()) {
-                                            continue;
-                                        }
-                                        AVAILABLE_ITEMS.add(item);
-                                        try {
-                                            String id = item.getId();
-                                            if (!SPECIAL_CACHE.containsKey(id)) {
-                                                Set<String> cache = new HashSet<>();
+                // Initialize asynchronously
+                int i = 0;
+                for (SlimefunItem item : Slimefun.getRegistry().getEnabledSlimefunItems()) {
+                    try {
+                        ENABLED_ITEMS.put(item, i);
+                        i += 1;
+                        if (item.isHidden() && !SHOW_HIDDEN_ITEM_GROUPS) {
+                            continue;
+                        }
 
-                                                // init cache
-                                                Object Orecipes = ReflectionUtil.getValue(item, "recipes");
-                                                if (Orecipes == null) {
-                                                    Object Omaterial = ReflectionUtil.getValue(item, "material");
-                                                    if (Omaterial == null) {
-                                                        Object ORECIPE_LIST =
-                                                                ReflectionUtil.getValue(item, "RECIPE_LIST");
-                                                        if (ORECIPE_LIST == null) {
-                                                            Object Ooutputs = ReflectionUtil.getValue(item, "outputs");
-                                                            if (Ooutputs == null) {
-                                                                Object OOUTPUTS =
-                                                                        ReflectionUtil.getValue(item, "OUTPUTS");
-                                                                if (OOUTPUTS == null) {
-                                                                    Object Ooutput =
-                                                                            ReflectionUtil.getValue(item, "output");
-                                                                    if (Ooutput == null) {
-                                                                        Object Ogeneration = ReflectionUtil.getValue(
-                                                                                item, "generation");
-                                                                        if (Ogeneration == null) {
-                                                                            Object Otemplates = ReflectionUtil.getValue(
-                                                                                    item, "templates");
-                                                                            if (Otemplates == null) {
-                                                                                continue;
-                                                                            }
+                        ItemStack[] r = item.getRecipe();
+                        if (r == null) {
+                            continue;
+                        }
 
-                                                                            // RykenSlimeCustomizer
-                                                                            // CustomTemplateMachine
-                                                                            else if (Otemplates
-                                                                                    instanceof List<?> templates) {
-                                                                                for (Object template : templates) {
-                                                                                    Object _Orecipes =
-                                                                                            ReflectionUtil.getValue(
-                                                                                                    template,
-                                                                                                    "recipes");
-                                                                                    if (_Orecipes == null) {
-                                                                                        Method method =
-                                                                                                ReflectionUtil
-                                                                                                        .getMethod(
-                                                                                                                template
-                                                                                                                        .getClass(),
-                                                                                                                "recipes");
-                                                                                        if (method != null) {
-                                                                                            try {
-                                                                                                method.setAccessible(
-                                                                                                        true);
-                                                                                                _Orecipes =
-                                                                                                        method.invoke(
-                                                                                                                template);
-                                                                                            } catch (
-                                                                                                    Exception ignored) {
-                                                                                            }
-                                                                                        }
-                                                                                    }
+                        if (item.isDisabled()) {
+                            continue;
+                        }
+                        AVAILABLE_ITEMS.add(item);
+                        try {
+                            String id = item.getId();
+                            if (!SPECIAL_CACHE.containsKey(id)) {
+                                Set<String> cache = new HashSet<>();
 
-                                                                                    if (_Orecipes
-                                                                                            instanceof
-                                                                                            List<?>
-                                                                                                    _recipes) {
-                                                                                        for (Object _recipe :
-                                                                                                _recipes) {
-                                                                                            if (_recipe
-                                                                                                    instanceof
-                                                                                                    MachineRecipe
-                                                                                                            machineRecipe) {
-                                                                                                ItemStack[] _output =
-                                                                                                        machineRecipe
-                                                                                                                .getOutput();
-                                                                                                for (ItemStack
-                                                                                                        __output :
-                                                                                                        _output) {
-                                                                                                    String s =
-                                                                                                            ItemStackHelper
-                                                                                                                    .getDisplayName(
-                                                                                                                            __output);
-                                                                                                    if (!inBanlist(s)) {
-                                                                                                        cache.add(s);
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
+                                // init cache
+                                Object Orecipes = ReflectionUtil.getValue(item, "recipes");
+                                if (Orecipes == null) {
+                                    Object Omaterial = ReflectionUtil.getValue(item, "material");
+                                    if (Omaterial == null) {
+                                        Object ORECIPE_LIST =
+                                                ReflectionUtil.getValue(item, "RECIPE_LIST");
+                                        if (ORECIPE_LIST == null) {
+                                            Object Ooutputs = ReflectionUtil.getValue(item, "outputs");
+                                            if (Ooutputs == null) {
+                                                Object OOUTPUTS =
+                                                        ReflectionUtil.getValue(item, "OUTPUTS");
+                                                if (OOUTPUTS == null) {
+                                                    Object Ooutput =
+                                                            ReflectionUtil.getValue(item, "output");
+                                                    if (Ooutput == null) {
+                                                        Object Ogeneration = ReflectionUtil.getValue(
+                                                                item, "generation");
+                                                        if (Ogeneration == null) {
+                                                            Object Otemplates = ReflectionUtil.getValue(
+                                                                    item, "templates");
+                                                            if (Otemplates == null) {
+                                                                continue;
+                                                            }
+
+                                                            // RykenSlimeCustomizer
+                                                            // CustomTemplateMachine
+                                                            else if (Otemplates
+                                                                    instanceof List<?> templates) {
+                                                                for (Object template : templates) {
+                                                                    Object _Orecipes =
+                                                                            ReflectionUtil.getValue(
+                                                                                    template,
+                                                                                    "recipes");
+                                                                    if (_Orecipes == null) {
+                                                                        Method method =
+                                                                                ReflectionUtil
+                                                                                        .getMethod(
+                                                                                                template
+                                                                                                        .getClass(),
+                                                                                                "recipes");
+                                                                        if (method != null) {
+                                                                            try {
+                                                                                method.setAccessible(
+                                                                                        true);
+                                                                                _Orecipes =
+                                                                                        method.invoke(
+                                                                                                template);
+                                                                            } catch (
+                                                                                    Exception ignored) {
                                                                             }
                                                                         }
-                                                                        // RykenSlimeCustomizer CustomMaterialGenerator
-                                                                        else if (Ogeneration
-                                                                                instanceof List<?> generation) {
-                                                                            for (Object g : generation) {
-                                                                                if (g instanceof ItemStack itemStack) {
-                                                                                    String s =
-                                                                                            ItemStackHelper
-                                                                                                    .getDisplayName(
-                                                                                                            itemStack);
+                                                                    }
+
+                                                                    if (_Orecipes instanceof List<?> _recipes) {
+                                                                        for (Object _recipe : _recipes) {
+                                                                            if (_recipe instanceof MachineRecipe machineRecipe) {
+                                                                                ItemStack[] _output = machineRecipe.getOutput();
+                                                                                for (var __output : _output) {
+                                                                                    var s = ItemUtils.getItemName(__output);
                                                                                     if (!inBanlist(s)) {
                                                                                         cache.add(s);
                                                                                     }
@@ -484,486 +467,503 @@ public class SearchGroup extends FlexItemGroup {
                                                                             }
                                                                         }
                                                                     }
-                                                                    // Chinese Localized SlimeCustomizer
-                                                                    // CustomMaterialGenerator
-                                                                    else if (Ooutput instanceof ItemStack output) {
-                                                                        String s =
-                                                                                ItemStackHelper.getDisplayName(output);
-                                                                        if (!inBanlist(s)) {
-                                                                            cache.add(s);
-                                                                        }
-                                                                    }
-                                                                }
-                                                                // InfinityExpansion StrainerBase
-                                                                if (OOUTPUTS instanceof ItemStack[] outputs) {
-                                                                    if (!isInstance(item, "StrainerBase")) {
-                                                                        continue;
-                                                                    }
-                                                                    for (ItemStack output : outputs) {
-                                                                        String s =
-                                                                                ItemStackHelper.getDisplayName(output);
-                                                                        if (!inBanlist(s)) {
-                                                                            cache.add(s);
-                                                                        }
-                                                                    }
                                                                 }
                                                             }
-                                                            // InfinityExpansion Quarry
-                                                            else if (Ooutputs instanceof Material[] outputs) {
-                                                                if (!isInstance(item, "Quarry")) {
-                                                                    continue;
-                                                                }
-                                                                for (Material material : outputs) {
-                                                                    String s = ItemStackHelper.getDisplayName(
-                                                                            new ItemStack(material));
+                                                        }
+                                                        // RykenSlimeCustomizer CustomMaterialGenerator
+                                                        else if (Ogeneration instanceof List<?> generation) {
+                                                            for (var g : generation) {
+                                                                if (g instanceof ItemStack itemStack) {
+                                                                    var s = ItemUtils.getItemName(itemStack);
                                                                     if (!inBanlist(s)) {
                                                                         cache.add(s);
                                                                     }
                                                                 }
                                                             }
                                                         }
-                                                        // InfinityExpansion SingularityConstructor
-                                                        else if (ORECIPE_LIST instanceof List<?> recipes) {
-                                                            if (!isInstance(item, "SingularityConstructor")) {
-                                                                continue;
-                                                            }
-                                                            for (Object recipe : recipes) {
-                                                                ItemStack input = (ItemStack)
-                                                                        ReflectionUtil.getValue(recipe, "input");
-                                                                if (input != null) {
-                                                                    String s = ItemStackHelper.getDisplayName(input);
-                                                                    if (!inBanlist(s)) {
-                                                                        cache.add(s);
-                                                                    }
-                                                                }
-                                                                SlimefunItemStack output = (SlimefunItemStack)
-                                                                        ReflectionUtil.getValue(recipe, "output");
-                                                                if (output != null) {
-                                                                    SlimefunItem slimefunItem = output.getItem();
-                                                                    if (slimefunItem != null) {
-                                                                        String s = slimefunItem.getItemName();
-                                                                        if (!inBanlist(s)) {
-                                                                            cache.add(s);
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    } else {
-                                                        // InfinityExpansion MaterialGenerator
-                                                        if (!isInstance(item, "MaterialGenerator")) {
-                                                            continue;
-                                                        }
-                                                        String s = ItemStackHelper.getDisplayName(
-                                                                new ItemStack((Material) Omaterial));
+                                                    }
+                                                    // Chinese Localized SlimeCustomizer CustomMaterialGenerator
+                                                    else if (Ooutput instanceof ItemStack output) {
+                                                        var s = ItemUtils.getItemName(output);
                                                         if (!inBanlist(s)) {
                                                             cache.add(s);
                                                         }
                                                     }
                                                 }
-                                                // InfinityExpansion ResourceSynthesizer
-                                                if (Orecipes instanceof SlimefunItemStack[] recipes) {
-                                                    if (!isInstance(item, "ResourceSynthesizer")) {
+                                                // InfinityExpansion StrainerBase
+                                                if (OOUTPUTS instanceof ItemStack[] outputs) {
+                                                    if (!isInstance(item, "StrainerBase")) {
                                                         continue;
                                                     }
-                                                    for (SlimefunItemStack slimefunItemStack : recipes) {
-                                                        SlimefunItem slimefunItem = slimefunItemStack.getItem();
-                                                        if (slimefunItem != null) {
-                                                            String s = slimefunItem.getItemName();
-                                                            if (!inBanlist(s)) {
-                                                                cache.add(s);
-                                                            }
+                                                    for (ItemStack output : outputs) {
+                                                        var s = ItemUtils.getItemName(output);
+                                                        if (!inBanlist(s)) {
+                                                            cache.add(s);
                                                         }
                                                     }
-                                                }
-                                                // InfinityExpansion GrowingMachine
-                                                else if (Orecipes instanceof EnumMap<?, ?> recipes) {
-                                                    if (!isInstance(item, "GrowingMachine")) {
-                                                        continue;
-                                                    }
-                                                    recipes.values().forEach(obj -> {
-                                                        ItemStack[] items = (ItemStack[]) obj;
-                                                        for (ItemStack itemStack : items) {
-                                                            String s = ItemStackHelper.getDisplayName(itemStack);
-                                                            if (!inBanlist(s)) {
-                                                                cache.add(s);
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                                // InfinityExpansion MachineBlock
-                                                else if (Orecipes instanceof List<?> recipes) {
-                                                    if (isInstance(item, "MachineBlock")) {
-                                                        // InfinityLib - MachineBlock
-                                                        for (Object recipe : recipes) {
-                                                            String[] strings = (String[])
-                                                                    ReflectionUtil.getValue(recipe, "strings");
-                                                            if (strings == null) {
-                                                                continue;
-                                                            }
-                                                            for (String string : strings) {
-                                                                SlimefunItem slimefunItem =
-                                                                        SlimefunItem.getById(string);
-                                                                if (slimefunItem != null) {
-                                                                    String s = slimefunItem.getItemName();
-                                                                    if (!inBanlist(s)) {
-                                                                        cache.add(s);
-                                                                    }
-                                                                } else {
-                                                                    Material material = Material.getMaterial(string);
-                                                                    if (material != null) {
-                                                                        String s = ItemStackHelper.getDisplayName(
-                                                                                new ItemStack(material));
-                                                                        if (!inBanlist(s)) {
-                                                                            cache.add(s);
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            ItemStack output = (ItemStack)
-                                                                    ReflectionUtil.getValue(recipe, "output");
-                                                            if (output != null) {
-                                                                String s = ItemStackHelper.getDisplayName(output);
-                                                                if (!inBanlist(s)) {
-                                                                    cache.add(s);
-                                                                }
-                                                            }
-                                                        }
-                                                    } else if (isInstance(item, "AbstractElectricMachine")) {
-                                                        // DynaTech - AbstractElectricMachine
-                                                        // recipes -> List<MachineRecipe>
-                                                        for (Object recipe : recipes) {
-                                                            if (recipe instanceof MachineRecipe machineRecipe) {
-                                                                for (ItemStack input : machineRecipe.getInput()) {
-                                                                    String s = ItemStackHelper.getDisplayName(input);
-                                                                    if (!inBanlist(s)) {
-                                                                        cache.add(s);
-                                                                    }
-                                                                }
-                                                                for (ItemStack output : machineRecipe.getOutput()) {
-                                                                    String s = ItemStackHelper.getDisplayName(output);
-                                                                    if (!inBanlist(s)) {
-                                                                        cache.add(s);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                if (!cache.isEmpty()) {
-                                                    SPECIAL_CACHE.put(id, new SoftReference<>(cache));
                                                 }
                                             }
-                                        } catch (Exception ignored) {
+                                            // InfinityExpansion Quarry
+                                            else if (Ooutputs instanceof Material[] outputs) {
+                                                if (!isInstance(item, "Quarry")) {
+                                                    continue;
+                                                }
+                                                for (Material material : outputs) {
+                                                    var s = ItemUtils.getItemName(new ItemStack(material));
+                                                    if (!inBanlist(s)) {
+                                                        cache.add(s);
+                                                    }
+                                                }
+                                            }
                                         }
-                                    } catch (Exception ignored) {
-                                    }
-                                }
-
-                                // InfinityExpansion StoneworksFactory
-                                Set<Material> materials = new HashSet<>();
-                                materials.add(Material.COBBLESTONE);
-                                materials.add(Material.STONE);
-                                materials.add(Material.SAND);
-                                materials.add(Material.STONE_BRICKS);
-                                materials.add(Material.SMOOTH_STONE);
-                                materials.add(Material.GLASS);
-                                materials.add(Material.CRACKED_STONE_BRICKS);
-                                materials.add(Material.GRAVEL);
-                                materials.add(Material.GRANITE);
-                                materials.add(Material.DIORITE);
-                                materials.add(Material.ANDESITE);
-                                materials.add(Material.POLISHED_GRANITE);
-                                materials.add(Material.POLISHED_DIORITE);
-                                materials.add(Material.POLISHED_ANDESITE);
-                                materials.add(Material.SANDSTONE);
-                                Set<String> cache = new HashSet<>();
-                                for (Material material : materials) {
-                                    String s = ItemStackHelper.getDisplayName(new ItemStack(material));
-                                    if (!inBanlist(s)) {
-                                        cache.add(s);
-                                    }
-                                }
-                                SPECIAL_CACHE.put("STONEWORKS_FACTORY", new SoftReference<>(cache));
-
-                                // InfinityExpansion VoidHarvester
-                                SlimefunItem item2 = SlimefunItem.getById("VOID_BIT");
-                                if (item2 != null) {
-                                    Set<String> cache2 = new HashSet<>();
-                                    String s = item2.getItemName();
-                                    if (!inBanlist(s)) {
-                                        cache2.add(s);
-                                        SPECIAL_CACHE.put("VOID_HARVESTER", new SoftReference<>(cache2));
-                                        SPECIAL_CACHE.put("INFINITY_VOID_HARVESTER", new SoftReference<>(cache2));
-                                    }
-                                }
-
-                                // InfinityExpansion MobDataCard
-                                label2:
-                                {
-                                    try {
-                                        Class<?> MobDataCardClass = Class.forName(
-                                                "io.github.mooy1.infinityexpansion.items.mobdata.MobDataCard");
-                                        @SuppressWarnings("unchecked")
-                                        Map<String, Object> cards = (Map<String, Object>)
-                                                ReflectionUtil.getStaticValue(MobDataCardClass, "CARDS");
-                                        if (cards == null) {
-                                            break label2;
-                                        }
-                                        cards.values().forEach(card -> {
-                                            @SuppressWarnings("unchecked")
-                                            RandomizedSet<ItemStack> drops =
-                                                    (RandomizedSet<ItemStack>) ReflectionUtil.getValue(card, "drops");
-                                            if (drops == null) {
-                                                return;
+                                        // InfinityExpansion SingularityConstructor
+                                        else if (ORECIPE_LIST instanceof List<?> recipes) {
+                                            if (!isInstance(item, "SingularityConstructor")) {
+                                                continue;
                                             }
-                                            Set<String> cache2 = new HashSet<>();
-                                            for (ItemStack itemStack :
-                                                    drops.toMap().keySet()) {
-                                                String s = ItemStackHelper.getDisplayName(itemStack);
-                                                if (!inBanlist(s)) {
-                                                    cache2.add(s);
+                                            for (Object recipe : recipes) {
+                                                ItemStack input = (ItemStack) ReflectionUtil.getValue(recipe, "input");
+                                                if (input != null) {
+                                                    var s = ItemUtils.getItemName(input);
+                                                    if (!inBanlist(s)) {
+                                                        cache.add(s);
+                                                    }
+                                                }
+                                                SlimefunItemStack output = (SlimefunItemStack) ReflectionUtil.getValue(recipe, "output");
+                                                if (output != null) {
+                                                    SlimefunItem slimefunItem = output.getItem();
+                                                    if (slimefunItem != null) {
+                                                        var s = slimefunItem.getItemName();
+                                                        if (!inBanlist(s)) {
+                                                            cache.add(s);
+                                                        }
+                                                    }
                                                 }
                                             }
-                                            SPECIAL_CACHE.put(
-                                                    ((SlimefunItem) card).getId(), new SoftReference<>(cache2));
-                                        });
-                                    } catch (Exception ignored) {
-                                    }
-                                }
-
-                                for (SlimefunItem slimefunItem : AVAILABLE_ITEMS) {
-                                    try {
-                                        if (slimefunItem == null) {
+                                        }
+                                    } else {
+                                        // InfinityExpansion MaterialGenerator
+                                        if (!isInstance(item, "MaterialGenerator")) {
                                             continue;
                                         }
-                                        String name = ChatColor.stripColor(slimefunItem.getItemName());
-                                        for (char c : name.toCharArray()) {
-                                            char d = Character.toLowerCase(c);
-                                            CACHE.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
-                                            Reference<Set<SlimefunItem>> ref = CACHE.get(d);
-                                            if (ref != null) {
-                                                Set<SlimefunItem> set = ref.get();
-                                                if (set != null) {
-                                                    if (!inBanlist(slimefunItem)) {
-                                                        set.add(slimefunItem);
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        if (JustEnoughGuide.getConfigManager().isPinyinSearch()) {
-                                            final String pinyinFirstLetter =
-                                                    PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER, "");
-                                            for (char c : pinyinFirstLetter.toCharArray()) {
-                                                char d = Character.toLowerCase(c);
-                                                CACHE.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
-                                                Reference<Set<SlimefunItem>> ref = CACHE.get(d);
-                                                if (ref != null) {
-                                                    Set<SlimefunItem> set = ref.get();
-                                                    if (set == null) {
-                                                        set = new HashSet<>();
-                                                        CACHE.put(d, new SoftReference<>(set));
-                                                    }
-                                                    if (!inBanlist(slimefunItem)) {
-                                                        set.add(slimefunItem);
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        List<ItemStack> displayRecipes = null;
-                                        if (slimefunItem instanceof AContainer ac) {
-                                            displayRecipes = ac.getDisplayRecipes();
-                                        } else if (slimefunItem instanceof MultiBlockMachine mb) {
-                                            try {
-                                                displayRecipes = mb.getDisplayRecipes();
-                                            } catch (Exception e) {
-                                                Debug.trace(e, "init searching");
-                                            }
-                                        } else if (SpecialMenuProvider.ENABLED_LogiTech
-                                                && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null
-                                                && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(
-                                                slimefunItem)
-                                                && slimefunItem instanceof RecipeDisplayItem rdi) {
-                                            try {
-                                                displayRecipes = rdi.getDisplayRecipes();
-                                            } catch (Exception e) {
-                                                Debug.trace(e, "init searching");
-                                            }
-                                        }
-                                        if (displayRecipes != null) {
-                                            for (ItemStack itemStack : displayRecipes) {
-                                                if (itemStack != null) {
-                                                    String name2 = ChatColor.stripColor(
-                                                            ItemStackHelper.getDisplayName(itemStack));
-                                                    for (char c : name2.toCharArray()) {
-                                                        char d = Character.toLowerCase(c);
-                                                        CACHE2.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
-                                                        Reference<Set<SlimefunItem>> ref = CACHE2.get(d);
-                                                        if (ref != null) {
-                                                            Set<SlimefunItem> set = ref.get();
-                                                            if (set == null) {
-                                                                set = new HashSet<>();
-                                                                CACHE2.put(d, new SoftReference<>(set));
-                                                            }
-                                                            if (!inBanlist(slimefunItem)
-                                                                    && !inBlacklist(slimefunItem)) {
-                                                                set.add(slimefunItem);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        String id = slimefunItem.getId();
-                                        if (SPECIAL_CACHE.containsKey(id)) {
-                                            Reference<Set<String>> ref2 = SPECIAL_CACHE.get(id);
-                                            if (ref2 != null) {
-                                                Set<String> cache2 = ref2.get();
-                                                if (cache2 != null) {
-                                                    for (String s : cache2) {
-                                                        for (char c : s.toCharArray()) {
-                                                            char d = Character.toLowerCase(c);
-                                                            CACHE2.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
-                                                            Reference<Set<SlimefunItem>> ref = CACHE2.get(d);
-                                                            if (ref != null) {
-                                                                Set<SlimefunItem> set = ref.get();
-                                                                if (set != null) {
-                                                                    if (!inBanlist(slimefunItem)
-                                                                            && !inBlacklist(slimefunItem)) {
-                                                                        set.add(slimefunItem);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } catch (Exception ignored) {
-                                    }
-                                }
-
-                                // FluffyMachines SmartFactory
-                                Set<SlimefunItemStack> ACCEPTED_ITEMS = new HashSet<>(Arrays.asList(
-                                        SlimefunItems.BILLON_INGOT,
-                                        SlimefunItems.SOLDER_INGOT,
-                                        SlimefunItems.NICKEL_INGOT,
-                                        SlimefunItems.COBALT_INGOT,
-                                        SlimefunItems.DURALUMIN_INGOT,
-                                        SlimefunItems.BRONZE_INGOT,
-                                        SlimefunItems.BRASS_INGOT,
-                                        SlimefunItems.ALUMINUM_BRASS_INGOT,
-                                        SlimefunItems.STEEL_INGOT,
-                                        SlimefunItems.DAMASCUS_STEEL_INGOT,
-                                        SlimefunItems.ALUMINUM_BRONZE_INGOT,
-                                        SlimefunItems.CORINTHIAN_BRONZE_INGOT,
-                                        SlimefunItems.GILDED_IRON,
-                                        SlimefunItems.REDSTONE_ALLOY,
-                                        SlimefunItems.HARDENED_METAL_INGOT,
-                                        SlimefunItems.REINFORCED_ALLOY_INGOT,
-                                        SlimefunItems.FERROSILICON,
-                                        SlimefunItems.ELECTRO_MAGNET,
-                                        SlimefunItems.ELECTRIC_MOTOR,
-                                        SlimefunItems.HEATING_COIL,
-                                        SlimefunItems.SYNTHETIC_EMERALD,
-                                        SlimefunItems.GOLD_4K,
-                                        SlimefunItems.GOLD_6K,
-                                        SlimefunItems.GOLD_8K,
-                                        SlimefunItems.GOLD_10K,
-                                        SlimefunItems.GOLD_12K,
-                                        SlimefunItems.GOLD_14K,
-                                        SlimefunItems.GOLD_16K,
-                                        SlimefunItems.GOLD_18K,
-                                        SlimefunItems.GOLD_20K,
-                                        SlimefunItems.GOLD_22K,
-                                        SlimefunItems.GOLD_24K));
-                                Set<String> items = new HashSet<>();
-                                for (SlimefunItemStack slimefunItemStack : ACCEPTED_ITEMS) {
-                                    SlimefunItem slimefunItem = slimefunItemStack.getItem();
-                                    if (slimefunItem != null) {
-                                        String s = slimefunItem.getItemName();
+                                        var s = ItemUtils.getItemName(new ItemStack((Material) Omaterial));
                                         if (!inBanlist(s)) {
-                                            items.add(s);
+                                            cache.add(s);
                                         }
                                     }
                                 }
-                                SPECIAL_CACHE.put("SMART_FACTORY", new SoftReference<>(items));
-
-                                for (String s :
-                                        JustEnoughGuide.getConfigManager().getSharedChars()) {
-                                    Set<SlimefunItem> sharedItems = new HashSet<>();
-                                    for (char c : s.toCharArray()) {
-                                        Reference<Set<SlimefunItem>> ref = CACHE.get(c);
-                                        if (ref == null) {
-                                            continue;
-                                        }
-                                        Set<SlimefunItem> set = ref.get();
-                                        if (set == null) {
-                                            continue;
-                                        }
-                                        sharedItems.addAll(set);
+                                // InfinityExpansion ResourceSynthesizer
+                                if (Orecipes instanceof SlimefunItemStack[] recipes) {
+                                    if (!isInstance(item, "ResourceSynthesizer")) {
+                                        continue;
                                     }
-                                    if (!sharedItems.isEmpty()) {
-                                        for (char c : s.toCharArray()) {
-                                            Reference<Set<SlimefunItem>> ref = CACHE.get(c);
-                                            if (ref != null) {
-                                                Set<SlimefunItem> set = ref.get();
-                                                if (set != null) {
-                                                    set.addAll(sharedItems);
-                                                    Debug.debug("Shared cache added to CACHE char \"" + c + "\" ("
-                                                            + sharedItems.size() + " items)");
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    Set<SlimefunItem> sharedItems2 = new HashSet<>();
-                                    for (char c : s.toCharArray()) {
-                                        Reference<Set<SlimefunItem>> ref = CACHE2.get(c);
-                                        if (ref == null) {
-                                            continue;
-                                        }
-                                        Set<SlimefunItem> set = ref.get();
-                                        if (set == null) {
-                                            continue;
-                                        }
-                                        sharedItems2.addAll(set);
-                                    }
-                                    if (!sharedItems2.isEmpty()) {
-                                        for (char c : s.toCharArray()) {
-                                            Reference<Set<SlimefunItem>> ref = CACHE2.get(c);
-                                            if (ref != null) {
-                                                Set<SlimefunItem> set = ref.get();
-                                                if (set != null) {
-                                                    set.addAll(sharedItems2);
-                                                    Debug.debug("Shared cache added to CACHE2 char \"" + c + "\" ("
-                                                            + sharedItems2.size() + " items)");
-                                                }
+                                    for (SlimefunItemStack slimefunItemStack : recipes) {
+                                        SlimefunItem slimefunItem = slimefunItemStack.getItem();
+                                        if (slimefunItem != null) {
+                                            var s = slimefunItem.getItemName();
+                                            if (!inBanlist(s)) {
+                                                cache.add(s);
                                             }
                                         }
                                     }
                                 }
+                                // InfinityExpansion GrowingMachine
+                                else if (Orecipes instanceof EnumMap<?, ?> recipes) {
+                                    if (!isInstance(item, "GrowingMachine")) {
+                                        continue;
+                                    }
+                                    recipes.values().forEach(obj -> {
+                                        ItemStack[] items = (ItemStack[]) obj;
+                                        for (ItemStack itemStack : items) {
+                                            var s = ItemUtils.getItemName(itemStack);
+                                            if (!inBanlist(s)) {
+                                                cache.add(s);
+                                            }
+                                        }
+                                    });
+                                }
+                                // InfinityExpansion MachineBlock
+                                else if (Orecipes instanceof List<?> recipes) {
+                                    if (!isInstance(item, "MachineBlock")) {
+                                        if (isInstance(item, "AbstractElectricMachine")) {
+                                            // DynaTech - AbstractElectricMachine
+                                            // recipes -> List<MachineRecipe>
+                                            for (Object recipe : recipes) {
+                                                if (recipe instanceof MachineRecipe machineRecipe) {
+                                                    for (ItemStack input : machineRecipe.getInput()) {
+                                                        String s = ItemUtils.getItemName(input);
+                                                        if (!inBanlist(s)) {
+                                                            cache.add(s);
+                                                        }
+                                                    }
+                                                    for (ItemStack output : machineRecipe.getOutput()) {
+                                                        String s = ItemUtils.getItemName(output);
+                                                        if (!inBanlist(s)) {
+                                                            cache.add(s);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            continue;
+                                        }
+                                    }
+                                    for (Object recipe : recipes) {
+                                        String[] strings = (String[]) ReflectionUtil.getValue(recipe, "strings");
+                                        if (strings == null) {
+                                            continue;
+                                        }
+                                        for (String string : strings) {
+                                            SlimefunItem slimefunItem = SlimefunItem.getById(string);
+                                            if (slimefunItem != null) {
+                                                var s = slimefunItem.getItemName();
+                                                if (!inBanlist(s)) {
+                                                    cache.add(s);
+                                                }
+                                            } else {
+                                                Material material = Material.getMaterial(string);
+                                                if (material != null) {
+                                                    var s = ItemUtils.getItemName(new ItemStack(material));
+                                                    if (!inBanlist(s)) {
+                                                        cache.add(s);
+                                                    }
+                                                }
+                                            }
+                                        }
 
-                                Debug.debug("Cache initialized.");
+                                        ItemStack output = (ItemStack)
+                                                ReflectionUtil.getValue(recipe, "output");
+                                        if (output != null) {
+                                            String s = ItemUtils.getItemName(output);
+                                            if (!inBanlist(s)) {
+                                                cache.add(s);
+                                            }
+                                        }
+                                    }
+                                }
 
-                                Timer.log();
-                                Debug.debug("Search Group initialized.");
-                                Debug.debug("Enabled items: " + ENABLED_ITEMS.size());
-                                Debug.debug("Available items: " + AVAILABLE_ITEMS.size());
-                                Debug.debug("Machine blocks cache: " + SPECIAL_CACHE.size());
-                                Debug.debug("Shared cache: "
-                                        + JustEnoughGuide.getConfigManager()
-                                        .getSharedChars()
-                                        .size());
-                                Debug.debug("Cache 1 (Keywords): " + CACHE.size());
-                                Debug.debug("Cache 2 (Display Recipes): " + CACHE2.size());
-                            },
-                            1L);
+                                if (!cache.isEmpty()) {
+                                    SPECIAL_CACHE.put(id, new SoftReference<>(cache));
+                                }
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                // InfinityExpansion StoneworksFactory
+                Set<Material> materials = new HashSet<>();
+                materials.add(Material.COBBLESTONE);
+                materials.add(Material.STONE);
+                materials.add(Material.SAND);
+                materials.add(Material.STONE_BRICKS);
+                materials.add(Material.SMOOTH_STONE);
+                materials.add(Material.GLASS);
+                materials.add(Material.CRACKED_STONE_BRICKS);
+                materials.add(Material.GRAVEL);
+                materials.add(Material.GRANITE);
+                materials.add(Material.DIORITE);
+                materials.add(Material.ANDESITE);
+                materials.add(Material.POLISHED_GRANITE);
+                materials.add(Material.POLISHED_DIORITE);
+                materials.add(Material.POLISHED_ANDESITE);
+                materials.add(Material.SANDSTONE);
+                Set<String> cache = new HashSet<>();
+                for (Material material : materials) {
+                    var s = ItemUtils.getItemName(new ItemStack(material));
+                    if (!inBanlist(s)) {
+                        cache.add(s);
+                    }
+                }
+                SPECIAL_CACHE.put("STONEWORKS_FACTORY", new SoftReference<>(cache));
+
+                // InfinityExpansion VoidHarvester
+                SlimefunItem item2 = SlimefunItem.getById("VOID_BIT");
+                if (item2 != null) {
+                    Set<String> cache2 = new HashSet<>();
+                    String s = item2.getItemName();
+                    if (!inBanlist(s)) {
+                        cache2.add(s);
+                        SPECIAL_CACHE.put("VOID_HARVESTER", new SoftReference<>(cache2));
+                        SPECIAL_CACHE.put("INFINITY_VOID_HARVESTER", new SoftReference<>(cache2));
+                    }
+                }
+
+                // InfinityExpansion MobDataCard
+                label2:
+                {
+                    try {
+                        Class<?> MobDataCardClass = Class.forName("io.github.mooy1.infinityexpansion.items.mobdata.MobDataCard");
+                        @SuppressWarnings("unchecked") Map<String, Object> cards = (Map<String, Object>) ReflectionUtil.getStaticValue(MobDataCardClass, "CARDS");
+                        if (cards == null) {
+                            break label2;
+                        }
+                        cards.values().forEach(card -> {
+                            @SuppressWarnings("unchecked") RandomizedSet<ItemStack> drops = (RandomizedSet<ItemStack>) ReflectionUtil.getValue(card, "drops");
+                            if (drops == null) {
+                                return;
+                            }
+                            Set<String> cache2 = new HashSet<>();
+                            for (ItemStack itemStack : drops.toMap().keySet()) {
+                                var s = ItemUtils.getItemName(itemStack);
+                                if (!inBanlist(s)) {
+                                    cache2.add(s);
+                                }
+                            }
+                            SPECIAL_CACHE.put(((SlimefunItem) card).getId(), new SoftReference<>(cache2));
+                        });
+                    } catch (Throwable ignored) {
+                    }
+                }
+
+                for (SlimefunItem slimefunItem : AVAILABLE_ITEMS) {
+                    try {
+                        if (slimefunItem == null) {
+                            continue;
+                        }
+                        String name = ChatColor.stripColor(slimefunItem.getItemName());
+                        for (String s : name.split(SPLIT)) {
+                            String d = s.toLowerCase(Locale.ROOT);
+                            if (!EN_WORDS.contains(d)) {
+                                EN_WORDS.add(d);
+                            }
+                            EN_CACHE.putIfAbsent(s, new SoftReference<>(new HashSet<>()));
+                            Reference<Set<SlimefunItem>> ref = EN_CACHE.get(d);
+                            if (ref != null) {
+                                Set<SlimefunItem> set = ref.get();
+                                if (set != null) {
+                                    if (!inBanlist(slimefunItem)) {
+                                        set.add(slimefunItem);
+                                    }
+                                }
+                            }
+                        }
+
+                        /* Not using Pinyin in EN version
+                        if (JustEnoughGuide.getConfigManager().isPinyinSearch()) {
+                            final String pinyinFirstLetter = PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER, "");
+                            for (char c : pinyinFirstLetter.toCharArray()) {
+                                char d = Character.toLowerCase(c);
+                                CACHE.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
+                                Reference<Set<SlimefunItem>> ref = CACHE.get(d);
+                                if (ref != null) {
+                                    Set<SlimefunItem> set = ref.get();
+                                    if (set == null) {
+                                        set = new HashSet<>();
+                                        CACHE.put(d, new SoftReference<>(set));
+                                    }
+                                    if (!inBanlist(slimefunItem)) {
+                                        set.add(slimefunItem);
+                                    }
+                                }
+                            }
+                        }
+
+                         */
+
+                        List<ItemStack> displayRecipes = null;
+                        if (slimefunItem instanceof AContainer ac) {
+                            displayRecipes = ac.getDisplayRecipes();
+                        } else if (slimefunItem instanceof MultiBlockMachine mb) {
+                            try {
+                                displayRecipes = mb.getDisplayRecipes();
+                            } catch (Throwable e) {
+                                Debug.trace(e, "init searching");
+                            }
+                        } else if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(slimefunItem) && slimefunItem instanceof RecipeDisplayItem rdi) {
+                            try {
+                                displayRecipes = rdi.getDisplayRecipes();
+                            } catch (Throwable e) {
+                                Debug.trace(e, "init searching");
+                            }
+                        }
+                        if (displayRecipes != null) {
+                            for (ItemStack itemStack : displayRecipes) {
+                                if (itemStack != null) {
+                                    String name2 = ChatColor.stripColor(ItemUtils.getItemName(itemStack));
+                                    for (String s : name2.split(SPLIT)) {
+                                        String d = s.toLowerCase(Locale.ROOT);
+                                        EN_CACHE2.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
+                                        Reference<Set<SlimefunItem>> ref = EN_CACHE2.get(d);
+                                        if (ref != null) {
+                                            Set<SlimefunItem> set = ref.get();
+                                            if (set == null) {
+                                                set = new HashSet<>();
+                                                EN_CACHE2.put(d, new SoftReference<>(set));
+                                            }
+                                            if (!inBanlist(slimefunItem) && !inBlacklist(slimefunItem)) {
+                                                set.add(slimefunItem);
+                                            }
+                                        }
+                                        if (!EN_WORDS.contains(s)) {
+                                            EN_WORDS.add(s);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        String id = slimefunItem.getId();
+                        if (SPECIAL_CACHE.containsKey(id)) {
+                            Reference<Set<String>> ref2 = SPECIAL_CACHE.get(id);
+                            if (ref2 != null) {
+                                Set<String> cache2 = ref2.get();
+                                if (cache2 != null) {
+                                    for (String s : cache2) {
+                                        String d = s.toLowerCase(Locale.ROOT);
+
+                                        EN_CACHE2.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
+                                        Reference<Set<SlimefunItem>> ref = EN_CACHE2.get(d);
+                                        if (ref != null) {
+                                            Set<SlimefunItem> set = ref.get();
+                                            if (set != null) {
+                                                if (!inBanlist(slimefunItem)) {
+                                                    set.add(slimefunItem);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Throwable ignored) {
+                    }
+                }
+
+                // FluffyMachines SmartFactory
+                Set<SlimefunItemStack> ACCEPTED_ITEMS = new HashSet<>(Arrays.asList(
+                        SlimefunItems.BILLON_INGOT,
+                        SlimefunItems.SOLDER_INGOT,
+                        SlimefunItems.NICKEL_INGOT,
+                        SlimefunItems.COBALT_INGOT,
+                        SlimefunItems.DURALUMIN_INGOT,
+                        SlimefunItems.BRONZE_INGOT,
+                        SlimefunItems.BRASS_INGOT,
+                        SlimefunItems.ALUMINUM_BRASS_INGOT,
+                        SlimefunItems.STEEL_INGOT,
+                        SlimefunItems.DAMASCUS_STEEL_INGOT,
+                        SlimefunItems.ALUMINUM_BRONZE_INGOT,
+                        SlimefunItems.CORINTHIAN_BRONZE_INGOT,
+                        SlimefunItems.GILDED_IRON,
+                        SlimefunItems.REDSTONE_ALLOY,
+                        SlimefunItems.HARDENED_METAL_INGOT,
+                        SlimefunItems.REINFORCED_ALLOY_INGOT,
+                        SlimefunItems.FERROSILICON,
+                        SlimefunItems.ELECTRO_MAGNET,
+                        SlimefunItems.ELECTRIC_MOTOR,
+                        SlimefunItems.HEATING_COIL,
+                        SlimefunItems.SYNTHETIC_EMERALD,
+                        SlimefunItems.GOLD_4K,
+                        SlimefunItems.GOLD_6K,
+                        SlimefunItems.GOLD_8K,
+                        SlimefunItems.GOLD_10K,
+                        SlimefunItems.GOLD_12K,
+                        SlimefunItems.GOLD_14K,
+                        SlimefunItems.GOLD_16K,
+                        SlimefunItems.GOLD_18K,
+                        SlimefunItems.GOLD_20K,
+                        SlimefunItems.GOLD_22K,
+                        SlimefunItems.GOLD_24K));
+                Set<String> items = new HashSet<>();
+                for (SlimefunItemStack slimefunItemStack : ACCEPTED_ITEMS) {
+                    SlimefunItem slimefunItem = slimefunItemStack.getItem();
+                    if (slimefunItem != null) {
+                        String s = slimefunItem.getItemName();
+                        if (!inBanlist(s)) {
+                            items.add(s);
+                        }
+                    }
+                }
+                SPECIAL_CACHE.put("SMART_FACTORY", new SoftReference<>(items));
+
+                /*
+                for (String s : JustEnoughGuide.getConfigManager().getSharedChars()) {
+                    Set<SlimefunItem> sharedItems = new HashSet<>();
+                    for (char c : s.toCharArray()) {
+                        Reference<Set<SlimefunItem>> ref = CACHE.get(c);
+                        if (ref == null) {
+                            continue;
+                        }
+                        Set<SlimefunItem> set = ref.get();
+                        if (set == null) {
+                            continue;
+                        }
+                        sharedItems.addAll(set);
+                    }
+                    if (!sharedItems.isEmpty()) {
+                        for (char c : s.toCharArray()) {
+                            Reference<Set<SlimefunItem>> ref = CACHE.get(c);
+                            if (ref != null) {
+                                Set<SlimefunItem> set = ref.get();
+                                if (set != null) {
+                                    set.addAll(sharedItems);
+                                    Debug.debug("Shared cache added to CACHE char \"" + c + "\" (" + sharedItems.size() + " items)");
+                                }
+                            }
+                        }
+                    }
+
+
+                    Set<SlimefunItem> sharedItems2 = new HashSet<>();
+                    for (char c : s.toCharArray()) {
+                        Reference<Set<SlimefunItem>> ref = CACHE2.get(c);
+                        if (ref == null) {
+                            continue;
+                        }
+                        Set<SlimefunItem> set = ref.get();
+                        if (set == null) {
+                            continue;
+                        }
+                        sharedItems2.addAll(set);
+                    }
+                    if (!sharedItems2.isEmpty()) {
+                        for (char c : s.toCharArray()) {
+                            Reference<Set<SlimefunItem>> ref = CACHE2.get(c);
+                            if (ref != null) {
+                                Set<SlimefunItem> set = ref.get();
+                                if (set != null) {
+                                    set.addAll(sharedItems2);
+                                    Debug.debug("Shared cache added to CACHE2 char \"" + c + "\" (" + sharedItems2.size() + " items)");
+                                }
+                            }
+                        }
+                    }
+                }
+                */
+
+                // SHARED_WORDS.add(new String[]{"storage barrel"});
+
+                // apply shared words
+                for (String sharedWords : JustEnoughGuide.getConfigManager().getSharedWords()) {
+                    Set<SlimefunItem> sharedItems = new HashSet<>();
+                    for (String s : sharedWords.split(SPLIT)) {
+                        var ref = EN_CACHE.get(s);
+                        if (ref != null) {
+                            var ss = ref.get();
+                            if (ss != null) {
+                                sharedItems.addAll(ss);
+                            }
+                        }
+                    }
+
+                    for (String s : sharedWords.split(SPLIT)) {
+                        EN_CACHE.put(s, new SoftReference<>(sharedItems));
+                    }
+                }
+
+                Debug.debug("Cache initialized.");
+
+                Timer.log();
+                Debug.debug("Search Group initialized.");
+                Debug.debug("Enabled items: " + ENABLED_ITEMS.size());
+                Debug.debug("Available items: " + AVAILABLE_ITEMS.size());
+                Debug.debug("Machine blocks cache: " + SPECIAL_CACHE.size());
+                Debug.debug("Shared words: " + JustEnoughGuide.getConfigManager().getSharedWords().size());
+                Debug.debug("EN Words: " + EN_WORDS.size());
+                Debug.debug("EN Cache 1 (Keywords): " + EN_CACHE.size());
+                Debug.debug("EN Cache 2 (Display Recipes): " + EN_CACHE2.size());
+            });
         }
     }
 
@@ -1014,46 +1014,73 @@ public class SearchGroup extends FlexItemGroup {
         return false;
     }
 
-    public static boolean onlyAscii(@NotNull String str) {
-        for (char c : str.toCharArray()) {
-            if (c > 127) {
-                return false;
+    public static int levenshteinDistance(@NotNull String s1, @NotNull String s2) {
+        if (s1.length() > s2.length()) {
+            String temp = s1;
+            s1 = s2;
+            s2 = temp;
+        }
+
+        int[] distances = new int[s1.length() + 1];
+        for (int i = 0; i <= s1.length(); i++) {
+            distances[i] = i;
+        }
+
+        for (int i = 1; i <= s2.length(); i++) {
+            int[] prevDistances = distances.clone();
+            distances[0] = i;
+            for (int j = 1; j <= s1.length(); j++) {
+                int cost = (s1.charAt(j - 1) == s2.charAt(i - 1)) ? 0 : 1;
+                distances[j] = Math.min(Math.min(distances[j - 1] + 1, prevDistances[j] + 1), prevDistances[j - 1] + cost);
             }
         }
-        return true;
+
+        return distances[s1.length()];
     }
 
-    public static int levenshteinDistance(@NotNull String s1, @NotNull String s2) {
-        if (s1.length() < s2.length()) {
-            return levenshteinDistance(s2, s1);
+    public static List<String> findMostSimilar(@NotNull String target, int threshold) {
+        if (EN_CACHE_ROLLBACK.containsKey(target)) {
+            return EN_CACHE_ROLLBACK.get(target);
         }
 
-        if (s2.isEmpty()) {
-            return s1.length();
-        }
+        PriorityQueue<Map.Entry<String, Integer>> minHeap = new PriorityQueue<>(5, (a, b) -> b.getValue() - a.getValue());
 
-        int[] previousRow = new int[s2.length() + 1];
-        for (int i = 0; i <= s2.length(); i++) {
-            previousRow[i] = i;
-        }
-
-        for (int i = 0; i < s1.length(); i++) {
-            char c1 = s1.charAt(i);
-            int[] currentRow = new int[s2.length() + 1];
-            currentRow[0] = i + 1;
-
-            for (int j = 0; j < s2.length(); j++) {
-                char c2 = s2.charAt(j);
-                int insertions = previousRow[j + 1] + 1;
-                int deletions = currentRow[j] + 1;
-                int substitutions = previousRow[j] + (c1 == c2 ? 0 : 1);
-                currentRow[j + 1] = Math.min(Math.min(insertions, deletions), substitutions);
+        for (String s : EN_WORDS) {
+            int distance = levenshteinDistance(s, target);
+            if (distance == 0) {
+                return List.of(s);
             }
 
-            previousRow = currentRow;
+            if (distance <= threshold) {
+                Map.Entry<String, Integer> entry = new AbstractMap.SimpleEntry<>(s, distance);
+                if (minHeap.size() < MAX_FIX_TIMES) {
+                    minHeap.offer(entry);
+                } else if (distance < minHeap.peek().getValue()) {
+                    minHeap.poll();
+                    minHeap.offer(entry);
+                }
+            }
         }
 
-        return previousRow[s2.length()];
+        List<String> mostSimilar = new ArrayList<>();
+        while (!minHeap.isEmpty()) {
+            mostSimilar.add(0, minHeap.poll().getKey());
+        }
+
+        synchronized (EN_CACHE_ROLLBACK) {
+            EN_CACHE_ROLLBACK.put(target, mostSimilar);
+        }
+        return mostSimilar;
+    }
+
+    public static boolean isContinuousScriptLanguage(@NotNull String language) {
+        return language.startsWith("zh") ||
+                language.startsWith("ja") ||
+                language.startsWith("ko") ||
+                language.startsWith("th") ||
+                language.startsWith("vi") ||
+                language.startsWith("he") ||
+                language.startsWith("fa");
     }
 
     /**
@@ -1083,15 +1110,6 @@ public class SearchGroup extends FlexItemGroup {
                 .sorted(Comparator.comparingInt(item ->
                         /* Intentionally negative */
                         -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
-                .toList();
-    }
-
-    public static @NotNull List<SlimefunItem> sortByPinyinContinuity(
-            @NotNull Set<SlimefunItem> origin, @NotNull String searchTerm) {
-        return origin.stream()
-                .sorted(Comparator.comparingInt(item ->
-                        /* Intentionally negative */
-                        -nameFit(getPinyin(ChatColor.stripColor(item.getItemName())), searchTerm)))
                 .toList();
     }
 
@@ -1156,7 +1174,7 @@ public class SearchGroup extends FlexItemGroup {
             final @NotNull PlayerProfile playerProfile,
             final @NotNull SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu =
-                new ChestMenu("你正在搜索: %item%".replace("%item%", ChatUtils.crop(ChatColor.WHITE, searchTerm)));
+                new ChestMenu(Lang.getGuideMessage("searching", "item_name", ChatUtils.crop(ChatColor.WHITE, searchTerm)));
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
@@ -1166,7 +1184,7 @@ public class SearchGroup extends FlexItemGroup {
                     ss,
                     PatchScope.Back.patch(
                             player,
-                            ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单")));
+                            SlimefunOfficialSupporter.getBackButton(player)));
             chestMenu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(
                             new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
                     .ifSuccess(() -> {
@@ -1259,7 +1277,7 @@ public class SearchGroup extends FlexItemGroup {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.slimefunItemList.size()) {
                 SlimefunItem slimefunItem = slimefunItemList.get(index);
-                ItemStack itemstack = ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem(), meta -> {
+                ItemStack itemstack = ItemStackUtil.getCleanItem(Converter.getItem(SlimefunOfficialSupporter.translateItem(player, slimefunItem.getItem()), meta -> {
                     ItemGroup itemGroup = slimefunItem.getItemGroup();
                     List<String> additionLore = List.of(
                             "",
@@ -1282,7 +1300,7 @@ public class SearchGroup extends FlexItemGroup {
                 }));
                 chestMenu.addItem(
                         contentSlots.get(i),
-                        PatchScope.SearchItem.patch(player, itemstack),
+                        PatchScope.SearchItem.patch(player, SlimefunOfficialSupporter.translateItem(player, itemstack)),
                         (pl, slot, itm, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(
                                         pl, itm, slot, action, chestMenu, implementation))
                                 .ifSuccess(() -> {
@@ -1356,32 +1374,30 @@ public class SearchGroup extends FlexItemGroup {
         return filterItems(p, searchTerm, pinyin);
     }
 
-    /**
-     * Prints an error message.
-     *
-     * @param p The player.
-     * @param x The exception.
-     */
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, Throwable x) {
-        p.sendMessage("&4服务器发生了一个内部错误. 请联系管理员处理.");
-        JAVA_PLUGIN.getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
+        p.sendMessage(Lang.getError("internal-error"));
+        JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, Lang.getError("error-occurred"), x);
+        JustEnoughGuide.getInstance().getLogger().warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
-    /**
-     * Prints an error message.
-     *
-     * @param p    The player.
-     * @param item The Slimefun item.
-     * @param x    The exception.
-     */
     @ParametersAreNonnullByDefault
     private void printErrorMessage(Player p, SlimefunItem item, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
+        p.sendMessage(Lang.getError("internal-error"));
+        item.error(Lang.getError("item-error"), x);
+        JustEnoughGuide.getInstance()
+                .getLogger()
+                .warning(Lang.getError("trying-fix-guide", "player_name", p.getName()));
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
     /**
@@ -1394,7 +1410,7 @@ public class SearchGroup extends FlexItemGroup {
      */
     public @NotNull List<SlimefunItem> filterItems(@NotNull Player player, @NotNull String searchTerm, boolean pinyin) {
         StringBuilder actualSearchTermBuilder = new StringBuilder();
-        String[] split = searchTerm.split(" ");
+        String[] split = searchTerm.split(SPLIT);
         Map<FilterType, String> filters = new HashMap<>();
         for (String s : split) {
             boolean isFilter = false;
@@ -1402,7 +1418,8 @@ public class SearchGroup extends FlexItemGroup {
                 if (s.startsWith(filterType.getSymbol())
                         && s.length() > filterType.getSymbol().length()) {
                     isFilter = true;
-                    String filterValue = s.substring(filterType.getSymbol().length());
+                    String filterValue = s.substring(filterType.getFlag().length()).replace(".", " ");
+
                     filters.put(filterType, filterValue);
                     break;
                 }
@@ -1426,69 +1443,56 @@ public class SearchGroup extends FlexItemGroup {
                 .toList());
 
         if (!actualSearchTerm.isBlank()) {
-            Set<SlimefunItem> nameMatched = new HashSet<>();
-            Set<SlimefunItem> allMatched = null;
-            for (char c : actualSearchTerm.toCharArray()) {
-                Set<SlimefunItem> cache;
-                Reference<Set<SlimefunItem>> ref = CACHE.get(c);
-                if (ref == null) {
-                    cache = new HashSet<>();
+            int beforeSize = merge.size();
+            Debug.debug("Search term: " + actualSearchTerm);
+            String[] words = actualSearchTerm.split(SPLIT);
+            Set<SlimefunItem> currentResults = new HashSet<>(items);
+
+            for (String word : words) {
+                Debug.debug("Word: " + word);
+                List<String> fixedWords;
+                if (words.length == 1) {
+                    // maybe a language that not split by space, should change the fixedWords
+                    String language = Slimefun.getLocalization().getLanguage(player).getId();
+                    if (isContinuousScriptLanguage(language)) {
+                        // Find continuous script language, should change the fixedWords
+                        fixedWords = List.of(word);
+                    } else {
+                        fixedWords = findMostSimilar(word, EN_THRESHOLD);
+                    }
                 } else {
-                    cache = ref.get();
+                    fixedWords = findMostSimilar(word, EN_THRESHOLD);
                 }
-                if (cache == null) {
-                    cache = new HashSet<>();
-                }
-                if (allMatched == null) {
-                    allMatched = new HashSet<>(cache);
+
+                Set<SlimefunItem> wordMatches = new HashSet<>();
+                if (fixedWords.isEmpty()) {
+                    Debug.debug("No fixed words found.");
+                    // fallback
+                    if (re_search_when_cache_failed) {
+                        wordMatches.addAll(filterItems(FilterType.BY_ITEM_NAME, word, false, new HashSet<>(items)));
+                        wordMatches.addAll(filterItems(FilterType.BY_DISPLAY_ITEM_NAME, word, false, new HashSet<>(items)));
+                    }
                 } else {
-                    allMatched.retainAll(new HashSet<>(cache));
+                    Debug.debug("Fixed words: " + fixedWords);
+                    for (String candidate : fixedWords) {
+                        wordMatches.addAll(filterItems(FilterType.BY_ITEM_NAME, candidate, false, new HashSet<>(items)));
+                        wordMatches.addAll(filterItems(FilterType.BY_DISPLAY_ITEM_NAME, candidate, false, new HashSet<>(items)));
+                    }
                 }
+
+                currentResults.retainAll(wordMatches);
             }
-            if (allMatched != null) {
-                nameMatched.addAll(allMatched);
+
+            merge.addAll(currentResults);
+            int afterSize = merge.size();
+
+            // fallback
+            if (beforeSize == afterSize) {
+                Debug.debug("Same size, fallback to search by name.");
+                merge.addAll(filterItems(FilterType.BY_ITEM_NAME, actualSearchTerm, false, new HashSet<>(items)));
+                merge.addAll(filterItems(FilterType.BY_DISPLAY_ITEM_NAME, actualSearchTerm, false, new HashSet<>(items)));
             }
-            Set<SlimefunItem> machineMatched = new HashSet<>();
-            Set<SlimefunItem> allMatched2 = null;
-            for (char c : actualSearchTerm.toCharArray()) {
-                Set<SlimefunItem> cache;
-                Reference<Set<SlimefunItem>> ref = CACHE2.get(c);
-                if (ref == null) {
-                    cache = new HashSet<>();
-                } else {
-                    cache = ref.get();
-                }
-                if (cache == null) {
-                    cache = new HashSet<>();
-                }
-                if (allMatched2 == null) {
-                    allMatched2 = new HashSet<>(cache);
-                } else {
-                    allMatched2.retainAll(new HashSet<>(cache));
-                }
-            }
-            if (allMatched2 != null) {
-                machineMatched.addAll(allMatched2);
-            }
-            Debug.debug("Name matched: " + nameMatched.size());
-            Debug.debug("Machine matched: " + machineMatched.size());
-            merge.addAll(nameMatched);
-            merge.addAll(machineMatched);
-            if (this.re_search_when_cache_failed) {
-                if (nameMatched.isEmpty()) {
-                    Debug.debug("Re-searching item name by filters (Normal search)");
-                    Set<SlimefunItem> clone = new HashSet<>(items);
-                    Set<SlimefunItem> result = filterItems(FilterType.BY_ITEM_NAME, actualSearchTerm, pinyin, clone);
-                    merge.addAll(result);
-                }
-                if (machineMatched.isEmpty()) {
-                    Debug.debug("Re-searching display item name by filters (Normal search)");
-                    Set<SlimefunItem> clone = new HashSet<>(items);
-                    Set<SlimefunItem> result =
-                            filterItems(FilterType.BY_DISPLAY_ITEM_NAME, actualSearchTerm, pinyin, clone);
-                    merge.addAll(result);
-                }
-            }
+            Debug.debug("Filtered items: " + merge.size());
         }
 
         // Filter items
@@ -1500,11 +1504,7 @@ public class SearchGroup extends FlexItemGroup {
             merge.addAll(items);
         }
 
-        if (pinyin && onlyAscii(searchTerm)) {
-            return sortByPinyinContinuity(merge, actualSearchTerm);
-        } else {
-            return sortByNameFit(merge, actualSearchTerm);
-        }
+        return sortByNameFit(merge, actualSearchTerm);
     }
 
     /**
@@ -1521,10 +1521,7 @@ public class SearchGroup extends FlexItemGroup {
             @NotNull String filterValue,
             boolean pinyin,
             @NotNull List<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
-        return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .toList();
+        return filterItems(player, filterType, filterValue, pinyin, items);
     }
 
     /**
@@ -1541,9 +1538,6 @@ public class SearchGroup extends FlexItemGroup {
             @NotNull String filterValue,
             boolean pinyin,
             @NotNull Set<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
-        return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .collect(Collectors.toSet());
+        return filterItems(player, filterType, filterValue, pinyin, items);
     }
 }
