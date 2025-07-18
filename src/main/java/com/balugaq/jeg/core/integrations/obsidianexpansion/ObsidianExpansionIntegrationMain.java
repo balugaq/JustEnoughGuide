@@ -30,22 +30,23 @@ package com.balugaq.jeg.core.integrations.obsidianexpansion;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 public class ObsidianExpansionIntegrationMain implements Integration {
-    public static final int[] OMC_OBSIDIAN_FORGE_INPUT_SLOTS = new int[] {
-        0, 1, 2, 3, 4, 5,
-        9, 10, 11, 12, 13, 14,
-        18, 19, 20, 21, 22, 23,
-        27, 28, 29, 30, 31, 32,
-        36, 37, 38, 39, 40, 41,
-        45, 46, 47, 48, 49, 50
+    public static final int[] OMC_OBSIDIAN_FORGE_INPUT_SLOTS = new int[]{
+            0, 1, 2, 3, 4, 5,
+            9, 10, 11, 12, 13, 14,
+            18, 19, 20, 21, 22, 23,
+            27, 28, 29, 30, 31, 32,
+            36, 37, 38, 39, 40, 41,
+            45, 46, 47, 48, 49, 50
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 

@@ -36,8 +36,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -48,6 +46,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author balugaq
  * @since 1.5
@@ -56,7 +57,8 @@ import org.jetbrains.annotations.Range;
 public class GroupLinker implements Applier {
     private static final GroupLinker instance = new GroupLinker();
 
-    private GroupLinker() {}
+    private GroupLinker() {
+    }
 
     public static void applyWith(@NotNull SlimefunGuideImplementation guide, @NotNull ChestMenu menu, int slot) {
         instance.apply(guide, menu, slot);

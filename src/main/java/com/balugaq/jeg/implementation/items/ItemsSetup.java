@@ -28,7 +28,7 @@
 package com.balugaq.jeg.implementation.items;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.Models;
+import com.balugaq.jeg.utils.Lang;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -52,7 +52,7 @@ public class ItemsSetup {
 
         RECIPE_COMPLETE_GUIDE = new RecipeCompleteGuide(
                 GroupSetup.jegItemsGroup,
-                Models.RECIPE_COMPLETE_GUIDE,
+                Lang.RECIPE_COMPLETE_GUIDE,
                 RecipeType.ENHANCED_CRAFTING_TABLE,
                 // @formatter:off
                 new ItemStack[] {
@@ -61,26 +61,26 @@ public class ItemsSetup {
                     craftingTable, craftingTable, craftingTable
                 }
                 // @formatter:on
-                );
+        );
 
-        USAGE_INFO = new SlimefunItem(GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new ItemStack[] {
-            null, null, null,
-            null, null, null,
-            null, null, null
+        USAGE_INFO = new SlimefunItem(GroupSetup.jegItemsGroup, Lang.USAGE_INFO, RecipeType.NULL, new ItemStack[]{
+                null, null, null,
+                null, null, null,
+                null, null, null
         });
 
-        MECHANISM = new SlimefunItem(GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new ItemStack[] {
-            null, null, null,
-            null, null, null,
-            null, null, null
+        MECHANISM = new SlimefunItem(GroupSetup.jegItemsGroup, Lang.MECHANISM, RecipeType.NULL, new ItemStack[]{
+                null, null, null,
+                null, null, null,
+                null, null, null
         });
 
         SUPPORTED_ADDONS_INFO = new SlimefunItem(
-                GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new ItemStack[] {
-                    null, null, null,
-                    null, null, null,
-                    null, null, null
-                });
+                GroupSetup.jegItemsGroup, Lang.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new ItemStack[]{
+                null, null, null,
+                null, null, null,
+                null, null, null
+        });
     }
 
     public static void setup(@NotNull SlimefunAddon addon) {

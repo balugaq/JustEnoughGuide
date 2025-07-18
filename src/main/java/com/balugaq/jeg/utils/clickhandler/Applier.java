@@ -28,9 +28,10 @@
 package com.balugaq.jeg.utils.clickhandler;
 
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import javax.annotation.ParametersAreNonnullByDefault;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.jetbrains.annotations.Range;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author balugaq
