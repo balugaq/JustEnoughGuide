@@ -33,7 +33,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>Insider-125</version>
+    <version>EN-17</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -89,7 +89,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0</version>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
                     <filters>
@@ -192,9 +192,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.SlimefunGuguProject</groupId>
+            <groupId>com.github.Slimefun</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>38953fe13a</version>
+            <version>RC-37</version>
             <scope>provided</scope>
         </dependency>
 
@@ -232,21 +232,6 @@
             <artifactId>annotations</artifactId>
             <version>24.1.0</version>
             <scope>compile</scope>
-        </dependency>
-        <!-- Pinyin Library -->
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>pinyin</artifactId>
-            <version>0.4.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- Chinese localization library -->
-        <dependency>
-            <groupId>net.guizhanss</groupId>
-            <artifactId>GuizhanLibPlugin</artifactId>
-            <version>1.7.6</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Special Menu Provider me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu -->
@@ -314,6 +299,14 @@
             <artifactId>anvilgui</artifactId>
             <version>1.10.7-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- Slimefun Translation -->
+        <dependency>
+            <groupId>net.guizhanss</groupId>
+            <artifactId>SlimefunTranslation</artifactId>
+            <version>e6da231617</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

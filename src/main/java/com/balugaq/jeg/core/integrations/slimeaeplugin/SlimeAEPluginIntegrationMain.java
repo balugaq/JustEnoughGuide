@@ -32,8 +32,6 @@ import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import java.util.ArrayList;
-import java.util.List;
 import me.ddggdd135.slimeae.SlimeAEPlugin;
 import me.ddggdd135.slimeae.api.interfaces.IStorage;
 import me.ddggdd135.slimeae.core.NetworkInfo;
@@ -44,21 +42,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author balugaq
  * @since 1.9
  */
 public class SlimeAEPluginIntegrationMain implements Integration {
-    public static final int[] CRAFTING_TERMINAL_INPUT_SLOTS = new int[] {6, 7, 8, 15, 16, 17, 24, 25, 26};
-    public static final int[] PATTERN_TERMINAL_INPUT_SLOTS = new int[] {6, 7, 8, 15, 16, 17, 24, 25, 26};
-    public static final int[] PATTERN_WORKBENCH_INPUT_SLOTS = new int[] {
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        9, 10, 11, 12, 13, 14, 15, 16, 17,
-        18, 19, 20, 21, 22, 23, 24, 25, 26
+    public static final int[] CRAFTING_TERMINAL_INPUT_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
+    public static final int[] PATTERN_TERMINAL_INPUT_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
+    public static final int[] PATTERN_WORKBENCH_INPUT_SLOTS = new int[]{
+            0, 1, 2, 3, 4, 5, 6, 7, 8,
+            9, 10, 11, 12, 13, 14, 15, 16, 17,
+            18, 19, 20, 21, 22, 23, 24, 25, 26
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
-    public static final BlockFace[] VALID_FACES = new BlockFace[] {
-        BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    public static final BlockFace[] VALID_FACES = new BlockFace[]{
+            BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
     };
     public static @Nullable JavaPlugin plugin = null;
 
@@ -82,7 +83,8 @@ public class SlimeAEPluginIntegrationMain implements Integration {
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
-    @Nullable public static IStorage findNearbyIStorage(@NotNull Location location) {
+    @Nullable
+    public static IStorage findNearbyIStorage(@NotNull Location location) {
         IStorage networkStorage = null;
 
         for (BlockFace blockFace : VALID_FACES) {

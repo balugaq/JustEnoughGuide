@@ -28,7 +28,15 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
+import com.balugaq.jeg.api.objects.annotaions.Warn;
 import com.balugaq.jeg.utils.Debug;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,12 +46,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.ParametersAreNonnullByDefault;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This class is responsible for managing the configuration of the plugin.
@@ -73,7 +75,9 @@ public class ConfigManager extends AbstractManager {
     private final @NotNull String CHEAT_GUIDE_TITLE;
     private final @NotNull String SETTINGS_GUIDE_TITLE;
     private final @NotNull String CREDITS_GUIDE_TITLE;
+    @Warn(reason = "No longer using it in EN version")
     private final @NotNull List<String> SHARED_CHARS;
+    private final @NotNull List<String> SHARED_WORDS;
     private final @NotNull List<String> BLACKLIST;
     private final @NotNull List<String> MAIN_FORMAT;
     private final @NotNull List<String> NESTED_GROUP_FORMAT;
@@ -86,6 +90,7 @@ public class ConfigManager extends AbstractManager {
     private final @NotNull List<String> CONTRIBUTORS_FORMAT;
     private final @NotNull Map<String, String> LOCAL_TRANSLATE;
     private final @NotNull List<String> BANLIST;
+    private final @NotNull String LANGUAGE;
     private final @NotNull JavaPlugin plugin;
     private final boolean EMC_VALUE_DISPLAY;
     private final boolean FinalTech_VALUE_DISPLAY;
@@ -99,37 +104,37 @@ public class ConfigManager extends AbstractManager {
         this.SURVIVAL_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.survival-improvements", true);
         this.CHEAT_IMPROVEMENTS = plugin.getConfig().getBoolean("guide.cheat-improvements", true);
         this.RECIPE_COMPLETE = plugin.getConfig().getBoolean("guide.recipe-complete", true);
-        this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", true);
+        this.PINYIN_SEARCH = plugin.getConfig().getBoolean("improvements.pinyin-search", false);
         this.BOOKMARK = plugin.getConfig().getBoolean("improvements.bookmark", true);
-        this.SURVIVAL_GUIDE_TITLE = plugin.getConfig()
-                .getString("guide.survival-guide-title", "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide");
-        this.CHEAT_GUIDE_TITLE = plugin.getConfig()
-                .getString("guide.cheat-guide-title", "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide");
-        this.SETTINGS_GUIDE_TITLE = plugin.getConfig().getString("guide.settings-guide-title", "设置 & 详情");
-        this.CREDITS_GUIDE_TITLE = plugin.getConfig().getString("guide.credits-guide-title", "Slimefun4 贡献者");
+        this.SURVIVAL_GUIDE_TITLE = plugin.getConfig().getString("guide.survival-guide-title", "&2&lSlimefun Guide &7(Chest GUI) &8Advanced");
+        this.CHEAT_GUIDE_TITLE = plugin.getConfig().getString("guide.cheat-guide-title", "&c&l&cSlimefun Guide &4(Cheat Sheet) &8Advanced");
+        this.SETTINGS_GUIDE_TITLE = plugin.getConfig().getString("guide.settings-guide-title", "Settings & Info");
+        this.CREDITS_GUIDE_TITLE = plugin.getConfig().getString("guide.credits-guide-title", "Slimefun4 Contributors");
         this.RTS_SEARCH = plugin.getConfig().getBoolean("improvements.rts-search", true);
 
         this.BEGINNER_OPTION = plugin.getConfig().getBoolean("improvements.beginner-option", true);
         List<String> rawBlacklist = plugin.getConfig().getStringList("blacklist");
         if (rawBlacklist == null || rawBlacklist.isEmpty()) {
             this.BLACKLIST = new ArrayList<>();
-            this.BLACKLIST.add("快捷");
+            this.BLACKLIST.add("Fast Machines");
         } else {
             this.BLACKLIST = rawBlacklist;
         }
 
         List<String> rawSharedChars = plugin.getConfig().getStringList("shared-chars");
         if (rawSharedChars == null || rawSharedChars.isEmpty()) {
+            // Deprecated
             this.SHARED_CHARS = new ArrayList<>();
-            this.SHARED_CHARS.add("粘黏");
-            this.SHARED_CHARS.add("荧萤");
-            this.SHARED_CHARS.add("机器级");
-            this.SHARED_CHARS.add("灵零");
-            this.SHARED_CHARS.add("动力");
-            this.SHARED_CHARS.add("拆反");
-            this.SHARED_CHARS.add("解向");
         } else {
             this.SHARED_CHARS = rawSharedChars;
+        }
+
+        var rawSharedWords = plugin.getConfig().getStringList("shared-words");
+        if (rawSharedWords == null || rawSharedWords.isEmpty()) {
+            this.SHARED_WORDS = new ArrayList<>();
+            this.SHARED_WORDS.add("barrel storage");
+        } else {
+            this.SHARED_WORDS = rawSharedWords;
         }
 
         List<String> rawMainFormat = plugin.getConfig().getStringList("custom-format.main");
@@ -256,6 +261,20 @@ public class ConfigManager extends AbstractManager {
         this.EMC_VALUE_DISPLAY = plugin.getConfig().getBoolean("improvements.emc-display-option", true);
         this.FinalTech_VALUE_DISPLAY = plugin.getConfig().getBoolean("improvements.finaltech-emc-display-option", true);
         this.FinalTECH_VALUE_DISPLAY = plugin.getConfig().getBoolean("improvements.finalTECH-emc-display-option", true);
+        this.LANGUAGE = plugin.getConfig().getString("language", "en-US");
+    }
+
+    @ParametersAreNonnullByDefault
+    public static void checkKey(FileConfiguration existingConfig, FileConfiguration resourceConfig, String key) {
+        final Object currentValue = existingConfig.get(key);
+        final Object newValue = resourceConfig.get(key);
+        if (newValue instanceof ConfigurationSection section) {
+            for (String sectionKey : section.getKeys(false)) {
+                checkKey(existingConfig, resourceConfig, key + "." + sectionKey);
+            }
+        } else if (currentValue == null) {
+            existingConfig.set(key, newValue);
+        }
     }
 
     private void setupDefaultConfig() {
@@ -279,19 +298,6 @@ public class ConfigManager extends AbstractManager {
             existingConfig.save(existingFile);
         } catch (IOException e) {
             Debug.trace(e);
-        }
-    }
-
-    @ParametersAreNonnullByDefault
-    private void checkKey(FileConfiguration existingConfig, FileConfiguration resourceConfig, String key) {
-        final Object currentValue = existingConfig.get(key);
-        final Object newValue = resourceConfig.get(key);
-        if (newValue instanceof ConfigurationSection section) {
-            for (String sectionKey : section.getKeys(false)) {
-                checkKey(existingConfig, resourceConfig, key + "." + sectionKey);
-            }
-        } else if (currentValue == null) {
-            existingConfig.set(key, newValue);
         }
     }
 
@@ -343,8 +349,13 @@ public class ConfigManager extends AbstractManager {
         return RTS_SEARCH;
     }
 
+    @Warn(reason = "No longer using it in EN version")
     public @NotNull List<String> getSharedChars() {
         return SHARED_CHARS;
+    }
+
+    public @NotNull List<String> getSharedWords() {
+        return SHARED_WORDS;
     }
 
     public @NotNull List<String> getBlacklist() {
@@ -409,5 +420,9 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isFinalTECHValueDisplay() {
         return FinalTECH_VALUE_DISPLAY;
+    }
+
+    public @NotNull String getLanguage() {
+        return LANGUAGE;
     }
 }

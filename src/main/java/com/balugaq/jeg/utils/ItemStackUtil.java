@@ -34,10 +34,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import net.Zrips.CMILib.Colors.CMIChatColor;
@@ -50,6 +46,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class provides utility methods for working with ItemStacks.
@@ -80,7 +81,8 @@ public final class ItemStackUtil {
      * @param item The MyItemStack to be converted.
      * @return A pure ItemStack.
      */
-    @NotNull public static ItemStack getCleanItem(@Nullable ItemStack item) {
+    @NotNull
+    public static ItemStack getCleanItem(@Nullable ItemStack item) {
         if (item == null) {
             return new ItemStack(Material.AIR);
         }
@@ -105,7 +107,8 @@ public final class ItemStackUtil {
     }
 
     @SneakyThrows
-    @Nullable @Author("lijinhong11 & balugaq")
+    @Nullable
+    @Author("lijinhong11 & balugaq")
     public static ItemStack readItem(char c, @Nullable ConfigurationSection section) {
         if (section == null) {
             return null;
@@ -113,7 +116,7 @@ public final class ItemStackUtil {
 
         String type = section.getString("material_type", "mc");
         if (!type.equalsIgnoreCase("none") && !section.contains("material")) {
-            Debug.severe("Icon 定义 " + c + " 缺少 material 字段");
+            Debug.severe("Icon Definition " + c + " missing material field");
             return null;
         }
 
@@ -149,7 +152,7 @@ public final class ItemStackUtil {
                 }
             }
 
-            Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+            Debug.severe("Icon Definition " + c + " unable to read, turned into stone");
             return null;
         } else {
             return readItem(
@@ -158,7 +161,8 @@ public final class ItemStackUtil {
     }
 
     @SneakyThrows
-    @Nullable @SuppressWarnings("deprecation")
+    @Nullable
+    @SuppressWarnings("deprecation")
     @Author("lijinhong11 & balugaq")
     public static ItemStack readItem(
             char c,
@@ -222,11 +226,11 @@ public final class ItemStackUtil {
                     if (isBranch) {
                         return null;
                     }
-                    Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+                    Debug.severe("Icon Definition " + c + " unable to read, turned into stone");
                     itemStack = Converter.getItem(Material.STONE, name, lore);
                 }
             }
-                // mc
+            // mc
             default -> {
                 Optional<Material> materialOptional = Optional.ofNullable(Material.matchMaterial(material));
                 Material mat = Material.STONE;
@@ -238,23 +242,23 @@ public final class ItemStackUtil {
                         materialOptional = Optional.ofNullable(Material.matchMaterial(materialMappings.get(material)));
                         if (materialOptional.isPresent()) {
                             mat = materialOptional.get();
-                            Debug.warn("Icon 定义 " + c + " 的 material 字段 " + material + " 已自动修复为 " + mat);
+                            Debug.warn("Icon Definition " + c + "'s material field " + material + " has been fixed into " + mat);
                         } else {
                             if (isBranch) {
                                 return null;
                             }
-                            Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+                            Debug.severe("Icon Definition " + c + " unable to read, turned into stone");
                         }
                     } else {
                         if (isBranch) {
                             return null;
                         }
-                        Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+                        Debug.severe("Icon Definition " + c + " unable to read, turned into stone");
                     }
                 }
 
                 if (!mat.isItem() || mat.isLegacy()) {
-                    Debug.warn("Icon 定义存在无效的 material: " + mat + ", 已转为石头");
+                    Debug.warn("Icon Definition exists invalid material: " + mat + ", turned into stone");
                     mat = Material.STONE;
                 }
 
@@ -268,7 +272,7 @@ public final class ItemStackUtil {
         }
 
         if (amount > 100 || amount < -1) {
-            Debug.severe("Icon 定义 " + c + " 无法读取，字段 amount 的值不在范围内: -1 < amount <= 100");
+            Debug.severe("Icon Definition " + c + " unable to read filed amount caused by outrange value: must be -1 < amount <= 100");
             return null;
         }
         itemStack.setAmount(amount);
@@ -280,7 +284,7 @@ public final class ItemStackUtil {
             for (String enchant : enchants) {
                 String[] s2 = enchant.split(" ");
                 if (s2.length != 2) {
-                    Debug.severe("Icon 定义 " + c + " 无法读取附属 " + enchant + ", 跳过添加此附魔");
+                    Debug.severe("Icon Definition " + c + " unable to read enchantment " + enchant + ", skip it.");
                     continue;
                 }
 
@@ -289,7 +293,7 @@ public final class ItemStackUtil {
 
                 Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName.toLowerCase()));
                 if (enchantment == null) {
-                    Debug.severe("Icon 定义 " + c + " 无法读取附属 " + enchant + ", 跳过添加此附魔");
+                    Debug.severe("Icon Definition " + c + " unable to read enchantment " + enchant + ", skip it.");
                     continue;
                 }
 

@@ -27,14 +27,15 @@
 
 package com.balugaq.jeg.utils;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author balugaq

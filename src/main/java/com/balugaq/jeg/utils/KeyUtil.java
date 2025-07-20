@@ -28,11 +28,12 @@
 package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author balugaq
@@ -41,17 +42,20 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("unused")
 @UtilityClass
 public class KeyUtil {
-    @NotNull public static NamespacedKey newKey(@NotNull String key) {
+    @NotNull
+    public static NamespacedKey newKey(@NotNull String key) {
         return new NamespacedKey(JustEnoughGuide.getInstance(), key);
     }
 
     @ParametersAreNonnullByDefault
-    @NotNull public static NamespacedKey customKey(Plugin plugin, String key) {
+    @NotNull
+    public static NamespacedKey customKey(Plugin plugin, String key) {
         return new NamespacedKey(plugin, key);
     }
 
     @ParametersAreNonnullByDefault
-    @NotNull public static NamespacedKey customKey(String namespace, String key) {
+    @NotNull
+    public static NamespacedKey customKey(String namespace, String key) {
         return new NamespacedKey(namespace, key);
     }
 }

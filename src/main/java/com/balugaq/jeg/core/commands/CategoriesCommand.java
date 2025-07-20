@@ -174,7 +174,7 @@ public class CategoriesCommand implements JEGCommand {
             @NotNull String[] args) {
         if (sender instanceof Player player) {
             ChestMenu menu = new ChestMenu("&6物品组大全");
-            menu.setSize(54);
+            menu.addItem(53, Converter.getItem(ItemStackUtil.getCleanItem(null)));
 
             populateCategoryMenu(menu, Slimefun.getRegistry().getAllItemGroups(), 1, player);
 

@@ -36,10 +36,11 @@ import com.balugaq.jeg.core.commands.HelpCommand;
 import com.balugaq.jeg.core.commands.JEGCommands;
 import com.balugaq.jeg.core.commands.ReloadCommand;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import java.util.List;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * This class is responsible for managing the commands of JEG.

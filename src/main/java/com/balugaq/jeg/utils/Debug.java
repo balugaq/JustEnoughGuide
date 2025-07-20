@@ -30,6 +30,12 @@ package com.balugaq.jeg.utils;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -38,11 +44,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.UUID;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author balugaq
@@ -52,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 public class Debug {
     public static final File errorsFolder =
             new File(JustEnoughGuide.getInstance().getDataFolder(), "error-reports");
-    private static final String debugPrefix = "[Debug] ";
+    private static final String debugPrefix = Lang.getDebug("debug-prefix");
     private static @Nullable JavaPlugin plugin = null;
 
     static {
@@ -61,7 +62,8 @@ public class Debug {
         }
     }
 
-    @NotNull public static JavaPlugin getPlugin() {
+    @NotNull
+    public static JavaPlugin getPlugin() {
         if (plugin == null) {
             plugin = JustEnoughGuide.getInstance();
         }
