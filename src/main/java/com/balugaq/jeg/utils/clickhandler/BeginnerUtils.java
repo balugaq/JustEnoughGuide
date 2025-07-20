@@ -35,11 +35,10 @@ import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
 import com.balugaq.jeg.utils.EventUtil;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -49,6 +48,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * @author balugaq
  * @since 1.5
@@ -57,7 +58,8 @@ import org.jetbrains.annotations.Range;
 public class BeginnerUtils implements Applier {
     private static final BeginnerUtils instance = new BeginnerUtils();
 
-    private BeginnerUtils() {}
+    private BeginnerUtils() {
+    }
 
     public static void applyWith(@NotNull SlimefunGuideImplementation guide, @NotNull ChestMenu menu, int slot) {
         instance.apply(guide, menu, slot);
@@ -121,7 +123,7 @@ public class BeginnerUtils implements Applier {
                                     player,
                                     profile -> guide.openSearch(
                                             profile,
-                                            ChatColor.stripColor(ItemStackHelper.getDisplayName(clickedItemStack)),
+                                            ChatColor.stripColor(ItemUtils.getItemName(clickedItemStack)),
                                             true));
                             return false;
                         });

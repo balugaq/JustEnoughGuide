@@ -27,8 +27,9 @@
 
 package com.balugaq.jeg.utils;
 
-import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 /**
  * @author Ddggdd135

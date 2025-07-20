@@ -53,12 +53,10 @@ import com.balugaq.jeg.core.integrations.nexcavate.NexcavateIntegrationMain;
 import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationPluginIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +64,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * This class is responsible for managing integrations with other plugins.
@@ -109,6 +111,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledRykenSlimefunCustomizer;
     private boolean enabledSlimeAEPlugin;
     private boolean enabledSlimeFrame;
+    private boolean enabledSlimefunTranslation;
     private boolean enabledSlimeTinker;
 
     public IntegrationManager(@NotNull JavaPlugin plugin) {
@@ -153,6 +156,7 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
                             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
                             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
+                            this.enabledSlimefunTranslation = pm.isPluginEnabled("SlimefunTranslation");
                             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
 
                             addIntegration(enabledAlchimiaVitae, AlchimiaVitaeIntegrationMain::new);
@@ -176,6 +180,7 @@ public class IntegrationManager extends AbstractManager {
                             addIntegration(enabledObsidianExpansion, ObsidianExpansionIntegrationMain::new);
                             addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
                             addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
+                            addIntegration(enabledSlimefunTranslation, SlimefunTranslationPluginIntegrationMain::new);
                             addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
 
                             startupIntegrations();

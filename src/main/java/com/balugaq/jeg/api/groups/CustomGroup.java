@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.api.groups;
 
-import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.objects.CustomGroupConfiguration;
@@ -38,6 +37,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -57,7 +57,6 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import lombok.ToString;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -147,7 +146,7 @@ public class CustomGroup extends FlexItemGroup {
             final @NotNull Player player,
             final @NotNull PlayerProfile playerProfile,
             final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu(ItemStackHelper.getDisplayName(configuration.item()));
+        ChestMenu chestMenu = new ChestMenu(ItemUtils.getItemName(configuration.item()));
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
@@ -256,22 +255,15 @@ public class CustomGroup extends FlexItemGroup {
                             && !playerProfile.hasUnlocked(research)) {
                         String lore;
 
-                        if (VaultIntegration.isEnabled()) {
-                            lore = String.format("%.2f", research.getCurrencyCost()) + " 游戏币";
-                        } else {
-                            lore = research.getLevelCost() + " 级经验";
-                        }
-
                         itemstack = ItemStackUtil.getCleanItem(Converter.getItem(
                                 ChestMenuUtils.getNoPermissionItem(),
                                 "&f" + ItemUtils.getItemName(slimefunItem.getItem()),
                                 "&7" + slimefunItem.getId(),
                                 "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
                                 "",
-                                "&a> 单击解锁",
+                                Lang.getGuideMessage("click-to-unlock"),
                                 "",
-                                "&7需要 &b",
-                                lore));
+                                Lang.getGuideMessage("cost", "cost", research.getCost())));
                         handler = (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(
                                         pl, item, slot, action, chestMenu, implementation))
                                 .ifSuccess(() -> {
