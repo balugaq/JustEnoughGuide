@@ -28,6 +28,7 @@
 package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
+import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -100,11 +101,13 @@ public class SpecialMenuProvider {
     public static @Nullable Method methodObsidianExpansion_openFORGERecipe = null; // check research
     public static @Nullable Constructor<?> constructorObsidianExpansion_BackEntry = null;
 
-    static {
-        IntegrationManager.scheduleRun(SpecialMenuProvider::loadConfiguration);
-    }
 
     public static void loadConfiguration() {
+        IntegrationManager.scheduleRun(SpecialMenuProvider::loadConfigurationInternal);
+    }
+
+    @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)
+    private static void loadConfigurationInternal() {
         ENABLED_FinalTECH = JustEnoughGuide.getIntegrationManager().isEnabledFinalTECH();
         ENABLED_Nexcavate = JustEnoughGuide.getIntegrationManager().isEnabledNexcavate();
         ENABLED_LogiTech = JustEnoughGuide.getIntegrationManager().isEnabledLogiTech();
