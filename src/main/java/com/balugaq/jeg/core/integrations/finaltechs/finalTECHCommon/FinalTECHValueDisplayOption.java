@@ -69,7 +69,6 @@ public class FinalTECHValueDisplayOption implements SlimefunGuideOption<Boolean>
     }
 
     public static @NotNull FinalTECHValueDisplayOption instance() {
-        Debug.dumpStack();
         return instance;
     }
 

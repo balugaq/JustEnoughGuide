@@ -40,7 +40,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface CallTimeSensitive {
     String AfterSlimefunLoaded = "After Slimefun loaded";
+    String AfterIntegrationsLoaded = "After Integrations loaded";
 
     @SuppressWarnings("UnusedReturnValue")
-    String value() default "";
+    String value();
 }
