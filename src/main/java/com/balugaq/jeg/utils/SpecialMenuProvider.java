@@ -544,7 +544,7 @@ public class SpecialMenuProvider {
         try {
             menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(
                     null, slimefunItem, new CustomMenuHandlerImpl_Utils(), null);
-        } catch (Exception ignored) {
+        } catch (Throwable ignored) {
             try {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(
                         null, slimefunItem, new CustomMenuHandlerImpl_utils(), null);
