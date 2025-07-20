@@ -29,16 +29,20 @@ package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
-import java.util.Optional;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * This class is used to represent the option to show the beginner's guide.
@@ -80,16 +84,22 @@ public class BeginnersGuideOption implements SlimefunGuideOption<Boolean> {
     @Override
     public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
-        ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.KNOWLEDGE_BOOK : Material.BOOK,
-                "&b新手指引: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择是否",
-                "&7在查阅一个新物品的时候",
-                "&7Shift+右键点击详细查看介绍.",
-                "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 新手指引");
+        ItemStack item = getIcon(enabled);
         return Optional.of(item);
+    }
+
+    public @NotNull ItemStack getIcon(boolean enabled) {
+        var lk = "icon.options.beginners-guide.";
+        List<String> lore = new ArrayList<>(Lang.getStringList(lk + "lore-1"));
+        lore.add(Lang.getString(lk + "last-lore-1") +
+                Lang.getString(lk + "last-lore-" + (enabled ? "disable" : "enable")) +
+                Lang.getString(lk + "last-lore-last"));
+
+        return Converter.getItem(
+                enabled ? Material.KNOWLEDGE_BOOK : Material.BOOK,
+                Lang.getString(lk + "name-1") +
+                        Lang.getString(lk + "name-" + (enabled ? "enabled" : "disabled")),
+                lore);
     }
 
     @Override

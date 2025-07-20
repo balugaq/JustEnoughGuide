@@ -28,10 +28,6 @@
 package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.utils.compatibility.Converter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -40,6 +36,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author balugaq
  * @since 1.9
@@ -47,7 +48,8 @@ import org.jetbrains.annotations.Range;
 @SuppressWarnings("unused")
 @UtilityClass
 public class InventoryUtil {
-    @Nullable public static ItemStack pushItem(
+    @Nullable
+    public static ItemStack pushItem(
             final @NotNull Inventory inventory,
             final @Nullable ItemStack item,
             @Range(from = 0, to = 53) final int @NotNull ... slots) {
@@ -95,7 +97,8 @@ public class InventoryUtil {
     }
 
     @SuppressWarnings("ConstantValue")
-    @NotNull public static Map<ItemStack, Integer> pushItem(
+    @NotNull
+    public static Map<ItemStack, Integer> pushItem(
             final @NotNull Inventory inventory,
             final @Nullable ItemStack @NotNull [] items,
             @Range(from = 0, to = 53) final int @NotNull ... slots) {
@@ -114,7 +117,8 @@ public class InventoryUtil {
         return pushItem(inventory, listItems, slots);
     }
 
-    @NotNull public static Map<ItemStack, Integer> pushItem(
+    @NotNull
+    public static Map<ItemStack, Integer> pushItem(
             final @NotNull Inventory inventory,
             final @Nullable List<ItemStack> items,
             @Range(from = 0, to = 53) final int @NotNull ... slots) {
@@ -277,15 +281,15 @@ public class InventoryUtil {
                     && StackUtils.itemsMatch(item, new ItemStack(item.getType()))) {
                 switch (item.getType()) {
                     case WATER_BUCKET,
-                            LAVA_BUCKET,
-                            MILK_BUCKET,
-                            COD_BUCKET,
-                            SALMON_BUCKET,
-                            PUFFERFISH_BUCKET,
-                            TROPICAL_FISH_BUCKET,
-                            AXOLOTL_BUCKET,
-                            POWDER_SNOW_BUCKET,
-                            TADPOLE_BUCKET -> item.setType(Material.BUCKET);
+                         LAVA_BUCKET,
+                         MILK_BUCKET,
+                         COD_BUCKET,
+                         SALMON_BUCKET,
+                         PUFFERFISH_BUCKET,
+                         TROPICAL_FISH_BUCKET,
+                         AXOLOTL_BUCKET,
+                         POWDER_SNOW_BUCKET,
+                         TADPOLE_BUCKET -> item.setType(Material.BUCKET);
                     case POTION, SPLASH_POTION, LINGERING_POTION, HONEY_BOTTLE, DRAGON_BREATH -> item.setType(
                             Material.GLASS_BOTTLE);
                     case MUSHROOM_STEW, BEETROOT_SOUP, RABBIT_STEW, SUSPICIOUS_STEW -> item.setType(Material.BOWL);

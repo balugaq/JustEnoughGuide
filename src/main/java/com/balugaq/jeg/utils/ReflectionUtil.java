@@ -28,16 +28,17 @@
 package com.balugaq.jeg.utils;
 
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
+import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
-import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 /**
  * @author Final_ROOT
@@ -250,7 +251,8 @@ public class ReflectionUtil {
         }
     }
 
-    @Nullable public static Object invokeMethod(
+    @Nullable
+    public static Object invokeMethod(
             @NotNull Object object, @NotNull String methodName, @Nullable Object @Nullable ... args) {
         try {
             Method method;
@@ -288,7 +290,8 @@ public class ReflectionUtil {
         return null;
     }
 
-    @Nullable public static Object invokeStaticMethod(
+    @Nullable
+    public static Object invokeStaticMethod(
             @NotNull Class<?> clazz, @NotNull String methodName, @Nullable Object @Nullable ... args) {
         try {
             Method method;
