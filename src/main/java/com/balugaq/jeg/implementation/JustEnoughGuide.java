@@ -53,6 +53,7 @@ import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
+import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.UUIDUtils;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
@@ -331,6 +332,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         SearchGroup.init();
 
+        SpecialMenuProvider.loadConfiguration();
         ThirdPartyWarnings.check();
 
         getLogger().info(Lang.getStartup("enabled-jeg"));

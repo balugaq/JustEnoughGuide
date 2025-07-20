@@ -49,13 +49,14 @@ public class ThirdPartyWarnings {
             return;
         }
 
-        if (JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion() && JustEnoughGuide.getIntegrationManager().isEnabledLogiTech()) {
+        if (JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion() && JustEnoughGuide.getIntegrationManager().isEnabledLogiTech()) { // Fuck Logitech. Fuck NetworksExpansion
             Plugin netex = Bukkit.getPluginManager().getPlugin("Networks");
             if (netex != null && netex.isEnabled()) {
                 // Check if NetworksExpansion is in affected versions
                 if (netex.getPluginMeta().getPluginSoftDependencies().contains(JustEnoughGuide.getInstance().getName())) {
                     Debug.warn("Potential dependency cycle detected: Logitech -> Networks -> JustEnoughGuide -> Logitech");
-                    Debug.warn("This may cause incorrect load order where Logitech loads AFTER Networks and InfinityExpansion");
+                    Debug.warn("1. This may cause SpecialMenuProvider module load incorrectly, which will break the Big Recipe module");
+                    Debug.warn("2. This may cause incorrect load order where Logitech loads AFTER Networks and InfinityExpansion");
                     Debug.warn("Consequences of incorrect load order:");
                     Debug.warn("- Logitech will fail to load DependencyNetwork module");
                     Debug.warn("- Logitech will fail to load DependencyInfinity module");

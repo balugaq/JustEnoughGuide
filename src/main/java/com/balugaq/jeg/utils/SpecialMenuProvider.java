@@ -101,7 +101,6 @@ public class SpecialMenuProvider {
     public static @Nullable Method methodObsidianExpansion_openFORGERecipe = null; // check research
     public static @Nullable Constructor<?> constructorObsidianExpansion_BackEntry = null;
 
-
     public static void loadConfiguration() {
         IntegrationManager.scheduleRun(SpecialMenuProvider::loadConfigurationInternal);
     }
@@ -551,7 +550,7 @@ public class SpecialMenuProvider {
             try {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(
                         null, slimefunItem, new CustomMenuHandlerImpl_utils(), null);
-            } catch (Exception ignored2) {
+            } catch (Throwable ignored2) {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, null, null);
             }
         }
