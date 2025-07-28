@@ -37,10 +37,8 @@ import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredListener;
@@ -61,6 +59,7 @@ public class ListenerManager extends AbstractManager {
     private final @NotNull List<Listener> listeners = new ArrayList<>();
 
     private final @NotNull JavaPlugin plugin;
+    private RegisteredListener slimefunGuideListener;
 
     public ListenerManager(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
@@ -91,8 +90,6 @@ public class ListenerManager extends AbstractManager {
             HandlerList.unregisterAll(listener);
         }
     }
-
-    private RegisteredListener slimefunGuideListener;
 
     @Override
     public void load() {

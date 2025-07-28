@@ -49,6 +49,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
+@SuppressWarnings("DataFlowIssue")
 public class SlimeAEPluginIntegrationMain implements Integration {
     public static final int[] CRAFTING_TERMINAL_INPUT_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
     public static final int[] PATTERN_TERMINAL_INPUT_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};

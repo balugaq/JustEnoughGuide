@@ -32,6 +32,7 @@ import com.balugaq.jeg.api.cost.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.groups.VanillaItemsGroup;
+import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
 import com.balugaq.jeg.core.managers.BookmarkManager;
@@ -61,7 +62,6 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
@@ -293,12 +293,13 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
             if (getConfigManager().isBeginnerOption()) {
                 getLogger().info("正在加载指南选项...");
-                SlimefunGuideSettings.addOption(BeginnersGuideOption.instance());
-                SlimefunGuideSettings.addOption(CerPatchGuideOption.instance());
-                SlimefunGuideSettings.addOption(ShareInGuideOption.instance());
-                SlimefunGuideSettings.addOption(ShareOutGuideOption.instance());
-                SlimefunGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
-                SlimefunGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
+                JEGGuideSettings.patchSlimefun();
+                JEGGuideSettings.addOption(BeginnersGuideOption.instance());
+                JEGGuideSettings.addOption(CerPatchGuideOption.instance());
+                JEGGuideSettings.addOption(ShareInGuideOption.instance());
+                JEGGuideSettings.addOption(ShareOutGuideOption.instance());
+                JEGGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
+                JEGGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
                 getLogger().info("指南选项加载完毕！");
             }
 
@@ -359,17 +360,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         SlimefunRegistryUtil.unregisterItems(JustEnoughGuide.getInstance());
 
         try {
-            @SuppressWarnings("unchecked")
-            List<SlimefunGuideOption<?>> l = (List<SlimefunGuideOption<?>>)
-                    ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options");
-            if (l != null) {
-                List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
-                for (SlimefunGuideOption<?> option : copy) {
-                    if (option.getAddon().equals(JustEnoughGuide.getInstance())) {
-                        l.remove(option);
-                    }
+            List<SlimefunGuideOption<?>> l = JEGGuideSettings.getOptions();
+            List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
+            for (SlimefunGuideOption<?> option : copy) {
+                if (option.getAddon() instanceof JustEnoughGuide) {
+                    l.remove(option);
                 }
             }
+            JEGGuideSettings.unpatchSlimefun();
             FinalTECHValueDisplayOption.unboot();
         } catch (Exception ignored) {
         }

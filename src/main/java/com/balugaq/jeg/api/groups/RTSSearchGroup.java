@@ -77,19 +77,6 @@ import java.util.function.Function;
 @NotDisplayInCheatMode
 @Getter
 public class RTSSearchGroup extends FlexItemGroup {
-    // Cache AnvilView class for 1.21+ compatibility
-    private static Class<?> anvilViewClass = null;
-    static {
-        try {
-            //! Paper 1.21+ API. 
-            //! DO NOT USE IT BELOW 1.21
-            anvilViewClass = Class.forName("org.bukkit.inventory.view.AnvilView");
-        } catch (ClassNotFoundException e) {
-            // 1.20.6 and below - AnvilView doesn't exist
-            anvilViewClass = null;
-        }
-    }
-    
     public static final ItemStack PLACEHOLDER = Converter.getItem(
             Converter.getItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&a", "&a", "&a"),
             meta -> meta.getPersistentDataContainer()
@@ -104,6 +91,19 @@ public class RTSSearchGroup extends FlexItemGroup {
     public static final ItemStack INPUT_TEXT_ICON = Models.INPUT_TEXT_ICON;
     public static final ItemStack AIR_ICON = new ItemStack(Material.AIR);
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
+    // Cache AnvilView class for 1.21+ compatibility
+    private static Class<?> anvilViewClass = null;
+
+    static {
+        try {
+            //! Paper 1.21+ API.
+            //! DO NOT USE IT BELOW 1.21
+            anvilViewClass = Class.forName("org.bukkit.inventory.view.AnvilView");
+        } catch (ClassNotFoundException e) {
+            // 1.20.6 and below - AnvilView doesn't exist
+            anvilViewClass = null;
+        }
+    }
 
     static {
         Bukkit.getScheduler()
@@ -140,7 +140,7 @@ public class RTSSearchGroup extends FlexItemGroup {
                                     String oldSearchTerm = searchTermCopy.get(player);
                                     try {
                                         String newSearchTerm = null;
-                                        
+
                                         // Try Paper 1.21+ AnvilView method first using cached class
                                         if (anvilViewClass != null) {
                                             try {
@@ -151,7 +151,7 @@ public class RTSSearchGroup extends FlexItemGroup {
                                                 // AnvilView method failed, will use fallback
                                             }
                                         }
-                                        
+
                                         // Fallback to legacy AnvilInventory method if AnvilView failed
                                         if (newSearchTerm == null) {
                                             try {
@@ -162,7 +162,7 @@ public class RTSSearchGroup extends FlexItemGroup {
                                                 return;
                                             }
                                         }
-                                        
+
                                         if (oldSearchTerm == null || newSearchTerm == null) {
                                             writes.put(player, newSearchTerm);
                                             return;

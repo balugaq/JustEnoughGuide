@@ -89,6 +89,7 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
                 "&7配方补全深度越大，需要的时间越长",
                 "&7如果遇到一个材料不存在，会尝试补全",
                 "&7这个材料的材料，以此类推，此过程视为一层深度",
+                "&e&l此功能为实验性功能，谨慎使用",
                 "",
                 "&7当前深度: " + value + " (限制范围: 1~" + RECIPE_DEPTH_THRESHOLD + ")",
                 "&7\u21E8 &e点击设置深度"

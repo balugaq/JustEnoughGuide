@@ -77,6 +77,24 @@ public class GuideListener implements Listener {
         this.giveOnFirstJoin = Slimefun.getConfigManager().getPluginConfig().getBoolean("guide.receive-on-first-join");
     }
 
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)")
+    @NotNull
+    @ParametersAreNonnullByDefault
+    @ApiStatus.Internal
+    public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
+        ItemStack item = e.getItem();
+        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
+            if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
+                Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true);
+                return Event.Result.DENY;
+            } else {
+                return Event.Result.ALLOW;
+            }
+        } else {
+            return Event.Result.DEFAULT;
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOW)
     public void onGuideOpen(@NotNull SlimefunGuideOpenEvent e) {
         if (!e.isCancelled()) {
@@ -187,24 +205,6 @@ public class GuideListener implements Listener {
             } else {
                 p.chat("/sf cheat");
             }
-        }
-    }
-
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)")
-    @NotNull
-    @ParametersAreNonnullByDefault
-    @ApiStatus.Internal
-    public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
-        ItemStack item = e.getItem();
-        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
-            if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
-                Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true);
-                return Event.Result.DENY;
-            } else {
-                return Event.Result.ALLOW;
-            }
-        } else {
-            return Event.Result.DEFAULT;
         }
     }
 

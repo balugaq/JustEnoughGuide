@@ -79,7 +79,7 @@ import java.util.logging.Level;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape"})
+@SuppressWarnings({"deprecation", "unused"})
 @NotDisplayInSurvivalMode
 @NotDisplayInCheatMode
 public class CERRecipeGroup extends FlexItemGroup {
