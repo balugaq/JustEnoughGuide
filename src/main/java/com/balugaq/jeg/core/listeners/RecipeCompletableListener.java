@@ -34,6 +34,7 @@ import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Lang;
@@ -48,6 +49,8 @@ import lombok.SneakyThrows;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -70,6 +73,18 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -86,16 +101,44 @@ import java.util.function.BiConsumer;
 @SuppressWarnings("unused")
 public class RecipeCompletableListener implements Listener {
     public static final int[] DISPENSER_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-    public static final Map<UUID, GuideEvents.ItemButtonClickEvent> LAST_EVENTS = new ConcurrentHashMap<>();
-    public static final Map<UUID, GuideHistory> GUIDE_HISTORY = new ConcurrentHashMap<>();
-    public static final Map<UUID, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile>> PROFILE_CALLBACKS =
+    public static final ConcurrentHashMap<UUID, GuideEvents.ItemButtonClickEvent> LAST_EVENTS = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<UUID, GuideHistory> GUIDE_HISTORY = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<UUID, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile>> PROFILE_CALLBACKS =
             new ConcurrentHashMap<>();
     public static final Set<UUID> listening = ConcurrentHashMap.newKeySet();
-    public static final Map<SlimefunItem, Pair<int[], Boolean>> INGREDIENT_SLOTS = new ConcurrentHashMap<>();
-    public static final List<SlimefunItem> NOT_APPLICABLE_ITEMS = new ArrayList<>();
-    public static final Map<UUID, Location> DISPENSER_LISTENING = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<SlimefunItem, Pair<int[], Boolean>> INGREDIENT_SLOTS = new ConcurrentHashMap<>();
+    public static final ArrayList<SlimefunItem> NOT_APPLICABLE_ITEMS = new ArrayList<>();
+    public static final ConcurrentHashMap<UUID, Location> DISPENSER_LISTENING = new ConcurrentHashMap<>();
     public static final NamespacedKey LAST_RECIPE_COMPLETE_KEY = KeyUtil.newKey("last_recipe_complete");
+    public static final ConcurrentHashMap<UUID, ArrayList<ItemStack>> missingMaterials = new ConcurrentHashMap<>();
     private static ItemStack RECIPE_COMPLETABLE_BOOK_ITEM = null;
+
+    static {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(JustEnoughGuide.getInstance(), () -> {
+            for (UUID uuid : missingMaterials.keySet()) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null) {
+                    continue;
+                }
+
+                var v = missingMaterials.get(uuid);
+                ArrayList<ItemStack> clone;
+                synchronized (v) {
+                    clone = new ArrayList<>(v);
+                    v.clear();
+                }
+
+                Map<ItemStack, Integer> map = new HashMap<>();
+                for (ItemStack item : clone) {
+                    map.merge(StackUtils.getAsQuantity(item, 1), item.getAmount(), Integer::sum);
+                }
+
+                for (var entry : map.entrySet()) {
+                    player.sendMessage(ChatColors.color("&cMissing &7" + ItemStackHelper.getDisplayName(entry.getKey()) + "&ax" + entry.getValue()));
+                }
+            }
+        }, 1L, 20L);
+    }
 
     /**
      * @param slimefunItem the {@link SlimefunItem} to add
@@ -157,13 +200,14 @@ public class RecipeCompletableListener implements Listener {
                         for (SlimefunSource source : RecipeCompleteProvider.getSlimefunSources()) {
                             // Strategy mode
                             // Default strategy see {@link DefaultPlayerInventoryRecipeCompleteSlimefunSource}
-                            if (source.handleable(blockMenu, player, clickAction, slots, unordered)) {
+                            if (source.handleable(blockMenu, player, clickAction, slots, unordered, 1)) {
                                 source.openGuide(
                                         blockMenu,
                                         player,
                                         clickAction,
                                         slots,
                                         unordered,
+                                        1,
                                         () -> exitSelectingItemStackToRecipeComplete(player));
                                 break;
                             }
@@ -297,7 +341,7 @@ public class RecipeCompletableListener implements Listener {
         ReflectionUtil.setValue(profile, "guideHistory", originHistory);
     }
 
-    @SuppressWarnings({"deprecation", "DuplicateCondition", "ConstantValue", "SizeReplaceableByIsEmpty"})
+    @SuppressWarnings({"deprecation", "DuplicateCondition", "ConstantValue"})
     private static void tryPatchRecipeCompleteBook(@NotNull Player player, @NotNull ItemStack clickedItemStack) {
         for (ItemStack itemStack : player.getInventory()) {
             if (StackUtils.itemsMatch(itemStack, getRecipeCompletableBookItem(), false, false, false, false)) {
@@ -313,12 +357,12 @@ public class RecipeCompletableListener implements Listener {
 
                 // Patch start
                 boolean applied = meta.getPersistentDataContainer().has(LAST_RECIPE_COMPLETE_KEY);
-                if (lore.size() >= 4 && applied) {
+                if (lore.size() >= 7 && applied) {
                     // Remove last two lines
-                    if (lore.size() >= 4) {
+                    if (lore.size() >= 7) {
                         lore.remove(lore.size() - 1);
                     }
-                    if (lore.size() >= 3) {
+                    if (lore.size() >= 6) {
                         lore.remove(lore.size() - 1);
                     }
                 }
@@ -425,8 +469,8 @@ public class RecipeCompletableListener implements Listener {
         for (VanillaSource source : RecipeCompleteProvider.getVanillaSources()) {
             // Strategy mode
             // Default strategy see {@link DefaultPlayerInventoryRecipeCompleteVanillaSource}
-            if (source.handleable(block, inventory, player, clickAction, DISPENSER_SLOTS, false)) {
-                source.openGuide(block, inventory, player, clickAction, DISPENSER_SLOTS, false, null);
+            if (source.handleable(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1)) {
+                source.openGuide(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1, null);
                 break;
             }
         }

@@ -73,7 +73,15 @@ public enum PatchScope {
     LockedItem,
     BookMarkItem,
     ItemMarkItem,
-    SearchItem;
+    SearchItem,
+    Cer,
+    // todo:
+    CerRecipe,
+    CerRecipeInput,
+    CerRecipeOutput,
+    CerRecipeBorderInput,
+    CerRecipeBorderOutput,
+    CerRecipeBorderInputOutput;
 
     @Nullable
     public ItemStack patch(@NotNull PlayerProfile profile, @Nullable ItemStack itemStack) {

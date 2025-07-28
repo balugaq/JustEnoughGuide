@@ -215,7 +215,7 @@ public class CustomGroupConfiguration implements IParsable {
 
             Material material = Material.getMaterial(this.material.toUpperCase());
             if (material == null || !material.isItem() || material.isLegacy()) {
-                Debug.warn("自定义物品组存在无效的 material: " + this.material);
+                Debug.warn("[CustomGroup] Invalid material: " + this.material);
                 return itemStack = new ItemStack(Material.STONE);
             }
 

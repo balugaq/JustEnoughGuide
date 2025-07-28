@@ -111,6 +111,16 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This is JEG's implementation of the Cheat Guide.
  * It extends {@link CheatSheetSlimefunGuide} to compatibly
@@ -415,11 +425,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                     ItemGroup selected = GroupResorter.getSelectedGroup(pl);
                     if (selected == null) {
                         GroupResorter.setSelectedGroup(pl, group);
-                        pl.sendMessage(ChatColors.color("&a已选择物品组: &e" + group.getDisplayName(pl)));
+                        pl.sendMessage(ChatColors.color("&aSelected group: &e" + group.getDisplayName(pl)));
                     } else {
                         GroupResorter.swap(selected, group);
                         GroupResorter.setSelectedGroup(pl, null);
-                        pl.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(pl) + " &7<-> &e"
+                        pl.sendMessage(ChatColors.color("&aSwapped: &e" + selected.getDisplayName(pl) + " &7<-> &e"
                                 + group.getDisplayName(pl)));
                         openMainMenu(profile, page);
                     }
@@ -597,11 +607,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                                     ItemGroup selected = GroupResorter.getSelectedGroup(pl);
                                     if (selected == null) {
                                         GroupResorter.setSelectedGroup(pl, subGroup);
-                                        pl.sendMessage(ChatColors.color("&a已选择物品组: &e" + subGroup.getDisplayName(pl)));
+                                        pl.sendMessage(ChatColors.color("&aSelected group: &e" + subGroup.getDisplayName(pl)));
                                     } else {
                                         GroupResorter.swap(selected, subGroup);
                                         GroupResorter.setSelectedGroup(pl, null);
-                                        pl.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(pl)
+                                        pl.sendMessage(ChatColors.color("&aSwapped: &e" + selected.getDisplayName(pl)
                                                 + " &7<-> &e" + subGroup.getDisplayName(pl)));
                                         openMainMenu(profile, page);
                                     }
@@ -748,6 +758,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         }
 
         String searchTerm = ChatColor.stripColor(input.toLowerCase(Locale.ROOT));
+        SearchGroup.searchTerms.put(p.getUniqueId(), searchTerm);
         SearchGroup group = new SearchGroup(
                 this, p, searchTerm, false, true);
         group.open(p, profile, getMode());
@@ -1009,6 +1020,8 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         }
 
         format.renderCustom(menu);
+
+        GuideUtil.addCerButton(menu, p, profile, item, this, format);
 
         menu.open(p);
 

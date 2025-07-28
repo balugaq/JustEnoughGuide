@@ -209,7 +209,7 @@ public class HiddenItemsGroup extends FlexItemGroup {
             final @NotNull Player player,
             final @NotNull PlayerProfile playerProfile,
             final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("隐藏物品");
+        ChestMenu chestMenu = new ChestMenu("Hidden Items");
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));

@@ -549,7 +549,7 @@ public class SpecialMenuProvider {
         } catch (Throwable ignored) {
             try {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(
-                        null, slimefunItem, new CustomMenuHandlerImpl_utils(), null);
+                        null, slimefunItem, new CustomMenuHandlerImpl_utils(), null); // Why catch Throwable failed, fuck Logitech
             } catch (Throwable ignored2) {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, null, null);
             }

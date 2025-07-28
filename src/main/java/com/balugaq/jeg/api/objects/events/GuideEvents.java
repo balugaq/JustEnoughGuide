@@ -61,6 +61,7 @@ import org.jetbrains.annotations.Range;
  * {@link SettingsButtonClickEvent}
  * {@link BeginnerButtonClickEvent}
  * {@link GroupLinkButtonClickEvent}
+ * {@link CerButtonClickEvent}
  *
  * @author balugaq
  * @since 1.7
@@ -634,6 +635,34 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public SearchButtonClickEvent(
+                final @NotNull Player who,
+                final @Nullable ItemStack clickedItem,
+                @Range(from = 0, to = 53) int clickedSlot,
+                final @NotNull ClickAction clickAction,
+                final @NotNull ChestMenu menu,
+                final @NotNull SlimefunGuideImplementation guide) {
+            super(who, clickedItem, clickedSlot, clickAction, menu, guide);
+        }
+
+        public static @NotNull HandlerList getHandlerList() {
+            return HANDLERS;
+        }
+
+        @Override
+        public @NotNull HandlerList getHandlers() {
+            return HANDLERS;
+        }
+    }
+
+    /**
+     * @author balugaq
+     * @since 1.9
+     */
+    @Getter
+    public static class CerButtonClickEvent extends GuideEvent {
+        private static final HandlerList HANDLERS = new HandlerList();
+
+        public CerButtonClickEvent(
                 final @NotNull Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,

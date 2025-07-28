@@ -28,6 +28,7 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
+import com.balugaq.jeg.core.listeners.CerPatchListener;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
 import com.balugaq.jeg.core.listeners.GuideGUIFixListener;
 import com.balugaq.jeg.core.listeners.GuideListener;
@@ -35,10 +36,12 @@ import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +59,7 @@ public class ListenerManager extends AbstractManager {
     private final @NotNull List<Listener> listeners = new ArrayList<>();
 
     private final @NotNull JavaPlugin plugin;
+    private RegisteredListener slimefunGuideListener;
 
     public ListenerManager(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
@@ -64,6 +68,7 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new RTSListener());
         listeners.add(new GroupTierEditorListener());
         listeners.add(new GuideGUIFixListener());
+        listeners.add(new CerPatchListener());
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
             listeners.add(new RecipeCompletableListener());
         }
@@ -89,10 +94,19 @@ public class ListenerManager extends AbstractManager {
     @Override
     public void load() {
         registerListeners();
+        for (RegisteredListener rl : PlayerRightClickEvent.getHandlerList().getRegisteredListeners()) {
+            if (rl.getListener().getClass().getName().equals("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener")) {
+                slimefunGuideListener = rl;
+                PlayerRightClickEvent.getHandlerList().unregister(rl);
+                PlayerRightClickEvent.getHandlerList().bake();
+                break;
+            }
+        }
     }
 
     @Override
     public void unload() {
         unregisterListeners();
+        PlayerRightClickEvent.getHandlerList().register(slimefunGuideListener);
     }
 }

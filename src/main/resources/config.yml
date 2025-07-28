@@ -19,6 +19,7 @@ improvements:
   emc-display-option: true
   finaltech-emc-display-option: true
   finalTECH-emc-display-option: true
+  item-shareable: true
 
 # Prohibit items with names containing any of the following words when searching for non restrictive words
 blacklist:
@@ -111,6 +112,7 @@ custom-format:
   # i = Output item
   # P = Previous page
   # N = Next page
+  # m = CER（Air if none setting）
   recipe-vanilla:
     - "b  rrr  w"
     - " t rrr i "
@@ -130,10 +132,11 @@ custom-format:
   # P = Previous page
   # N = Next page
   # d = Recipe Display
+  # m = CER (Air if none setting)
   recipe-display:
     - "b  rrr  w"
     - " t rrr i "
-    - "   rrr  E"
+    - "m  rrr  E"
     - "BPBBBBBNB"
     - "ddddddddd"
     - "ddddddddd"

@@ -686,6 +686,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         }
 
         String searchTerm = ChatColor.stripColor(input.toLowerCase(Locale.ROOT));
+        SearchGroup.searchTerms.put(p.getUniqueId(), searchTerm);
         SearchGroup group = new SearchGroup(
                 this, p, searchTerm, false, true);
         group.open(p, profile, getMode());
@@ -934,6 +935,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                 }));
             }
         }
+
+        GuideUtil.addCerButton(menu, p, profile, item, this, format);
 
         format.renderCustom(menu);
 

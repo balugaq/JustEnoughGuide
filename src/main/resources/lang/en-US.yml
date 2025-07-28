@@ -201,6 +201,7 @@ icon:
       lore:
         - "&7Issue at JustEnoughGuide GitHub for more addons below"
         - ""
+        - "&7- &aMultiblocks"
         - "&7- &aFastMachines"
         - "&7- &aFinalTech 2.0-Preview"
         - "&7- &aFinalTECH 2.0"
@@ -221,6 +222,13 @@ icon:
         - "&7- &aAlchimiaVitae"
         - "&7- &aClayTech"
         - "&7- &aDankTech2"
+        - "&7- &aSimpleUtils"
+        - "&7- &aCultivation"
+        - "&7- &aElementManipulation"
+        - "&7- &aInfinityCompress"
+        - "&7- &amagicexpansion"
+        - "&7- &aTsingshanTechnology"
+        - "&7- &aWilderNether"
 debug:
   debug-prefix: "&b[Debug] "
 message:
@@ -299,8 +307,12 @@ startup:
   loading-bookmark: "Loading bookmark groups..."
   loading-guide-group: "Loading guide group..."
   loaded-guide-group: "Loaded guide group!"
+  # Deprecated
   loading-beginners-guide-option: "Loading Beginners guide option..."
+  # Deprecated
   loaded-beginners-guide-option: "Loaded Beginners guide option!"
+  loading-guide-options: "Loading guide options..."
+  loaded-guide-options: "Loaded guide options!"
   enabled-jeg: "Enabled JustEnoughGuide"
 error:
   could-not-display-item-group: "Could not display item group {group}"

@@ -40,6 +40,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

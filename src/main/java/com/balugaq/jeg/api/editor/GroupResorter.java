@@ -55,6 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author balugaq
  * @since 1.8
  */
+@SuppressWarnings("DuplicateExpressions")
 public class GroupResorter {
     public static final Map<ItemGroup, Integer> oldTiers = new ConcurrentHashMap<>();
     public static final Set<Player> selectingPlayers = ConcurrentHashMap.newKeySet();

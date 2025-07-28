@@ -27,17 +27,23 @@
 
 package com.balugaq.jeg.utils;
 
+import com.balugaq.jeg.api.cost.CERCalculator;
+import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
+import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
+import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Format;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SeasonalItemGroup;
@@ -78,6 +84,7 @@ public final class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON = Lang.getIcon("book-mark-button", Material.NETHER_STAR);
     private static final ItemStack ITEM_MARK_MENU_BUTTON = Lang.getIcon("item-mark-button", Material.WRITABLE_BOOK);
+    private static final ItemStack CER_MENU_BUTTON = Lang.getIcon("cer-menu-button", Material.EMERALD);
 
     /**
      * Open the main menu of the guide for the given player and mode.
@@ -313,6 +320,21 @@ public final class GuideUtil {
                 menu.addItem(ss, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
             }
         }
+    }
+
+    @SuppressWarnings({"deprecation", "DataFlowIssue"})
+    @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)
+    public static void addCerButton(ChestMenu menu, Player p, PlayerProfile profile, SlimefunItem machine, SlimefunGuideImplementation implementation, Format format) {
+        for (int ss : format.getChars('m')) {
+            if (CERCalculator.cerable(machine)) {
+                menu.addItem(ss, PatchScope.Cer.patch(p, getCerMenuButton()),
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode())));
+            }
+        }
+    }
+
+    public static ItemStack getCerMenuButton() {
+        return CER_MENU_BUTTON;
     }
 
     public static void setForceHiddens(@NotNull ItemGroup itemGroup, boolean forceHidden) {

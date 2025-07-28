@@ -33,9 +33,11 @@ import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.core.integrations.alchimiavitae.AlchimiaVitaeIntegrationMain;
 import com.balugaq.jeg.core.integrations.bedrocktechnology.BedrockTechnologyIntegrationMain;
 import com.balugaq.jeg.core.integrations.claytech.ClayTechIntegrationMain;
+import com.balugaq.jeg.core.integrations.cultivation.CultivationIntegrationMain;
 import com.balugaq.jeg.core.integrations.danktech2.DankTech2IntegrationMain;
 import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteSlimefunSource;
 import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteVanillaSource;
+import com.balugaq.jeg.core.integrations.elementmanipulation.ElementManipulationIntegrationMain;
 import com.balugaq.jeg.core.integrations.emctech.EMCTechIntegrationMain;
 import com.balugaq.jeg.core.integrations.fastmachines.FastMachinesIntegrationMain;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHChangedv3.FinalTECHChangedIntegrationMain;
@@ -44,17 +46,22 @@ import com.balugaq.jeg.core.integrations.finaltechs.finaltechv1.FinalTechIntegra
 import com.balugaq.jeg.core.integrations.fluffymachines.FluffyMachinesIntegrationMain;
 import com.balugaq.jeg.core.integrations.galacitfun.GalactifunIntegrationMain;
 import com.balugaq.jeg.core.integrations.gastronomicon.GastronomiconIntegrationMain;
+import com.balugaq.jeg.core.integrations.infinitycompress.InfinityCompressIntegrationMain;
 import com.balugaq.jeg.core.integrations.infinityexpansion.InfinityExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.infinityexpansion2.InfinityExpansion2IntegrationMain;
 import com.balugaq.jeg.core.integrations.logitech.LogitechIntegrationMain;
+import com.balugaq.jeg.core.integrations.magicexpansion.MagicExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
 import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.nexcavate.NexcavateIntegrationMain;
 import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
+import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationPluginIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
+import com.balugaq.jeg.core.integrations.tsingshantechnology.TsingshanTechnologyIntegrationMain;
+import com.balugaq.jeg.core.integrations.wildernether.WilderNetherIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import lombok.Data;
@@ -88,8 +95,10 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledBedrockTechnology;
     private boolean enabledClayTech;
     private boolean enabledClayTechFixed;
+    private boolean enabledCultivation;
     private boolean enabledCMILib;
     private boolean enabledDankTech2;
+    private boolean enabledElementManipulation;
     private boolean enabledEMCTech;
     private boolean enabledFastMachines;
     private boolean enabledFinalTech;
@@ -99,20 +108,26 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledGalactifun;
     private boolean enabledGastronomicon;
     private boolean enabledGuguSlimefunLib;
+    private boolean enabledInfinityCompress;
     private boolean enabledInfinityExpansion;
     private boolean enabledInfinityExpansion2;
     private boolean enabledInfinityExpansion_Changed;
     private boolean enabledLogiTech;
-    private boolean enabledObsidianExpansion;
+    private boolean enabledMagicExpansion;
     private boolean enabledNetworks;
     private boolean enabledNetworksExpansion;
     private boolean enabledNexcavate;
+    private boolean enabledObsidianExpansion;
     private boolean enabledOreWorkshop;
     private boolean enabledRykenSlimefunCustomizer;
+    private boolean enabledSimpleUtils;
     private boolean enabledSlimeAEPlugin;
     private boolean enabledSlimeFrame;
     private boolean enabledSlimefunTranslation;
     private boolean enabledSlimeTinker;
+    private boolean enabledTsingshanTechnology;
+    private boolean enabledTsingshanTechnology_Fixed;
+    private boolean enabledWilderNether;
 
     public IntegrationManager(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
@@ -133,7 +148,9 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledClayTechFixed = pm.isPluginEnabled("ClayTech-Fixed");
                             this.enabledClayTech = enabledClayTechFixed || pm.isPluginEnabled("ClayTech");
                             this.enabledCMILib = pm.isPluginEnabled("CMILib");
+                            this.enabledCultivation = pm.isPluginEnabled("Cultivation");
                             this.enabledDankTech2 = pm.isPluginEnabled("DankTech2");
+                            this.enabledElementManipulation = pm.isPluginEnabled("ElementManipulation");
                             this.enabledEMCTech = pm.isPluginEnabled("EMCTech");
                             this.enabledFastMachines = pm.isPluginEnabled("FastMachines");
                             this.enabledFinalTech = classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
@@ -144,25 +161,33 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledGalactifun = pm.isPluginEnabled("Galactifun");
                             this.enabledGastronomicon = pm.isPluginEnabled("Gastronomicon");
                             this.enabledGuguSlimefunLib = pm.isPluginEnabled("GuguSlimefunLib");
+                            this.enabledInfinityCompress = pm.isPluginEnabled("InfinityCompress");
                             this.enabledInfinityExpansion_Changed = pm.isPluginEnabled("InfinityExpansion-Changed");
                             this.enabledInfinityExpansion =
                                     enabledInfinityExpansion_Changed || pm.isPluginEnabled("InfinityExpansion");
                             this.enabledInfinityExpansion2 = pm.isPluginEnabled("InfinityExpansion2");
                             this.enabledLogiTech = pm.isPluginEnabled("LogiTech");
+                            this.enabledMagicExpansion = pm.isPluginEnabled("magicexpansion");
                             this.enabledNetworks = enabledNetworksExpansion || pm.isPluginEnabled("Networks");
                             this.enabledNexcavate = pm.isPluginEnabled("Nexcavate");
                             this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
                             this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
                             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
+                            this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
                             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
                             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
                             this.enabledSlimefunTranslation = pm.isPluginEnabled("SlimefunTranslation");
                             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
+                            this.enabledTsingshanTechnology_Fixed = pm.isPluginEnabled("TsingshanTechnology-Fixed");
+                            this.enabledTsingshanTechnology = enabledTsingshanTechnology_Fixed || pm.isPluginEnabled("TsingshanTechnology");
+                            this.enabledWilderNether = pm.isPluginEnabled("WilderNether");
 
                             addIntegration(enabledAlchimiaVitae, AlchimiaVitaeIntegrationMain::new);
                             addIntegration(enabledBedrockTechnology, BedrockTechnologyIntegrationMain::new);
                             addIntegration(enabledClayTech, ClayTechIntegrationMain::new);
+                            addIntegration(enabledCultivation, CultivationIntegrationMain::new);
                             addIntegration(enabledDankTech2, DankTech2IntegrationMain::new);
+                            addIntegration(enabledElementManipulation, ElementManipulationIntegrationMain::new);
                             addIntegration(enabledEMCTech, EMCTechIntegrationMain::new);
                             addIntegration(enabledFastMachines, FastMachinesIntegrationMain::new);
                             addIntegration(enabledFinalTech, FinalTechIntegrationMain::new);
@@ -171,17 +196,22 @@ public class IntegrationManager extends AbstractManager {
                             addIntegration(enabledFluffyMachines, FluffyMachinesIntegrationMain::new);
                             addIntegration(enabledGalactifun, GalactifunIntegrationMain::new);
                             addIntegration(enabledGastronomicon, GastronomiconIntegrationMain::new);
+                            addIntegration(enabledInfinityCompress, InfinityCompressIntegrationMain::new);
                             addIntegration(enabledInfinityExpansion, InfinityExpansionIntegrationMain::new);
                             addIntegration(enabledInfinityExpansion2, InfinityExpansion2IntegrationMain::new);
                             addIntegration(enabledLogiTech, LogitechIntegrationMain::new);
+                            addIntegration(enabledMagicExpansion, MagicExpansionIntegrationMain::new);
                             addIntegration(enabledNexcavate, NexcavateIntegrationMain::new);
                             addIntegration(enabledNetworks, NetworksIntegrationMain::new);
                             addIntegration(enabledNetworksExpansion, NetworksExpansionIntegrationMain::new);
                             addIntegration(enabledObsidianExpansion, ObsidianExpansionIntegrationMain::new);
                             addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
+                            addIntegration(enabledSimpleUtils, SimpleUtilsIntegrationMain::new);
                             addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
                             addIntegration(enabledSlimefunTranslation, SlimefunTranslationPluginIntegrationMain::new);
                             addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
+                            addIntegration(enabledTsingshanTechnology, TsingshanTechnologyIntegrationMain::new);
+                            addIntegration(enabledWilderNether, WilderNetherIntegrationMain::new);
 
                             startupIntegrations();
 
@@ -202,6 +232,10 @@ public class IntegrationManager extends AbstractManager {
 
     public static void scheduleRun(@NotNull Runnable runnable) {
         Bukkit.getScheduler().runTaskLater(JustEnoughGuide.getInstance(), runnable, 2L);
+    }
+
+    public static void scheduleRunAsync(@NotNull Runnable runnable) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), runnable, 2L);
     }
 
     @Deprecated

@@ -80,16 +80,16 @@ public class FinalTechValueDisplayOption implements SlimefunGuideOption<Boolean>
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
                 isEnabled(p) ? Material.RESPAWN_ANCHOR : Material.REDSTONE_LAMP,
-                "&b旧乱序EMC值显示: &" + (enabled ? "a启用" : "4禁用"),
+                "&bFinalTech EMC Value Display: &" + (enabled ? "aEnabled" : "4Disabled"),
                 "",
-                "&7你现在可以选择是否",
-                "&7在查阅一个新物品的时候",
-                "&7显示它的旧乱序EMC数值",
+                "&7You can now choose whether",
+                "&7to display an item's FinalTech EMC value",
+                "&7when viewing a new item",
                 "",
-                "&7注: 此EMC数值为",
-                "&7旧乱序中的数值",
-                "&7不等同于新乱序, EMCTech等附属的数值",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 旧乱序EMC值显示");
+                "&7Note: This EMC value comes from",
+                "&7the FinalTech system",
+                "&7and differs from FinalTECH/EMCTech values",
+                "&7\u21E8 &eClick to " + (enabled ? "Disable" : "Enable") + " FinalTech EMC Display");
         return Optional.of(item);
     }
 

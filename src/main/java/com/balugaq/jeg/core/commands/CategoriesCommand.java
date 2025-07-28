@@ -103,13 +103,13 @@ public class CategoriesCommand implements JEGCommand {
                 categoryLore.set(
                         categoryLore.size() - 1, ChatColors.color("&6ID: " + id)); // Replaces the "Click to Open" line
                 categoryLore.add(ChatColors.color("&6class: " + className));
-                categoryLore.add(ChatColors.color("&a点击复制到聊天栏"));
+                categoryLore.add(ChatColors.color("&aClick to copy"));
                 catMeta.setLore(categoryLore);
                 catItem.setItemMeta(catMeta);
                 menu.replaceExistingItem(i, catItem);
                 menu.addMenuClickHandler(i, (p1, s1, i1, a1) -> {
-                    ClipboardUtil.send(p1, "&d点击复制: " + id, "&d点击复制", id);
-                    ClipboardUtil.send(p1, "&d点击复制: " + className, "&d点击复制", className);
+                    ClipboardUtil.send(p1, "&dClick to copy: " + id, "&dClick to copy", id);
+                    ClipboardUtil.send(p1, "&dClick to copy: " + className, "&dClick to copy", className);
                     return false;
                 });
             } else {
@@ -118,7 +118,7 @@ public class CategoriesCommand implements JEGCommand {
         }
 
         if (page > 1) {
-            menu.replaceExistingItem(46, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a上一页"));
+            menu.replaceExistingItem(46, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&aPrevious Page"));
             menu.addMenuClickHandler(46, (pl, s, is, action) -> {
                 populateCategoryMenu(menu, groups, page - 1, p);
                 return false;
@@ -126,7 +126,7 @@ public class CategoriesCommand implements JEGCommand {
         }
 
         if (getItemGroupOrNull(groups, 45 * page + 1) != null) {
-            menu.replaceExistingItem(52, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a下一页"));
+            menu.replaceExistingItem(52, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&aNext Page"));
             menu.addMenuClickHandler(52, (pl, s, is, action) -> {
                 populateCategoryMenu(menu, groups, page + 1, p);
                 return false;
@@ -173,7 +173,7 @@ public class CategoriesCommand implements JEGCommand {
             @NotNull String label,
             @NotNull String[] args) {
         if (sender instanceof Player player) {
-            ChestMenu menu = new ChestMenu("&6物品组大全");
+            ChestMenu menu = new ChestMenu("&6Categories");
             menu.addItem(53, Converter.getItem(ItemStackUtil.getCleanItem(null)));
 
             populateCategoryMenu(menu, Slimefun.getRegistry().getAllItemGroups(), 1, player);

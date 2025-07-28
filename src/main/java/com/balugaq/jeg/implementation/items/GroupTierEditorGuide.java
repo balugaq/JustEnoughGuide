@@ -48,7 +48,7 @@ public class GroupTierEditorGuide extends SlimefunGuideItem {
     public static final GroupTierEditorGuide instance = new GroupTierEditorGuide();
 
     public GroupTierEditorGuide() {
-        super(Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE), "&a物品组调位书");
+        super(Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE), "&aGroups Tier Editor");
 
         ItemMeta meta = getItemMeta();
         meta.getPersistentDataContainer().set(KEY, PersistentDataType.BOOLEAN, true);

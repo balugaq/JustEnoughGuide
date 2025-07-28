@@ -102,6 +102,7 @@ public class LogitechIntegrationMain implements Integration {
             rrc(me.matl114.logitech.core.AddSlimefunItems.PRESSURE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
             rrc(me.matl114.logitech.core.AddSlimefunItems.SMELTERY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
             rrc(me.matl114.logitech.core.AddSlimefunItems.TABLESAW_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+            rrc(me.matl114.logitech.core.AddSlimefunItems.MULTICRAFTTABLE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
             if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
                 try {
                     rrc(me.matl114.logitech.core.Registries.AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
@@ -142,6 +143,9 @@ public class LogitechIntegrationMain implements Integration {
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.PRESSURE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.SMELTERY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.TABLESAW_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+                rrc(
+                        me.matl114.logitech.SlimefunItem.AddSlimefunItems.MULTICRAFTTABLE_MANUAL,
+                        MANUAL_CRAFTER_INPUT_SLOTS);
                 if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
                     try {
                         rrc(me.matl114.logitech.SlimefunItem.AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);

@@ -93,8 +93,9 @@ public class EMCItemPatchListener implements Listener {
             return;
         }
 
-        double emc = EMCTechIntegrationMain.getEMC(itemStack);
-        if (emc <= 0.0D) {
+        double inputEmc = EMCTechIntegrationMain.getEMCInDematerializer(itemStack);
+        double outputEmc = EMCTechIntegrationMain.getEMCInMaterializer(itemStack);
+        if (inputEmc <= 0.0D && outputEmc <= 0.0D) {
             return;
         }
 
@@ -108,7 +109,12 @@ public class EMCItemPatchListener implements Listener {
             lore = new ArrayList<>();
         }
 
-        lore.add(ChatColors.color("&7EMC: &6" + EMCFormat.format(emc)));
+        if (inputEmc > 0.0D) {
+            lore.add(ChatColors.color("&7Input EMC: &6" + EMCFormat.format(inputEmc)));
+        }
+        if (outputEmc > 0.0D) {
+            lore.add(ChatColors.color("&7Output EMC: &6" + EMCFormat.format(outputEmc)));
+        }
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
     }

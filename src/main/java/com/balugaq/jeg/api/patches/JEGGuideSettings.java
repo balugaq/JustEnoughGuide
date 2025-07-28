@@ -28,11 +28,13 @@
 package com.balugaq.jeg.api.patches;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
-import com.balugaq.jeg.utils.KeyUtil;
+import com.balugaq.jeg.implementation.option.delegate.FireworksOption;
+import com.balugaq.jeg.implementation.option.delegate.GuideModeOption;
+import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
+import com.balugaq.jeg.implementation.option.delegate.PlayerLanguageOption;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Formats;
-import com.ytdd9527.networksexpansion.utils.JavaUtil;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
@@ -50,7 +52,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -341,5 +342,32 @@ public class JEGGuideSettings {
     public static @NotNull List<SlimefunGuideOption<?>> getOptions() {
         return (List<SlimefunGuideOption<?>>)
                 ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
+    }
+
+    public static void addOption(@NotNull SlimefunGuideOption<?> option) {
+        SlimefunGuideSettings.addOption(option);
+    }
+
+    public static void patchSlimefun() {
+        for (var option : getOptions()) {
+            if (option.getAddon() instanceof Slimefun) {
+                patched.add(option);
+            }
+        }
+
+        for (var po : patched) {
+            getOptions().remove(po);
+        }
+
+        addOption(new GuideModeOption());
+        addOption(new FireworksOption());
+        addOption(new LearningAnimationOption());
+        addOption(new PlayerLanguageOption());
+    }
+
+    public static void unpatchSlimefun() {
+        for (var po : patched) {
+            getOptions().add(po);
+        }
     }
 }

@@ -28,6 +28,7 @@
 package com.balugaq.jeg.implementation;
 
 import com.balugaq.jeg.api.CustomGroupConfigurations;
+import com.balugaq.jeg.api.cost.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.groups.VanillaItemsGroup;
@@ -46,6 +47,11 @@ import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.GroupSetup;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
+import com.balugaq.jeg.implementation.option.CerPatchGuideOption;
+import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
+import com.balugaq.jeg.implementation.option.ShareInGuideOption;
+import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.Lang;
@@ -59,7 +65,6 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
@@ -82,6 +87,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * This is the main class of the JustEnoughGuide plugin.
@@ -299,10 +305,18 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().info(Lang.getStartup("loaded-guide-group"));
 
             if (getConfigManager().isBeginnerOption()) {
-                getLogger().info(Lang.getStartup("loading-beginners-guide-option"));
-                SlimefunGuideSettings.addOption(BeginnersGuideOption.instance());
-                getLogger().info(Lang.getStartup("loaded-beginners-guide-option"));
+                getLogger().info(Lang.getStartup("loading-guide-option"));
+                JEGGuideSettings.patchSlimefun();
+                JEGGuideSettings.addOption(BeginnersGuideOption.instance());
+                JEGGuideSettings.addOption(CerPatchGuideOption.instance());
+                JEGGuideSettings.addOption(ShareInGuideOption.instance());
+                JEGGuideSettings.addOption(ShareOutGuideOption.instance());
+                JEGGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
+                JEGGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
+                getLogger().info(Lang.getStartup("loaded-guide-option"));
             }
+
+            CERCalculator.load();
 
             getLogger().info(Lang.getStartup("loaded-guide-group"));
         }
@@ -361,17 +375,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         SlimefunRegistryUtil.unregisterItems(JustEnoughGuide.getInstance());
 
         try {
-            @SuppressWarnings("unchecked")
-            List<SlimefunGuideOption<?>> l = (List<SlimefunGuideOption<?>>)
-                    ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options");
-            if (l != null) {
-                List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
-                for (SlimefunGuideOption<?> option : copy) {
-                    if (option.getAddon().equals(JustEnoughGuide.getInstance())) {
-                        l.remove(option);
-                    }
+            List<SlimefunGuideOption<?>> l = JEGGuideSettings.getOptions();
+            List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
+            for (SlimefunGuideOption<?> option : copy) {
+                if (option.getAddon() instanceof JustEnoughGuide) {
+                    l.remove(option);
                 }
             }
+            JEGGuideSettings.unpatchSlimefun();
             FinalTECHValueDisplayOption.unboot();
         } catch (Exception ignored) {
         }

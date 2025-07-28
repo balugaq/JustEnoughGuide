@@ -80,15 +80,15 @@ public class EMCValueDisplayOption implements SlimefunGuideOption<Boolean> {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
                 isEnabled(p) ? Material.CARTOGRAPHY_TABLE : Material.CRAFTING_TABLE,
-                "&bEMC值显示: &" + (enabled ? "a启用" : "4禁用"),
+                "&bEMC Value Display: &" + (enabled ? "aEnabled" : "4Disabled"),
                 "",
-                "&7你现在可以选择是否",
-                "&7在查阅一个新物品的时候",
-                "&7显示它的EMC数值",
+                "&7You can now choose whether",
+                "&7to display an item's EMC value",
+                "&7when viewing a new item",
                 "",
-                "&7注: 此EMC数值为EMCTech中的数值",
-                "&7不等同于乱序等附属的数值",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " EMC值显示");
+                "&7Note: This EMC value comes from EMCTech",
+                "&7and may differ from values in addons like FinalTECH",
+                "&7\u21E8 &eClick to " + (enabled ? "Disable" : "Enable") + " EMC Value Display");
         return Optional.of(item);
     }
 

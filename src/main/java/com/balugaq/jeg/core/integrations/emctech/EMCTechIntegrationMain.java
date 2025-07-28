@@ -47,8 +47,19 @@ public class EMCTechIntegrationMain implements Integration {
      * @return 0.0D if no EMC value, or EMC value
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    public static double getEMC(@NotNull ItemStack itemStack) {
+    public static double getEMCInDematerializer(@NotNull ItemStack itemStack) {
         return EmcUtils.getEmcValue(itemStack);
+    }
+
+    /**
+     * Get EMC value of itemStack
+     *
+     * @param itemStack The itemStack
+     * @return 0.0D if no EMC value, or EMC value
+     */
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public static double getEMCInMaterializer(@NotNull ItemStack itemStack) {
+        return EmcUtils.getEmcValueMultiplied(itemStack);
     }
 
     @Override

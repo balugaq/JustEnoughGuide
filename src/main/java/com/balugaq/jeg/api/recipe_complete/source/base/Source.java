@@ -28,6 +28,9 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.SimpleRecipeChoice;
+import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -52,7 +55,9 @@ import java.util.List;
  * @since 1.9
  */
 public interface Source {
-    JavaPlugin plugin();
+    int RECIPE_DEPTH_THRESHOLD = 8;
+
+    @NotNull JavaPlugin plugin();
 
     @SuppressWarnings("ConstantValue")
     default @Nullable List<RecipeChoice> getRecipe(@NotNull ItemStack itemStack) {
@@ -61,10 +66,9 @@ public interface Source {
             List<RecipeChoice> raw = new ArrayList<>(Arrays.stream(sf.getRecipe())
                     .map(item -> item == null ? null : new SimpleRecipeChoice(item))
                     .toList());
-            if (raw.size() < 9) {
-                for (int i = raw.size(); i < 9; i++) {
-                    raw.add(null);
-                }
+
+            for (int i = raw.size(); i < 9; i++) {
+                raw.add(null);
             }
 
             return raw;
@@ -86,19 +90,16 @@ public interface Source {
                         }
                     }
 
-                    if (choices.size() < 9) {
-                        for (int i = choices.size(); i < 9; i++) {
-                            choices.add(null);
-                        }
+                    for (int i = choices.size(); i < 9; i++) {
+                        choices.add(null);
                     }
 
                     return choices;
                 } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
                     List<RecipeChoice> raw = new ArrayList<>(shapelessRecipe.getChoiceList());
-                    if (raw.size() < 9) {
-                        for (int i = raw.size(); i < 9; i++) {
-                            raw.add(null);
-                        }
+
+                    for (int i = raw.size(); i < 9; i++) {
+                        raw.add(null);
                     }
 
                     return raw;
@@ -146,5 +147,23 @@ public interface Source {
         }
 
         return null;
+    }
+
+    default boolean depthInRange(@NotNull Player player, int depth) {
+        return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
+    }
+
+    default void sendMissingMaterial(@NotNull Player player, @NotNull ItemStack itemStack) {
+        if (NoticeMissingMaterialGuideOption.isEnabled(player)) {
+            var k = player.getUniqueId();
+            if (!RecipeCompletableListener.missingMaterials.containsKey(k)) {
+                RecipeCompletableListener.missingMaterials.put(k, new ArrayList<>());
+            }
+
+            var v = RecipeCompletableListener.missingMaterials.get(k);
+            synchronized (v) {
+                v.add(itemStack);
+            }
+        }
     }
 }

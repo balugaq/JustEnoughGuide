@@ -45,6 +45,21 @@ public class ClayTechIntegrationMain implements Integration {
             28, 29, 30,
             37, 38, 39
     };
+    public static final int[] CLAYTECH_ROCKET_ASSEMBLING_MACHINE_INPUT_SLOTS = new int[]{
+            19, 20, 21,
+            28, 29, 30,
+            37, 38, 39
+    };
+    public static final int[] CLAYTECH_ROCKET_FUEL_GENERATOR_INPUT_SLOTS = new int[]{
+            19, 20, 21,
+            28, 29, 30,
+            37, 38, 39
+    };
+    public static final int[] CLAYTECH_FOOD_CAULDRON_INPUT_SLOTS = new int[]{
+            19, 20, 21,
+            28, 29, 30,
+            37, 38, 39
+    };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(@NotNull String id, int @NotNull [] slots, boolean unordered) {
@@ -67,6 +82,9 @@ public class ClayTechIntegrationMain implements Integration {
     @Override
     public void onEnable() {
         rrc("CLAYTECH_CRAFTING_TABLE", CLAYTECH_FUSION_MACHINE_INPUT_SLOTS, false);
+        rrc("CLAYTECH_ROCKET_ASSEMBLING_MACHINE", CLAYTECH_ROCKET_ASSEMBLING_MACHINE_INPUT_SLOTS, false);
+        rrc("CLAYTECH_ROCKET_FUEL_GENERATOR", CLAYTECH_ROCKET_FUEL_GENERATOR_INPUT_SLOTS, false);
+        rrc("CLAYTECH_FOOD_CAULDRON", CLAYTECH_FOOD_CAULDRON_INPUT_SLOTS, false);
     }
 
     @Override

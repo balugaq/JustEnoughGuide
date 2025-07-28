@@ -36,7 +36,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.AnvilInventory;
-import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -171,7 +170,7 @@ public class RTSEvents {
     public static class SearchTermChangeEvent extends Event {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
-        private final InventoryView inventoryView;
+        private final Object inventoryView; // Use Object to avoid InventoryView compatibility issues
         private final AnvilInventory openingInventory;
         private final String oldSearchTerm;
         private final String newSearchTerm;
@@ -181,7 +180,7 @@ public class RTSEvents {
          * Constructs a new SearchTermChangeEvent.
          *
          * @param player           The player who changed the search term.
-         * @param inventoryView    The inventory view.
+         * @param inventoryView    The inventory view (as Object for compatibility).
          * @param openingInventory The opening inventory.
          * @param oldSearchTerm    The old search term.
          * @param newSearchTerm    The new search term.
@@ -189,7 +188,7 @@ public class RTSEvents {
          */
         public SearchTermChangeEvent(
                 Player player,
-                InventoryView inventoryView,
+                Object inventoryView,
                 AnvilInventory openingInventory,
                 String oldSearchTerm,
                 String newSearchTerm,

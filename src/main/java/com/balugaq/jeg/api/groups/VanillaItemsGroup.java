@@ -227,7 +227,7 @@ public class VanillaItemsGroup extends FlexItemGroup {
             final @NotNull Player player,
             final @NotNull PlayerProfile playerProfile,
             final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("原版物品");
+        ChestMenu chestMenu = new ChestMenu("Vanilla Items");
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
@@ -400,18 +400,6 @@ public class VanillaItemsGroup extends FlexItemGroup {
     private boolean isItemGroupAccessible(@NotNull Player p, @NotNull SlimefunItem slimefunItem) {
         return SlimefunOfficialSupporter.isShowHiddenItemGroups()
                 || slimefunItem.getItemGroup().isAccessible(p);
-    }
-
-    /**
-     * Prints an error message to the player.
-     *
-     * @param p The player.
-     * @param x The exception.
-     */
-    @ParametersAreNonnullByDefault
-    private void printErrorMessage(@NotNull Player p, @NotNull Throwable x) {
-        p.sendMessage("&4服务器发生了一个内部错误. 请联系管理员处理.");
-        JAVA_PLUGIN.getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
     }
 
     /**

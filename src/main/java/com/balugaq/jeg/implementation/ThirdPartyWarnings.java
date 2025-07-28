@@ -35,6 +35,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 
+@SuppressWarnings("UnstableApiUsage")
 public class ThirdPartyWarnings {
     @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)
     public static void check() {

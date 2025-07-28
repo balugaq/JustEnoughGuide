@@ -44,20 +44,38 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author balugaq
  * @since 1.9
  */
+@SuppressWarnings("DataFlowIssue")
 public class NetworksExpansionIntegrationMain implements Integration {
     public static final int[] ENCODER_RECIPE_SLOTS = new int[]{12, 13, 14, 21, 22, 23, 30, 31, 32};
-    public static final int[] CRAFTING_GRID_RECIPE_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
+    public static final int[] CRAFTING_GRID_NEW_STYLE_RECIPE_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
+    public static final int[] EXPANSION_WORKBENCH_RECIPE_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30};
+    public static final int[] EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS = new int[]{
+            0, 1, 2, 3, 4, 5,
+            9, 10, 11, 12, 13, 14,
+            18, 19, 20, 21, 22, 23,
+            27, 28, 29, 30, 31, 32,
+            36, 37, 38, 39, 40, 41,
+            45, 46, 47, 48, 49, 50
+    };
+    public static final int[] STORAGE_UPGRADE_TABLE_RECIPE_SLOTS = new int[]{
+            2, 3, 4,
+            11, 12, 13,
+            20, 21, 22
+    };
     public static final BlockFace[] VALID_FACES = new BlockFace[]{
             BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
-    public static @Nullable JavaPlugin plugin = null;
+    public static JavaPlugin plugin = null;
 
-    public static @Nullable JavaPlugin getPlugin() {
+    public static @NotNull JavaPlugin getPlugin() {
         if (plugin == null) {
             plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Networks");
         }
@@ -112,17 +130,20 @@ public class NetworksExpansionIntegrationMain implements Integration {
         RecipeCompleteProvider.addSource(new NetworksExpansionRecipeCompleteVanillaSource());
 
         rrc("NTW_EXPANSION_ANCIENT_ALTAR_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_ARMOR_FORGE_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_COMPRESSOR_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_EXPANSION_WORKBENCH_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_GRIND_STONE_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_JUICER_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_AUTO_MAGIC_WORKBENCH", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_ORE_CRUSHER_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_PRESSURE_CHAMBER_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_QUANTUM_WORKBENCH_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_SMELTERY_RECIPE_ENCODER", CRAFTING_GRID_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_CRAFTING_GRID_NEW_STYLE", CRAFTING_GRID_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_ARMOR_FORGE_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_COMPRESSOR_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_EXPANSION_WORKBENCH_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_GRIND_STONE_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_JUICER_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_MAGIC_WORKBENCH_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_ORE_CRUSHER_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_PRESSURE_CHAMBER_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_QUANTUM_WORKBENCH_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_SMELTERY_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_CRAFTING_GRID_NEW_STYLE", CRAFTING_GRID_NEW_STYLE_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_WORKBENCH", EXPANSION_WORKBENCH_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_WORKBENCH_6X6", EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_STORAGE_UPGRADE_TABLE", STORAGE_UPGRADE_TABLE_RECIPE_SLOTS, false);
     }
 
     @Override

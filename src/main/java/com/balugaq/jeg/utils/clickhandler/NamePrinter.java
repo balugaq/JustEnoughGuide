@@ -30,6 +30,9 @@ package com.balugaq.jeg.utils.clickhandler;
 import com.balugaq.jeg.api.clickhandler.JEGClickHandler;
 import com.balugaq.jeg.api.clickhandler.Processor;
 import com.balugaq.jeg.api.objects.collection.cooldown.FrequencyWatcher;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.option.ShareInGuideOption;
+import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import com.balugaq.jeg.utils.Lang;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
@@ -74,7 +77,9 @@ public class NamePrinter implements Applier {
     }
 
     public static void applyWith(@NotNull SlimefunGuideImplementation guide, @NotNull ChestMenu menu, int slot) {
-        instance.apply(guide, menu, slot);
+        if (JustEnoughGuide.getConfigManager().isItemShareable()) {
+            instance.apply(guide, menu, slot);
+        }
     }
 
     @ParametersAreNonnullByDefault
@@ -88,10 +93,12 @@ public class NamePrinter implements Applier {
         msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sf search " + s));
 
         Bukkit.getOnlinePlayers().forEach(p -> {
-            if (p.hasPermission("slimefun.command.search")) {
-                ClipboardUtil.send(p, msg);
-            } else {
-                ClipboardUtil.send(p, ClipboardUtil.makeComponent(sharedMessage, CLICK_TO_SEARCH, itemName));
+            if (ShareInGuideOption.isEnabled(p)) {
+                if (p.hasPermission("slimefun.command.search")) {
+                    ClipboardUtil.send(p, msg);
+                } else {
+                    ClipboardUtil.send(p, ClipboardUtil.makeComponent(sharedMessage, CLICK_TO_SEARCH, itemName));
+                }
             }
         });
     }
@@ -99,12 +106,12 @@ public class NamePrinter implements Applier {
     public static boolean checkCooldown(@NotNull Player player) {
         FrequencyWatcher.Result result = watcher.checkCooldown(player.getUniqueId());
         if (result == FrequencyWatcher.Result.TOO_FREQUENT) {
-            player.sendMessage(ChatColor.RED + "你的使用频率过高，请稍后使用!");
+            player.sendMessage(ChatColor.RED + "TOO FAST!");
             return false;
         }
 
         if (result == FrequencyWatcher.Result.CANCEL) {
-            player.sendMessage(ChatColor.RED + "这个功能正在冷却中...");
+            player.sendMessage(ChatColor.RED + "Cooldowning...");
             return false;
         }
 
@@ -153,6 +160,10 @@ public class NamePrinter implements Applier {
                     && clickedItemStack.getType() != Material.AIR
                     && (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP)) {
                 if (!checkCooldown(player)) {
+                    return false;
+                }
+
+                if (!ShareOutGuideOption.isEnabled(player)) {
                     return false;
                 }
 

@@ -30,7 +30,6 @@ package com.balugaq.jeg.core.integrations.networksexpansion;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
-import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import io.github.sefiraat.networks.network.NetworkRoot;
@@ -62,85 +61,9 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
             @NotNull Player player,
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
-            boolean unordered) {
-        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean openGuide(
-            @NotNull BlockMenu blockMenu,
-            @NotNull Player player,
-            @NotNull ClickAction clickAction,
-            int @NotNull [] ingredientSlots,
             boolean unordered,
-            @Nullable Runnable callback) {
-        GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(player.getUniqueId());
-        if (clickAction.isRightClicked() && lastEvent != null) {
-            int times = 1;
-            if (clickAction.isShiftClicked()) {
-                times = 64;
-            }
-
-            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
-            if (actualMenu == null) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return false;
-            }
-
-            if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return false;
-            }
-
-            // I think it is runnable
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(actualMenu, lastEvent, ingredientSlots, unordered);
-            }
-            if (callback != null) {
-                callback.run();
-            }
-            return true;
-        }
-
-        GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
-        RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
-            BlockMenu actualMenu = BlockStorage.getInventory(blockMenu.getLocation());
-            if (actualMenu == null) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return;
-            }
-
-            if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return;
-            }
-
-            int times = 1;
-            if (event.getClickAction().isRightClicked()) {
-                times = 64;
-            }
-
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(actualMenu, event, ingredientSlots, unordered);
-            }
-
-            player.updateInventory();
-            actualMenu.open(player);
-            if (callback != null) {
-                callback.run();
-            }
-        }));
-        RecipeCompletableListener.tagGuideOpen(player);
-        return true;
+            int recipeDepth) {
+        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
     }
 
     @Override
@@ -148,7 +71,8 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
             @NotNull BlockMenu blockMenu,
             GuideEvents.@NotNull ItemButtonClickEvent event,
             int @NotNull [] ingredientSlots,
-            boolean unordered) {
+            boolean unordered,
+            int recipeDepth) {
         NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
         if (root == null) {
             return false;
@@ -161,17 +85,13 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
             return false;
         }
 
-        // choices.size() must be 9
         List<RecipeChoice> choices = getRecipe(clickedItem);
         if (choices == null) {
+            sendMissingMaterial(player, clickedItem);
             return false;
         }
 
-        for (int i = 0; i < 9; i++) {
-            if (i >= choices.size()) {
-                break;
-            }
-
+        for (int i = 0; i < choices.size(); i++) {
             if (i >= ingredientSlots.length) {
                 break;
             }
@@ -205,6 +125,17 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
                         } else {
                             BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[i]);
                         }
+                    } else {
+                        if (depthInRange(player, recipeDepth + 1)) {
+                            completeRecipeWithGuide(
+                                    blockMenu,
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    ingredientSlots,
+                                    unordered,
+                                    recipeDepth + 1);
+                        } else {
+                            sendMissingMaterial(player, itemStack);
+                        }
                     }
                 }
             } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
@@ -215,6 +146,17 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
                             BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots);
                         } else {
                             BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[i]);
+                        }
+                    } else {
+                        if (depthInRange(player, recipeDepth + 1)) {
+                            completeRecipeWithGuide(
+                                    blockMenu,
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    ingredientSlots,
+                                    unordered,
+                                    recipeDepth + 1);
+                        } else {
+                            sendMissingMaterial(player, itemStack);
                         }
                     }
                 }
@@ -237,7 +179,7 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
     }
 
     @Override
-    public JavaPlugin plugin() {
+    public @NotNull JavaPlugin plugin() {
         return NetworksExpansionIntegrationMain.getPlugin();
     }
 }
