@@ -71,6 +71,12 @@ public enum MinecraftVersion {
     MINECRAFT_1_21_5(21, 5),
     MINECRAFT_1_21_6(21, 6),
     MINECRAFT_1_21_7(21, 7),
+    MINECRAFT_1_21_8(21, 8),
+    MINECRAFT_1_21_9(21, 9),
+    MINECRAFT_1_21_10(21, 10),
+    MINECRAFT_1_21_11(21, 11),
+    MINECRAFT_1_21_12(21, 12),
+    MINECRAFT_1_21_13(21, 13),
     MINECRAFT_1_22(22, 0),
     MINECRAFT_1_22_1(22, 1),
     MINECRAFT_1_22_2(22, 2),
@@ -78,7 +84,14 @@ public enum MinecraftVersion {
     MINECRAFT_1_22_4(22, 4),
     MINECRAFT_1_22_5(22, 5),
     MINECRAFT_1_22_6(22, 6),
-    UNKNOWN(-1, -1);
+    MINECRAFT_1_22_7(22, 7),
+    MINECRAFT_1_22_8(22, 8),
+    MINECRAFT_1_22_9(22, 9),
+    MINECRAFT_1_22_10(22, 10),
+    MINECRAFT_1_22_11(22, 11),
+    MINECRAFT_1_22_12(22, 12),
+    MINECRAFT_1_22_13(22, 13),
+    UNKNOWN(999, 999);
 
     private final int major;
     private final int minor;
