@@ -61,9 +61,9 @@ public class NetworksExpansionIntegrationMain implements Integration {
             20, 21, 22
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
-    public static @Nullable JavaPlugin plugin = null;
+    public static JavaPlugin plugin = null;
 
-    public static @Nullable JavaPlugin getPlugin() {
+    public static @NotNull JavaPlugin getPlugin() {
         if (plugin == null) {
             plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Networks");
         }

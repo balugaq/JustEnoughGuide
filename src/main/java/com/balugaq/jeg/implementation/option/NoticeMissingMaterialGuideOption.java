@@ -32,8 +32,6 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -43,26 +41,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-import static com.balugaq.jeg.api.recipe_complete.source.base.Source.RECIPE_DEPTH_THRESHOLD;
-
 /**
  * @author balugaq
  * @since 1.9
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
-public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<Integer> {
-    public static final @NotNull RecursiveRecipeFillingGuideOption instance = new RecursiveRecipeFillingGuideOption();
+public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boolean> {
+    public static final @NotNull NoticeMissingMaterialGuideOption instance = new NoticeMissingMaterialGuideOption();
 
-    public static @NotNull RecursiveRecipeFillingGuideOption instance() {
+    public static @NotNull NoticeMissingMaterialGuideOption instance() {
         return instance;
     }
 
     public static @NotNull NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "recursive_recipe_filling");
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "notice_missing_material");
     }
 
-    public static int getDepth(@NotNull Player p) {
-        return PersistentDataAPI.getInt(p, key0(), 1);
+    public static boolean isEnabled(@NotNull Player p) {
+        return getSelectedOption(p);
+    }
+
+    public static boolean getSelectedOption(@NotNull Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
     }
 
     @Override
@@ -77,52 +77,36 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
 
     @Override
     public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
-        int value = getSelectedOption(p, guide).orElse(1);
-        if (value > RECIPE_DEPTH_THRESHOLD) {
-            value = RECIPE_DEPTH_THRESHOLD;
-            PersistentDataAPI.setInt(p, key0(), value);
-        }
-
+        boolean enabled = getSelectedOption(p, guide).orElse(false);
         ItemStack item = Converter.getItem(
-                Material.FURNACE,
-                "&a配方补全深度",
-                "&7配方补全深度越大，需要的时间越长",
-                "&7如果遇到一个材料不存在，会尝试补全",
-                "&7这个材料的材料，以此类推，此过程视为一层深度",
+                isEnabled(p) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK,
+                "&b告知缺失的材料: &" + (enabled ? "a启用" : "4禁用"),
                 "",
-                "&7当前深度: " + value + " (限制范围: 1~" + RECIPE_DEPTH_THRESHOLD + ")",
-                "&7\u21E8 &e点击设置深度"
-        );
+                "&7你现在可以选择",
+                "&7当你使用配方补全时",
+                "&7如果材料不足",
+                "&7是否告知缺失的材料",
+                "&c&l此功能容易误报",
+                "",
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 告知缺失的材料");
         return Optional.of(item);
     }
 
     @Override
     public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
-        p.closeInventory();
-        p.sendMessage(ChatColors.color("&a请输入配方补全深度"));
-        ChatInput.waitForPlayer(JustEnoughGuide.getInstance(), p, s -> {
-            try {
-                int value = Integer.parseInt(s);
-                if (value < 1 || value > RECIPE_DEPTH_THRESHOLD) {
-                    p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
-                    return;
-                }
-
-                setSelectedOption(p, guide, value);
-                JEGGuideSettings.openSettings(p, guide);
-            } catch (NumberFormatException ignored) {
-                p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
-            }
-        });
+        setSelectedOption(p, guide, !getSelectedOption(p, guide).orElse(false));
+        JEGGuideSettings.openSettings(p, guide);
     }
 
     @Override
-    public @NotNull Optional<Integer> getSelectedOption(@NotNull Player p, ItemStack guide) {
-        return Optional.of(getDepth(p));
+    public @NotNull Optional<Boolean> getSelectedOption(@NotNull Player p, ItemStack guide) {
+        NamespacedKey key = getKey();
+        boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == (byte) 1;
+        return Optional.of(value);
     }
 
     @Override
-    public void setSelectedOption(@NotNull Player p, ItemStack guide, Integer value) {
-        PersistentDataAPI.setInt(p, getKey(), value);
+    public void setSelectedOption(@NotNull Player p, ItemStack guide, Boolean value) {
+        PersistentDataAPI.setByte(p, getKey(), value ? (byte) 1 : (byte) 0);
     }
 }

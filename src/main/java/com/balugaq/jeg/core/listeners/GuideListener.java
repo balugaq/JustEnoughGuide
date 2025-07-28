@@ -27,21 +27,32 @@
 
 package com.balugaq.jeg.core.listeners;
 
+import com.balugaq.jeg.api.objects.annotations.PatchCode;
+import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.SlimefunGuideOpenEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,6 +71,11 @@ public class GuideListener implements Listener {
     public static final int OPEN_GUIDE_ASYNC_FATAL_ERROR_CODE = 12209;
     public static final int OPEN_GUIDE_SYNC_FATAL_ERROR_CODE = 12210;
     public static final Map<Player, SlimefunGuideMode> guideModeMap = new ConcurrentHashMap<>();
+    public final boolean giveOnFirstJoin;
+
+    public GuideListener() {
+        this.giveOnFirstJoin = Slimefun.getConfigManager().getPluginConfig().getBoolean("guide.receive-on-first-join");
+    }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onGuideOpen(@NotNull SlimefunGuideOpenEvent e) {
@@ -88,6 +104,7 @@ public class GuideListener implements Listener {
         }
     }
 
+    @ApiStatus.Internal
     public void openGuide(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
         Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
@@ -106,6 +123,7 @@ public class GuideListener implements Listener {
         }
     }
 
+    @ApiStatus.Internal
     public void openGuideAsync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), () -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);
@@ -126,6 +144,7 @@ public class GuideListener implements Listener {
         }, 1L);
     }
 
+    @ApiStatus.Internal
     public void openGuideSync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
         Bukkit.getScheduler().runTaskLater(JustEnoughGuide.getInstance(), () -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);
@@ -144,5 +163,63 @@ public class GuideListener implements Listener {
                 GuideUtil.openMainMenuAsync(player, mode, 1);
             }
         }, 1L);
+    }
+
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract(PlayerRightClickEvent)")
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onInteract(@NotNull PlayerRightClickEvent e) {
+        Player p = e.getPlayer();
+
+        if (tryOpenGuide(p, e, SlimefunGuideMode.SURVIVAL_MODE) == Event.Result.ALLOW) {
+            if (p.isSneaking()) {
+                JEGGuideSettings.openSettings(p, e.getItem());
+            } else {
+                SlimefunGuideOpenEvent event = new SlimefunGuideOpenEvent(p, e.getItem(), SlimefunGuideMode.SURVIVAL_MODE);
+                Bukkit.getPluginManager().callEvent(event);
+            }
+        } else if (tryOpenGuide(p, e, SlimefunGuideMode.CHEAT_MODE) == Event.Result.ALLOW) {
+            if (p.isSneaking()) {
+                JEGGuideSettings.openSettings(
+                        p,
+                        p.hasPermission("slimefun.cheat.items")
+                                ? e.getItem()
+                                : SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE));
+            } else {
+                p.chat("/sf cheat");
+            }
+        }
+    }
+
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)")
+    @NotNull
+    @ParametersAreNonnullByDefault
+    @ApiStatus.Internal
+    public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
+        ItemStack item = e.getItem();
+        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
+            if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
+                Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true);
+                return Event.Result.DENY;
+            } else {
+                return Event.Result.ALLOW;
+            }
+        } else {
+            return Event.Result.DEFAULT;
+        }
+    }
+
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onJoin(PlayerJoinEvent)")
+    @EventHandler
+    public void onJoin(@NotNull PlayerJoinEvent e) {
+        if (this.giveOnFirstJoin && !e.getPlayer().hasPlayedBefore()) {
+            Player p = e.getPlayer();
+            if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
+                return;
+            }
+
+            SlimefunGuideMode type = SlimefunGuide.getDefaultMode();
+            p.getInventory().addItem(SlimefunGuide.getItem(type).clone());
+        }
+
     }
 }

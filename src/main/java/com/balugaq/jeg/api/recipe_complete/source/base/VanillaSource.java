@@ -28,6 +28,9 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.utils.GuideUtil;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
@@ -53,17 +56,56 @@ public interface VanillaSource extends Source {
             @NotNull Player player,
             @NotNull ClickAction clickAction,
             @Range(from = 0, to = 53) int @NotNull [] ingredientSlots,
-            boolean unordered);
+            boolean unordered,
+            int recipeDepth);
 
     @SuppressWarnings({"deprecation", "UnusedReturnValue"})
-    boolean openGuide(
+    default boolean openGuide(
             @NotNull Block block,
             @NotNull Inventory inventory,
             @NotNull Player player,
             @NotNull ClickAction clickAction,
-            @Range(from = 0, to = 53) int @NotNull [] ingredientSlots,
+            int @NotNull [] ingredientSlots,
             boolean unordered,
-            @Nullable Runnable callback);
+            int recipeDepth,
+            @Nullable Runnable callback) {
+        GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(player.getUniqueId());
+        if (clickAction.isRightClicked() && lastEvent != null) {
+            int times = 1;
+            if (clickAction.isShiftClicked()) {
+                times = 64;
+            }
+
+            for (int i = 0; i < times; i++) {
+                completeRecipeWithGuide(block, inventory, lastEvent, ingredientSlots, unordered, recipeDepth);
+            }
+            if (callback != null) {
+                callback.run();
+            }
+            return true;
+        }
+
+        GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
+        RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
+            int times = 1;
+            if (event.getClickAction().isRightClicked()) {
+                times = 64;
+            }
+
+            // I think it is runnable
+            for (int i = 0; i < times; i++) {
+                completeRecipeWithGuide(block, inventory, event, ingredientSlots, unordered, recipeDepth);
+            }
+
+            player.updateInventory();
+            player.openInventory(inventory);
+            if (callback != null) {
+                callback.run();
+            }
+        }));
+        RecipeCompletableListener.tagGuideOpen(player);
+        return true;
+    }
 
     @SuppressWarnings("UnusedReturnValue")
     boolean completeRecipeWithGuide(
@@ -71,5 +113,6 @@ public interface VanillaSource extends Source {
             @NotNull Inventory inventory,
             GuideEvents.@NotNull ItemButtonClickEvent event,
             @Range(from = 0, to = 53) int @NotNull [] ingredientSlots,
-            boolean unordered);
+            boolean unordered,
+            int recipeDepth);
 }

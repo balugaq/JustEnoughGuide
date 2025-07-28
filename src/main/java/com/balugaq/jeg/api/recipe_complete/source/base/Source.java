@@ -28,9 +28,14 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.SimpleRecipeChoice;
+import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -52,7 +57,9 @@ import java.util.List;
  * @since 1.9
  */
 public interface Source {
-    JavaPlugin plugin();
+    int RECIPE_DEPTH_THRESHOLD = 8;
+
+    @NotNull JavaPlugin plugin();
 
     @SuppressWarnings("ConstantValue")
     default @Nullable List<RecipeChoice> getRecipe(@NotNull ItemStack itemStack) {
@@ -142,5 +149,23 @@ public interface Source {
         }
 
         return null;
+    }
+
+    default boolean depthInRange(@NotNull Player player, int depth) {
+        return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
+    }
+
+    default void sendMissingMaterial(@NotNull Player player, @NotNull ItemStack itemStack) {
+        if (NoticeMissingMaterialGuideOption.isEnabled(player)) {
+            var k = player.getUniqueId();
+            if (!RecipeCompletableListener.missingMaterials.containsKey(k)) {
+                RecipeCompletableListener.missingMaterials.put(k, new ArrayList<>());
+            }
+
+            var v = RecipeCompletableListener.missingMaterials.get(k);
+            synchronized (v) {
+                v.add(itemStack);
+            }
+        }
     }
 }

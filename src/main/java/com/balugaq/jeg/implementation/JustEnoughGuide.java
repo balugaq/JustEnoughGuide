@@ -46,6 +46,8 @@ import com.balugaq.jeg.implementation.items.GroupSetup;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
 import com.balugaq.jeg.implementation.option.CerPatchGuideOption;
+import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.Debug;
@@ -295,6 +297,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 SlimefunGuideSettings.addOption(CerPatchGuideOption.instance());
                 SlimefunGuideSettings.addOption(ShareInGuideOption.instance());
                 SlimefunGuideSettings.addOption(ShareOutGuideOption.instance());
+                SlimefunGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
+                SlimefunGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
                 getLogger().info("指南选项加载完毕！");
             }
 

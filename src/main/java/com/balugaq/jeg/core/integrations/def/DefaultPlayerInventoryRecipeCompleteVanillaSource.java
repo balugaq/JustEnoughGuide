@@ -60,56 +60,9 @@ public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements Vanill
             @NotNull Player player,
             @NotNull ClickAction clickAction,
             int @NotNull [] ingredientSlots,
-            boolean unordered) {
-        // Always available
-        return true;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean openGuide(
-            @NotNull Block block,
-            @NotNull Inventory inventory,
-            @NotNull Player player,
-            @NotNull ClickAction clickAction,
-            int @NotNull [] ingredientSlots,
             boolean unordered,
-            @Nullable Runnable callback) {
-        GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(player.getUniqueId());
-        if (clickAction.isRightClicked() && lastEvent != null) {
-            int times = 1;
-            if (clickAction.isShiftClicked()) {
-                times = 64;
-            }
-
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(block, inventory, lastEvent, ingredientSlots, unordered);
-            }
-            if (callback != null) {
-                callback.run();
-            }
-            return true;
-        }
-
-        GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
-        RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
-            int times = 1;
-            if (event.getClickAction().isRightClicked()) {
-                times = 64;
-            }
-
-            // I think it is runnable
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(block, inventory, event, ingredientSlots, unordered);
-            }
-
-            player.updateInventory();
-            player.openInventory(inventory);
-            if (callback != null) {
-                callback.run();
-            }
-        }));
-        RecipeCompletableListener.tagGuideOpen(player);
+            int recipeDepth) {
+        // Always available
         return true;
     }
 
@@ -119,7 +72,8 @@ public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements Vanill
             @NotNull Inventory inventory,
             GuideEvents.@NotNull ItemButtonClickEvent event,
             int @NotNull [] ingredientSlots,
-            boolean unordered) {
+            boolean unordered,
+            int recipeDepth) {
         Player player = event.getPlayer();
 
         ItemStack clickedItem = event.getClickedItem();
@@ -130,6 +84,7 @@ public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements Vanill
         // choices.size() must be 9
         List<RecipeChoice> choices = getRecipe(clickedItem);
         if (choices == null) {
+            sendMissingMaterial(player, clickedItem);
             return false;
         }
 
@@ -171,6 +126,18 @@ public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements Vanill
                         } else {
                             InventoryUtil.pushItem(inventory, received, ingredientSlots[i]);
                         }
+                    } else {
+                        if (depthInRange(player, recipeDepth + 1)) {
+                            completeRecipeWithGuide(
+                                    block,
+                                    inventory,
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    ingredientSlots,
+                                    unordered,
+                                    recipeDepth + 1);
+                        } else {
+                            sendMissingMaterial(player, itemStack);
+                        }
                     }
                 }
             } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
@@ -181,6 +148,18 @@ public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements Vanill
                             InventoryUtil.pushItem(inventory, received, ingredientSlots);
                         } else {
                             InventoryUtil.pushItem(inventory, received, ingredientSlots[i]);
+                        }
+                    } else {
+                        if (depthInRange(player, recipeDepth + 1)) {
+                            completeRecipeWithGuide(
+                                    block,
+                                    inventory,
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    ingredientSlots,
+                                    unordered,
+                                    recipeDepth + 1);
+                        } else {
+                            sendMissingMaterial(player, itemStack);
                         }
                     }
                 }
@@ -197,7 +176,7 @@ public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements Vanill
     }
 
     @Override
-    public JavaPlugin plugin() {
+    public @NotNull JavaPlugin plugin() {
         return NetworksExpansionIntegrationMain.getPlugin();
     }
 }
