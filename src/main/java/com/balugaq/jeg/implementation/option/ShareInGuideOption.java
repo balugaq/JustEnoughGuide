@@ -30,6 +30,7 @@ package com.balugaq.jeg.implementation.option;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
@@ -40,6 +41,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -79,16 +82,22 @@ public class ShareInGuideOption implements SlimefunGuideOption<Boolean> {
     @Override
     public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
-        ItemStack item = Converter.getItem(
-                Converter.getItem(Material.WRITTEN_BOOK, meta -> meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP)),
-                "&bReceive Shared Items: &" + (enabled ? "aEnabled" : "4Disabled"),
-                "",
-                "&7You can now choose",
-                "&7when another player shares an item",
-                "&7whether to receive the push notification from that player",
-                "",
-                "&7\u21E8 &eClick to " + (enabled ? "Disable" : "Enable") + " Receiving Shared Items");
+        ItemStack item = getIcon(enabled);
         return Optional.of(item);
+    }
+
+    public @NotNull ItemStack getIcon(boolean enabled) {
+        var lk = "icon.options.share-in.";
+        List<String> lore = new ArrayList<>(Lang.getStringList(lk + "lore-1"));
+        lore.add(Lang.getString(lk + "last-lore-1") +
+                Lang.getString(lk + "last-lore-" + (enabled ? "disable" : "enable")) +
+                Lang.getString(lk + "last-lore-last"));
+
+        return Converter.getItem(
+                Converter.getItem(Material.WRITTEN_BOOK, meta -> meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP)),
+                Lang.getString(lk + "name-1") +
+                        Lang.getString(lk + "name-" + (enabled ? "enabled" : "disabled")),
+                lore);
     }
 
     @Override

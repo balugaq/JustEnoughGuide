@@ -31,7 +31,7 @@ import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.Timer;
-import com.balugaq.jeg.api.objects.annotaions.Warn;
+import com.balugaq.jeg.api.objects.annotations.Warn;
 import com.balugaq.jeg.api.objects.enums.FilterType;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;

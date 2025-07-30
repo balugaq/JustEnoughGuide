@@ -25,15 +25,12 @@
  *
  */
 
-package com.balugaq.jeg.utils;
+package com.balugaq.jeg.api.objects.annotations;
 
-import com.balugaq.jeg.api.objects.annotations.Warn;
-
-@Deprecated
-@Warn(reason = "No longer using it in EN version")
 /**
  * @author balugaq
- * @since 1.3
+ * @since 1.5
  */
-public class Models {
+public @interface Warn {
+    String reason();
 }

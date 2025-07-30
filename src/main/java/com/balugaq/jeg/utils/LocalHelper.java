@@ -27,7 +27,7 @@
 
 package com.balugaq.jeg.utils;
 
-import com.balugaq.jeg.api.objects.annotaions.Warn;
+import com.balugaq.jeg.api.objects.annotations.Warn;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;

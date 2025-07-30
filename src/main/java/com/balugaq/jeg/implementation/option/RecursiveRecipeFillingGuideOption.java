@@ -29,6 +29,7 @@ package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
@@ -41,6 +42,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.balugaq.jeg.api.recipe_complete.source.base.Source.RECIPE_DEPTH_THRESHOLD;
@@ -83,16 +86,19 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
             PersistentDataAPI.setInt(p, key0(), value);
         }
 
+        var lk = "icon.options.recursive-recipe-filling.";
+        List<String> lore = new ArrayList<>(Lang.getStringList(lk + "lore-1"));
+        String currentDepthText = Lang.getString(lk + "lore-2")
+                .replace("{depth}", String.valueOf(value))
+                .replace("{max_depth}", String.valueOf(RECIPE_DEPTH_THRESHOLD));
+        String c = Lang.getString(lk + "lore-3");
+        lore.add(currentDepthText);
+        lore.add(c);
+
         ItemStack item = Converter.getItem(
                 Material.FURNACE,
-                "&aRecipe Completion Depth",
-                "&7Higher recipe completion depth requires more time",
-                "&7If a material is missing, the system will attempt to",
-                "&7complete the recipe for that material, and so on (each step counts as one depth level)",
-                "&e&lThis feature is experimental, use with caution",
-                "",
-                "&7Current Depth: " + value + " (Range: 1~" + RECIPE_DEPTH_THRESHOLD + ")",
-                "&7\u21E8 &eClick to Set Depth"
+                Lang.getString(lk + "name"),
+                lore
         );
         return Optional.of(item);
     }

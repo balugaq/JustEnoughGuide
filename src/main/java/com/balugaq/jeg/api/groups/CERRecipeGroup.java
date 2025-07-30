@@ -39,6 +39,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
+import com.balugaq.jeg.utils.Lang;
 import com.balugaq.jeg.utils.SlimefunOfficialSupporter;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
@@ -74,7 +75,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * @author balugaq
@@ -143,6 +143,7 @@ public class CERRecipeGroup extends FlexItemGroup {
 
     public static List<Pair<ItemStack, ChestMenu.MenuClickHandler>> getDisplayIcons(SlimefunItem machine, List<RecipeWrapper> wrappers) {
         List<Pair<ItemStack, ChestMenu.MenuClickHandler>> list = new ArrayList<>();
+        String lk = "icon.cer-recipe-group.";
         for (int i = 0; i < wrappers.size(); i++) {
             RecipeWrapper recipe = wrappers.get(i);
 
@@ -152,10 +153,10 @@ public class CERRecipeGroup extends FlexItemGroup {
             list.add(new Pair<>(
                     Converter.getItem(
                             Material.GREEN_STAINED_GLASS_PANE,
-                            "&aRecipe#" + (i + 1),
-                            "&aMaking Difficulty: " + ValueTable.getValue(machine),
-                            "&aTime: " + recipe.getTicks(),
-                            "&a" + (e == 0 ? "Cost Energy: None" : e > 0 ? "Cost Energy: " + e : "Produce Energy: " + (-e))
+                            Lang.getString(lk + "recipe-item-name").replace("{number}", String.valueOf(i + 1)),
+                            Lang.getString(lk + "making-difficulty").replace("{value}", String.valueOf(ValueTable.getValue(machine))),
+                            Lang.getString(lk + "time").replace("{ticks}", String.valueOf(recipe.getTicks())),
+                            Lang.getString(lk + (e == 0 ? "no-energy" : e > 0 ? "cost-energy" : "produce-energy")).replace("{energy}", String.valueOf(Math.abs(e)))
                     ),
                     ChestMenuUtils.getEmptyClickHandler()
             ));
@@ -164,7 +165,7 @@ public class CERRecipeGroup extends FlexItemGroup {
                 list.add(new Pair<>(
                         Converter.getItem(
                                 Material.BLUE_STAINED_GLASS_PANE,
-                                "&aInput →"
+                                Lang.getString(lk + "input-title")
                         ),
                         ChestMenuUtils.getEmptyClickHandler()
                 ));
@@ -179,11 +180,11 @@ public class CERRecipeGroup extends FlexItemGroup {
                 if (out != null && out.length > 0) {
                     list.add(new Pair<>(
                             Converter.getItem(
-                                    Material.ORANGE_STAINED_GLASS_PANE,
-                                    "&a← Input",
-                                    "&6Output →"
-                            ),
-                            ChestMenuUtils.getEmptyClickHandler()
+                                Material.ORANGE_STAINED_GLASS_PANE,
+                                Lang.getString(lk + "input-output-title-1"),
+                                Lang.getString(lk + "input-output-title-2")
+                        ),
+                        ChestMenuUtils.getEmptyClickHandler()
                     ));
                 }
             } else {
@@ -191,7 +192,7 @@ public class CERRecipeGroup extends FlexItemGroup {
                     list.add(new Pair<>(
                             Converter.getItem(
                                     Material.ORANGE_STAINED_GLASS_PANE,
-                                    "&6Output →"
+                                    Lang.getString(lk + "output-title")
                             ),
                             ChestMenuUtils.getEmptyClickHandler()
                     ));
@@ -209,7 +210,7 @@ public class CERRecipeGroup extends FlexItemGroup {
 
                     double cer = CERCalculator.getCER(machine, ItemStackHelper.getDisplayName(output));
                     lore.add(" ");
-                    lore.add(ChatColors.color("&aCER Value: " + format.format(cer)));
+                    lore.add(ChatColors.color(Lang.getString(lk + "cer-value").replace("{value}", format.format(cer))));
                     meta.setLore(lore);
                     display.setItemMeta(meta);
                     list.add(new Pair<>(
@@ -283,7 +284,7 @@ public class CERRecipeGroup extends FlexItemGroup {
             final @NotNull Player player,
             final @NotNull PlayerProfile playerProfile,
             final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("&aCER Value Preview (For reference only)");
+        ChestMenu chestMenu = new ChestMenu(Lang.getString("icon.cer-recipe-group.title"));
 
         chestMenu.setEmptySlotsClickable(false);
         chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
@@ -333,7 +334,7 @@ public class CERRecipeGroup extends FlexItemGroup {
                     .ifSuccess(() -> {
                         pl.closeInventory();
 
-                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                        Slimefun.getLocalization().sendMessage(pl, Lang.getString("icon.cer-recipe-group.search-message"));
                         ChatInput.waitForPlayer(
                                 JAVA_PLUGIN,
                                 pl,
