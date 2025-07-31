@@ -330,6 +330,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
 
         SearchGroup.init();
+        GroupResorter.load();
 
         SpecialMenuProvider.loadConfiguration();
         ThirdPartyWarnings.check();
