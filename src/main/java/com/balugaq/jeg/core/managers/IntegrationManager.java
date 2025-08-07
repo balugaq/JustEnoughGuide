@@ -58,6 +58,7 @@ import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionInte
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimehud.SlimeHUDIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.core.integrations.tsingshantechnology.TsingshanTechnologyIntegrationMain;
 import com.balugaq.jeg.core.integrations.wildernether.WilderNetherIntegrationMain;
@@ -122,6 +123,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledSimpleUtils;
     private boolean enabledSlimeAEPlugin;
     private boolean enabledSlimeFrame;
+    private boolean enabledSlimeHUD;
     private boolean enabledSlimeTinker;
     private boolean enabledTsingshanTechnology;
     private boolean enabledTsingshanTechnology_Fixed;
@@ -173,6 +175,7 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
                             this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
                             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
+                            this.enabledSlimeHUD = pm.isPluginEnabled("SlimeHUD");
                             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
                             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
                             this.enabledTsingshanTechnology_Fixed = pm.isPluginEnabled("TsingshanTechnology-Fixed");
@@ -205,6 +208,7 @@ public class IntegrationManager extends AbstractManager {
                             addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
                             addIntegration(enabledSimpleUtils, SimpleUtilsIntegrationMain::new);
                             addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
+                            addIntegration(enabledSlimeHUD, SlimeHUDIntegrationMain::new);
                             addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
                             addIntegration(enabledTsingshanTechnology, TsingshanTechnologyIntegrationMain::new);
                             addIntegration(enabledWilderNether, WilderNetherIntegrationMain::new);

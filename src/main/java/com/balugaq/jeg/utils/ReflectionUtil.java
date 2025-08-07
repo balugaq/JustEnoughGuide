@@ -52,7 +52,10 @@ public class ReflectionUtil {
     @SuppressWarnings("UnusedReturnValue")
     public static boolean setValue(@NotNull Object object, @NotNull String field, @Nullable Object value) {
         try {
-            Field declaredField = object.getClass().getDeclaredField(field);
+            Field declaredField = getField(object.getClass(), field);
+            if (declaredField == null) {
+                throw new NoSuchFieldException(field);
+            }
             declaredField.setAccessible(true);
             declaredField.set(object, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -64,7 +67,10 @@ public class ReflectionUtil {
 
     public static <T> boolean setStaticValue(@NotNull Class<T> clazz, @NotNull String field, @Nullable Object value) {
         try {
-            Field declaredField = clazz.getDeclaredField(field);
+            Field declaredField = getField(clazz, field);
+            if (declaredField == null) {
+                throw new NoSuchFieldException(field);
+            }
             declaredField.setAccessible(true);
             declaredField.set(null, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -76,7 +82,10 @@ public class ReflectionUtil {
 
     public static @Nullable Object getStaticValue(@NotNull Class<?> clazz, @NotNull String field) {
         try {
-            Field declaredField = clazz.getDeclaredField(field);
+            Field declaredField = getField(clazz, field);
+            if (declaredField == null) {
+                throw new NoSuchFieldException(field);
+            }
             declaredField.setAccessible(true);
             return declaredField.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -88,7 +97,10 @@ public class ReflectionUtil {
     public static <T> @Nullable T getStaticValue(
             @NotNull Class<?> clazz, @NotNull String field, @NotNull Class<T> cast) {
         try {
-            Field declaredField = clazz.getDeclaredField(field);
+            Field declaredField = getField(clazz, field);
+            if (declaredField == null) {
+                throw new NoSuchFieldException(field);
+            }
             declaredField.setAccessible(true);
             return (T) declaredField.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {

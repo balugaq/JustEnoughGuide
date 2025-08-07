@@ -34,7 +34,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>Insider-133</version>
+    <version>Insider-136</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -307,6 +307,14 @@
             <version>Build-8</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/EMCTech-Build 8.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.schntgaispock</groupId>
+            <artifactId>SlimeHUD</artifactId>
+            <version>Build-16</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/SlimeHUD-Build 16.jar</systemPath>
         </dependency>
 
         <!-- AnvilGUI 1.16+ -->

@@ -44,6 +44,7 @@ import org.bukkit.inventory.StonecuttingRecipe;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class ValueTable {
     @ApiStatus.Internal
     private static void loadInternal() {
         addBaseValues();
-        for (SlimefunItem sf : Slimefun.getRegistry().getEnabledSlimefunItems()) {
+        for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
             getItemValueSlimefun(sf, 0);
         }
 
