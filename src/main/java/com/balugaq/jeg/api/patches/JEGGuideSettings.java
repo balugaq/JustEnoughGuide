@@ -32,6 +32,7 @@ import com.balugaq.jeg.implementation.option.delegate.FireworksOption;
 import com.balugaq.jeg.implementation.option.delegate.GuideModeOption;
 import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
 import com.balugaq.jeg.implementation.option.delegate.PlayerLanguageOption;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -57,7 +58,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -74,12 +74,10 @@ public class JEGGuideSettings {
     @Getter
     private static final List<SlimefunGuideOption<?>> patched = new ArrayList<>();
 
-    @ParametersAreNonnullByDefault
     public static void openSettings(final @NotNull Player p, final @NotNull ItemStack guide) {
         openSettings(p, guide, 1);
     }
 
-    @ParametersAreNonnullByDefault
     public static void openSettings(
             final @NotNull Player p,
             final @NotNull ItemStack guide,
@@ -99,7 +97,6 @@ public class JEGGuideSettings {
         menu.open(p);
     }
 
-    @ParametersAreNonnullByDefault
     private static void addHeader(
             final @NotNull Player p, final @NotNull ChestMenu menu, final @NotNull ItemStack guide) {
         LocalizationService locale = Slimefun.getLocalization();
@@ -285,14 +282,17 @@ public class JEGGuideSettings {
         }
     }
 
-    @ParametersAreNonnullByDefault
     private static void addConfigurableOptions(
             final @NotNull Player p,
             final @NotNull ChestMenu menu,
             final @NotNull ItemStack guide,
             @Range(from = 1, to = Integer.MAX_VALUE) int page) {
         List<Integer> slots = Formats.settings.getChars('o');
-        List<SlimefunGuideOption<?>> options = getOptions();
+        List<SlimefunGuideOption<?>> options = new ArrayList<>(getOptions());
+        options.removeIf(option -> {
+            String sm = option.getClass().getSimpleName();
+            return option.getAddon() instanceof Slimefun && (sm.equals("FireworksOption") || sm.equals("LearningAnimationOption"));
+        });
         int maxPage = (int) Math.ceil(options.size() / (double) slots.size());
         List<SlimefunGuideOption<?>> split = options.stream()
                 .skip((long) (page - 1) * slots.size())
@@ -357,6 +357,11 @@ public class JEGGuideSettings {
     public static void patchSlimefun() {
         for (var option : getOptions()) {
             if (option.getAddon() instanceof Slimefun) {
+                String sm = option.getClass().getSimpleName();
+                if (sm.equals("FireworksOption") || sm.equals("LearningAnimationOption")) {
+                    continue;
+                }
+
                 patched.add(option);
             }
         }
@@ -375,5 +380,26 @@ public class JEGGuideSettings {
         for (var po : patched) {
             getOptions().add(po);
         }
+    }
+
+    public static boolean hasFireworksEnabled(@NotNull Player p) {
+        return getOptionValue(p, FireworksOption.class, true);
+    }
+
+    public static boolean hasLearningAnimationEnabled(@NotNull Player p) {
+        return getOptionValue(p, LearningAnimationOption.class, true);
+    }
+
+    @NotNull
+    public static <T extends SlimefunGuideOption<V>, V> V getOptionValue(@NotNull Player p, @NotNull Class<T> optionsClass, @NotNull V defaultValue) {
+        for(SlimefunGuideOption<?> option : getOptions()) {
+            if (optionsClass.isInstance(option)) {
+                T o = optionsClass.cast(option);
+                ItemStack guide = SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE);
+                return o.getSelectedOption(p, guide).orElse(defaultValue);
+            }
+        }
+
+        return defaultValue;
     }
 }
