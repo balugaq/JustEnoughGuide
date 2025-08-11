@@ -452,6 +452,7 @@ local-translate:
   PoseidonAddon: "浪涌科技"
   Aircraft: "粘液飞机"
   InfinityExpansion2: "无尽贪婪2"
+  EtherTech: "虚素科技"
 
 # Do not change this value unless you know what you are doing.
 config-version: 1.9
