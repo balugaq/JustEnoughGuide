@@ -28,6 +28,8 @@
 package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.objects.enums.HUDLocation;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.schntgaispock.slimehud.SlimeHUD;
@@ -40,6 +42,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -59,6 +62,8 @@ import java.util.logging.Level;
  * @since 1.9
  */
 public class JEGPlayerWAILA extends PlayerWAILA {
+    public static final boolean IS_1_20_1 =
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_20_1);
     public boolean visible;
     public final Supplier<BossBar> kyoriBossBarSupplier;
     public BossBar kyoriBossBar = null;
@@ -68,7 +73,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         getWAILABar().removePlayer(player);
         kyoriBossBarSupplier = () -> {
             if (kyoriBossBar == null) {
-                if (PaperLib.isPaper()) {
+                if (PaperLib.isPaper() && IS_1_20_1) {
                     String bossbarColor = SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase();
                     kyoriBossBar = BossBar.bossBar(Component.text(""), 1.0f, toBossBarColor(bossbarColor), BossBar.Overlay.PROGRESS, new HashSet<>());
                     return (BossBar) kyoriBossBar;
@@ -83,7 +88,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         if (waila != null) {
             setVisible(getWAILABar().isVisible());
             setColor(getWAILABar().getColor());
-            setTitle(getWAILABar().getTitle());
+            setTitle(Component.text(getWAILABar().getTitle()));
             setPaused(waila.isPaused());
         }
     }
@@ -196,7 +201,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
             setVisible(false);
         } else {
             setVisible(true);
-            setTitle(keepTextColors0() ? facing : ChatColor.stripColor(facing));
+            setTitle(keepTextColors0() ? LegacyComponentSerializer.legacySection().deserialize(facing) : Component.text(ChatColor.stripColor(facing)));
             if (useAutoBossBarColor0()) {
                 setColor(Util.pickBarColorFromName(facing));
             }
@@ -205,7 +210,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
 
     public void actionbar(String facing) {
         if (PaperLib.isPaper()) {
-            getPlayer().sendActionBar(Component.text(facing));
+            getPlayer().sendActionBar(LegacyComponentSerializer.legacySection().deserialize(facing));
         } else {
             getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(facing));
         }
@@ -233,10 +238,12 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         return this;
     }
 
-    public void setTitle(String title) {
-        getWAILABar().setTitle(title);
+    public void setTitle(Component title) {
+        if (title instanceof net.kyori.adventure.text.TextComponent tc) {
+            getWAILABar().setTitle(tc.content());
+        }
         if (kyoriBossBarSupplier.get() != null) {
-            kyoriBossBarSupplier.get().name(Component.text(title));
+            kyoriBossBarSupplier.get().name(title);
         }
     }
 
