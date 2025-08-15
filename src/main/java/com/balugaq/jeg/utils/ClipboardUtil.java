@@ -44,7 +44,7 @@ import java.util.function.Consumer;
  * @author balugaq
  * @since 1.7
  */
-@SuppressWarnings({"deprecation", "unused"})
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
 @UtilityClass
 public class ClipboardUtil {
     @Deprecated

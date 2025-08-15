@@ -87,7 +87,7 @@ public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HU
                 "&7在使用SlimeHUD显示机器信息时",
                 "&7将机器信息显示在Boss栏或动作栏",
                 "",
-                "&7\u21E8 &e点击切换为使用 " + (bossbar ? "动作栏" : actionbar ? "默认设置" :"Boss栏") + " 显示机器信息");
+                "&7\u21E8 &e点击切换为使用 " + (bossbar ? "动作栏" : actionbar ? "默认设置" : "Boss栏") + " 显示机器信息");
         return Optional.of(item);
     }
 
@@ -107,7 +107,7 @@ public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HU
     }
 
     @Override
-    public void setSelectedOption(@NotNull Player p, ItemStack guide, HUDLocation value) {
+    public void setSelectedOption(@NotNull Player p, ItemStack guide, @NotNull HUDLocation value) {
         PersistentDataAPI.setByte(p, getKey(), (byte) value.ordinal());
     }
 }

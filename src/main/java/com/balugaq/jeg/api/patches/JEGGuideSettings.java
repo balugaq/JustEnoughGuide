@@ -32,7 +32,6 @@ import com.balugaq.jeg.implementation.option.delegate.FireworksOption;
 import com.balugaq.jeg.implementation.option.delegate.GuideModeOption;
 import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
 import com.balugaq.jeg.implementation.option.delegate.PlayerLanguageOption;
-import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -382,17 +381,19 @@ public class JEGGuideSettings {
         }
     }
 
+    @SuppressWarnings("unused")
     public static boolean hasFireworksEnabled(@NotNull Player p) {
         return getOptionValue(p, FireworksOption.class, true);
     }
 
+    @SuppressWarnings("unused")
     public static boolean hasLearningAnimationEnabled(@NotNull Player p) {
         return getOptionValue(p, LearningAnimationOption.class, true);
     }
 
     @NotNull
     public static <T extends SlimefunGuideOption<V>, V> V getOptionValue(@NotNull Player p, @NotNull Class<T> optionsClass, @NotNull V defaultValue) {
-        for(SlimefunGuideOption<?> option : getOptions()) {
+        for (SlimefunGuideOption<?> option : getOptions()) {
             if (optionsClass.isInstance(option)) {
                 T o = optionsClass.cast(option);
                 ItemStack guide = SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE);

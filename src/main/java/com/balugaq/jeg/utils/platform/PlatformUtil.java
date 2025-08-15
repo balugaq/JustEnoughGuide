@@ -27,10 +27,10 @@
 
 package com.balugaq.jeg.utils.platform;
 
-import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author balugaq
@@ -66,7 +66,7 @@ public class PlatformUtil {
         leaves = classExist("org.leavesmc.leaves.config.LeavesConfigValue"); // > paper
     }
 
-    public static boolean classExist(String className) {
+    public static boolean classExist(@NotNull String className) {
         try {
             Class.forName(className);
             return true;
@@ -75,6 +75,7 @@ public class PlatformUtil {
         }
     }
 
+    @SuppressWarnings("EmptyMethod")
     public static void initialize() {
     }
 }

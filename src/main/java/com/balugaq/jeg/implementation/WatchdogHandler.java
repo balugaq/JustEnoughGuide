@@ -38,7 +38,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings("deprecated")
+@SuppressWarnings({"deprecated", "deprecation", "DataFlowIssue"})
 public class WatchdogHandler implements Listener {
     public static Object instance = null;
     public static long timeoutTime = 0;
@@ -77,14 +77,14 @@ public class WatchdogHandler implements Listener {
         String msg = event.getMessage();
         if (msg.equals("dw 0")) {
             disableWatchdog();
-            for (Player p : Bukkit.getOnlinePlayers()){
+            for (Player p : Bukkit.getOnlinePlayers()) {
                 p.sendMessage("Disabled WatchdogThread by " + player.getName());
             }
         }
 
         if (msg.equals("dw 1")) {
             enableWatchdog();
-            for (Player p : Bukkit.getOnlinePlayers()){
+            for (Player p : Bukkit.getOnlinePlayers()) {
                 p.sendMessage("Enabled WatchdogThread by " + player.getName());
             }
         }

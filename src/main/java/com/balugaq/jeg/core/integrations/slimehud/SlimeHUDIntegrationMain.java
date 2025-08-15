@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -47,7 +48,26 @@ import java.util.UUID;
  * @since 1.9
  */
 public class SlimeHUDIntegrationMain implements Integration {
-    public static long tickRate = SlimeHUD.getInstance().getConfig().getLong("waila.tick-rate");
+    public static final long tickRate = SlimeHUD.getInstance().getConfig().getLong("waila.tick-rate");
+
+    @NotNull
+    public static Map<UUID, PlayerWAILA> getWailaMap() {
+        return WAILAManager.getInstance().getWailas();
+    }
+
+    public static void wrap(@NotNull Player player) {
+        synchronized (getWailaMap()) {
+            getWailaMap().compute(player.getUniqueId(), (k, waila) -> runTaskAsync(JustEnoughGuide.getInstance(), JEGPlayerWAILA.wrap(player, waila)));
+        }
+    }
+
+    public static <T extends BukkitRunnable> T runTaskAsync(@NotNull Plugin plugin, @Nullable T runnable) {
+        if (runnable == null) {
+            return null;
+        }
+        runnable.runTaskTimerAsynchronously(plugin, 0L, tickRate);
+        return runnable;
+    }
 
     @Override
     public @NotNull String getHookPlugin() {
@@ -62,25 +82,6 @@ public class SlimeHUDIntegrationMain implements Integration {
         }
 
         JustEnoughGuide.getListenerManager().registerListener(new PlayerWAILAUpdateListener());
-    }
-
-    @NotNull
-    public static Map<UUID, PlayerWAILA> getWailaMap() {
-        return WAILAManager.getInstance().getWailas();
-    }
-
-    public static void wrap(@NotNull Player player) {
-        synchronized (getWailaMap()) {
-            getWailaMap().compute(player.getUniqueId(), (k, waila) -> runTaskAsync(JustEnoughGuide.getInstance(), JEGPlayerWAILA.wrap(player, waila)));
-        }
-    }
-
-    public static <T extends BukkitRunnable> T runTaskAsync(Plugin plugin, T runnable) {
-        if (runnable == null) {
-            return null;
-        }
-        runnable.runTaskTimerAsynchronously(plugin, 0L, tickRate);
-        return runnable;
     }
 
     @Override

@@ -40,6 +40,7 @@ public enum HUDLocation {
         return values()[(ordinal() + 1) % values().length];
     }
 
+    @SuppressWarnings("unused")
     public HUDLocation previous() {
         return values()[(ordinal() + values().length - 1) % values().length];
     }

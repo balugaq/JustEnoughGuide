@@ -92,21 +92,21 @@ public class VanillaItemsGroup extends FlexItemGroup {
 
     static {
         JustEnoughGuide.runLater(
-                        () -> {
-                            boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
-                            try {
-                                for (Material material : Material.values()) {
-                                    if (!material.isAir() && material.isItem() && !material.isLegacy()) {
-                                        slimefunItems.add(createSlimefunItem(material));
-                                    }
-                                }
-                            } catch (Exception e) {
-                                Debug.trace(e);
-                            } finally {
-                                JustEnoughGuide.setAutomaticallyLoadItems(before);
+                () -> {
+                    boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
+                    try {
+                        for (Material material : Material.values()) {
+                            if (!material.isAir() && material.isItem() && !material.isLegacy()) {
+                                slimefunItems.add(createSlimefunItem(material));
                             }
-                        },
-                        1L);
+                        }
+                    } catch (Exception e) {
+                        Debug.trace(e);
+                    } finally {
+                        JustEnoughGuide.setAutomaticallyLoadItems(before);
+                    }
+                },
+                1L);
     }
 
     private final int page;

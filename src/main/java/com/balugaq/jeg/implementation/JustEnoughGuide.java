@@ -54,11 +54,11 @@ import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
-import com.balugaq.jeg.utils.platform.PlatformUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.UUIDUtils;
+import com.balugaq.jeg.utils.platform.PlatformUtil;
 import com.balugaq.jeg.utils.platform.scheduler.TaskScheduler;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
@@ -224,6 +224,26 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
     public static void setAutomaticallyLoadItems(boolean value) {
         Slimefun.getConfigManager().setAutoLoadingMode(value);
+    }
+
+    public static void runNextTick(@NotNull Runnable runnable) {
+        getScheduler().runNextTick(runnable);
+    }
+
+    public static void runLater(@NotNull Runnable runnable, long delay) {
+        getScheduler().runLater(runnable, delay);
+    }
+
+    public static void runLaterAsync(@NotNull Runnable runnable, long delay) {
+        getScheduler().runLaterAsync(runnable, delay);
+    }
+
+    public static void runTimer(@NotNull Runnable runnable, long delay, long period) {
+        getScheduler().runTimer(runnable, delay, period);
+    }
+
+    public static void runTimerAsync(@NotNull Runnable runnable, long delay, long period) {
+        getScheduler().runTimerAsync(runnable, delay, period);
     }
 
     /**
@@ -529,25 +549,5 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().info("自动更新失败: " + e.getMessage());
             Debug.trace(e);
         }
-    }
-    
-    public static void runNextTick(@NotNull Runnable runnable) {
-        getScheduler().runNextTick(runnable);
-    }
-
-    public static void runLater(@NotNull Runnable runnable, long delay) {
-        getScheduler().runLater(runnable, delay);
-    }
-    
-    public static void runLaterAsync(@NotNull Runnable runnable, long delay) {
-        getScheduler().runLaterAsync(runnable, delay);
-    }
-
-    public static void runTimer(@NotNull Runnable runnable, long delay, long period) {
-        getScheduler().runTimer(runnable, delay, period);
-    }
-    
-    public static void runTimerAsync(@NotNull Runnable runnable, long delay, long period) {
-        getScheduler().runTimerAsync(runnable, delay, period);
     }
 }

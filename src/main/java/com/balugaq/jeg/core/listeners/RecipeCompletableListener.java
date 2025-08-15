@@ -589,7 +589,7 @@ public class RecipeCompletableListener implements Listener {
             return;
         }
 
-        exit((Player)event.getWhoClicked());
+        exit((Player) event.getWhoClicked());
     }
 
     public void exit(Player player) {

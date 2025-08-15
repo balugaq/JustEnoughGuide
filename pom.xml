@@ -92,12 +92,18 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <minimizeJar>true</minimizeJar>
+<!--                    <minimizeJar>true</minimizeJar>--> <!-- Fuck FoliaLib, if minimize jar, then paper impl disappears-->
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
                                 <exclude>META-INF/*</exclude>
+                            </excludes>
+                        </filter>
+                        <filter>
+                            <artifact>com.tcoded:*</artifact>
+                            <excludes>
+                                <exclude>**</exclude>
                             </excludes>
                         </filter>
                     </filters>
