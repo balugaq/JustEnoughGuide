@@ -53,6 +53,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author TheBusyBiscuit
+ * @author balugaq
+ * @since 1.9
+ */
 @SuppressWarnings({"deprecation", "DataFlowIssue", "ExtractMethodRecommender"})
 public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
     @NotNull

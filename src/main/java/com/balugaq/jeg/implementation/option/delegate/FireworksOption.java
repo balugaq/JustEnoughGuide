@@ -48,6 +48,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+/**
+ * @author TheBusyBiscuit
+ * @author balugaq
+ * @since 1.9
+ */
 @SuppressWarnings("DataFlowIssue")
 public class FireworksOption implements SlimefunGuideOption<Boolean> {
     @NotNull
