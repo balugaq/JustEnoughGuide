@@ -34,7 +34,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>Insider-142</version>
+    <version>Insider-143</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -120,7 +120,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>com.tcoded.folialib</pattern>
-                                    <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.folialib</shadedPattern>
+                                    <shadedPattern>com.balugaq.jeg.libraries.folialib</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
