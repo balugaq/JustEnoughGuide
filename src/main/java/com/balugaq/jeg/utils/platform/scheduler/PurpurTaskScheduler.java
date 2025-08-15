@@ -25,47 +25,11 @@
  *
  */
 
-package com.balugaq.jeg.utils;
-
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
-import lombok.Getter;
-import lombok.experimental.UtilityClass;
+package com.balugaq.jeg.utils.platform.scheduler;
 
 /**
  * @author balugaq
  * @since 2.0
  */
-@UtilityClass
-public class PlatformUtil {
-    @Getter
-    private static final boolean bukkit;
-    @Getter
-    private static final boolean spigot;
-    @Getter
-    private static final boolean paper;
-    @Getter
-    private static final boolean folia;
-    @Getter
-    private static final boolean leaf;
-
-    static {
-        bukkit = true;
-        spigot = PaperLib.isSpigot();
-        paper = PaperLib.isPaper();
-        folia = JustEnoughGuide.getFoliaLib().isFolia();
-        leaf = classExist("org.leavesmc.leaves.entity.photographer.PhotographerManager");
-    }
-
-    public static boolean classExist(String className) {
-        try {
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    public static void initialize() {
-    }
+public class PurpurTaskScheduler extends PufferfishTaskScheduler {
 }

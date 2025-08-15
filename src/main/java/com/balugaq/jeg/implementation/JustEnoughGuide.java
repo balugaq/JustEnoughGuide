@@ -54,13 +54,12 @@ import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
-import com.balugaq.jeg.utils.PlatformUtil;
+import com.balugaq.jeg.utils.platform.PlatformUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.UUIDUtils;
-import com.tcoded.folialib.FoliaLib;
-import com.tcoded.folialib.impl.PlatformScheduler;
+import com.balugaq.jeg.utils.platform.scheduler.TaskScheduler;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
@@ -139,10 +138,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private MinecraftVersion minecraftVersion = null;
 
     @Getter
-    private FoliaLib foliaLib;
-
-    @Getter
-    private PlatformScheduler scheduler;
+    private TaskScheduler scheduler;
 
     @Getter
     private int javaVersion = 0;
@@ -182,11 +178,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getInstance().minecraftVersion;
     }
 
-    public static FoliaLib getFoliaLib() {
-        return getInstance().foliaLib;
-    }
-
-    public static PlatformScheduler getScheduler() {
+    public static TaskScheduler getScheduler() {
         return getInstance().scheduler;
     }
 
@@ -251,9 +243,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             return;
         }
 
-        this.foliaLib = new FoliaLib(this); // Platform friendly library
-        this.scheduler = foliaLib.getScheduler();
         PlatformUtil.initialize();
+        this.scheduler = TaskScheduler.create();
 
         getLogger().info("正在加载配置文件...");
         saveDefaultConfig();
@@ -541,22 +532,22 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     }
     
     public static void runNextTick(@NotNull Runnable runnable) {
-        getScheduler().runNextTick(tsk -> runnable.run());
+        getScheduler().runNextTick(runnable);
     }
 
     public static void runLater(@NotNull Runnable runnable, long delay) {
-        getScheduler().runLater(tsk -> runnable.run(), delay);
+        getScheduler().runLater(runnable, delay);
     }
     
     public static void runLaterAsync(@NotNull Runnable runnable, long delay) {
-        getScheduler().runLaterAsync(tsk -> runnable.run(), delay);
+        getScheduler().runLaterAsync(runnable, delay);
     }
 
     public static void runTimer(@NotNull Runnable runnable, long delay, long period) {
-        getScheduler().runTimer(tsk -> runnable.run(), delay, period);
+        getScheduler().runTimer(runnable, delay, period);
     }
     
     public static void runTimerAsync(@NotNull Runnable runnable, long delay, long period) {
-        getScheduler().runTimerAsync(tsk -> runnable.run(), delay, period);
+        getScheduler().runTimerAsync(runnable, delay, period);
     }
 }
