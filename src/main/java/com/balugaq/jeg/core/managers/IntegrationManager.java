@@ -124,6 +124,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledSlimeAEPlugin;
     private boolean enabledSlimeFrame;
     private boolean enabledSlimeHUD;
+    private boolean enabledSlimeHUDPlus;
     private boolean enabledSlimeTinker;
     private boolean enabledTsingshanTechnology;
     private boolean enabledTsingshanTechnology_Fixed;
@@ -174,7 +175,8 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
                             this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
                             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
-                            this.enabledSlimeHUD = pm.isPluginEnabled("SlimeHUD");
+                            this.enabledSlimeHUDPlus = pm.isPluginEnabled("SlimeHUDPlus");
+                            this.enabledSlimeHUD = enabledSlimeHUD || pm.isPluginEnabled("SlimeHUD");
                             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
                             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
                             this.enabledTsingshanTechnology_Fixed = pm.isPluginEnabled("TsingshanTechnology-Fixed");
