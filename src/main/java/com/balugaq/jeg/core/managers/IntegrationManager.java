@@ -131,9 +131,8 @@ public class IntegrationManager extends AbstractManager {
 
     public IntegrationManager(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getScheduler()
-                .runTaskLater(
-                        plugin,
+        JustEnoughGuide
+                .runLater(
                         () -> {
                             PluginManager pm = Bukkit.getPluginManager();
                             try {
@@ -231,11 +230,11 @@ public class IntegrationManager extends AbstractManager {
     }
 
     public static void scheduleRun(@NotNull Runnable runnable) {
-        Bukkit.getScheduler().runTaskLater(JustEnoughGuide.getInstance(), runnable, 2L);
+        JustEnoughGuide.runLater(runnable, 2L);
     }
 
     public static void scheduleRunAsync(@NotNull Runnable runnable) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), runnable, 2L);
+        JustEnoughGuide.runLaterAsync(runnable, 2L);
     }
 
     @Deprecated

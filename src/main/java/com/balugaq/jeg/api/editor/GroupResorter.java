@@ -35,7 +35,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -72,9 +71,8 @@ public class GroupResorter {
     @ApiStatus.Internal
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     private static void loadInternal() {
-        Bukkit.getScheduler()
-                .runTaskLater(
-                        JustEnoughGuide.getInstance(),
+        JustEnoughGuide
+                .runLater(
                         () -> {
                             if (hasCfg()) {
                                 int offset = 0;

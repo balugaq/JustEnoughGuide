@@ -103,7 +103,7 @@ public class RecipeCompletableListener implements Listener {
     private static ItemStack RECIPE_COMPLETABLE_BOOK_ITEM = null;
 
     static {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(JustEnoughGuide.getInstance(), () -> {
+        JustEnoughGuide.runTimerAsync(() -> {
             for (UUID uuid : missingMaterials.keySet()) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player == null) {

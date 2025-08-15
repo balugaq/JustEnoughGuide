@@ -54,7 +54,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -92,9 +91,7 @@ public class VanillaItemsGroup extends FlexItemGroup {
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
 
     static {
-        Bukkit.getScheduler()
-                .runTaskLater(
-                        JAVA_PLUGIN,
+        JustEnoughGuide.runLater(
                         () -> {
                             boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
                             try {

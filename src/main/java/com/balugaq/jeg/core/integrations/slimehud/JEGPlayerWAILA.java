@@ -30,6 +30,7 @@ package com.balugaq.jeg.core.integrations.slimehud;
 import com.balugaq.jeg.api.objects.enums.HUDLocation;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.MinecraftVersion;
+import com.balugaq.jeg.utils.PlatformUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.schntgaispock.slimehud.SlimeHUD;
@@ -37,7 +38,6 @@ import io.github.schntgaispock.slimehud.util.Util;
 import io.github.schntgaispock.slimehud.waila.HudRequest;
 import io.github.schntgaispock.slimehud.waila.PlayerWAILA;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBarViewer;
@@ -73,7 +73,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         getWAILABar().removePlayer(player);
         kyoriBossBarSupplier = () -> {
             if (kyoriBossBar == null) {
-                if (PaperLib.isPaper() && IS_1_20_1) {
+                if (PlatformUtil.isPaper() && IS_1_20_1) {
                     String bossbarColor = SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase();
                     kyoriBossBar = BossBar.bossBar(Component.text(""), 1.0f, toBossBarColor(bossbarColor), BossBar.Overlay.PROGRESS, new HashSet<>());
                     return (BossBar) kyoriBossBar;
@@ -209,7 +209,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
     }
 
     public void actionbar(String facing) {
-        if (PaperLib.isPaper()) {
+        if (PlatformUtil.isPaper()) {
             getPlayer().sendActionBar(LegacyComponentSerializer.legacySection().deserialize(facing));
         } else {
             getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(facing));

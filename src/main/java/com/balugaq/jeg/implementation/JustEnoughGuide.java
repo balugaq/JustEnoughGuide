@@ -54,10 +54,13 @@ import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
+import com.balugaq.jeg.utils.PlatformUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.UUIDUtils;
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.PlatformScheduler;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
@@ -136,6 +139,12 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private MinecraftVersion minecraftVersion = null;
 
     @Getter
+    private FoliaLib foliaLib;
+
+    @Getter
+    private PlatformScheduler scheduler;
+
+    @Getter
     private int javaVersion = 0;
 
     public JustEnoughGuide() {
@@ -173,6 +182,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getInstance().minecraftVersion;
     }
 
+    public static FoliaLib getFoliaLib() {
+        return getInstance().foliaLib;
+    }
+
+    public static PlatformScheduler getScheduler() {
+        return getInstance().scheduler;
+    }
+
     public static @NotNull JustEnoughGuide getInstance() {
         return JustEnoughGuide.instance;
     }
@@ -200,11 +217,11 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     }
 
     public static void postServerStartup(@NotNull Runnable runnable) {
-        Bukkit.getScheduler().runTask(getInstance(), runnable);
+        JustEnoughGuide.runNextTick(runnable);
     }
 
     public static void postServerStartupAsynchronously(Runnable runnable) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(getInstance(), runnable, 1L);
+        JustEnoughGuide.runLaterAsync(runnable, 1L);
     }
 
     public static boolean disableAutomaticallyLoadItems() {
@@ -233,6 +250,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             onDisable();
             return;
         }
+
+        this.foliaLib = new FoliaLib(this); // Platform friendly library
+        this.scheduler = foliaLib.getScheduler();
+        PlatformUtil.initialize();
 
         getLogger().info("正在加载配置文件...");
         saveDefaultConfig();
@@ -286,8 +307,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().info("正在加载物品组...");
             GroupSetup.setup();
             if (survivalOverride) {
-                Bukkit.getScheduler()
-                        .runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), CustomGroupConfigurations::load, 1L);
+                JustEnoughGuide.runLaterAsync(CustomGroupConfigurations::load, 1L);
             }
             getLogger().info("物品组加载完毕！");
 
@@ -518,5 +538,25 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().info("自动更新失败: " + e.getMessage());
             Debug.trace(e);
         }
+    }
+    
+    public static void runNextTick(@NotNull Runnable runnable) {
+        getScheduler().runNextTick(tsk -> runnable.run());
+    }
+
+    public static void runLater(@NotNull Runnable runnable, long delay) {
+        getScheduler().runLater(tsk -> runnable.run(), delay);
+    }
+    
+    public static void runLaterAsync(@NotNull Runnable runnable, long delay) {
+        getScheduler().runLaterAsync(tsk -> runnable.run(), delay);
+    }
+
+    public static void runTimer(@NotNull Runnable runnable, long delay, long period) {
+        getScheduler().runTimer(tsk -> runnable.run(), delay, period);
+    }
+    
+    public static void runTimerAsync(@NotNull Runnable runnable, long delay, long period) {
+        getScheduler().runTimerAsync(tsk -> runnable.run(), delay, period);
     }
 }

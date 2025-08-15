@@ -73,7 +73,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -358,9 +357,8 @@ public class SearchGroup extends FlexItemGroup {
             LOADED = true;
             Debug.debug("Initializing Search Group...");
             Timer.start();
-            Bukkit.getScheduler()
-                    .runTaskLaterAsynchronously(
-                            JAVA_PLUGIN,
+            JustEnoughGuide
+                    .runLaterAsync(
                             () -> {
                                 // Initialize asynchronously
                                 int i = 0;
