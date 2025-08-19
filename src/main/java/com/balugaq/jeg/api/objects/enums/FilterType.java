@@ -79,14 +79,16 @@ public enum FilterType {
             (player, item, lowerFilterValue, pinyin) -> {
                 List<ItemStack> display = null;
                 if (item instanceof AContainer ac) {
-                    display = ac.getDisplayRecipes();
+                    // Fix: Cannot search item when SlimeCustomizer crashed
+                    try {
+                        display = ac.getDisplayRecipes();
+                    } catch (Exception ignored) {
+                    }
                 } else if (item instanceof MultiBlockMachine mb) {
-                    // Fix: Fix NullPointerException occurred when searching items from SlimeFood
+                    // Fix: NullPointerException occurred when searching items from SlimeFood
                     try {
                         display = mb.getDisplayRecipes();
-                    } catch (Exception e) {
-                        Debug.trace(e, "searching");
-                        return false;
+                    } catch (Exception ignored) {
                     }
                 } else {
                     try {
