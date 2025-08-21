@@ -55,7 +55,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"unused", "deprecation", "DataFlowIssue"})
 public class ValueTable {
-    private static final int THRESHOLD = 64;
+    private static final int THRESHOLD = 50;
     private static final HashMap<Integer, Double> valueMap = new HashMap<>();
 
     public static void load() {
