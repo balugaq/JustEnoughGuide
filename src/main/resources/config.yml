@@ -18,12 +18,15 @@ improvements:
   finalTECH-emc-display-option: true
   item-shareable: true
 
+# 是否禁止在粘液容器中交互收纳袋
+disable-bundle-interaction: true
+
 # 禁止搜索非限定词时出现名字包含以下任意词的物品
 blacklist:
   - "快捷"
 
 # 禁止任何形式搜出名字包含以下任意词的物品
-banlist: [ ]
+banlist: []
 
 # 搜索时每组词间相通
 shared-chars:
@@ -455,7 +458,7 @@ local-translate:
   EtherTech: "虚素科技"
 
 # Do not change this value unless you know what you are doing.
-config-version: 1.9
+config-version: 2.0
 
 # Do not change this value unless you know what you are doing.
 debug: false

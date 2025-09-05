@@ -28,6 +28,7 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
+import com.balugaq.jeg.core.listeners.BundleListener;
 import com.balugaq.jeg.core.listeners.CerPatchListener;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
 import com.balugaq.jeg.core.listeners.GuideGUIFixListener;
@@ -76,6 +77,10 @@ public class ListenerManager extends AbstractManager {
 
         if (JustEnoughGuide.getConfigManager().isDebug()) {
             listeners.add(new WatchdogHandler());
+        }
+
+        if (JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()) {
+            listeners.add(new BundleListener());
         }
     }
 
