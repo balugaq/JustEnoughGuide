@@ -40,6 +40,6 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerWAILAUpdateListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
-        SlimeHUDIntegrationMain.wrap(event.getPlayer());
+        JEGPlayerWAILA.wrap(event.getPlayer());
     }
 }

@@ -153,10 +153,10 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledElementManipulation = pm.isPluginEnabled("ElementManipulation");
                             this.enabledEMCTech = pm.isPluginEnabled("EMCTech");
                             this.enabledFastMachines = pm.isPluginEnabled("FastMachines");
-                            this.enabledFinalTech = classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
+                            this.enabledFinalTech = pm.isPluginEnabled("FinalTech") && classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
                             this.enabledFinalTECH_Changed = pm.isPluginEnabled("FinalTECH-Changed");
                             this.enabledFinalTECH = enabledFinalTECH_Changed
-                                    || classExists("io.taraxacum.libs.slimefun.dto.ItemValueTable");
+                                    || (pm.isPluginEnabled("FinalTECH") && classExists("io.taraxacum.libs.slimefun.dto.ItemValueTable"));
                             this.enabledFluffyMachines = pm.isPluginEnabled("FluffyMachines");
                             this.enabledGalactifun = pm.isPluginEnabled("Galactifun");
                             this.enabledGastronomicon = pm.isPluginEnabled("Gastronomicon");

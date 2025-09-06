@@ -37,6 +37,7 @@ import io.github.schntgaispock.slimehud.SlimeHUD;
 import io.github.schntgaispock.slimehud.util.Util;
 import io.github.schntgaispock.slimehud.waila.HudRequest;
 import io.github.schntgaispock.slimehud.waila.PlayerWAILA;
+import io.github.schntgaispock.slimehud.waila.WAILAManager;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
@@ -50,10 +51,14 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
@@ -65,6 +70,7 @@ import java.util.logging.Level;
 public class JEGPlayerWAILA extends PlayerWAILA {
     public static final boolean IS_1_20_1 =
             JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_20_1);
+    public static final long TICK_RATE = SlimeHUD.getInstance().getConfig().getLong("waila.tick-rate");
     public final @NotNull Supplier<BossBar> kyoriBossBarSupplier;
     public boolean visible;
     public @Nullable BossBar kyoriBossBar = null;
@@ -145,6 +151,33 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         }
 
         return waila;
+    }
+
+    @NotNull
+    public static Map<UUID, PlayerWAILA> getWailaMap() {
+        return WAILAManager.getInstance().getWailas();
+    }
+
+    public static void wrap(@NotNull Player player) {
+        synchronized (getWailaMap()) {
+            getWailaMap().compute(player.getUniqueId(), (k, waila) -> runTaskAsync(JustEnoughGuide.getInstance(), JEGPlayerWAILA.wrap(player, waila)));
+        }
+    }
+
+    public static <T extends BukkitRunnable> T runTaskAsync(@NotNull Plugin plugin, @Nullable T runnable) {
+        if (runnable == null) {
+            return null;
+        }
+        runnable.runTaskTimerAsynchronously(plugin, 0L, TICK_RATE);
+        return runnable;
+    }
+
+    public static void onDisable() {
+        synchronized (getWailaMap()) {
+            for (Map.Entry<UUID, PlayerWAILA> entry : getWailaMap().entrySet()) {
+                getWailaMap().compute(entry.getKey(), (k, waila) -> runTaskAsync(SlimeHUD.getInstance(), JEGPlayerWAILA.unwrap(waila)));
+            }
+        }
     }
 
     public @Nullable String WAILALocation0() {

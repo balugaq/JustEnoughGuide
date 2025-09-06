@@ -30,44 +30,15 @@ package com.balugaq.jeg.core.integrations.slimehud;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import io.github.schntgaispock.slimehud.SlimeHUD;
-import io.github.schntgaispock.slimehud.waila.PlayerWAILA;
-import io.github.schntgaispock.slimehud.waila.WAILAManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 public class SlimeHUDIntegrationMain implements Integration {
-    public static final long tickRate = SlimeHUD.getInstance().getConfig().getLong("waila.tick-rate");
-
-    @NotNull
-    public static Map<UUID, PlayerWAILA> getWailaMap() {
-        return WAILAManager.getInstance().getWailas();
-    }
-
-    public static void wrap(@NotNull Player player) {
-        synchronized (getWailaMap()) {
-            getWailaMap().compute(player.getUniqueId(), (k, waila) -> runTaskAsync(JustEnoughGuide.getInstance(), JEGPlayerWAILA.wrap(player, waila)));
-        }
-    }
-
-    public static <T extends BukkitRunnable> T runTaskAsync(@NotNull Plugin plugin, @Nullable T runnable) {
-        if (runnable == null) {
-            return null;
-        }
-        runnable.runTaskTimerAsynchronously(plugin, 0L, tickRate);
-        return runnable;
-    }
 
     @Override
     public @NotNull String getHookPlugin() {
@@ -78,7 +49,7 @@ public class SlimeHUDIntegrationMain implements Integration {
     public void onEnable() {
         JEGGuideSettings.addOption(HUDMachineInfoLocationGuideOption.instance());
         for (Player player : Bukkit.getOnlinePlayers()) {
-            wrap(player);
+            JEGPlayerWAILA.wrap(player);
         }
 
         JustEnoughGuide.getListenerManager().registerListener(new PlayerWAILAUpdateListener());
@@ -86,10 +57,6 @@ public class SlimeHUDIntegrationMain implements Integration {
 
     @Override
     public void onDisable() {
-        synchronized (getWailaMap()) {
-            for (Map.Entry<UUID, PlayerWAILA> entry : getWailaMap().entrySet()) {
-                getWailaMap().compute(entry.getKey(), (k, waila) -> runTaskAsync(SlimeHUD.getInstance(), JEGPlayerWAILA.unwrap(waila)));
-            }
-        }
+        JEGPlayerWAILA.onDisable();
     }
 }

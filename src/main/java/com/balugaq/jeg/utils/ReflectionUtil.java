@@ -155,12 +155,24 @@ public class ReflectionUtil {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterTypes.length) {
                     boolean match = true;
+                    // exact match
                     for (int i = 0; i < parameterTypes.length; i++) {
                         if (method.getParameterTypes()[i] != parameterTypes[i]) {
                             match = false;
                             break;
                         }
                     }
+                    // normal match, find an adaptable method, which args are adaptable
+                    if (!match) {
+                        match = true;
+                        for (int i = 0; i < parameterTypes.length; i++) {
+                            if (!method.getParameterTypes()[i].isAssignableFrom(parameterTypes[i])) {
+                                match = false;
+                                break;
+                            }
+                        }
+                    }
+
                     if (match) {
                         return method;
                     }
