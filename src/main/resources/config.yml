@@ -343,7 +343,8 @@ local-translate:
   SFCalc: "粘液计算器"
   SfChunkInfo: "区块信息"
   SlimefunAdvancements: "自定义粘液任务"
-  SlimeHUD: "方块信息显示"
+  SlimeHUD: "方块信息显示" # Same as SlimeHUDPlus
+  SlimeHUDPlus: "方块信息显示" # Same as SlimeHUD
   RaySlimefunAddon: "高级自定义粘液附属" # Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
   SCrafter: "SC科技" # Same as SlimefunZT
   CrispyMachines: "酥脆机器"
@@ -456,6 +457,7 @@ local-translate:
   Aircraft: "粘液飞机"
   InfinityExpansion2: "无尽贪婪2"
   EtherTech: "虚素科技"
+  SlimefunTimeit: "性能监视器"
 
 # Do not change this value unless you know what you are doing.
 config-version: 2.0

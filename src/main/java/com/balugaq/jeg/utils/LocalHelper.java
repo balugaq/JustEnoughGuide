@@ -214,7 +214,8 @@ public class LocalHelper {
         addonLocals.put("SFCalc", "粘液计算器");
         addonLocals.put("SfChunkInfo", "区块信息");
         addonLocals.put("SlimefunAdvancements", "自定义粘液任务");
-        addonLocals.put("SlimeHUD", "方块信息显示");
+        addonLocals.put("SlimeHUD", "方块信息显示"); // Same as SlimeHUDPlus
+        addonLocals.put("SlimeHUDPlus", "方块信息显示"); // Same as SlimeHUD
         addonLocals.put(
                 "RaySlimefunAddon",
                 "高级自定义粘液附属"); // Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
@@ -329,6 +330,7 @@ public class LocalHelper {
         addonLocals.put("Aircraft", "粘液飞机");
         addonLocals.put("InfinityExpansion2", "无尽贪婪2");
         addonLocals.put("EtherTech", "虚素科技");
+        addonLocals.put("SlimefunTimeit", "性能监视器");
     }
 
     @NotNull
