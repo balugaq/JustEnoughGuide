@@ -60,6 +60,11 @@ public class NetworksExpansionIntegrationMain implements Integration {
             11, 12, 13,
             20, 21, 22
     };
+    public static final int[] NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS = new int[]{
+            0, 1, 2,
+            9, 10, 11,
+            18, 19, 20
+    };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     public static JavaPlugin plugin = null;
 
@@ -108,6 +113,7 @@ public class NetworksExpansionIntegrationMain implements Integration {
         rrc("NTW_EXPANSION_WORKBENCH", EXPANSION_WORKBENCH_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_WORKBENCH_6X6", EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_STORAGE_UPGRADE_TABLE", STORAGE_UPGRADE_TABLE_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE", NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS, false);
     }
 
     @Override
