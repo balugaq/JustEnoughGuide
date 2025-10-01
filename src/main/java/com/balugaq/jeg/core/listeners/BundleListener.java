@@ -37,6 +37,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BundleListener implements Listener {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isBundle(@Nullable ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
+        return item.getType().name().endsWith("BUNDLE");
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBundleClick(@NotNull InventoryClickEvent event) {
         if (!(event.getInventory().getHolder() instanceof SlimefunInventoryHolder)) {
@@ -52,13 +61,5 @@ public class BundleListener implements Listener {
         }
 
         event.setCancelled(true);
-    }
-
-    public static boolean isBundle(@Nullable ItemStack item) {
-        if (item == null) {
-            return false;
-        }
-
-        return item.getType().name().endsWith("BUNDLE");
     }
 }

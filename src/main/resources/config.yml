@@ -26,7 +26,7 @@ blacklist:
   - "快捷"
 
 # 禁止任何形式搜出名字包含以下任意词的物品
-banlist: []
+banlist: [ ]
 
 # 搜索时每组词间相通
 shared-chars:

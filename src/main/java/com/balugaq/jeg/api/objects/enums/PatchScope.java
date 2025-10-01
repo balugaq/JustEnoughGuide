@@ -32,7 +32,6 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author balugaq

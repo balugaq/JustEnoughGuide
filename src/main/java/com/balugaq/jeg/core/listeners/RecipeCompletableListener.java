@@ -86,7 +86,7 @@ import java.util.function.BiConsumer;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ConstantValue"})
 public class RecipeCompletableListener implements Listener {
     public static final NamespacedKey RECIPE_COMPLETE_EXIT_KEY = KeyUtil.newKey("recipe_complete_exit");
     public static final int[] DISPENSER_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
