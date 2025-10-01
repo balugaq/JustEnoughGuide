@@ -120,7 +120,7 @@ public class CERRecipeGroup extends FlexItemGroup {
         this.recipes = recipes;
         this.pageMap.put(1, this);
         this.machine = machine;
-        this.icons = getDisplayIcons(machine, recipes);
+        this.icons = getDisplayIcons(player, machine, recipes);
     }
 
     /**
@@ -140,7 +140,7 @@ public class CERRecipeGroup extends FlexItemGroup {
         this.pageMap.put(page, this);
     }
 
-    public static List<Pair<ItemStack, ChestMenu.MenuClickHandler>> getDisplayIcons(SlimefunItem machine, List<RecipeWrapper> wrappers) {
+    public static List<Pair<ItemStack, ChestMenu.MenuClickHandler>> getDisplayIcons(Player p, SlimefunItem machine, List<RecipeWrapper> wrappers) {
         List<Pair<ItemStack, ChestMenu.MenuClickHandler>> list = new ArrayList<>();
         for (int i = 0; i < wrappers.size(); i++) {
             RecipeWrapper recipe = wrappers.get(i);
@@ -149,49 +149,49 @@ public class CERRecipeGroup extends FlexItemGroup {
             var out = recipe.getOutput();
             var e = recipe.getTotalEnergyCost();
             list.add(new Pair<>(
-                    Converter.getItem(
+                    PatchScope.CerRecipe.patch(p, Converter.getItem(
                             Material.GREEN_STAINED_GLASS_PANE,
                             "&a配方#" + (i + 1),
                             "&a机器制作难度: " + ValueTable.getValue(machine),
                             "&a耗时: " + recipe.getTicks(),
                             "&a" + (e == 0 ? "耗电: 无" : e > 0 ? "耗电: " + e : "产电: " + (-e))
-                    ),
+                    )),
                     ChestMenuUtils.getEmptyClickHandler()
             ));
 
             if (in != null && in.length > 0) {
                 list.add(new Pair<>(
-                        Converter.getItem(
+                        PatchScope.CerRecipeBorderInput.patch(p, Converter.getItem(
                                 Material.BLUE_STAINED_GLASS_PANE,
                                 "&a输入 →"
-                        ),
+                        )),
                         ChestMenuUtils.getEmptyClickHandler()
                 ));
 
                 for (ItemStack input : in) {
                     list.add(new Pair<>(
-                            Converter.getItem(ItemStackUtil.getCleanItem(input)),
+                            PatchScope.CerRecipeInput.patch(p, Converter.getItem(ItemStackUtil.getCleanItem(input))),
                             subMenuOpen
                     ));
                 }
 
                 if (out != null && out.length > 0) {
                     list.add(new Pair<>(
-                            Converter.getItem(
+                            PatchScope.CerRecipeBorderInputOutput.patch(p, Converter.getItem(
                                     Material.ORANGE_STAINED_GLASS_PANE,
                                     "&a← 输入",
                                     "&6输出 →"
-                            ),
+                            )),
                             ChestMenuUtils.getEmptyClickHandler()
                     ));
                 }
             } else {
                 if (out != null && out.length > 0) {
                     list.add(new Pair<>(
-                            Converter.getItem(
+                            PatchScope.CerRecipeBorderOutput.patch(p, Converter.getItem(
                                     Material.ORANGE_STAINED_GLASS_PANE,
                                     "&6输出 →"
-                            ),
+                            )),
                             ChestMenuUtils.getEmptyClickHandler()
                     ));
                 }
@@ -212,7 +212,7 @@ public class CERRecipeGroup extends FlexItemGroup {
                     meta.setLore(lore);
                     display.setItemMeta(meta);
                     list.add(new Pair<>(
-                            display,
+                            PatchScope.CerRecipeOutput.patch(p, display),
                             subMenuOpen
                     ));
                 }

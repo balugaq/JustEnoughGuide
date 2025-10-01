@@ -53,10 +53,10 @@ public class PatchEvent extends Event {
     private final @NotNull Player player;
 
     @Setter
-    private @Nullable ItemStack itemStack;
+    private @NotNull ItemStack itemStack;
 
     public PatchEvent(
-            final @NotNull PatchScope patchScope, final @NotNull Player player, final @Nullable ItemStack itemStack) {
+            final @NotNull PatchScope patchScope, final @NotNull Player player, final @NotNull ItemStack itemStack) {
         super(!Bukkit.isPrimaryThread());
         this.patchScope = patchScope;
         this.player = player;
@@ -67,8 +67,8 @@ public class PatchEvent extends Event {
         return handlers;
     }
 
-    public static @Nullable ItemStack patch(
-            final @NotNull PatchScope patchScope, final @NotNull Player player, final @Nullable ItemStack itemStack) {
+    public static @NotNull ItemStack patch(
+            final @NotNull PatchScope patchScope, final @NotNull Player player, final @NotNull ItemStack itemStack) {
         PatchEvent event = new PatchEvent(patchScope, player, Converter.getItem(ItemStackUtil.getCleanItem(itemStack)));
         try {
             Bukkit.getPluginManager().callEvent(event);
