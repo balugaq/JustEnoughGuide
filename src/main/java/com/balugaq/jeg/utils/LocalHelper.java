@@ -141,7 +141,7 @@ public class LocalHelper {
         addonLocals.put("GuizhanCraft", "Guizhan Craft");
         addonLocals.put("Magmanimous", "Magmanimous");
         addonLocals.put("UltimateGenerators-RC27", "Ultimate Generators"); // Same as UltimateGenerators
-        addonLocals.put("UltimateGenerators", "Ultimate Generators"); // Same as UltimateGenerators-RC27"); // Same as UltimateGenerators-RC27
+        addonLocals.put("UltimateGenerators", "Ultimate Generators"); // Same as UltimateGenerators-RC27
         addonLocals.put("UltimateGenerators2", "Ultimate Generators 2");
         addonLocals.put("CrispyMachine", "Crispy Machine");
         addonLocals.put("Chocoholics", "Chocoholics"); // Same as ChocoHills
@@ -322,6 +322,8 @@ public class LocalHelper {
         addonLocals.put("PoseidonAddon", "PoseidonAddon");
         addonLocals.put("Aircraft", "Aircraft");
         addonLocals.put("InfinityExpansion2", "InfinityExpansion2");
+        addonLocals.put("EtherTech", "EtherTech");
+        addonLocals.put("SlimefunTimeit", "Slimefun Timeit");
     }
 
     @NotNull

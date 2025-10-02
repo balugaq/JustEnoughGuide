@@ -339,7 +339,7 @@ local-translate:
   SFCalc: "SF Calc"
   SfChunkInfo: "SF Chunk Info"
   SlimefunAdvancements: "Slimefun Advancements"
-  SlimeHUD: "Slime HUD" # Same as SlimeHUD
+  SlimeHUD: "Slime HUD" # Same as SlimeHUDPlus
   SlimeHUDPlus: "Slime HUD" # Same as SlimeHUD
   RaySlimefunAddon: "Ray Slimefun Addon" # Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
   SCrafter: "SC Tech" # Same as SlimefunZT
