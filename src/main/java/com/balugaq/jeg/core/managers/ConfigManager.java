@@ -71,7 +71,6 @@ public class ConfigManager extends AbstractManager {
     private final boolean BOOKMARK;
     private final boolean RTS_SEARCH;
     private final boolean BEGINNER_OPTION;
-    private final boolean DISABLE_BUNDLE_INTERACTION;
     private final @NotNull String SURVIVAL_GUIDE_TITLE;
     private final @NotNull String CHEAT_GUIDE_TITLE;
     private final @NotNull String SETTINGS_GUIDE_TITLE;
@@ -117,7 +116,6 @@ public class ConfigManager extends AbstractManager {
         this.RTS_SEARCH = cfg.getBoolean("improvements.rts-search", true);
 
         this.BEGINNER_OPTION = cfg.getBoolean("improvements.beginner-option", true);
-        this.DISABLE_BUNDLE_INTERACTION = cfg.getBoolean("disable-bundle-interaction", true);
 
         List<String> rawBlacklist = cfg.getStringList("blacklist");
         if (rawBlacklist == null || rawBlacklist.isEmpty()) {
@@ -467,9 +465,5 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isItemShareable() {
         return ITEM_SHAREABLE;
-    }
-
-    public boolean isDisabledBundleInteraction() {
-        return DISABLE_BUNDLE_INTERACTION;
     }
 }

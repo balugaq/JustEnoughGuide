@@ -32,13 +32,13 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.platform.PlatformUtil;
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.schntgaispock.slimehud.SlimeHUD;
 import io.github.schntgaispock.slimehud.util.Util;
 import io.github.schntgaispock.slimehud.waila.HudRequest;
 import io.github.schntgaispock.slimehud.waila.PlayerWAILA;
 import io.github.schntgaispock.slimehud.waila.WAILAManager;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBarViewer;
@@ -207,7 +207,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
             return;
         }
 
-        SlimefunItem item = StorageCacheUtils.getSfItem(targetBlock.getLocation());
+        SlimefunItem item = BlockStorage.check(targetBlock.getLocation());
         if (item == null) {
             clearFacing0();
             return;

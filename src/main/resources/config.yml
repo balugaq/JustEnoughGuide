@@ -21,9 +21,6 @@ improvements:
   finalTECH-emc-display-option: true
   item-shareable: true
 
-# Prohibit bundles being interacted by players
-disable-bundle-interaction: true
-
 # Prohibit items with names containing any of the following words when searching for non restrictive words
 blacklist:
   - "Fast Machines"
