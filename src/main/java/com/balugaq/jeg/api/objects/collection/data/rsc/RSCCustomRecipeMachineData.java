@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class RSCCustomRecipeMachineData extends MachineData {
     private final int speed;
 
     @Override
-    public List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
                 .map(recipe -> new CERRecipeGroup.RecipeWrapper(
                         recipe.getInput(),

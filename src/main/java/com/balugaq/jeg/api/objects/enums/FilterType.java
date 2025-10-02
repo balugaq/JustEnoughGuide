@@ -74,39 +74,46 @@ public enum FilterType {
 
         return SearchGroup.isSearchFilterApplicable(player, recipeTypeIcon, lowerFilterValue, false);
     }),
-    BY_DISPLAY_ITEM_NAME("%", (player, item, lowerFilterValue, pinyin) -> {
-        List<ItemStack> display = null;
-        if (item instanceof AContainer ac) {
-            display = ac.getDisplayRecipes();
-        } else if (item instanceof MultiBlockMachine mb) {
-            // Fix: Fix NullPointerException occurred when searching items from SlimeFood
-            try {
-                display = mb.getDisplayRecipes();
-            } catch (Exception e) {
-                Debug.trace(e, "searching");
-                return false;
-            }
-        } else {
-            try {
-                if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item) && item instanceof RecipeDisplayItem rdi) {
-                    display = rdi.getDisplayRecipes();
-                }
-            } catch (Exception e) {
-                Debug.trace(e, "searching");
-                return false;
-            }
-        }
-        if (display != null) {
-            try {
-                for (ItemStack itemStack : display) {
-                    if (SearchGroup.isSearchFilterApplicable(player, itemStack, lowerFilterValue, false)) {
-                        return true;
+    BY_DISPLAY_ITEM_NAME(
+            "%",
+            (player, item, lowerFilterValue, pinyin) -> {
+                List<ItemStack> display = null;
+                if (item instanceof AContainer ac) {
+                    // Fix: Cannot search item when SlimeCustomizer crashed
+                    try {
+                        display = ac.getDisplayRecipes();
+                    } catch (Exception ignored) {
+                    }
+                } else if (item instanceof MultiBlockMachine mb) {
+                    // Fix: NullPointerException occurred when searching items from SlimeFood
+                    try {
+                        display = mb.getDisplayRecipes();
+                    } catch (Exception ignored) {
+                    }
+                } else {
+                    try {
+                        if (SpecialMenuProvider.ENABLED_LogiTech
+                                && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null
+                                && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item)
+                                && item instanceof RecipeDisplayItem rdi) {
+                            display = rdi.getDisplayRecipes();
+                        }
+                    } catch (Exception e) {
+                        Debug.trace(e, "searching");
+                        return false;
                     }
                 }
-            } catch (Throwable ignored) {
-                return false;
-            }
-        }
+                if (display != null) {
+                    try {
+                        for (ItemStack itemStack : display) {
+                            if (SearchGroup.isSearchFilterApplicable(player, itemStack, lowerFilterValue, false)) {
+                                return true;
+                            }
+                        }
+                    } catch (Exception ignored) {
+                        return false;
+                    }
+                }
 
         String id = item.getId();
         Reference<Set<String>> ref = SearchGroup.SPECIAL_CACHE.get(id);

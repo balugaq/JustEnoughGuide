@@ -44,9 +44,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author balugaq
  * @since 1.9
@@ -69,8 +66,10 @@ public class NetworksExpansionIntegrationMain implements Integration {
             11, 12, 13,
             20, 21, 22
     };
-    public static final BlockFace[] VALID_FACES = new BlockFace[]{
-            BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    public static final int[] NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS = new int[]{
+            0, 1, 2,
+            9, 10, 11,
+            18, 19, 20
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     public static JavaPlugin plugin = null;
@@ -93,30 +92,6 @@ public class NetworksExpansionIntegrationMain implements Integration {
     public static void rrc(@NotNull SlimefunItem slimefunItem, int @NotNull [] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
-    @Nullable
-    public static NetworkRoot findNearbyNetworkRoot(@NotNull Location location) {
-        NetworkRoot root = null;
-
-        for (BlockFace blockFace : VALID_FACES) {
-            Location clone = location.clone();
-            switch (blockFace) {
-                case NORTH -> clone.set(clone.getBlockX(), clone.getBlockY(), clone.getBlockZ() - 1);
-                case EAST -> clone.set(clone.getBlockX() + 1, clone.getBlockY(), clone.getBlockZ());
-                case SOUTH -> clone.set(clone.getBlockX(), clone.getBlockY(), clone.getBlockZ() + 1);
-                case WEST -> clone.set(clone.getBlockX() - 1, clone.getBlockY(), clone.getBlockZ());
-                case UP -> clone.set(clone.getBlockX(), clone.getBlockY() + 1, clone.getBlockZ());
-                case DOWN -> clone.set(clone.getBlockX(), clone.getBlockY() - 1, clone.getBlockZ());
-            }
-            NodeDefinition def2 = NetworkStorage.getNode(clone);
-            if (def2 != null && def2.getNode() != null) {
-                root = def2.getNode().getRoot();
-                break;
-            }
-        }
-
-        return root;
     }
 
     @Override
@@ -144,6 +119,7 @@ public class NetworksExpansionIntegrationMain implements Integration {
         rrc("NTW_EXPANSION_WORKBENCH", EXPANSION_WORKBENCH_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_WORKBENCH_6X6", EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_STORAGE_UPGRADE_TABLE", STORAGE_UPGRADE_TABLE_RECIPE_SLOTS, false);
+        rrc("NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE", NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS, false);
     }
 
     @Override

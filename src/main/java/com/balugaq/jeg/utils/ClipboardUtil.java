@@ -44,24 +44,28 @@ import java.util.function.Consumer;
  * @author balugaq
  * @since 1.7
  */
-@SuppressWarnings({"deprecation", "unused"})
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
 @UtilityClass
 public class ClipboardUtil {
+    @Deprecated
     @ParametersAreNonnullByDefault
     public static void send(Player player, String display, String hover, String text) {
         player.spigot().sendMessage(makeComponent(display, hover, text));
     }
 
+    @Deprecated
     @ParametersAreNonnullByDefault
     public static void send(Player player, TextComponent component) {
         player.spigot().sendMessage(component);
     }
 
+    @Deprecated
     @ParametersAreNonnullByDefault
     public static @NotNull TextComponent makeComponent(String display, String hover, String text) {
         return makeComponent(display, hover, text, null);
     }
 
+    @Deprecated
     @ParametersAreNonnullByDefault
     public static @NotNull TextComponent makeComponent(
             String display, String hover, String text, @Nullable Consumer<TextComponent> consumer) {

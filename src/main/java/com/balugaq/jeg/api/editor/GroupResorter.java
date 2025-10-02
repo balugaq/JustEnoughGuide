@@ -35,10 +35,10 @@ import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -64,15 +64,15 @@ public class GroupResorter {
     public static final File tiersFile = new File(JustEnoughGuide.getInstance().getDataFolder(), "tiers.yml");
     public static @Nullable FileConfiguration config = null;
 
-    static {
-        load();
+    public static void load() {
+        loadInternal();
     }
 
+    @ApiStatus.Internal
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public static void load() {
-        Bukkit.getScheduler()
-                .runTaskLater(
-                        JustEnoughGuide.getInstance(),
+    private static void loadInternal() {
+        JustEnoughGuide
+                .runLater(
                         () -> {
                             if (hasCfg()) {
                                 int offset = 0;

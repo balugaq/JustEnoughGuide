@@ -34,7 +34,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>EN-19</version>
+    <version>EN-20</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -92,12 +92,18 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
-                    <minimizeJar>true</minimizeJar>
+<!--                    <minimizeJar>true</minimizeJar>--> <!-- Fuck FoliaLib, if minimize jar, then paper impl disappears-->
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
                                 <exclude>META-INF/*</exclude>
+                            </excludes>
+                        </filter>
+                        <filter>
+                            <artifact>com.tcoded:*</artifact>
+                            <excludes>
+                                <exclude>**</exclude>
                             </excludes>
                         </filter>
                     </filters>
@@ -117,6 +123,10 @@
                                 <relocation>
                                     <pattern>net.Zrips.CMILib</pattern>
                                     <shadedPattern>com.balugaq.jeg.libraries.cmilib</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.tcoded.folialib</pattern>
+                                    <shadedPattern>com.balugaq.jeg.libraries.folialib</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
@@ -182,6 +192,14 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
+        <repository>
+            <id>tcoded-releases</id>
+            <url>https://repo.tcoded.com/releases</url>
+        </repository>
+        <repository>
+            <id>jeffMediaPublic</id>
+            <url>https://repo.jeff-media.com/public</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -193,9 +211,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Slimefun</groupId>
+            <groupId>com.github.SlimefunGuguProject</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-37</version>
+            <version>38953fe13a</version>
             <scope>provided</scope>
         </dependency>
 
@@ -232,6 +250,20 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Useful PDC Types -->
+        <dependency>
+            <groupId>com.jeff-media</groupId>
+            <artifactId>MorePersistentDataTypes</artifactId>
+            <version>2.4.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -294,11 +326,27 @@
             <systemPath>${project.basedir}/lib/EMCTech-Build 8.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.schntgaispock</groupId>
+            <artifactId>SlimeHUD</artifactId>
+            <version>Build-16</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/SlimeHUD-Build 16.jar</systemPath>
+        </dependency>
+
         <!-- AnvilGUI 1.16+ -->
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
             <version>1.10.7-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- FoliaLib -->
+        <dependency>
+            <groupId>com.tcoded</groupId>
+            <artifactId>FoliaLib</artifactId>
+            <version>0.5.1</version>
             <scope>compile</scope>
         </dependency>
 

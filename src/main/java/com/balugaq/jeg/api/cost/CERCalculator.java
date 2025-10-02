@@ -606,6 +606,9 @@ public class CERCalculator {
     }
 
     public static boolean similar(String i1, ItemStack i2) {
+        if (i2 == null || i2.getType() == Material.AIR) {
+            return false;
+        }
         String name = ItemStackHelper.getDisplayName(i2);
         return supertrim(i1).equalsIgnoreCase(supertrim(name));
     }

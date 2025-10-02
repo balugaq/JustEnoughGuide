@@ -370,7 +370,7 @@ public class SearchGroup extends FlexItemGroup {
             LOADED = true;
             Debug.debug("Initializing Search Group...");
             Timer.start();
-            Bukkit.getScheduler().runTaskAsynchronously(JAVA_PLUGIN, () -> {
+            JustEnoughGuide.runLaterAsync(() -> {
                 // Blacklist, intentionally Chinese
                 BLACKLIST.add("Fast Machines");
 
@@ -965,7 +965,7 @@ public class SearchGroup extends FlexItemGroup {
                 Debug.debug("EN Words: " + EN_WORDS.size());
                 Debug.debug("EN Cache 1 (Keywords): " + EN_CACHE.size());
                 Debug.debug("EN Cache 2 (Display Recipes): " + EN_CACHE2.size());
-            });
+            }, 1L);
         }
     }
 

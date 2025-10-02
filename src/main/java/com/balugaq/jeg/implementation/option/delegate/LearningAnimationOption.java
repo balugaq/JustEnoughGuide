@@ -49,6 +49,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author TheBusyBiscuit
+ * @author balugaq
+ * @since 1.9
+ */
 @SuppressWarnings("DataFlowIssue")
 public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
     @NotNull

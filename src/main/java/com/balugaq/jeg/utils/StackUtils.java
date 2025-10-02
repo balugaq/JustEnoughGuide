@@ -73,6 +73,12 @@ import java.util.Optional;
 @SuppressWarnings({"deprecation", "UnstableApiUsage", "unused"})
 @UtilityClass
 public class StackUtils {
+    public static final boolean IS_1_17_1 =
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17_1);
+    public static final boolean IS_1_19_4 =
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_19_4);
+    public static final boolean IS_1_20 =
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_20);
     public static final boolean IS_1_20_5 =
             JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_20_5);
     public static final boolean IS_1_21 =
@@ -363,18 +369,20 @@ public class StackUtils {
             }
         }
 
-        // Axolotl
-        if (metaOne instanceof AxolotlBucketMeta instanceOne && metaTwo instanceof AxolotlBucketMeta instanceTwo) {
-            if (instanceOne.hasVariant() != instanceTwo.hasVariant()) {
-                return true;
-            }
+        if (IS_1_17_1) {
+            // Axolotl
+            if (metaOne instanceof AxolotlBucketMeta instanceOne && metaTwo instanceof AxolotlBucketMeta instanceTwo) {
+                if (instanceOne.hasVariant() != instanceTwo.hasVariant()) {
+                    return true;
+                }
 
-            if (!instanceOne.hasVariant() || !instanceTwo.hasVariant()) {
-                return true;
-            }
+                if (!instanceOne.hasVariant() || !instanceTwo.hasVariant()) {
+                    return true;
+                }
 
-            if (instanceOne.getVariant() != instanceTwo.getVariant()) {
-                return true;
+                if (instanceOne.getVariant() != instanceTwo.getVariant()) {
+                    return true;
+                }
             }
         }
 
@@ -584,50 +592,54 @@ public class StackUtils {
             }
         }
 
-        // Music Instrument
-        if (metaOne instanceof MusicInstrumentMeta instanceOne && metaTwo instanceof MusicInstrumentMeta instanceTwo) {
-            if (!Objects.equals(instanceOne.getInstrument(), instanceTwo.getInstrument())) {
-                return true;
+        if (IS_1_19_4) {
+            // Music Instrument
+            if (metaOne instanceof MusicInstrumentMeta instanceOne && metaTwo instanceof MusicInstrumentMeta instanceTwo) {
+                if (!Objects.equals(instanceOne.getInstrument(), instanceTwo.getInstrument())) {
+                    return true;
+                }
             }
         }
 
         // Armor
-        if (metaOne instanceof ArmorMeta instanceOne && metaTwo instanceof ArmorMeta instanceTwo) {
-            if (!Objects.equals(instanceOne.getTrim(), instanceTwo.getTrim())) {
-                return true;
-            }
-        }
-
-        if (IS_1_20_5) {
-            // Writable Book
-            if (metaOne instanceof WritableBookMeta instanceOne && metaTwo instanceof WritableBookMeta instanceTwo) {
-                if (instanceOne.getPageCount() != instanceTwo.getPageCount()) {
-                    return true;
-                }
-                if (!Objects.equals(instanceOne.getPages(), instanceTwo.getPages())) {
+        if (IS_1_20) {
+            if (metaOne instanceof ArmorMeta instanceOne && metaTwo instanceof ArmorMeta instanceTwo) {
+                if (!Objects.equals(instanceOne.getTrim(), instanceTwo.getTrim())) {
                     return true;
                 }
             }
-            if (IS_1_21) {
-                // Ominous Bottle
-                if (metaOne instanceof OminousBottleMeta instanceOne
-                        && metaTwo instanceof OminousBottleMeta instanceTwo) {
-                    if (instanceOne.hasAmplifier() != instanceTwo.hasAmplifier()) {
-                        return true;
-                    }
 
-                    if (instanceOne.getAmplifier() != instanceTwo.getAmplifier()) {
+            if (IS_1_20_5) {
+                // Writable Book
+                if (metaOne instanceof WritableBookMeta instanceOne && metaTwo instanceof WritableBookMeta instanceTwo) {
+                    if (instanceOne.getPageCount() != instanceTwo.getPageCount()) {
+                        return true;
+                    }
+                    if (!Objects.equals(instanceOne.getPages(), instanceTwo.getPages())) {
                         return true;
                     }
                 }
-                /*
-                 * Bad 1.21, pom.xml couldn't use Paper 1.21+, otherwise the builds will boom.
-                 *
-                // Shield
-                if (metaOne instanceof org.bukkit.inventory.meta.ShieldMeta instanceOne && metaTwo instanceof org.bukkit.inventory.meta.ShieldMeta instanceTwo) {
-                    return Objects.equals(instanceOne.getBaseColor(), instanceTwo.getBaseColor());
+                if (IS_1_21) {
+                    // Ominous Bottle
+                    if (metaOne instanceof OminousBottleMeta instanceOne
+                            && metaTwo instanceof OminousBottleMeta instanceTwo) {
+                        if (instanceOne.hasAmplifier() != instanceTwo.hasAmplifier()) {
+                            return true;
+                        }
+
+                        if (instanceOne.getAmplifier() != instanceTwo.getAmplifier()) {
+                            return true;
+                        }
+                    }
+                    /*
+                     * Bad 1.21, pom.xml couldn't use Paper 1.21+, otherwise the builds will boom.
+                     *
+                     // Shield
+                     if (metaOne instanceof org.bukkit.inventory.meta.ShieldMeta instanceOne && metaTwo instanceof org.bukkit.inventory.meta.ShieldMeta instanceTwo) {
+                         return Objects.equals(instanceOne.getBaseColor(), instanceTwo.getBaseColor());
+                     }
+                     */
                 }
-                 */
             }
         }
 

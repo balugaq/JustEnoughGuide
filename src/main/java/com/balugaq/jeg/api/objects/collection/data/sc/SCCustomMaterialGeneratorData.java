@@ -32,6 +32,7 @@ import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class SCCustomMaterialGeneratorData extends MachineData {
     private final ItemStack output;
 
     @Override
-    public List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
                 null,
                 new ItemStack[]{output},

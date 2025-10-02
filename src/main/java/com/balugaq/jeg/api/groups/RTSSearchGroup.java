@@ -107,9 +107,8 @@ public class RTSSearchGroup extends FlexItemGroup {
     }
 
     static {
-        Bukkit.getScheduler()
-                .runTaskTimer(
-                        SearchGroup.JAVA_PLUGIN,
+        JustEnoughGuide
+                .runTimer(
                         () -> {
                             Map<Player, AnvilInventory> copy;
                             synchronized (RTS_PLAYERS) {

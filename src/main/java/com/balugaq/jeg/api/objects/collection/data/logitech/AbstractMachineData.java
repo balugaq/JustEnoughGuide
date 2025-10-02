@@ -5,6 +5,7 @@ import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AbstractMachineData extends MachineData {
     private final int energyConsumption;
 
     @Override
-    public List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
         return machineRecipes.stream()
                 .map(recipe -> new CERRecipeGroup.RecipeWrapper(
                         recipe.getInput(),

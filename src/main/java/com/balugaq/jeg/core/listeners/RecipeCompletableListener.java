@@ -98,8 +98,9 @@ import java.util.function.BiConsumer;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ConstantValue"})
 public class RecipeCompletableListener implements Listener {
+    public static final NamespacedKey RECIPE_COMPLETE_EXIT_KEY = KeyUtil.newKey("recipe_complete_exit");
     public static final int[] DISPENSER_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
     public static final ConcurrentHashMap<UUID, GuideEvents.ItemButtonClickEvent> LAST_EVENTS = new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<UUID, GuideHistory> GUIDE_HISTORY = new ConcurrentHashMap<>();
@@ -114,7 +115,7 @@ public class RecipeCompletableListener implements Listener {
     private static ItemStack RECIPE_COMPLETABLE_BOOK_ITEM = null;
 
     static {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(JustEnoughGuide.getInstance(), () -> {
+        JustEnoughGuide.runTimerAsync(() -> {
             for (UUID uuid : missingMaterials.keySet()) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player == null) {
@@ -191,6 +192,7 @@ public class RecipeCompletableListener implements Listener {
                     if (StackUtils.itemsMatch(itemStack, getRecipeCompletableBookItem(), false, false, false, false)
                             && blockMenu.isPlayerInventoryClickable()) {
                         if (isSelectingItemStackToRecipeComplete(player)) {
+                            player.sendMessage(ChatColors.color("&c[配方补全] 你已经在进行配方补全了"));
                             return false;
                         }
 
@@ -384,7 +386,7 @@ public class RecipeCompletableListener implements Listener {
         }
     }
 
-    @SuppressWarnings({"deprecation", "DuplicateCondition", "ConstantValue", "SizeReplaceableByIsEmpty"})
+    @SuppressWarnings({"deprecation", "DuplicateCondition", "ConstantValue"})
     private static void tryRemoveRecipeCompleteBookLastRecipeCompleteLore(@NotNull Player player) {
         for (ItemStack itemStack : player.getInventory()) {
             if (StackUtils.itemsMatch(itemStack, getRecipeCompletableBookItem(), false, false, false, false)) {
@@ -400,12 +402,12 @@ public class RecipeCompletableListener implements Listener {
 
                 // Patch start
                 boolean applied = meta.getPersistentDataContainer().has(LAST_RECIPE_COMPLETE_KEY);
-                if (lore.size() >= 2 && applied) {
+                if (lore.size() >= 7 && applied) {
                     // Remove last two lines
-                    if (lore.size() >= 2) {
+                    if (lore.size() >= 7) {
                         lore.remove(lore.size() - 1);
                     }
-                    if (lore.size() >= 1) {
+                    if (lore.size() >= 6) {
                         lore.remove(lore.size() - 1);
                     }
                 }
@@ -541,6 +543,73 @@ public class RecipeCompletableListener implements Listener {
             old.setItemMeta(meta);
             event.setItemStack(old);
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void patchBackground(@NotNull PatchEvent event) {
+        PatchScope scope = event.getPatchScope();
+        if (scope != PatchScope.Background) {
+            return;
+        }
+
+        if (isSelectingItemStackToRecipeComplete(event.getPlayer())) {
+            ItemStack old = event.getItemStack();
+            if (old == null || old.getType() == Material.AIR) {
+                return;
+            }
+
+            ItemMeta meta = old.getItemMeta();
+            if (meta == null) {
+                return;
+            }
+
+            List<String> lore = meta.getLore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+
+            // Patch start
+            old.setType(Material.RED_STAINED_GLASS_PANE);
+            lore.add(ChatColors.color("&a你正在进行配方补全，如果是误触进入，请点击这里"));
+            meta.getPersistentDataContainer().set(RECIPE_COMPLETE_EXIT_KEY, PersistentDataType.BOOLEAN, true);
+            // Patch end
+
+            meta.setLore(lore);
+            old.setItemMeta(meta);
+            event.setItemStack(old);
+        }
+    }
+
+    @EventHandler
+    public void exit(@NotNull InventoryClickEvent event) {
+        ItemStack itemStack = event.getCurrentItem();
+        if (itemStack == null) {
+            return;
+        }
+
+        if (itemStack.getType() != Material.RED_STAINED_GLASS_PANE) {
+            return;
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return;
+        }
+
+        if (!meta.getPersistentDataContainer().has(RECIPE_COMPLETE_EXIT_KEY, PersistentDataType.BOOLEAN)) {
+            return;
+        }
+
+        exit((Player) event.getWhoClicked());
+    }
+
+    public void exit(Player player) {
+        exitSelectingItemStackToRecipeComplete(player);
+        PlayerProfile profile = RecipeCompletableListener.getPlayerProfile(player);
+        rollbackGuideHistory(profile);
+        RecipeCompletableListener.PROFILE_CALLBACKS.remove(player.getUniqueId());
+        player.closeInventory();
     }
 
     /**

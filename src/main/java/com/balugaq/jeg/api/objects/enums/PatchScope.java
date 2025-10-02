@@ -32,7 +32,6 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author balugaq
@@ -75,7 +74,6 @@ public enum PatchScope {
     ItemMarkItem,
     SearchItem,
     Cer,
-    // todo:
     CerRecipe,
     CerRecipeInput,
     CerRecipeOutput,
@@ -83,8 +81,8 @@ public enum PatchScope {
     CerRecipeBorderOutput,
     CerRecipeBorderInputOutput;
 
-    @Nullable
-    public ItemStack patch(@NotNull PlayerProfile profile, @Nullable ItemStack itemStack) {
+    @NotNull
+    public ItemStack patch(@NotNull PlayerProfile profile, @NotNull ItemStack itemStack) {
         Player player = profile.getPlayer();
         if (player == null) {
             return itemStack;
@@ -92,8 +90,8 @@ public enum PatchScope {
         return patch(player, itemStack);
     }
 
-    @Nullable
-    public ItemStack patch(@NotNull Player player, @Nullable ItemStack itemStack) {
+    @NotNull
+    public ItemStack patch(@NotNull Player player, @NotNull ItemStack itemStack) {
         return PatchEvent.patch(this, player, itemStack);
     }
 }

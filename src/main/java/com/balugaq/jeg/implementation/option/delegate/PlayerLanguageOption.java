@@ -58,6 +58,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * @author TheBusyBiscuit
+ * @author balugaq
+ * @since 1.9
+ */
 @SuppressWarnings({"DataFlowIssue", "deprecation"})
 public class PlayerLanguageOption implements SlimefunGuideOption<String> {
     @NotNull

@@ -30,6 +30,7 @@ package com.balugaq.jeg.implementation;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.platform.PlatformUtil;
 import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -44,7 +45,7 @@ public class ThirdPartyWarnings {
 
     @ApiStatus.Internal
     private static void checkInternal() {
-        if (!PaperLib.isPaper()) {
+        if (!PlatformUtil.isPaper()) {
             // CANNOT check dependencies because PluginMeta is Paper's API
             PaperLib.suggestPaper(JustEnoughGuide.getInstance());
             return;

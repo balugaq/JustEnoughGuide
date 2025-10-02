@@ -147,7 +147,7 @@ public class GuideListener implements Listener {
 
     @ApiStatus.Internal
     public void openGuideAsync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), () -> {
+        JustEnoughGuide.runLaterAsync(() -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
             if (optional.isPresent()) {
@@ -168,7 +168,7 @@ public class GuideListener implements Listener {
 
     @ApiStatus.Internal
     public void openGuideSync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
-        Bukkit.getScheduler().runTaskLater(JustEnoughGuide.getInstance(), () -> {
+        JustEnoughGuide.runLater(() -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
             if (optional.isPresent()) {

@@ -21,6 +21,9 @@ improvements:
   finalTECH-emc-display-option: true
   item-shareable: true
 
+# Prohibit bundles being interacted by players
+disable-bundle-interaction: true
+
 # Prohibit items with names containing any of the following words when searching for non restrictive words
 blacklist:
   - "Fast Machines"
@@ -336,7 +339,8 @@ local-translate:
   SFCalc: "SF Calc"
   SfChunkInfo: "SF Chunk Info"
   SlimefunAdvancements: "Slimefun Advancements"
-  SlimeHUD: "Slime HUD"
+  SlimeHUD: "Slime HUD" # Same as SlimeHUD
+  SlimeHUDPlus: "Slime HUD" # Same as SlimeHUD
   RaySlimefunAddon: "Ray Slimefun Addon" # Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
   SCrafter: "SC Tech" # Same as SlimefunZT
   CrispyMachines: "Crispy Machines"
@@ -448,9 +452,11 @@ local-translate:
   PoseidonAddon: "Poseidon Addon"
   Aircraft: "Aircraft"
   InfinityExpansion2: "InfinityExpansion2"
+  EtherTech: "EtherTech"
+  SlimefunTimeit: "Slimefun Timeit"
 
 # Do not change this value unless you know what you are doing.
-config-version: 1.9
+config-version: 2.0
 
 # Do not change this value unless you know what you are doing.
 debug: false

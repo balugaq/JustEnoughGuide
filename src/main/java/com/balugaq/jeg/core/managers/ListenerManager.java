@@ -28,6 +28,7 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
+import com.balugaq.jeg.core.listeners.BundleListener;
 import com.balugaq.jeg.core.listeners.CerPatchListener;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
 import com.balugaq.jeg.core.listeners.GuideGUIFixListener;
@@ -36,6 +37,7 @@ import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.WatchdogHandler;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -71,6 +73,14 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new CerPatchListener());
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
             listeners.add(new RecipeCompletableListener());
+        }
+
+        if (JustEnoughGuide.getConfigManager().isDebug()) {
+            listeners.add(new WatchdogHandler());
+        }
+
+        if (JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()) {
+            listeners.add(new BundleListener());
         }
     }
 

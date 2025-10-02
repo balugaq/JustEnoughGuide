@@ -209,7 +209,8 @@ public class LocalHelper {
         addonLocals.put("SFCalc", "SF Calc");
         addonLocals.put("SfChunkInfo", "SF Chunk Info");
         addonLocals.put("SlimefunAdvancements", "Slimefun Advancements");
-        addonLocals.put("SlimeHUD", "Slime HUD");
+        addonLocals.put("SlimeHUD", "Slime HUD"); // Same as SlimeHUDPlus
+        addonLocals.put("SlimeHUDPlus", "Slime HUD"); // Same as SlimeHUD
         addonLocals.put("RaySlimefunAddon", "Ray Slimefun Addon");
         addonLocals.put("SCrafter", "SC Tech");
         addonLocals.put("CrispyMachines", "Crispy Machines");

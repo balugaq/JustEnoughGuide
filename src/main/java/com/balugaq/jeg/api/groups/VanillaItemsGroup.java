@@ -55,7 +55,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -93,24 +92,22 @@ public class VanillaItemsGroup extends FlexItemGroup {
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
 
     static {
-        Bukkit.getScheduler()
-                .runTaskLater(
-                        JAVA_PLUGIN,
-                        () -> {
-                            boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
-                            try {
-                                for (Material material : Material.values()) {
-                                    if (!material.isAir() && material.isItem() && !material.isLegacy()) {
-                                        slimefunItems.add(createSlimefunItem(material));
-                                    }
-                                }
-                            } catch (Exception e) {
-                                Debug.trace(e);
-                            } finally {
-                                JustEnoughGuide.setAutomaticallyLoadItems(before);
+        JustEnoughGuide.runLater(
+                () -> {
+                    boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
+                    try {
+                        for (Material material : Material.values()) {
+                            if (!material.isAir() && material.isItem() && !material.isLegacy()) {
+                                slimefunItems.add(createSlimefunItem(material));
                             }
-                        },
-                        1L);
+                        }
+                    } catch (Exception e) {
+                        Debug.trace(e);
+                    } finally {
+                        JustEnoughGuide.setAutomaticallyLoadItems(before);
+                    }
+                },
+                1L);
     }
 
     private final int page;

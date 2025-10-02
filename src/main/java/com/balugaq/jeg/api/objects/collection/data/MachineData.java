@@ -65,6 +65,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecip
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -281,7 +282,7 @@ public abstract class MachineData {
             }
         }
 
-        if (CERCalculator.isInstanceSimple(sf, "AbstractElectricMachine")) {
+        if (CERCalculator.isInstanceSimple(sf, "AbstractElectricMachine") && isAddon(sf, "DynaTech")) {
             List/*<MachineRecipe>*/<MachineRecipe> recipes = ReflectionUtil.getValue(sf, "recipes", List.class);
             int energyConsumedPerTick = ReflectionUtil.getValue(sf, "energyConsumedPerTick", int.class);
             int processingSpeed = ReflectionUtil.getValue(sf, "processingSpeed", int.class);
@@ -352,5 +353,9 @@ public abstract class MachineData {
         return null;
     }
 
-    public abstract List<CERRecipeGroup.RecipeWrapper> wrap();
+    public static boolean isAddon(@NotNull SlimefunItem sf, @NotNull String addonName) {
+        return sf.getAddon().getName().equals(addonName);
+    }
+
+    public abstract @NotNull List<CERRecipeGroup.RecipeWrapper> wrap();
 }

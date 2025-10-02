@@ -33,6 +33,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class StoneworksFactoryData extends MachineData {
     private final int energyPerTick;
 
     @Override
-    public List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(null, materials.stream().map(ItemStack::new).toList().toArray(new ItemStack[0]), 1, energyPerTick));
     }
 }

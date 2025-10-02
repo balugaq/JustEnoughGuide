@@ -32,6 +32,7 @@ import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class MachineBlockData extends MachineData {
     private final int energyPerTick;
 
     @Override
-    public List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
                 .map(recipe -> new CERRecipeGroup.RecipeWrapper(
                         recipe.getInputs(),

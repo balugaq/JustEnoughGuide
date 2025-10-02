@@ -35,12 +35,16 @@ import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import com.balugaq.jeg.utils.Lang;
+import com.balugaq.jeg.utils.platform.PlatformUtil;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -84,23 +88,41 @@ public class NamePrinter implements Applier {
 
     @ParametersAreNonnullByDefault
     private static void shareSlimefunItem(Player player, String itemName) {
+        String s = ChatColor.stripColor(itemName);
         String playerName = player.getName();
 
-        String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[]{playerName, ChatColors.color(itemName)});
-        TextComponent msg = new TextComponent(sharedMessage);
-        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(CLICK_TO_SEARCH)));
-        String s = ChatColor.stripColor(itemName);
-        msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sf search " + s));
+        if (PlatformUtil.isPaper()) {
+            String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[]{playerName, ChatColors.color(itemName)});
 
-        Bukkit.getOnlinePlayers().forEach(p -> {
-            if (ShareInGuideOption.isEnabled(p)) {
-                if (p.hasPermission("slimefun.command.search")) {
-                    ClipboardUtil.send(p, msg);
-                } else {
-                    ClipboardUtil.send(p, ClipboardUtil.makeComponent(sharedMessage, CLICK_TO_SEARCH, itemName));
+            Component base = LegacyComponentSerializer.legacySection().deserialize(sharedMessage)
+                    .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text(CLICK_TO_SEARCH)));
+            Component clickToSearch = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/sf search " + s));
+            Component clickToCopy = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, itemName));
+            Bukkit.getOnlinePlayers().forEach(p -> {
+                if (ShareInGuideOption.isEnabled(p)) {
+                    if (p.hasPermission("slimefun.command.search")) {
+                        p.sendMessage(clickToSearch);
+                    } else {
+                        p.sendMessage(clickToCopy);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[]{playerName, ChatColors.color(itemName)});
+            TextComponent msg = new TextComponent(sharedMessage);
+            msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(CLICK_TO_SEARCH)));
+            msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sf search " + s));
+
+            Bukkit.getOnlinePlayers().forEach(p -> {
+                if (ShareInGuideOption.isEnabled(p)) {
+                    if (p.hasPermission("slimefun.command.search")) {
+                        ClipboardUtil.send(p, msg);
+                    } else {
+                        ClipboardUtil.send(p, ClipboardUtil.makeComponent(sharedMessage, CLICK_TO_SEARCH, itemName));
+                    }
+                }
+            });
+        }
     }
 
     public static boolean checkCooldown(@NotNull Player player) {

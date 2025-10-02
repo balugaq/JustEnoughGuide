@@ -59,6 +59,7 @@ import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCu
 import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimehud.SlimeHUDIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.core.integrations.tsingshantechnology.TsingshanTechnologyIntegrationMain;
 import com.balugaq.jeg.core.integrations.wildernether.WilderNetherIntegrationMain;
@@ -124,6 +125,8 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledSlimeAEPlugin;
     private boolean enabledSlimeFrame;
     private boolean enabledSlimefunTranslation;
+    private boolean enabledSlimeHUD;
+    private boolean enabledSlimeHUDPlus;
     private boolean enabledSlimeTinker;
     private boolean enabledTsingshanTechnology;
     private boolean enabledTsingshanTechnology_Fixed;
@@ -131,9 +134,8 @@ public class IntegrationManager extends AbstractManager {
 
     public IntegrationManager(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getScheduler()
-                .runTaskLater(
-                        plugin,
+        JustEnoughGuide
+                .runLater(
                         () -> {
                             PluginManager pm = Bukkit.getPluginManager();
                             try {
@@ -153,10 +155,10 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledElementManipulation = pm.isPluginEnabled("ElementManipulation");
                             this.enabledEMCTech = pm.isPluginEnabled("EMCTech");
                             this.enabledFastMachines = pm.isPluginEnabled("FastMachines");
-                            this.enabledFinalTech = classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
+                            this.enabledFinalTech = pm.isPluginEnabled("FinalTech") && classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
                             this.enabledFinalTECH_Changed = pm.isPluginEnabled("FinalTECH-Changed");
                             this.enabledFinalTECH = enabledFinalTECH_Changed
-                                    || classExists("io.taraxacum.libs.slimefun.dto.ItemValueTable");
+                                    || (pm.isPluginEnabled("FinalTECH") && classExists("io.taraxacum.libs.slimefun.dto.ItemValueTable"));
                             this.enabledFluffyMachines = pm.isPluginEnabled("FluffyMachines");
                             this.enabledGalactifun = pm.isPluginEnabled("Galactifun");
                             this.enabledGastronomicon = pm.isPluginEnabled("Gastronomicon");
@@ -175,6 +177,8 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
                             this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
                             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
+                            this.enabledSlimeHUDPlus = pm.isPluginEnabled("SlimeHUDPlus");
+                            this.enabledSlimeHUD = enabledSlimeHUD || pm.isPluginEnabled("SlimeHUD");
                             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
                             this.enabledSlimefunTranslation = pm.isPluginEnabled("SlimefunTranslation");
                             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
@@ -209,6 +213,7 @@ public class IntegrationManager extends AbstractManager {
                             addIntegration(enabledSimpleUtils, SimpleUtilsIntegrationMain::new);
                             addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
                             addIntegration(enabledSlimefunTranslation, SlimefunTranslationPluginIntegrationMain::new);
+                            addIntegration(enabledSlimeHUD, SlimeHUDIntegrationMain::new);
                             addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
                             addIntegration(enabledTsingshanTechnology, TsingshanTechnologyIntegrationMain::new);
                             addIntegration(enabledWilderNether, WilderNetherIntegrationMain::new);
@@ -231,11 +236,11 @@ public class IntegrationManager extends AbstractManager {
     }
 
     public static void scheduleRun(@NotNull Runnable runnable) {
-        Bukkit.getScheduler().runTaskLater(JustEnoughGuide.getInstance(), runnable, 2L);
+        JustEnoughGuide.runLater(runnable, 2L);
     }
 
     public static void scheduleRunAsync(@NotNull Runnable runnable) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(JustEnoughGuide.getInstance(), runnable, 2L);
+        JustEnoughGuide.runLaterAsync(runnable, 2L);
     }
 
     @Deprecated

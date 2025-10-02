@@ -121,7 +121,7 @@ public class CERRecipeGroup extends FlexItemGroup {
         this.recipes = recipes;
         this.pageMap.put(1, this);
         this.machine = machine;
-        this.icons = getDisplayIcons(machine, recipes);
+        this.icons = getDisplayIcons(player, machine, recipes);
     }
 
     /**
@@ -141,7 +141,7 @@ public class CERRecipeGroup extends FlexItemGroup {
         this.pageMap.put(page, this);
     }
 
-    public static List<Pair<ItemStack, ChestMenu.MenuClickHandler>> getDisplayIcons(SlimefunItem machine, List<RecipeWrapper> wrappers) {
+    public static List<Pair<ItemStack, ChestMenu.MenuClickHandler>> getDisplayIcons(Player p, SlimefunItem machine, List<RecipeWrapper> wrappers) {
         List<Pair<ItemStack, ChestMenu.MenuClickHandler>> list = new ArrayList<>();
         String lk = "icon.cer-recipe-group.";
         for (int i = 0; i < wrappers.size(); i++) {
@@ -151,49 +151,49 @@ public class CERRecipeGroup extends FlexItemGroup {
             var out = recipe.getOutput();
             var e = recipe.getTotalEnergyCost();
             list.add(new Pair<>(
-                    Converter.getItem(
+                    PatchScope.CerRecipe.patch(p, Converter.getItem(
                             Material.GREEN_STAINED_GLASS_PANE,
                             Lang.getString(lk + "recipe-item-name").replace("{number}", String.valueOf(i + 1)),
                             Lang.getString(lk + "making-difficulty").replace("{value}", String.valueOf(ValueTable.getValue(machine))),
                             Lang.getString(lk + "time").replace("{ticks}", String.valueOf(recipe.getTicks())),
                             Lang.getString(lk + (e == 0 ? "no-energy" : e > 0 ? "cost-energy" : "produce-energy")).replace("{energy}", String.valueOf(Math.abs(e)))
-                    ),
+                    )),
                     ChestMenuUtils.getEmptyClickHandler()
             ));
 
             if (in != null && in.length > 0) {
                 list.add(new Pair<>(
-                        Converter.getItem(
+                        PatchScope.CerRecipeBorderInput.patch(p, Converter.getItem(
                                 Material.BLUE_STAINED_GLASS_PANE,
                                 Lang.getString(lk + "input-title")
-                        ),
+                        )),
                         ChestMenuUtils.getEmptyClickHandler()
                 ));
 
                 for (ItemStack input : in) {
                     list.add(new Pair<>(
-                            Converter.getItem(ItemStackUtil.getCleanItem(input)),
+                            PatchScope.CerRecipeInput.patch(p, Converter.getItem(ItemStackUtil.getCleanItem(input))),
                             subMenuOpen
                     ));
                 }
 
                 if (out != null && out.length > 0) {
                     list.add(new Pair<>(
-                            Converter.getItem(
-                                Material.ORANGE_STAINED_GLASS_PANE,
-                                Lang.getString(lk + "input-output-title-1"),
-                                Lang.getString(lk + "input-output-title-2")
-                        ),
+                        PatchScope.CerRecipeBorderInputOutput.patch(p, Converter.getItem(
+                            Material.ORANGE_STAINED_GLASS_PANE,
+                            Lang.getString(lk + "input-output-title-1"),
+                            Lang.getString(lk + "input-output-title-2")
+                        )),
                         ChestMenuUtils.getEmptyClickHandler()
                     ));
                 }
             } else {
                 if (out != null && out.length > 0) {
                     list.add(new Pair<>(
-                            Converter.getItem(
+                            PatchScope.CerRecipeBorderOutput.patch(p, Converter.getItem(
                                     Material.ORANGE_STAINED_GLASS_PANE,
                                     Lang.getString(lk + "output-title")
-                            ),
+                            )),
                             ChestMenuUtils.getEmptyClickHandler()
                     ));
                 }
@@ -214,7 +214,7 @@ public class CERRecipeGroup extends FlexItemGroup {
                     meta.setLore(lore);
                     display.setItemMeta(meta);
                     list.add(new Pair<>(
-                            display,
+                            PatchScope.CerRecipeOutput.patch(p, display),
                             subMenuOpen
                     ));
                 }

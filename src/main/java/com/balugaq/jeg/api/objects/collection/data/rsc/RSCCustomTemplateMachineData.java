@@ -32,6 +32,7 @@ import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class RSCCustomTemplateMachineData extends MachineData {
     private final List<RSCMachineTemplate> templates;
 
     @Override
-    public List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
         List<CERRecipeGroup.RecipeWrapper> wrappers = new ArrayList<>();
 
         for (RSCMachineTemplate template : templates) {

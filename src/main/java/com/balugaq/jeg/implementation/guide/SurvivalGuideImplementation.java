@@ -130,7 +130,7 @@ import java.util.logging.Level;
  * @see CheatGuideImplementation
  * @since 1.0
  */
-@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape"})
+@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape", "DataFlowIssue"})
 public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implements JEGSlimefunGuideImplementation {
     @Deprecated
     public static final int RTS_SLOT = 6;
@@ -960,6 +960,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         displayItem(menu, profile, p, item, output, recipeType, recipe, task, Formats.recipe);
     }
 
+    @SuppressWarnings("ConstantValue")
     @Override
     public void displayItem(
             final @NotNull ChestMenu menu,
