@@ -44,6 +44,7 @@ import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Format;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SeasonalItemGroup;
@@ -83,11 +84,11 @@ import java.util.List;
 public final class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(Material.NETHER_STAR, "&e&l收藏物列表"));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_BOOK_MARK_BUTTON", Material.NETHER_STAR, "&e&l收藏物列表")));
     private static final ItemStack ITEM_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(Material.WRITABLE_BOOK, "&e&l收藏物品"));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_ITEM_MARK_BUTTON", Material.WRITABLE_BOOK, "&e&l收藏物品")));
     private static final ItemStack CER_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(Material.EMERALD, "&e&l性价比界面（仅供参考）"));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_CER_BUTTON", Material.EMERALD, "&e&l性价比界面（仅供参考）")));
 
     /**
      * Open the main menu of the guide for the given player and mode.
