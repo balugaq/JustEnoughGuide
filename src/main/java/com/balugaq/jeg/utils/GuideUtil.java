@@ -44,6 +44,7 @@ import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Format;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SeasonalItemGroup;
@@ -82,9 +83,9 @@ import java.util.List;
 @UtilityClass
 public final class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
-    private static final ItemStack BOOK_MARK_MENU_BUTTON = Lang.getIcon("book-mark-button", Material.NETHER_STAR);
-    private static final ItemStack ITEM_MARK_MENU_BUTTON = Lang.getIcon("item-mark-button", Material.WRITABLE_BOOK);
-    private static final ItemStack CER_MENU_BUTTON = Lang.getIcon("cer-menu-button", Material.EMERALD);
+    private static final ItemStack BOOK_MARK_MENU_BUTTON = Converter.getItem(new SlimefunItemStack("JEG_BOOK_MARK_BUTTON", Lang.getIcon("book-mark-button", Material.NETHER_STAR)));
+    private static final ItemStack ITEM_MARK_MENU_BUTTON = Converter.getItem(new SlimefunItemStack("JEG_ITEM_MARK_BUTTON", Lang.getIcon("item-mark-button", Material.WRITABLE_BOOK)));
+    private static final ItemStack CER_MENU_BUTTON = Converter.getItem(new SlimefunItemStack("JEG_CER_BUTTON", Lang.getIcon("cer-menu-button", Material.EMERALD)));
 
     /**
      * Open the main menu of the guide for the given player and mode.
