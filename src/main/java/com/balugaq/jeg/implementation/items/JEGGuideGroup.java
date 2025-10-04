@@ -399,15 +399,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_item_lore = FilterType.BY_ITEM_LORE.getSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
-                Converter.getItem(
-                        Material.LODESTONE,
-                        "&b功能: 搜索拓展",
-                        "&b介绍: 你可以在开头添加 " + flag_item_lore + "<item_lore> 来指定搜索范围",
-                        "&b      例如: " + flag_item_lore + "carrot 附加搜索 物品描述包含\"carrot\" 的物品",
-                        "&b      支持拼音搜索。",
-                        "&c      附加搜索会组合生效",
-                        "&b点击尝试功能。"
-                ),
+                Lang.getGuideGroupIcon("feature-search-expansion-by-item-lore", Material.LODESTONE, "flag", flag_item_lore),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_item_lore + "carrot");

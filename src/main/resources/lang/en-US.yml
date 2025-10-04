@@ -216,6 +216,13 @@ icon:
         - "&b      Ex: {flag}Battery can search the item which its name contains \"Battery\""
         - "&c      Allowed to combine different expansions."
         - "&bClick to try!"
+    feature-search-expansion-by-item-lore:
+      name: "&bFeature: Searching Expansion"
+      lore:
+        - "&bIntroduction: You can prefix text with {flag}<item_lore> to limit the search to a specific range."
+        - "&b      Ex: {flag}Carrot can search the item which its lore contains \"Carrot\""
+        - "&c      Allowed to combine different expansions."
+        - "&bClick to try!"
     feature-search-expansion-by-material-name:
       name: "&bFeature: Searching Expansion"
       lore:
