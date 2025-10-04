@@ -479,16 +479,16 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Material.LODESTONE,
                         "&b功能: 搜索拓展",
                         "&b介绍: 你可以在开头添加 " + flag_item_lore + "<item_lore> 来指定搜索范围",
-                        "&b      例如: " + flag_item_lore + "carrot 附加搜索 物品描述包含\"carrot\" 的物品",
+                        "&b      例如: " + flag_item_lore + "胡萝卜 附加搜索 物品描述包含\"胡萝卜\" 的物品",
                         "&b      支持拼音搜索。",
                         "&c      附加搜索会组合生效",
                         "&b点击尝试功能。"
                 ),
                 (p, s, i, a) -> {
                     try {
-                        p.performCommand("sf search " + flag_item_lore + "carrot");
+                        p.performCommand("sf search " + flag_item_lore + "胡萝卜");
                     } catch (Exception e) {
-                        p.sendMessage("§cAn error occured when clicked in JEGGuideGroup");
+                        p.sendMessage("§c无法执行操作，请检查 Slimefun 是否正确安装。");
                         Debug.trace(e);
                     }
                     return false;
