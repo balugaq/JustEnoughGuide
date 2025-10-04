@@ -39,6 +39,7 @@ import lombok.Getter;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.Reference;
@@ -139,9 +140,16 @@ public enum FilterType {
         }
         return false;
     }),
-    BY_ITEM_NAME("!", (player, item, lowerFilterValue, pinyin) -> {
-        if (SearchGroup.isSearchFilterApplicable(player, item, lowerFilterValue, pinyin)) {
-            return true;
+    BY_ITEM_NAME("!", SearchGroup::isSearchFilterApplicable),
+    BY_ITEM_LORE("^", (player, item, lowerFilterValue, pinyin) -> {
+        ItemMeta meta = item.getItem().getItemMeta();
+        if (meta == null) return false;
+        List<String> s = meta.getLore();
+        if (s == null) return false;
+        for (String lore : s) {
+            if (SearchGroup.isSearchFilterApplicable(lore, lowerFilterValue, pinyin)) {
+                return true;
+            }
         }
         return false;
     }),
