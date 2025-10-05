@@ -42,6 +42,7 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -136,27 +137,13 @@ public interface OnDisplay {
             return display(player, item.getItem(), type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
-        static Item display(Player player, SlimefunItem item, DisplayType type, JEGSlimefunGuideImplementation guide) {
-            return display(player, item.getItem(), type, guide);
-        }
-
-        static Item display(Player player, ItemStack itemStack, DisplayType type, SlimefunGuideImplementation guide) {
-            if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, itemStack, type, jeg);
-            return display(player, itemStack, type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
-        }
-
-        static Item display(Player player, ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
-            SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);
-            if (slimefunItem == null) {
-                return Vanilla(player, itemStack, false, guide);
-            }
-
+        static Item display(Player player, SlimefunItem slimefunItem, DisplayType type, JEGSlimefunGuideImplementation guide) {
             if (!JEGSlimefunGuideImplementation.hasPermission0(player, slimefunItem)) {
                 return NoPermission(player, slimefunItem, guide);
             }
 
-            if (slimefunItem instanceof VanillaItemShade) {
-                return Vanilla(player, itemStack, true, guide);
+            if (slimefunItem instanceof VanillaItemShade vis) {
+                return Vanilla(player, vis.getCustomIcon(), true, guide);
             }
 
             if (type == DisplayType.ItemMark) {
@@ -200,6 +187,20 @@ public interface OnDisplay {
             }
 
             return Research(player, slimefunItem, guide);
+        }
+
+        static Item display(Player player, ItemStack itemStack, DisplayType type, SlimefunGuideImplementation guide) {
+            if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, itemStack, type, jeg);
+            return display(player, itemStack, type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
+        }
+
+        static Item display(Player player, ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
+            SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);
+            if (slimefunItem == null) {
+                return Vanilla(player, itemStack, false, guide);
+            }
+
+            return display(player, slimefunItem, type, guide);
         }
 
         void at(ChestMenu menu, int slot, int page);

@@ -65,6 +65,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +77,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "IfStatementWithIdenticalBranches"})
 @NullMarked
 public interface OnClick {
     MessageFormat SHARED_ITEM_MESSAGE = new MessageFormat(ChatColors.color("&a{0} &e分享了 &7[{1}&r&7]&e <点击搜索>"));
@@ -206,7 +207,9 @@ public interface OnClick {
         }
 
         static ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType) {
-            return (event, player, slot, item, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, item, slot, action, menu, guide)).ifSuccess(() -> {
+            return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+                ItemStack item = event.getCurrentItem();
+                if (item == null) return false;
                 if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
                     return findAction(player, "q").click(guide, player, slot, recipeType, action, menu, 1);
                 }
@@ -289,7 +292,9 @@ public interface OnClick {
         Item NoPermission = new NoPermission();
 
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
-            return (event, player, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, item, slot, action, menu, guide)).ifSuccess(() -> {
+            return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+                ItemStack item = event.getCurrentItem();
+                if (item == null) return false;
                 ClickType clickType = event.getClick();
                 // F键
                 if (clickType == ClickType.SWAP_OFFHAND) {
@@ -313,7 +318,6 @@ public interface OnClick {
                 }
                 // 有权限
                 if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
-                    ItemStack cursor = player.getItemOnCursor();
                     if (event.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR)) {
                         return findAction(player, "clone-item").click(guide, player, slot, item, action, menu, page);
                     }
@@ -359,7 +363,10 @@ public interface OnClick {
         @FunctionalInterface
         interface ClickHandler extends ChestMenu.AdvancedMenuClickHandler {
             @Override
-            default boolean onClick(Player player, int i, ItemStack itemStack, ClickAction clickAction) {
+            boolean onClick(InventoryClickEvent event, Player player, int slot, ItemStack cursor, ClickAction action);
+
+            @Override
+            default boolean onClick(Player player, int slot, ItemStack itemStack, ClickAction action) {
                 return false;
             }
         }
@@ -418,7 +425,9 @@ public interface OnClick {
 
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
-                return (event, player, slot, item, action) -> {
+                return (event, player, slot, cursor, action) -> {
+                    ItemStack item = event.getCurrentItem();
+                    if (item == null) return false;
                     // 注入右键
                     if (event.getClick() == ClickType.RIGHT) {
                         findAction(player, "book-mark").click(guide, player, slot, item, action, menu, page);
@@ -451,7 +460,9 @@ public interface OnClick {
 
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
-                return (event, player, slot, item, action) -> {
+                return (event, player, slot, cursor, action) -> {
+                    ItemStack item = event.getCurrentItem();
+                    if (item == null) return false;
                     // 注入左键
                     if (event.getClick() == ClickType.LEFT) {
                         findAction(player, "item-mark").click(guide, player, slot, item, action, menu, page);
@@ -489,8 +500,11 @@ public interface OnClick {
 
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
-                return (event, player, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(player, item, slot, action, menu, guide)).ifSuccess(() ->
-                        findAction(player, "research").click(guide, player, slot, item, action, menu, page));
+                return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+                    ItemStack item = event.getCurrentItem();
+                    if (item == null) return false;
+                    return findAction(player, "research").click(guide, player, slot, item, action, menu, page);
+                });
             }
 
             @Override
@@ -499,6 +513,7 @@ public interface OnClick {
             }
         }
 
+        @SuppressWarnings("CodeBlock2Expr")
         class Normal implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", (guide, player, slot, item, clickAction, menu, page) -> {
@@ -585,3 +600,5 @@ public interface OnClick {
         }
     }
 }
+
+.. 别用，没修好
