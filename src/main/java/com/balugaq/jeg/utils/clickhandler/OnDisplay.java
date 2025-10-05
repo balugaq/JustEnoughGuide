@@ -219,7 +219,7 @@ public interface OnDisplay {
                 io.github.thebusybiscuit.slimefun4.api.researches.Research research = item.getResearch();
                 if (research == null) return;
 
-                PatchScope.Research.patch(player, Converter.getItem(
+                menu.addItem(slot, PatchScope.Research.patch(player, Converter.getItem(
                         ChestMenuUtils.getNoPermissionItem(),
                         "&f" + ItemUtils.getItemName(item.getItem()),
                         "&7" + item.getId(),
@@ -231,7 +231,7 @@ public interface OnDisplay {
                         VaultIntegration.isEnabled()
                                 ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
                                 : research.getLevelCost() + " 级经验"
-                ));
+                )), OnClick.Item.Research.create(guide, menu, page));
             }
         }
 
