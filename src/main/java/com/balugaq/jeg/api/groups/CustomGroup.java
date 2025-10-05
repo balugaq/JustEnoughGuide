@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.api.groups;
 
-import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.objects.CustomGroupConfiguration;
@@ -37,38 +36,26 @@ import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
-import com.balugaq.jeg.utils.JEGVersionedItemFlag;
-import com.balugaq.jeg.utils.LocalHelper;
-import com.balugaq.jeg.utils.compatibility.Converter;
+import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import lombok.ToString;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -256,107 +243,8 @@ public class CustomGroup extends FlexItemGroup {
             if (index < this.objects.size()) {
                 Object o = objects.get(index);
                 if (o instanceof SlimefunItem slimefunItem) {
-                    Research research = slimefunItem.getResearch();
-                    if (implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
-                            && research != null
-                            && !playerProfile.hasUnlocked(research)) {
-                        String lore;
-
-                        if (VaultIntegration.isEnabled()) {
-                            lore = String.format("%.2f", research.getCurrencyCost()) + " 游戏币";
-                        } else {
-                            lore = research.getLevelCost() + " 级经验";
-                        }
-
-                        var itemstack = ItemStackUtil.getCleanItem(Converter.getItem(
-                                ChestMenuUtils.getNoPermissionItem(),
-                                "&f" + ItemUtils.getItemName(slimefunItem.getItem()),
-                                "&7" + slimefunItem.getId(),
-                                "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
-                                "",
-                                "&a> 单击解锁",
-                                "",
-                                "&7需要 &b",
-                                lore));
-                        ChestMenu.MenuClickHandler handler = (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(
-                                        pl, item, slot, action, chestMenu, implementation))
-                                .ifSuccess(() -> {
-                                    research.unlockFromGuide(
-                                            implementation,
-                                            pl,
-                                            playerProfile,
-                                            slimefunItem,
-                                            slimefunItem.getItemGroup(),
-                                            page);
-                                    return false;
-                                });
-
-                        chestMenu.addItem(contentSlots.get(i), PatchScope.SlimefunItem.patch(player, itemstack), handler);
-                    } else {
-                        var itemstack = ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem(), meta -> {
-                            ItemGroup itemGroup = slimefunItem.getItemGroup();
-                            List<String> additionLore = List.of(
-                                    "",
-                                    ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                            + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE
-                                            + " - "
-                                            + LocalHelper.getDisplayName(itemGroup, player));
-                            if (meta.hasLore() && meta.getLore() != null) {
-                                List<String> lore = meta.getLore();
-                                lore.addAll(additionLore);
-                                meta.setLore(lore);
-                            } else {
-                                meta.setLore(additionLore);
-                            }
-
-                            meta.addItemFlags(
-                                    ItemFlag.HIDE_ATTRIBUTES,
-                                    ItemFlag.HIDE_ENCHANTS,
-                                    JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                        }));
-                        ChestMenu.AdvancedMenuClickHandler handler = new ChestMenu.AdvancedMenuClickHandler() {
-                            @Override
-                            public boolean onClick(InventoryClickEvent e, Player pl, int slot, ItemStack itm, ClickAction action) {
-                                return EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(pl, itm, slot, action, chestMenu, implementation)).ifSuccess(() -> {
-                                        try {
-                                            if (implementation.getMode() == SlimefunGuideMode.CHEAT_MODE && (pl.isOp() || pl.hasPermission("slimefun.cheat.items"))) {
-                                                ItemStack cursor = pl.getItemOnCursor();
-                                                if (!(e.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR))) {
-                                                    pl.getInventory().addItem(slimefunItem.getItem().clone());
-                                                    return false;
-                                                }
-
-                                                if (slimefunItem instanceof MultiBlockMachine) {
-                                                    Slimefun.getLocalization().sendMessage(pl, "guide.cheat.no-multiblocks");
-                                                    return false;
-                                                }
-
-                                                ItemStack clonedItem = slimefunItem.getItem().clone();
-
-                                                if (action.isShiftClicked()) {
-                                                    clonedItem.setAmount(clonedItem.getMaxStackSize());
-                                                }
-
-                                                pl.setItemOnCursor(clonedItem);
-                                            } else {
-                                                implementation.displayItem(playerProfile, slimefunItem, true);
-                                            }
-                                        } catch (Exception | LinkageError x) {
-                                            printErrorMessage(pl, slimefunItem, x);
-                                        }
-
-                                        return false;
-                                    });
-                            }
-
-                            @Override
-                            public boolean onClick(Player player, int i, ItemStack itemStack, ClickAction clickAction) {
-                                return false;
-                            }
-                        };
-
-                        chestMenu.addItem(contentSlots.get(i), PatchScope.SlimefunItem.patch(player, itemstack), handler);
-                    }
+                    OnDisplay.Item.display(player, item, OnDisplay.Item.Normal, implementation)
+                            .at(chestMenu, contentSlots.get(i), page);
                 } else if (o instanceof ItemGroup itemGroup) {
                     if (GuideUtil.getGuide(player, GuideListener.guideModeMap.getOrDefault(player, SlimefunGuideMode.SURVIVAL_MODE)) instanceof JEGSlimefunGuideImplementation guide) {
                         guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));

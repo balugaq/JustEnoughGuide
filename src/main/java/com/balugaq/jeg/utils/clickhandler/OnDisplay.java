@@ -32,12 +32,15 @@ import com.balugaq.jeg.api.interfaces.CustomIconDisplay;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.VanillaItemShade;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
@@ -63,239 +66,331 @@ import java.util.Objects;
 @SuppressWarnings("deprecation")
 @NullMarked
 public interface OnDisplay {
-    enum DisplayType {
-        Normal, ItemMark, BookMark, Search
-    }
+    interface RecipeType extends OnDisplay {
 
-    DisplayType Normal = DisplayType.Normal, ItemMark = DisplayType.ItemMark, BookMark = DisplayType.BookMark, Search = DisplayType.Search;
+        static RecipeType Normal(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
+            return new Normal(player, recipeType, itemStack, guide);
+        }
 
-    void at(ChestMenu menu, int slot, JEGSlimefunGuideImplementation guide, int page);
+        static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, SlimefunGuideImplementation guide) {
+            if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, recipeType, itemStack, jeg);
+            return display(player, recipeType, itemStack, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
+        }
 
-    static OnDisplay Vanilla(Player player, ItemStack itemStack, boolean vanillaShade) {
-        return new Vanilla(player, itemStack, vanillaShade);
-    }
+        static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
+            return Normal(player, recipeType, itemStack, guide);
+        }
 
-    static OnDisplay Normal(Player player, SlimefunItem item) {
-        return new Normal(player, item);
-    }
+        void at(ChestMenu menu, int slot, int page);
 
-    static OnDisplay ItemMark(Player player, SlimefunItem item) {
-        return new ItemMark(player, item);
-    }
+        @RequiredArgsConstructor
+        class Normal implements RecipeType {
+            private final Player player;
+            private final io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType;
+            private final ItemStack itemStack;
+            private final JEGSlimefunGuideImplementation guide;
 
-    static OnDisplay BookMark(Player player, SlimefunItem item) {
-        return new BookMark(player, item);
-    }
-
-    static OnDisplay Search(Player player, SlimefunItem item) {
-        return new Search(player, item);
-    }
-
-    static OnDisplay Research(Player player, SlimefunItem item) {
-        return new Research(player, item);
-    }
-
-    @RequiredArgsConstructor
-    class Research implements OnDisplay {
-        private final Player player;
-        private final SlimefunItem item;
-
-        @Override
-        public void at(ChestMenu menu, int slot, JEGSlimefunGuideImplementation guide, int page) {
-            io.github.thebusybiscuit.slimefun4.api.researches.Research research = item.getResearch();
-            if (research == null) return;
-
-            PatchScope.Research.patch(player, Converter.getItem(
-                    ChestMenuUtils.getNoPermissionItem(),
-                    "&f" + ItemUtils.getItemName(item.getItem()),
-                    "&7" + item.getId(),
-                    "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
-                    "",
-                    "&a> 单击解锁",
-                    "",
-                    "&7需要 &b",
-                    VaultIntegration.isEnabled()
-                            ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
-                            : research.getLevelCost() + " 级经验"
-            ));
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                menu.addItem(
+                        slot,
+                        itemStack,
+                        OnClick.RecipeType.create(guide, menu, recipeType));
+            }
         }
     }
 
-    @SuppressWarnings("UnnecessaryUnicodeEscape")
-    @RequiredArgsConstructor
-    class Search implements OnDisplay {
-        private final Player player;
-        private final SlimefunItem item;
+    interface Item extends OnDisplay {
+        DisplayType Normal = DisplayType.Normal, ItemMark = DisplayType.ItemMark, BookMark = DisplayType.BookMark, Search = DisplayType.Search;
 
-        @Override
-        public void at(ChestMenu menu, int slot, JEGSlimefunGuideImplementation guide, int page) {
-            ItemGroup itemGroup = item.getItemGroup();
-            List<String> additionLore = List.of(
-                    "",
-                    ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player)))
-            );
-
-            ItemStack icon = item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem();
-            icon.editMeta(meta -> {
-                List<String> lore = meta.getLore();
-                if (lore == null) lore = new ArrayList<>();
-                lore.addAll(additionLore);
-                meta.setLore(lore);
-
-                meta.addItemFlags(
-                        ItemFlag.HIDE_ATTRIBUTES,
-                        ItemFlag.HIDE_ENCHANTS,
-                        JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            });
-
-            menu.addItem(
-                    slot,
-                    PatchScope.SearchItem.patch(player, icon),
-                    OnClick.Item.Normal.create(guide, menu, page));
-        }
-    }
-
-    @SuppressWarnings("UnnecessaryUnicodeEscape")
-    @RequiredArgsConstructor
-    class BookMark implements OnDisplay {
-        private final Player player;
-        private final SlimefunItem item;
-
-        @Override
-        public void at(ChestMenu menu, int slot, JEGSlimefunGuideImplementation guide, int page) {
-            ItemGroup itemGroup = item.getItemGroup();
-            List<String> additionLore = List.of(
-                    "",
-                    ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player))),
-                    ChatColors.color("&e右键以取消收藏物品")
-            );
-
-            ItemStack icon = item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem();
-            icon.editMeta(meta -> {
-                List<String> lore = meta.getLore();
-                if (lore == null) lore = new ArrayList<>();
-                lore.addAll(additionLore);
-                meta.setLore(lore);
-
-                meta.addItemFlags(
-                        ItemFlag.HIDE_ATTRIBUTES,
-                        ItemFlag.HIDE_ENCHANTS,
-                        JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            });
-
-            menu.addItem(
-                    slot,
-                    PatchScope.SlimefunItem.patch(player, icon),
-                    OnClick.Item.BookMark.create(guide, menu, page));
-        }
-    }
-
-    @SuppressWarnings("UnnecessaryUnicodeEscape")
-    @RequiredArgsConstructor
-    class ItemMark implements OnDisplay {
-        private final Player player;
-        private final SlimefunItem item;
-
-        @Override
-        public void at(ChestMenu menu, int slot, JEGSlimefunGuideImplementation guide, int page) {
-            ItemGroup itemGroup = item.getItemGroup();
-            List<String> additionLore = List.of(
-                    "",
-                    ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player))),
-                    ChatColors.color("&e左键点击以收藏物品")
-            );
-
-            ItemStack icon = item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem();
-            icon.editMeta(meta -> {
-                List<String> lore = meta.getLore();
-                if (lore == null) lore = new ArrayList<>();
-                lore.addAll(additionLore);
-                meta.setLore(lore);
-
-                meta.addItemFlags(
-                        ItemFlag.HIDE_ATTRIBUTES,
-                        ItemFlag.HIDE_ENCHANTS,
-                        JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            });
-
-            menu.addItem(
-                    slot,
-                    PatchScope.SlimefunItem.patch(player, icon),
-                    OnClick.Item.ItemMark.create(guide, menu, page));
-        }
-    }
-
-    @RequiredArgsConstructor
-    class Normal implements OnDisplay {
-        private final Player player;
-        private final SlimefunItem item;
-
-        @Override
-        public void at(ChestMenu menu, int slot, JEGSlimefunGuideImplementation guide, int page) {
-            menu.addItem(
-                    slot,
-                    PatchScope.SlimefunItem.patch(player, item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem()),
-                    OnClick.Item.Normal.create(guide, menu, page));
-        }
-    }
-
-    @RequiredArgsConstructor
-    class Vanilla implements OnDisplay {
-        private final Player player;
-        private final ItemStack itemStack;
-        private final boolean vanillaShade;
-
-        @Override
-        public void at(ChestMenu menu, int slot, JEGSlimefunGuideImplementation guide, int page) {
-            menu.addItem(
-                    slot,
-                    PatchScope.VanillaItem.patch(player, vanillaShade ? ((VanillaItemShade) Objects.requireNonNull(SlimefunItem.getByItem(itemStack))).getCustomIcon(): itemStack),
-                    OnClick.Item.Normal.create(guide, menu, page));
-        }
-    }
-
-    static OnDisplay display(Player player, ItemStack itemStack, DisplayType type) {
-        SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);
-        if (slimefunItem == null || slimefunItem instanceof VanillaItemShade) {
-            return OnDisplay.Vanilla(player, itemStack, slimefunItem != null);
+        static Item Vanilla(Player player, ItemStack itemStack, boolean vanillaShade, JEGSlimefunGuideImplementation guide) {
+            return new Vanilla(player, itemStack, vanillaShade, guide);
         }
 
-        if (type == DisplayType.ItemMark) {
-            return OnDisplay.ItemMark(player, slimefunItem);
+        static Item Normal(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
+            return new Normal(player, item, guide);
         }
 
-        if (type == DisplayType.BookMark) {
-            return OnDisplay.BookMark(player, slimefunItem);
+        static Item ItemMark(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
+            return new ItemMark(player, item, guide);
         }
 
-        if (type == DisplayType.Search) {
-            return OnDisplay.Normal(player, slimefunItem);
+        static Item BookMark(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
+            return new BookMark(player, item, guide);
         }
 
-        if (!Slimefun.getConfigManager().isResearchingEnabled()) {
-            return OnDisplay.Normal(player, slimefunItem);
+        static Item Search(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
+            return new Search(player, item, guide);
         }
 
-        io.github.thebusybiscuit.slimefun4.api.researches.Research research = slimefunItem.getResearch();
-        if (research == null || !research.isEnabled()) {
-            return OnDisplay.Normal(player, slimefunItem);
+        static Item Research(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
+            return new Research(player, item, guide);
         }
 
-        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-        if (profile == null) return OnDisplay.Normal(player, slimefunItem);
-
-        if (profile.getResearches().contains(research)) {
-            return OnDisplay.Normal(player, slimefunItem);
+        static Item NoPermission(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
+            return new NoPermission(player, item, guide);
         }
 
-        if (player.getGameMode() != GameMode.CREATIVE) {
-            return OnDisplay.Research(player, slimefunItem);
+        static Item display(Player player, SlimefunItem item, DisplayType type, SlimefunGuideImplementation guide) {
+            if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, item, type, jeg);
+            return display(player, item.getItem(), type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
-        if (Slimefun.getConfigManager().isFreeCreativeResearchingEnabled()) {
-            return OnDisplay.Normal(player, slimefunItem);
+        static Item display(Player player, SlimefunItem item, DisplayType type, JEGSlimefunGuideImplementation guide) {
+            return display(player, item.getItem(), type, guide);
         }
 
-        return OnDisplay.Research(player, slimefunItem);
+        static Item display(Player player, ItemStack itemStack, DisplayType type, SlimefunGuideImplementation guide) {
+            if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, itemStack, type, jeg);
+            return display(player, itemStack, type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
+        }
+
+        static Item display(Player player, ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
+            SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);
+            if (slimefunItem == null) {
+                return Vanilla(player, itemStack, false, guide);
+            }
+
+            if (!JEGSlimefunGuideImplementation.hasPermission0(player, slimefunItem)) {
+                return NoPermission(player, slimefunItem, guide);
+            }
+
+            if (slimefunItem instanceof VanillaItemShade) {
+                return Vanilla(player, itemStack, true, guide);
+            }
+
+            if (type == DisplayType.ItemMark) {
+                return ItemMark(player, slimefunItem, guide);
+            }
+
+            if (type == DisplayType.BookMark) {
+                return BookMark(player, slimefunItem, guide);
+            }
+
+            if (type == DisplayType.Search) {
+                return Normal(player, slimefunItem, guide);
+            }
+
+            if (!Slimefun.getConfigManager().isResearchingEnabled()) {
+                return Normal(player, slimefunItem, guide);
+            }
+
+            io.github.thebusybiscuit.slimefun4.api.researches.Research research = slimefunItem.getResearch();
+            if (research == null || !research.isEnabled()) {
+                return Normal(player, slimefunItem, guide);
+            }
+
+            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+            if (profile == null) return Normal(player, slimefunItem, guide);
+
+            if (profile.getResearches().contains(research)) {
+                return Normal(player, slimefunItem, guide);
+            }
+
+            if (guide.getMode() == SlimefunGuideMode.CHEAT_MODE) {
+                return Normal(player, slimefunItem, guide);
+            }
+
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                return Research(player, slimefunItem, guide);
+            }
+
+            if (Slimefun.getConfigManager().isFreeCreativeResearchingEnabled()) {
+                return Normal(player, slimefunItem, guide);
+            }
+
+            return Research(player, slimefunItem, guide);
+        }
+
+        void at(ChestMenu menu, int slot, int page);
+
+        enum DisplayType {
+            Normal, ItemMark, BookMark, Search
+        }
+
+        @RequiredArgsConstructor
+        class Research implements Item {
+            private final Player player;
+            private final SlimefunItem item;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                io.github.thebusybiscuit.slimefun4.api.researches.Research research = item.getResearch();
+                if (research == null) return;
+
+                PatchScope.Research.patch(player, Converter.getItem(
+                        ChestMenuUtils.getNoPermissionItem(),
+                        "&f" + ItemUtils.getItemName(item.getItem()),
+                        "&7" + item.getId(),
+                        "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
+                        "",
+                        "&a> 单击解锁",
+                        "",
+                        "&7需要 &b",
+                        VaultIntegration.isEnabled()
+                                ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
+                                : research.getLevelCost() + " 级经验"
+                ));
+            }
+        }
+
+        @SuppressWarnings("UnnecessaryUnicodeEscape")
+        @RequiredArgsConstructor
+        class Search implements Item {
+            private final Player player;
+            private final SlimefunItem item;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                ItemGroup itemGroup = item.getItemGroup();
+                List<String> additionLore = List.of(
+                        "",
+                        ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player)))
+                );
+
+                ItemStack icon = item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem();
+                icon.editMeta(meta -> {
+                    List<String> lore = meta.getLore();
+                    if (lore == null) lore = new ArrayList<>();
+                    lore.addAll(additionLore);
+                    meta.setLore(lore);
+
+                    meta.addItemFlags(
+                            ItemFlag.HIDE_ATTRIBUTES,
+                            ItemFlag.HIDE_ENCHANTS,
+                            JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                });
+
+                menu.addItem(
+                        slot,
+                        PatchScope.SearchItem.patch(player, icon),
+                        OnClick.Item.Normal.create(guide, menu, page));
+            }
+        }
+
+        @SuppressWarnings("UnnecessaryUnicodeEscape")
+        @RequiredArgsConstructor
+        class BookMark implements Item {
+            private final Player player;
+            private final SlimefunItem item;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                ItemGroup itemGroup = item.getItemGroup();
+                List<String> additionLore = List.of(
+                        "",
+                        ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player))),
+                        ChatColors.color("&e右键以取消收藏物品")
+                );
+
+                ItemStack icon = item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem();
+                icon.editMeta(meta -> {
+                    List<String> lore = meta.getLore();
+                    if (lore == null) lore = new ArrayList<>();
+                    lore.addAll(additionLore);
+                    meta.setLore(lore);
+
+                    meta.addItemFlags(
+                            ItemFlag.HIDE_ATTRIBUTES,
+                            ItemFlag.HIDE_ENCHANTS,
+                            JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                });
+
+                menu.addItem(
+                        slot,
+                        PatchScope.SlimefunItem.patch(player, icon),
+                        OnClick.Item.BookMark.create(guide, menu, page));
+            }
+        }
+
+        @SuppressWarnings("UnnecessaryUnicodeEscape")
+        @RequiredArgsConstructor
+        class ItemMark implements Item {
+            private final Player player;
+            private final SlimefunItem item;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                ItemGroup itemGroup = item.getItemGroup();
+                List<String> additionLore = List.of(
+                        "",
+                        ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player))),
+                        ChatColors.color("&e左键点击以收藏物品")
+                );
+
+                ItemStack icon = item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem();
+                icon.editMeta(meta -> {
+                    List<String> lore = meta.getLore();
+                    if (lore == null) lore = new ArrayList<>();
+                    lore.addAll(additionLore);
+                    meta.setLore(lore);
+
+                    meta.addItemFlags(
+                            ItemFlag.HIDE_ATTRIBUTES,
+                            ItemFlag.HIDE_ENCHANTS,
+                            JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                });
+
+                menu.addItem(
+                        slot,
+                        PatchScope.SlimefunItem.patch(player, icon),
+                        OnClick.Item.ItemMark.create(guide, menu, page));
+            }
+        }
+
+        @RequiredArgsConstructor
+        class Normal implements Item {
+            private final Player player;
+            private final SlimefunItem item;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                menu.addItem(
+                        slot,
+                        PatchScope.SlimefunItem.patch(player, item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem()),
+                        OnClick.Item.Normal.create(guide, menu, page));
+            }
+        }
+
+        @RequiredArgsConstructor
+        class Vanilla implements Item {
+            private final Player player;
+            private final ItemStack itemStack;
+            private final boolean vanillaShade;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                menu.addItem(
+                        slot,
+                        PatchScope.VanillaItem.patch(player, vanillaShade ? ((VanillaItemShade) Objects.requireNonNull(SlimefunItem.getByItem(itemStack))).getCustomIcon() : itemStack),
+                        OnClick.Item.Normal.create(guide, menu, page));
+            }
+        }
+
+        @RequiredArgsConstructor
+        class NoPermission implements Item {
+            private final Player player;
+            private final SlimefunItem item;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                List<String> message = Slimefun.getPermissionsService().getLore(item);
+                menu.addItem(
+                        slot,
+                        PatchScope.NoPermission.patch(player, Converter.getItem(
+                                ChestMenuUtils.getNoPermissionItem(),
+                                item.getItemName(),
+                                message.toArray(new String[0])
+                        )),
+                        OnClick.Item.NoPermission.create(guide, menu, page));
+            }
+        }
     }
 }

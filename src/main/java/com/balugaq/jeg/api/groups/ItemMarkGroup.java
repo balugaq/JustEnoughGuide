@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.api.groups;
 
-import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
@@ -37,9 +36,7 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
-import com.balugaq.jeg.utils.JEGVersionedItemFlag;
-import com.balugaq.jeg.utils.LocalHelper;
+import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -48,20 +45,17 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -331,76 +325,8 @@ public class ItemMarkGroup extends FlexItemGroup {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.slimefunItemList.size()) {
                 SlimefunItem slimefunItem = slimefunItemList.get(index);
-                Research research = slimefunItem.getResearch();
-                ItemStack itemstack;
-                ChestMenu.MenuClickHandler handler;
-                if (implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
-                        && research != null
-                        && !playerProfile.hasUnlocked(research)) {
-                    String lore;
-
-                    if (VaultIntegration.isEnabled()) {
-                        lore = String.format("%.2f", research.getCurrencyCost()) + " 游戏币";
-                    } else {
-                        lore = research.getLevelCost() + " 级经验";
-                    }
-
-                    itemstack = ItemStackUtil.getCleanItem(Converter.getItem(
-                            ChestMenuUtils.getNoPermissionItem(),
-                            "&f" + ItemUtils.getItemName(slimefunItem.getItem()),
-                            "&7" + slimefunItem.getId(),
-                            "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
-                            "",
-                            "&a> 单击解锁",
-                            "",
-                            "&7需要 &b",
-                            lore));
-                    handler = (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(
-                                    pl, item, slot, action, chestMenu, implementation))
-                            .ifSuccess(() -> {
-                                research.unlockFromGuide(
-                                        implementation, pl, playerProfile, slimefunItem, itemGroup, page);
-                                return false;
-                            });
-                } else {
-                    itemstack = ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem(), meta -> {
-                        ItemGroup itemGroup = slimefunItem.getItemGroup();
-                        List<String> additionLore = List.of(
-                                "",
-                                ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE
-                                        + " - "
-                                        + LocalHelper.getDisplayName(itemGroup, player),
-                                ChatColor.YELLOW + "左键点击以收藏物品");
-                        if (meta.hasLore() && meta.getLore() != null) {
-                            List<String> lore = meta.getLore();
-                            lore.addAll(additionLore);
-                            meta.setLore(lore);
-                        } else {
-                            meta.setLore(additionLore);
-                        }
-
-                        meta.addItemFlags(
-                                ItemFlag.HIDE_ATTRIBUTES,
-                                ItemFlag.HIDE_ENCHANTS,
-                                JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                    }));
-                    handler = (pl, slot, itm, action) -> EventUtil.callEvent(
-                                    new GuideEvents.CollectItemEvent(pl, itm, slot, action, chestMenu, implementation))
-                            .ifSuccess(() -> {
-                                try {
-                                    JustEnoughGuide.getBookmarkManager().addBookmark(pl, slimefunItem);
-                                    pl.sendMessage(ChatColor.GREEN + "已添加到收藏列表!");
-                                    pl.playSound(pl.getLocation(), Sounds.COLLECTED_ITEM, 1f, 1f);
-                                } catch (Exception | LinkageError x) {
-                                    printErrorMessage(pl, slimefunItem, x);
-                                }
-
-                                return false;
-                            });
-                }
-
-                chestMenu.addItem(contentSlots.get(i), PatchScope.ItemMarkItem.patch(player, itemstack), handler);
+                OnDisplay.Item.display(player, slimefunItem, OnDisplay.Item.BookMark, implementation)
+                        .at(chestMenu, contentSlots.get(i), page);
             }
         }
 

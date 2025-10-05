@@ -37,6 +37,7 @@ import com.balugaq.jeg.implementation.items.GroupSetup;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
 import com.google.common.base.Preconditions;
@@ -323,31 +324,8 @@ public class VanillaItemsGroup extends FlexItemGroup {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < slimefunItems.size()) {
                 SlimefunItem slimefunItem = slimefunItems.get(index);
-                ItemStack itemStack;
-                if (slimefunItem instanceof VanillaItemShade vis) {
-                    itemStack = vis.getCustomIcon();
-                } else {
-                    itemStack = slimefunItem.getItem();
-                }
-                chestMenu.addItem(
-                        contentSlots.get(i),
-                        PatchScope.SlimefunItem.patch(player, itemStack),
-                        (pl, slot, itm, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(
-                                        pl, itm, slot, action, chestMenu, implementation))
-                                .ifSuccess(() -> {
-                                    try {
-                                        if (implementation.getMode() != SlimefunGuideMode.SURVIVAL_MODE
-                                                && (pl.isOp() || pl.hasPermission("slimefun.cheat.items"))) {
-                                            pl.getInventory().addItem(itemStack.clone());
-                                        } else {
-                                            implementation.displayItem(playerProfile, slimefunItem, true);
-                                        }
-                                    } catch (Exception | LinkageError x) {
-                                        printErrorMessage(pl, slimefunItem, x);
-                                    }
-
-                                    return false;
-                                }));
+                OnDisplay.Item.display(player, slimefunItem, OnDisplay.Item.Normal, implementation)
+                        .at(chestMenu, contentSlots.get(i), page);
             }
         }
 
