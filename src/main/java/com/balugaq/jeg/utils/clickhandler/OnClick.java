@@ -151,12 +151,12 @@ public interface OnClick {
     interface RecipeType extends OnClick {
         ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                 Action.of("q", "分享配方类型", (guide, player, slot, recipeType, action, menu, page) -> {
-                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getItemName();
+                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getDisplayName();
                     share(player, recipeTypeName);
                 }),
                 Action.of("right-click", "查找使用此配方类型的物品", (guide, player, slot, recipeType, action, menu, page) -> {
-                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getItemName();
-                    player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME + recipeTypeName);
+                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getDisplayName();
+                    player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getSymbol() + recipeTypeName);
                 }),
                 Action.of("shift-left", "打开配方类型所在物品组", (guide, player, slot, recipeType, action, menu, page) -> {
                     SlimefunItem machine = recipeType.getMachine();
@@ -167,7 +167,7 @@ public interface OnClick {
                     }
                 }),
                 Action.of("shift-right", "查找相关物品/机器", (guide, player, slot, recipeType, action, menu, page) -> {
-                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getItemName();
+                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getDisplayName();
                     player.chat("/sf search " + recipeTypeName);
                 }),
                 Action.of("default", "默认", (guide, player, slot, recipeType, action, menu, page) -> {
@@ -517,19 +517,19 @@ public interface OnClick {
         class Normal implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", (guide, player, slot, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(item.getItemMeta().getItemName()).trim();
+                        String itemName = ChatColor.stripColor(item.getItemMeta().getDisplayName()).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                        player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME + itemName);
+                        player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getSymbol() + itemName);
                     }),
                     Action.of("q", "分享物品", (guide, player, slot, item, clickAction, menu, page) -> {
-                        share(player, item.getItemMeta().getItemName().trim());
+                        share(player, item.getItemMeta().getDisplayName().trim());
                     }),
                     Action.of("right-click", "搜索物品作用", (guide, player, slot, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(item.getItemMeta().getItemName()).trim();
+                        String itemName = ChatColor.stripColor(item.getItemMeta().getDisplayName()).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                        player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME + itemName);
+                        player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getSymbol() + itemName);
                     }),
                     Action.of("shift-left-click", "打开物品所在物品组", (guide, player, slot, item, clickAction, menu, p2) -> {
                         final SlimefunItem sfItem = SlimefunItem.getByItem(item);
@@ -548,7 +548,7 @@ public interface OnClick {
                         });
                     }),
                     Action.of("shift-right-click", "查找相关物品", (guide, player, slot, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(item.getItemMeta().getItemName()).trim();
+                        String itemName = ChatColor.stripColor(item.getItemMeta().getDisplayName()).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
                         player.chat("/sf search " + itemName);
                     }),
@@ -601,4 +601,4 @@ public interface OnClick {
     }
 }
 
-.. 别用，没修好
+，，没修好，先不发布
