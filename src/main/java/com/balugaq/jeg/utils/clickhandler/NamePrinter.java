@@ -69,11 +69,8 @@ import java.util.concurrent.TimeUnit;
  */
 @SuppressWarnings("deprecation")
 public class NamePrinter implements Applier {
-    public static final MessageFormat SHARED_ITEM_MESSAGE =
-            new MessageFormat(ChatColors.color("&a{0} &e分享了物品 &7[{1}&r&7]&e <点击搜索>"));
-    public static final String CLICK_TO_SEARCH = ChatColors.color("&e点击搜索物品");
+
     private static final NamePrinter instance = new NamePrinter();
-    private static final FrequencyWatcher<UUID> watcher = new FrequencyWatcher<>(1, TimeUnit.MINUTES, 10, 5000);
 
     private NamePrinter() {
     }
@@ -123,20 +120,7 @@ public class NamePrinter implements Applier {
         }
     }
 
-    public static boolean checkCooldown(@NotNull Player player) {
-        FrequencyWatcher.Result result = watcher.checkCooldown(player.getUniqueId());
-        if (result == FrequencyWatcher.Result.TOO_FREQUENT) {
-            player.sendMessage(ChatColor.RED + "你的使用频率过高，请稍后使用!");
-            return false;
-        }
 
-        if (result == FrequencyWatcher.Result.CANCEL) {
-            player.sendMessage(ChatColor.RED + "这个功能正在冷却中...");
-            return false;
-        }
-
-        return true;
-    }
 
     @ParametersAreNonnullByDefault
     public void apply(SlimefunGuideImplementation guide, ChestMenu menu, int slot) {

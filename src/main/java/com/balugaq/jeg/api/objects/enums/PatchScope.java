@@ -79,7 +79,8 @@ public enum PatchScope {
     CerRecipeOutput,
     CerRecipeBorderInput,
     CerRecipeBorderOutput,
-    CerRecipeBorderInputOutput;
+    CerRecipeBorderInputOutput,
+    Research;
 
     @NotNull
     public ItemStack patch(@NotNull PlayerProfile profile, @NotNull ItemStack itemStack) {
