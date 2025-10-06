@@ -800,7 +800,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
         List<Integer> recipeSlots = format.getChars('r');
         for (int i = 0; i < 9; i++) {
-            ItemStack recipeItem = JEGSlimefunGuideImplementation.getDisplayItem(p, isSlimefunRecipe, recipe[i]);
+            ItemStack recipeItem = recipe[i];
             OnDisplay.Item.display(p, PatchScope.ItemRecipeIngredient.patch(p, recipeItem), OnDisplay.Item.Normal, this)
                     .at(menu, recipeSlots.get(i), 1);
 

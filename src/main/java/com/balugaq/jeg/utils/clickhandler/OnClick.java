@@ -82,10 +82,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public interface OnClick {
     MessageFormat SHARED_ITEM_MESSAGE = new MessageFormat(ChatColors.color("&a{0} &e分享了 &7[{1}&r&7]&e <点击搜索>"));
     String CLICK_TO_SEARCH = ChatColors.color("&e点击搜索");
-    FrequencyWatcher<UUID> sharingWatcher = new FrequencyWatcher<>(1, TimeUnit.MINUTES, 10, 5000);
+    FrequencyWatcher<UUID> SHARING_WATCHER = new FrequencyWatcher<>(1, TimeUnit.MINUTES, 10, 5000);
+
+    static void preset(ChestMenu menu) {
+        menu.setEmptySlotsClickable(false);
+        menu.addPlayerInventoryClickHandler((p, s, i, a) ->
+                p.isOp() || p.hasPermission("slimefun.cheat.items")
+        );
+        menu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
+    }
 
     static boolean checkShareCooldown(@NotNull Player player) {
-        FrequencyWatcher.Result result = sharingWatcher.checkCooldown(player.getUniqueId());
+        FrequencyWatcher.Result result = SHARING_WATCHER.checkCooldown(player.getUniqueId());
         if (result == FrequencyWatcher.Result.TOO_FREQUENT) {
             player.sendMessage(ChatColor.RED + "你的使用频率过高，请稍后使用!");
             return false;
@@ -481,7 +489,9 @@ public interface OnClick {
         class Research implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("research", "研究物品", (guide, player, slot, item, action, menu, page) -> {
-                        SlimefunItem slimefunItem = SlimefunItem.getByItem(item);
+                        String id = item.getItemMeta().getPersistentDataContainer().get(JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY, PersistentDataType.STRING);
+                        if (id == null) return;
+                        SlimefunItem slimefunItem = SlimefunItem.getById(id);
                         if (slimefunItem == null) return;
                         io.github.thebusybiscuit.slimefun4.api.researches.Research research = slimefunItem.getResearch();
                         if (research == null) return;
@@ -600,5 +610,3 @@ public interface OnClick {
         }
     }
 }
-
-，，没修好，先不发布

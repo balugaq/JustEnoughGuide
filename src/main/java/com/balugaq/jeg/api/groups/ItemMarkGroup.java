@@ -36,6 +36,7 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
@@ -216,8 +217,7 @@ public class ItemMarkGroup extends FlexItemGroup {
             final @NotNull SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("添加收藏物 - JEG");
 
-        chestMenu.setEmptySlotsClickable(false);
-        chestMenu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
+        OnClick.preset(chestMenu);
 
         for (int ss : itemGroup instanceof BookmarkRelocation relocation
                 ? relocation.getBackButton(implementation, player)
@@ -325,7 +325,7 @@ public class ItemMarkGroup extends FlexItemGroup {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.slimefunItemList.size()) {
                 SlimefunItem slimefunItem = slimefunItemList.get(index);
-                OnDisplay.Item.display(player, slimefunItem, OnDisplay.Item.BookMark, implementation)
+                OnDisplay.Item.display(player, slimefunItem, OnDisplay.Item.ItemMark, implementation)
                         .at(chestMenu, contentSlots.get(i), page);
             }
         }

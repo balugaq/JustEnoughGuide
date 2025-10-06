@@ -42,16 +42,18 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -64,7 +66,7 @@ import java.util.Objects;
  * @author balugaq
  * @since 2.0
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "ClassCanBeRecord"})
 @NullMarked
 public interface OnDisplay {
     interface RecipeType extends OnDisplay {
@@ -85,7 +87,7 @@ public interface OnDisplay {
         void at(ChestMenu menu, int slot, int page);
 
         @RequiredArgsConstructor
-        class Normal implements RecipeType {
+        @Data class Normal implements RecipeType {
             private final Player player;
             private final io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType;
             private final ItemStack itemStack;
@@ -210,7 +212,7 @@ public interface OnDisplay {
         }
 
         @RequiredArgsConstructor
-        class Research implements Item {
+        @Data class Research implements Item {
             private final Player player;
             private final SlimefunItem item;
             private final JEGSlimefunGuideImplementation guide;
@@ -220,7 +222,7 @@ public interface OnDisplay {
                 io.github.thebusybiscuit.slimefun4.api.researches.Research research = item.getResearch();
                 if (research == null) return;
 
-                menu.addItem(slot, PatchScope.Research.patch(player, Converter.getItem(
+                ItemStack icon = Converter.getItem(
                         ChestMenuUtils.getNoPermissionItem(),
                         "&f" + ItemUtils.getItemName(item.getItem()),
                         "&7" + item.getId(),
@@ -231,14 +233,19 @@ public interface OnDisplay {
                         "&7需要 &b",
                         VaultIntegration.isEnabled()
                                 ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
-                                : research.getLevelCost() + " 级经验"
-                )), OnClick.Item.Research.create(guide, menu, page));
+                                : research.getLevelCost() + " 级经验");
+
+                ItemMeta meta = icon.getItemMeta();
+                meta.getPersistentDataContainer().set(JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY, PersistentDataType.STRING, item.getId());
+                icon.setItemMeta(meta);
+
+                menu.addItem(slot, PatchScope.Research.patch(player, icon), OnClick.Item.Research.create(guide, menu, page));
             }
         }
 
         @SuppressWarnings("UnnecessaryUnicodeEscape")
         @RequiredArgsConstructor
-        class Search implements Item {
+        @Data class Search implements Item {
             private final Player player;
             private final SlimefunItem item;
             private final JEGSlimefunGuideImplementation guide;
@@ -273,7 +280,7 @@ public interface OnDisplay {
 
         @SuppressWarnings("UnnecessaryUnicodeEscape")
         @RequiredArgsConstructor
-        class BookMark implements Item {
+        @Data class BookMark implements Item {
             private final Player player;
             private final SlimefunItem item;
             private final JEGSlimefunGuideImplementation guide;
@@ -309,7 +316,7 @@ public interface OnDisplay {
 
         @SuppressWarnings("UnnecessaryUnicodeEscape")
         @RequiredArgsConstructor
-        class ItemMark implements Item {
+        @Data class ItemMark implements Item {
             private final Player player;
             private final SlimefunItem item;
             private final JEGSlimefunGuideImplementation guide;
@@ -344,7 +351,7 @@ public interface OnDisplay {
         }
 
         @RequiredArgsConstructor
-        class Normal implements Item {
+        @Data class Normal implements Item {
             private final Player player;
             private final SlimefunItem item;
             private final JEGSlimefunGuideImplementation guide;
@@ -359,7 +366,7 @@ public interface OnDisplay {
         }
 
         @RequiredArgsConstructor
-        class Vanilla implements Item {
+        @Data class Vanilla implements Item {
             private final Player player;
             private final ItemStack itemStack;
             private final boolean vanillaShade;
@@ -375,7 +382,7 @@ public interface OnDisplay {
         }
 
         @RequiredArgsConstructor
-        class NoPermission implements Item {
+        @Data class NoPermission implements Item {
             private final Player player;
             private final SlimefunItem item;
             private final JEGSlimefunGuideImplementation guide;
