@@ -5,7 +5,7 @@ groups:
     enabled: false
     tier: 1
     id: custom-group # [a-z0-9/._-]
-    mode: transfer # transfer / merge
+    mode: transfer # transfer / merge / actions
     display:
       # material / skull(hash/base64/url)
       material: glass
@@ -48,3 +48,14 @@ groups:
       - "iiiiiiiii"
       - "iiiiiiiii"
       - "BPBcCBBNB"
+  group3:
+    enabled: false
+    tier: 3
+    id: custom-group3
+    mode: actions
+    actions:
+      - "" # "command <command>" # run as console
+      - "" # "commandp <command>" # run as player
+      - "" # "link <link>" # open link for the player
+      - "" # "lookupitem <id>" # lookup item
+      - "" # "lookupgroup <group_id>" # lookup group

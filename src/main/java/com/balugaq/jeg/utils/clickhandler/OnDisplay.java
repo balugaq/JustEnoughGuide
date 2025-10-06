@@ -36,8 +36,8 @@ import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
@@ -48,7 +48,10 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -69,6 +72,107 @@ import java.util.Objects;
 @SuppressWarnings({"deprecation", "ClassCanBeRecord"})
 @NullMarked
 public interface OnDisplay {
+    interface ItemGroup extends OnDisplay {
+        static ItemGroup Normal(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, JEGSlimefunGuideImplementation guide) {
+            return new Normal(player, itemGroup, guide);
+        }
+
+        static ItemGroup Locked(Player player, LockedItemGroup itemGroup, JEGSlimefunGuideImplementation guide) {
+            return new Locked(player, itemGroup, guide);
+        }
+
+        static ItemGroup NoPermission(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, JEGSlimefunGuideImplementation guide) {
+            return new NoPermission(player, itemGroup, guide);
+        }
+
+        static ItemGroup display(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, SlimefunGuideImplementation guide) {
+            if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, itemGroup, jeg);
+            return display(player, itemGroup, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
+        }
+
+        static ItemGroup display(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, JEGSlimefunGuideImplementation guide) {
+            // You're supposed to precheck it before displaying
+            if (!itemGroup.isVisible(player) || itemGroup.isHidden(player) || !itemGroup.isAccessible(player)) {
+                return NoPermission(player, itemGroup, guide);
+            }
+
+            if (!(itemGroup instanceof LockedItemGroup locked)) {
+                return Normal(player, itemGroup, guide);
+            }
+
+            if (guide.getMode() == SlimefunGuideMode.CHEAT_MODE) {
+                return Normal(player, itemGroup, guide);
+            }
+
+            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+            if (profile == null) return Normal(player, itemGroup, guide);
+
+            if (locked.hasUnlocked(player, profile)) {
+                return Normal(player, itemGroup, guide);
+            }
+
+            return Locked(player, locked, guide);
+        }
+
+        void at(ChestMenu menu, int slot, int page);
+
+        @RequiredArgsConstructor
+        @Data class Normal implements ItemGroup {
+            private final Player player;
+            private final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                menu.addItem(slot, PatchScope.ItemGroup.patch(player, itemGroup.getItem(player)), OnClick.ItemGroup.create(guide, menu, itemGroup));
+            }
+        }
+
+        @RequiredArgsConstructor
+        @Data class Locked implements ItemGroup {
+            private final Player player;
+            private final LockedItemGroup itemGroup;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                List<String> lore = new ArrayList<>();
+                lore.add("");
+
+                for (String line : Slimefun.getLocalization().getMessages(player, "guide.locked-itemgroup")) {
+                    lore.add(ChatColor.WHITE + line);
+                }
+                lore.add("");
+
+                for (io.github.thebusybiscuit.slimefun4.api.items.ItemGroup parent : itemGroup.getParents()) {
+                    lore.add(ItemStackHelper.getDisplayName(parent.getItem(player)));
+                }
+
+                ItemStack icon = PatchScope.LockedItemGroup.patch(player, Converter.getItem(
+                        Material.BARRIER,
+                        "&4" + Slimefun.getLocalization().getMessage(player, "guide.locked") + " &7- &f" + ItemStackHelper.getDisplayName(itemGroup.getItem(player)),
+                        lore.toArray(new String[0])
+                ));
+                menu.addItem(slot, icon, OnClick.ClickHandler.deny());
+            }
+        }
+
+        @RequiredArgsConstructor
+        @Data class NoPermission implements ItemGroup {
+            private final Player player;
+            private final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup;
+            private final JEGSlimefunGuideImplementation guide;
+
+            @Override
+            public void at(ChestMenu menu, int slot, int page) {
+                menu.addItem(slot, PatchScope.NoPermission.patch(player, Converter.getItem(
+                        ChestMenuUtils.getNoPermissionItem(),
+                        ItemStackHelper.getDisplayName(itemGroup.getItem(player))
+                )), OnClick.ClickHandler.deny());
+            }
+        }
+    }
+
     interface RecipeType extends OnDisplay {
 
         static RecipeType Normal(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
@@ -148,6 +252,7 @@ public interface OnDisplay {
                 return Vanilla(player, vis.getCustomIcon(), true, guide);
             }
 
+
             if (type == DisplayType.ItemMark) {
                 return ItemMark(player, slimefunItem, guide);
             }
@@ -157,7 +262,7 @@ public interface OnDisplay {
             }
 
             if (type == DisplayType.Search) {
-                return Normal(player, slimefunItem, guide);
+                return Search(player, slimefunItem, guide);
             }
 
             if (!Slimefun.getConfigManager().isResearchingEnabled()) {
@@ -252,7 +357,7 @@ public interface OnDisplay {
 
             @Override
             public void at(ChestMenu menu, int slot, int page) {
-                ItemGroup itemGroup = item.getItemGroup();
+                io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
                         "",
                         ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player)))
@@ -287,7 +392,7 @@ public interface OnDisplay {
 
             @Override
             public void at(ChestMenu menu, int slot, int page) {
-                ItemGroup itemGroup = item.getItemGroup();
+                io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
                         "",
                         ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player))),
@@ -323,7 +428,7 @@ public interface OnDisplay {
 
             @Override
             public void at(ChestMenu menu, int slot, int page) {
-                ItemGroup itemGroup = item.getItemGroup();
+                io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
                         "",
                         ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup, item.getId()), LocalHelper.getDisplayName(itemGroup, player))),
@@ -397,7 +502,7 @@ public interface OnDisplay {
                                 item.getItemName(),
                                 message.toArray(new String[0])
                         )),
-                        OnClick.Item.NoPermission.create(guide, menu, page));
+                        OnClick.ClickHandler.deny());
             }
         }
     }

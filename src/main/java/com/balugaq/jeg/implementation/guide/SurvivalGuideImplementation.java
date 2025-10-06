@@ -298,43 +298,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             @NotNull PlayerProfile profile,
             @NotNull ItemGroup group,
             int index) {
-        if (!(group instanceof LockedItemGroup)
-                || !isSurvivalMode()
-                || ((LockedItemGroup) group).hasUnlocked(p, profile)) {
-            menu.addItem(index, PatchScope.ItemGroup.patch(p, group.getItem(p)));
-            menu.addMenuClickHandler(index, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                openItemGroup(profile, group, 1);
-                return false;
-            }));
-        } else {
-            List<String> lore = new ArrayList<>();
-            lore.add("");
-
-            for (String line : Slimefun.getLocalization().getMessages(p, "guide.locked-itemgroup")) {
-                lore.add(ChatColor.WHITE + line);
-            }
-
-            lore.add("");
-
-            for (ItemGroup parent : ((LockedItemGroup) group).getParents()) {
-                ItemMeta meta = parent.getItem(p).getItemMeta();
-                if (meta == null) {
-                    continue;
-                }
-                lore.add(meta.getDisplayName());
-            }
-
-            ItemMeta meta = group.getItem(p).getItemMeta();
-            if (meta == null) {
-                return;
-            }
-
-            menu.addItem(index, PatchScope.LockedItemGroup.patch(p, Converter.getItem(
-                    Material.BARRIER,
-                    "&4" + Slimefun.getLocalization().getMessage(p, "guide.locked") + " &7- &f" + meta.getDisplayName(),
-                    lore.toArray(new String[0]))));
-            menu.addMenuClickHandler(index, ChestMenuUtils.getEmptyClickHandler());
-        }
+        OnDisplay.ItemGroup.display(p, group, this)
+                .at(menu, index, 1);
     }
 
     @Override

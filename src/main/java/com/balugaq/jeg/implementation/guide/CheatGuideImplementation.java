@@ -401,59 +401,8 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
             @NotNull ItemGroup group,
             int index,
             int page) {
-        if (!(group instanceof LockedItemGroup)
-                || !isSurvivalMode()
-                || ((LockedItemGroup) group).hasUnlocked(p, profile)) {
-            menu.addItem(index, PatchScope.ItemGroup.patch(p, group.getItem(p)));
-            menu.addMenuClickHandler(index, (pl, slot, item, action) -> {
-                if (action.isRightClicked() && GroupResorter.isSelecting(pl)) {
-                    ItemGroup selected = GroupResorter.getSelectedGroup(pl);
-                    if (selected == null) {
-                        GroupResorter.setSelectedGroup(pl, group);
-                        pl.sendMessage(ChatColors.color("&a已选择物品组: &e" + group.getDisplayName(pl)));
-                    } else {
-                        GroupResorter.swap(selected, group);
-                        GroupResorter.setSelectedGroup(pl, null);
-                        pl.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(pl) + " &7<-> &e"
-                                + group.getDisplayName(pl)));
-                        openMainMenu(profile, page);
-                    }
-                    return false;
-                } else {
-                    openItemGroup(profile, group, 1);
-                }
-                return false;
-            });
-        } else {
-            List<String> lore = new ArrayList<>();
-            lore.add("");
-
-            for (String line : Slimefun.getLocalization().getMessages(p, "guide.locked-itemgroup")) {
-                lore.add(ChatColor.WHITE + line);
-            }
-
-            lore.add("");
-
-            for (ItemGroup parent : ((LockedItemGroup) group).getParents()) {
-                ItemMeta meta = parent.getItem(p).getItemMeta();
-                if (meta == null) {
-                    continue;
-                }
-                lore.add(meta.getDisplayName());
-            }
-
-            ItemMeta meta = group.getItem(p).getItemMeta();
-            if (meta == null) {
-                return;
-            }
-
-            menu.addItem(index, PatchScope.LockedItemGroup.patch(p, Converter.getItem(
-                    Material.BARRIER,
-                    "&4" + Slimefun.getLocalization().getMessage(p, "guide.locked") + " &7- &f" + meta.getDisplayName(),
-                    lore.toArray(new String[0])
-            )));
-            menu.addMenuClickHandler(index, ChestMenuUtils.getEmptyClickHandler());
-        }
+        OnDisplay.ItemGroup.display(p, group, this)
+                .at(menu, index, page);
     }
 
     @Override

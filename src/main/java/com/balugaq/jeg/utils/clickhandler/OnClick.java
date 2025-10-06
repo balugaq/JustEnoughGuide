@@ -52,6 +52,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -150,6 +151,90 @@ public interface OnClick {
     }
 
     /**
+     * 点击物品组时:
+     * 左键: 打开
+     */
+    interface ItemGroup extends OnClick {
+        ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+                Action.of("default", "默认", (guide, player, slot, itemGroup, action, menu, page) -> {
+                    PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                    if (profile == null) return;
+                    guide.openItemGroup(profile, itemGroup, page);
+                })
+        );
+
+        static ObjectImmutableList<Action> listActions() {
+            return listActions;
+        }
+
+        static Action findAction(Player player, String key) {
+            for (Action action : listActions()) {
+                String k = action.getKey().getKey();
+                String remap = player.getPersistentDataContainer().get(KeyUtil.newKey("keybind-" + k), PersistentDataType.STRING);
+                if (remap != null) k = remap;
+
+                if (k.equals(key)) return action;
+            }
+
+            return new Action() {
+                @Override
+                public String name() {
+                    return "Key Not Found";
+                }
+
+                @Override
+                public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
+                    player.sendMessage("&c未找到按键: " + key);
+                    return false;
+                }
+
+                @Override
+                public @NotNull NamespacedKey getKey() {
+                    return KeyUtil.newKey(key);
+                }
+            };
+        }
+
+        static ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
+            return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() ->
+                findAction(player, "default").click(guide, player, slot, itemGroup, action, menu, 1)
+            );
+        }
+
+        @FunctionalInterface
+        interface ActionHandle {
+            void click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
+        }
+
+        interface Action extends Keyed {
+            static Action of(String key, String name, ActionHandle handle) {
+                return new Action() {
+
+                    @Override
+                    public @NotNull NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
+                    }
+
+                    @Override
+                    public String name() {
+                        return name;
+                    }
+
+                    @Override
+                    public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
+                        handle.click(guide, player, slot, itemGroup, clickAction, menu, page);
+                        return false;
+                    }
+                };
+            }
+
+            String name();
+
+            boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
+        }
+    }
+
+    /**
      * 点击配方类型时:
      * Q建: 分享配方类型                       // Case 1 按下 Q 键
      * 右键: 查找使用此配方类型的物品: 搜索: $名字 // Case2 按下右键
@@ -159,11 +244,11 @@ public interface OnClick {
     interface RecipeType extends OnClick {
         ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                 Action.of("q", "分享配方类型", (guide, player, slot, recipeType, action, menu, page) -> {
-                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getDisplayName();
+                    String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
                     share(player, recipeTypeName);
                 }),
                 Action.of("right-click", "查找使用此配方类型的物品", (guide, player, slot, recipeType, action, menu, page) -> {
-                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getDisplayName();
+                    String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
                     player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getSymbol() + recipeTypeName);
                 }),
                 Action.of("shift-left", "打开配方类型所在物品组", (guide, player, slot, recipeType, action, menu, page) -> {
@@ -175,7 +260,7 @@ public interface OnClick {
                     }
                 }),
                 Action.of("shift-right", "查找相关物品/机器", (guide, player, slot, recipeType, action, menu, page) -> {
-                    String recipeTypeName = recipeType.getItem(player).getItemMeta().getDisplayName();
+                    String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
                     player.chat("/sf search " + recipeTypeName);
                 }),
                 Action.of("default", "默认", (guide, player, slot, recipeType, action, menu, page) -> {
@@ -239,14 +324,6 @@ public interface OnClick {
         }
 
         @FunctionalInterface
-        interface ClickHandler extends ChestMenu.AdvancedMenuClickHandler {
-            @Override
-            default boolean onClick(Player player, int i, ItemStack itemStack, ClickAction clickAction) {
-                return false;
-            }
-        }
-
-        @FunctionalInterface
         interface ActionHandle {
             void click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page);
         }
@@ -297,7 +374,6 @@ public interface OnClick {
         Item ItemMark = new ItemMark();
         Item BookMark = new BookMark();
         Item Research = new Research();
-        Item NoPermission = new NoPermission();
 
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
             return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
@@ -366,17 +442,6 @@ public interface OnClick {
                     return KeyUtil.newKey(key);
                 }
             };
-        }
-
-        @FunctionalInterface
-        interface ClickHandler extends ChestMenu.AdvancedMenuClickHandler {
-            @Override
-            boolean onClick(InventoryClickEvent event, Player player, int slot, ItemStack cursor, ClickAction action);
-
-            @Override
-            default boolean onClick(Player player, int slot, ItemStack itemStack, ClickAction action) {
-                return false;
-            }
         }
 
         @FunctionalInterface
@@ -527,16 +592,16 @@ public interface OnClick {
         class Normal implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", (guide, player, slot, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(item.getItemMeta().getDisplayName()).trim();
+                        String itemName = ChatColor.stripColor(ItemStackHelper.getDisplayName(item)).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
                         player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getSymbol() + itemName);
                     }),
                     Action.of("q", "分享物品", (guide, player, slot, item, clickAction, menu, page) -> {
-                        share(player, item.getItemMeta().getDisplayName().trim());
+                        share(player, ItemStackHelper.getDisplayName(item).trim());
                     }),
                     Action.of("right-click", "搜索物品作用", (guide, player, slot, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(item.getItemMeta().getDisplayName()).trim();
+                        String itemName = ChatColor.stripColor(ItemStackHelper.getDisplayName(item)).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
                         player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getSymbol() + itemName);
@@ -547,7 +612,7 @@ public interface OnClick {
                             return;
                         }
 
-                        final ItemGroup itemGroup = sfItem.getItemGroup();
+                        final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = sfItem.getItemGroup();
                         AtomicInteger page = new AtomicInteger(1);
                         if (GuideUtil.isTaggedGroupType(itemGroup)) {
                             page.set((itemGroup.getItems().indexOf(sfItem) / 36) + 1);
@@ -558,7 +623,7 @@ public interface OnClick {
                         });
                     }),
                     Action.of("shift-right-click", "查找相关物品", (guide, player, slot, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(item.getItemMeta().getDisplayName()).trim();
+                        String itemName = ChatColor.stripColor(ItemStackHelper.getDisplayName(item)).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
                         player.chat("/sf search " + itemName);
                     }),
@@ -594,19 +659,17 @@ public interface OnClick {
                 return listActions;
             }
         }
+    }
 
-        class NoPermission implements Item {
-            public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of();
+    @FunctionalInterface
+    interface ClickHandler extends ChestMenu.AdvancedMenuClickHandler {
+        @Override
+        default boolean onClick(Player player, int i, ItemStack itemStack, ClickAction clickAction) {
+            return false;
+        }
 
-            @Override
-            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
-                return (event, player, slot, item, action) -> false;
-            }
-
-            @Override
-            public ObjectImmutableList<Action> listActions() {
-                return listActions;
-            }
+        static ClickHandler deny() {
+            return (event, player, slot, item, action) -> false;
         }
     }
 }
