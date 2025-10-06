@@ -47,12 +47,14 @@ public interface Bookmark {
     }
 
     @RequiredArgsConstructor
-    @Data class Item implements Bookmark {
+    @Data
+    class Item implements Bookmark {
         final SlimefunItem slimefunItem;
     }
 
     @RequiredArgsConstructor
-    @Data class ItemGroup implements Bookmark {
+    @Data
+    class ItemGroup implements Bookmark {
         final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup;
     }
 }

@@ -56,7 +56,6 @@ import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.MenuListener;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -168,25 +167,25 @@ public interface OnClick {
      * 点击物品组时:
      * 如果是在 4 月 1 日，有 114 / 514 的几率打开Never gonna give you up页面（在聊天栏弹出链接，当天只会弹出一次）
      * 在书签中:
-     *   右键: 取消书签
+     * 右键: 取消书签
      * 在标记书签中:
-     *   左键: 标记书签
+     * 左键: 标记书签
      * 在交换物品组时:
-     *   点击的是特殊物品组: (FlexItemGroup)
-     *     左键: 打开
-     *     右键: 选择
-     *   点击的是普通物品组: (!FlexItemGroup)
-     *     左键: 选择
+     * 点击的是特殊物品组: (FlexItemGroup)
+     * 左键: 打开
+     * 右键: 选择
+     * 点击的是普通物品组: (!FlexItemGroup)
+     * 左键: 选择
      * 左键: 打开
      * 右键: 收藏物品组
      * OP时:
-     *   Shift+左键: 复制物品组的key (namespace:key)
-     *   若安装了 RSCE，Shift+右键: 获取对应的物品组占位符
-     *
+     * Shift+左键: 复制物品组的key (namespace:key)
+     * 若安装了 RSCE，Shift+右键: 获取对应的物品组占位符
      */
     interface ItemGroup extends OnClick {
         ItemGroup Normal = new Normal();
         ItemGroup Bookmark = new Bookmark();
+        Set<UUID> easterredPlayer = ConcurrentHashMap.newKeySet();
 
         ObjectImmutableList<Action> listActions();
 
@@ -218,8 +217,6 @@ public interface OnClick {
             };
         }
 
-        Set<UUID> easterredPlayer = ConcurrentHashMap.newKeySet();
-
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
             return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 if (!easterredPlayer.contains(player.getUniqueId())) {
@@ -248,6 +245,38 @@ public interface OnClick {
 
                 return findAction(player, "default").click(guide, event, player, slot, itemGroup, action, menu, 1);
             });
+        }
+
+        @FunctionalInterface
+        interface ActionHandle {
+            void click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
+        }
+
+        interface Action extends Keyed {
+            static Action of(String key, String name, ActionHandle handle) {
+                return new Action() {
+
+                    @Override
+                    public @NotNull NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
+                    }
+
+                    @Override
+                    public String name() {
+                        return name;
+                    }
+
+                    @Override
+                    public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
+                        handle.click(guide, event, player, slot, itemGroup, clickAction, menu, page);
+                        return false;
+                    }
+                };
+            }
+
+            String name();
+
+            boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
         }
 
         class Normal implements ItemGroup {
@@ -367,38 +396,6 @@ public interface OnClick {
                     return Normal.create(guide, menu, itemGroup).onClick(event, player, slot, cursor, action);
                 });
             }
-        }
-
-        @FunctionalInterface
-        interface ActionHandle {
-            void click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
-        }
-
-        interface Action extends Keyed {
-            static Action of(String key, String name, ActionHandle handle) {
-                return new Action() {
-
-                    @Override
-                    public @NotNull NamespacedKey getKey() {
-                        return KeyUtil.newKey(key);
-                    }
-
-                    @Override
-                    public String name() {
-                        return name;
-                    }
-
-                    @Override
-                    public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
-                        handle.click(guide, event, player, slot, itemGroup, clickAction, menu, page);
-                        return false;
-                    }
-                };
-            }
-
-            String name();
-
-            boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
         }
     }
 
@@ -530,9 +527,9 @@ public interface OnClick {
      * F键: 搜索配方展示物品的名字涉及此物品的名字的物品: 搜索: %名字
      * Q键: 分享物品
      * 在书签中:
-     *   右键: 取消书签
+     * 右键: 取消书签
      * 在标记书签中:
-     *   左键: 标记书签
+     * 左键: 标记书签
      * 右键: 查找物品用途: 搜索: #名字
      * Shift左键: 打开物品所在物品组
      * Shift右键: 查找相关物品/机器: 搜索: 名字
@@ -842,13 +839,13 @@ public interface OnClick {
 
     @FunctionalInterface
     interface ClickHandler extends ChestMenu.AdvancedMenuClickHandler {
+        static ClickHandler deny() {
+            return (event, player, slot, item, action) -> false;
+        }
+
         @Override
         default boolean onClick(Player player, int i, ItemStack itemStack, ClickAction clickAction) {
             return false;
-        }
-
-        static ClickHandler deny() {
-            return (event, player, slot, item, action) -> false;
         }
     }
 }

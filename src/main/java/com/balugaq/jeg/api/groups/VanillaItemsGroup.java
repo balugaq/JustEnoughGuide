@@ -39,7 +39,6 @@ import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
-import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
 import com.google.common.base.Preconditions;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;

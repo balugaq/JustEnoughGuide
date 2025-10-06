@@ -38,7 +38,6 @@ import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
-import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -112,9 +111,9 @@ public class BookmarkGroup extends FlexItemGroup {
     /**
      * Constructor of BookmarkGroup.
      *
-     * @param implementation   The Slimefun guide implementation.
-     * @param player           The player who opened the group.
-     * @param bookmarks The list of marked items.
+     * @param implementation The Slimefun guide implementation.
+     * @param player         The player who opened the group.
+     * @param bookmarks      The list of marked items.
      */
     @ParametersAreNonnullByDefault
     public BookmarkGroup(

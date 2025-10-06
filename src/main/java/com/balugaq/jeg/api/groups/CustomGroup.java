@@ -151,7 +151,7 @@ public class CustomGroup extends FlexItemGroup {
                 PlayerProfile profile = PlayerProfile.find(player).orElse(null);
                 if (profile == null) return;
                 for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
-                    if (group.getKey().equals(s.substring(12))) {
+                    if (group.getKey().toString().equals(s.substring(12))) {
                         GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).openItemGroup(profile, group, 1);
                         return;
                     }
