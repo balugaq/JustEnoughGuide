@@ -33,6 +33,7 @@ import com.balugaq.jeg.core.listeners.CerPatchListener;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
 import com.balugaq.jeg.core.listeners.GuideGUIFixListener;
 import com.balugaq.jeg.core.listeners.GuideListener;
+import com.balugaq.jeg.core.listeners.MenuListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
@@ -71,6 +72,7 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new GroupTierEditorListener());
         listeners.add(new GuideGUIFixListener());
         listeners.add(new CerPatchListener());
+        listeners.add(new MenuListener());
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
             listeners.add(new RecipeCompletableListener());
         }
