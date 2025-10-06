@@ -34,6 +34,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 public class MenuListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -44,6 +45,17 @@ public class MenuListener implements Listener {
                     if (!(menu instanceof BlockMenu)) {
                         event.setCancelled(true);
                     }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onMenuDrag(InventoryDragEvent event) {
+        if (event.getRawSlots().stream().mapToInt(i -> i).max().orElse(0) < event.getInventory().getSize()) {
+            if (event.getInventory().getHolder() instanceof ChestMenu menu) {
+                if (!(menu instanceof BlockMenu)) {
+                    event.setCancelled(true);
                 }
             }
         }
