@@ -79,11 +79,9 @@ public class CustomGroupConfiguration implements IParsable {
     @Key("mode")
     Mode mode;
 
-    @Required
     @Key("items")
     String[] items;
 
-    @Required
     @Key("groups")
     String[] groups;
 

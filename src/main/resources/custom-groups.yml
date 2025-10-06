@@ -52,10 +52,12 @@ groups:
     enabled: false
     tier: 3
     id: custom-group3
-    mode: actions
+    mode: merge
     actions:
-      - "" # "command <command>" # run as console
-      - "" # "commandp <command>" # run as player
-      - "" # "link <link>" # open link for the player
-      - "" # "lookupitem <id>" # lookup item
-      - "" # "lookupgroup <group_id>" # lookup group
+      # %player% = player name
+      - "command /say 1" # "command <command>" # run as console
+      - "commandp /say 1" # "commandp <command>" # run as player
+      - "link https://www.bilibili.com/video/BV1GJ411x7h7" # "link <link>" # open link for the player
+      - "sayp 101" # "sayp <message>" # chat the message
+      - "lookupitem TIN_CAN" # "lookupitem <id>" # lookup item
+      - "lookupgroup slimefun:misc" # "lookupgroup <group_id>" # lookup group

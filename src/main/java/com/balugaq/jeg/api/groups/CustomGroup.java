@@ -38,7 +38,6 @@ import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
-import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -52,9 +51,9 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
-import lombok.ToString;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -64,13 +63,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 @SuppressWarnings({"deprecation", "unused"})
-@ToString
 @Getter
 public class CustomGroup extends FlexItemGroup {
     public final @NotNull CustomGroupConfiguration configuration;
+    public final List<String> acitons = new ArrayList<>();
     public final List<Object> objects; // ItemGroup first, SlimefunItem then.
     private final int page;
     private Map<Integer, CustomGroup> pageMap = new LinkedHashMap<>();
@@ -93,6 +93,8 @@ public class CustomGroup extends FlexItemGroup {
                 slimefunItems.add(sf);
                 sf.getItemGroup().remove(sf);
                 sf.setItemGroup(this);
+            } else if (obj instanceof String action) {
+                acitons.add(action);
             }
         }
 
@@ -126,8 +128,36 @@ public class CustomGroup extends FlexItemGroup {
             @NotNull Player player,
             @NotNull PlayerProfile playerProfile,
             @NotNull SlimefunGuideMode slimefunGuideMode) {
-        playerProfile.getGuideHistory().add(this, this.page);
-        this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
+        if (acitons.isEmpty()) {
+            playerProfile.getGuideHistory().add(this, this.page);
+            this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
+        } else {
+            String s = acitons.get(ThreadLocalRandom.current().nextInt(acitons.size()));
+            if (s.startsWith("command /")) {
+                String a = s.substring(9);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), a.replace("%player%", player.getName()));
+            } else if (s.startsWith("commandp /")) {
+                String a = s.substring(9);
+                Bukkit.dispatchCommand(player, a.replace("%player%", player.getName()));
+            } else if (s.startsWith("sayp ")) {
+                player.chat(s.substring(5).replace("%player%", player.getName()));
+            } else if (s.startsWith("lookupitem ")) {
+                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                if (profile == null) return;
+                SlimefunItem item = SlimefunItem.getById(s.substring(11));
+                if (item == null) return;
+                GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).displayItem(profile, item, true);
+            } else if (s.startsWith("lookupgroup ")) {
+                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                if (profile == null) return;
+                for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
+                    if (group.getKey().equals(s.substring(12))) {
+                        GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).openItemGroup(profile, group, 1);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     /**
