@@ -37,6 +37,7 @@ shared-chars:
   - "动力"
   - "拆反"
   - "解向"
+  - "界届"
 
 # 是否注册配方补全书
 recipe-complete: true

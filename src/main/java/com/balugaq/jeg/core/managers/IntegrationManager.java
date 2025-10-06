@@ -119,6 +119,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledNexcavate;
     private boolean enabledObsidianExpansion;
     private boolean enabledOreWorkshop;
+    private boolean enabledRSCEditor;
     private boolean enabledRykenSlimefunCustomizer;
     private boolean enabledSimpleUtils;
     private boolean enabledSlimeAEPlugin;
@@ -172,6 +173,7 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledNexcavate = pm.isPluginEnabled("Nexcavate");
                             this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
                             this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
+                            this.enabledRSCEditor = pm.isPluginEnabled("RSCEditor");
                             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
                             this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
                             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");

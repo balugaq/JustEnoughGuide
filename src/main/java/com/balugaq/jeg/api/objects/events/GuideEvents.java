@@ -27,6 +27,7 @@
 
 package com.balugaq.jeg.api.objects.events;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
@@ -185,6 +186,36 @@ public class GuideEvents {
                 final @NotNull ChestMenu menu,
                 final @NotNull SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
+        }
+
+        public static @NotNull HandlerList getHandlerList() {
+            return HANDLERS;
+        }
+
+        @Override
+        public @NotNull HandlerList getHandlers() {
+            return HANDLERS;
+        }
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @Getter
+    public static class CollectItemGroupEvent extends GuideEvent {
+        private static final HandlerList HANDLERS = new HandlerList();
+        private final @NotNull ItemGroup itemGroup;
+
+        public CollectItemGroupEvent(
+                final @NotNull Player who,
+                final @NotNull ItemGroup itemGroup,
+                @Range(from = 0, to = 53) int clickedSlot,
+                final @NotNull ClickAction clickAction,
+                final @NotNull ChestMenu menu,
+                final @NotNull SlimefunGuideImplementation guide) {
+            super(who, itemGroup.getItem(who), clickedSlot, clickAction, menu, guide);
+            this.itemGroup = itemGroup;
         }
 
         public static @NotNull HandlerList getHandlerList() {

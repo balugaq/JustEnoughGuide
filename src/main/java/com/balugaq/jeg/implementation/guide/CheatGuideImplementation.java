@@ -401,7 +401,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
             @NotNull ItemGroup group,
             int index,
             int page) {
-        OnDisplay.ItemGroup.display(p, group, this)
+        OnDisplay.ItemGroup.display(p, group, OnDisplay.ItemGroup.Normal, this)
                 .at(menu, index, page);
     }
 

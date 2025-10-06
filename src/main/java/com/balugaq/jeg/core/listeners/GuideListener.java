@@ -49,7 +49,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -80,7 +80,7 @@ public class GuideListener implements Listener {
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)")
     @NotNull
     @ParametersAreNonnullByDefault
-    @ApiStatus.Internal
+    @Internal
     public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
         ItemStack item = e.getItem();
         if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
@@ -95,7 +95,7 @@ public class GuideListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onGuideOpen(@NotNull SlimefunGuideOpenEvent e) {
         if (!e.isCancelled()) {
             e.setCancelled(true);
@@ -122,7 +122,7 @@ public class GuideListener implements Listener {
         }
     }
 
-    @ApiStatus.Internal
+    @Internal
     public void openGuide(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
         Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
@@ -141,7 +141,7 @@ public class GuideListener implements Listener {
         }
     }
 
-    @ApiStatus.Internal
+    @Internal
     public void openGuideAsync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
         JustEnoughGuide.runLaterAsync(() -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);
@@ -162,7 +162,7 @@ public class GuideListener implements Listener {
         }, 1L);
     }
 
-    @ApiStatus.Internal
+    @Internal
     public void openGuideSync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
         JustEnoughGuide.runLater(() -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);

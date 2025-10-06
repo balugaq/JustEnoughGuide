@@ -28,9 +28,11 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
+import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.ProfileDataController;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerBackpack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -87,6 +89,15 @@ public class BookmarkManager extends AbstractManager {
         addBookmark0(player, backpack, slimefunItem);
     }
 
+    public void addBookmark(@NotNull Player player, @NotNull ItemGroup itemGroup) {
+        PlayerBackpack backpack = getOrCreateBookmarkBackpack(player);
+        if (backpack == null) {
+            return;
+        }
+
+        addBookmark0(player, backpack, itemGroup);
+    }
+
     private void addBookmark0(
             final @NotNull Player player, @NotNull PlayerBackpack backpack, @NotNull SlimefunItem slimefunItem) {
         ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
@@ -111,8 +122,32 @@ public class BookmarkManager extends AbstractManager {
         });
     }
 
+    private void addBookmark0(
+            final @NotNull Player player, @NotNull PlayerBackpack backpack, @NotNull ItemGroup itemGroup) {
+        ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
+        if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
+            bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
+        }
+
+        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(bookmarksItem, itemMeta -> {
+            List<String> lore = itemMeta.getLore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+            String id = "itemgroup:" + itemGroup.getKey();
+            lore.remove(id);
+            lore.add(id);
+            itemMeta.setLore(lore);
+        }));
+
+        backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
+        operateController(controller -> {
+            controller.saveBackpackInventory(backpack, DATA_ITEM_SLOT);
+        });
+    }
+
     @Nullable
-    public List<SlimefunItem> getBookmarkedItems(@NotNull Player player) {
+    public List<Bookmark> getBookmarkedItems(@NotNull Player player) {
         PlayerBackpack backpack = getBookmarkBackpack(player);
         if (backpack == null) {
             return null;
@@ -127,7 +162,7 @@ public class BookmarkManager extends AbstractManager {
             return null;
         }
 
-        List<SlimefunItem> bookmarkedItems = new ArrayList<>();
+        List<Bookmark> bookmarkedItems = new ArrayList<>();
         ItemMeta itemMeta = bookmarksItem.getItemMeta();
         if (itemMeta == null) {
             return null;
@@ -136,9 +171,18 @@ public class BookmarkManager extends AbstractManager {
         List<String> lore = itemMeta.getLore();
         if (lore != null) {
             for (String id : lore) {
-                SlimefunItem sfitem = SlimefunItem.getById(id);
-                if (sfitem != null) {
-                    bookmarkedItems.add(sfitem);
+                if (id.startsWith("itemgroup:")) {
+                    String s = id.substring(10);
+                    for (ItemGroup itemGroup : Slimefun.getRegistry().getAllItemGroups()) {
+                        if (itemGroup.getKey().toString().equals(s)) {
+                            bookmarkedItems.add(Bookmark.of(itemGroup));
+                        }
+                    }
+                } else {
+                    SlimefunItem sfitem = SlimefunItem.getById(id);
+                    if (sfitem != null) {
+                        bookmarkedItems.add(Bookmark.of(sfitem));
+                    }
                 }
             }
         }
@@ -155,6 +199,15 @@ public class BookmarkManager extends AbstractManager {
         removeBookmark0(backpack, slimefunItem);
     }
 
+    public void removeBookmark(@NotNull Player player, @NotNull ItemGroup itemGroup) {
+        PlayerBackpack backpack = getBookmarkBackpack(player);
+        if (backpack == null) {
+            return;
+        }
+
+        removeBookmark0(backpack, itemGroup);
+    }
+
     private void removeBookmark0(@NotNull PlayerBackpack backpack, @NotNull SlimefunItem slimefunItem) {
         ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
         if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
@@ -167,6 +220,27 @@ public class BookmarkManager extends AbstractManager {
                 return;
             }
             lore.remove(slimefunItem.getId());
+            itemMeta.setLore(lore);
+        }));
+
+        backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
+        operateController(controller -> {
+            controller.saveBackpackInventory(backpack, DATA_ITEM_SLOT);
+        });
+    }
+
+    private void removeBookmark0(@NotNull PlayerBackpack backpack, @NotNull ItemGroup itemGroup) {
+        ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
+        if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
+            return;
+        }
+
+        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(bookmarksItem, itemMeta -> {
+            List<String> lore = itemMeta.getLore();
+            if (lore == null) {
+                return;
+            }
+            lore.remove("itemgroup:" + itemGroup.getKey());
             itemMeta.setLore(lore);
         }));
 

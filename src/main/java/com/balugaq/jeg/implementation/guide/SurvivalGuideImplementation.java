@@ -298,7 +298,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             @NotNull PlayerProfile profile,
             @NotNull ItemGroup group,
             int index) {
-        OnDisplay.ItemGroup.display(p, group, this)
+        OnDisplay.ItemGroup.display(p, group, OnDisplay.ItemGroup.Normal, this)
                 .at(menu, index, 1);
     }
 

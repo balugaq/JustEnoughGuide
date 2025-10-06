@@ -30,6 +30,7 @@ package com.balugaq.jeg.api.interfaces;
 import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.groups.BookmarkGroup;
 import com.balugaq.jeg.api.groups.ItemMarkGroup;
+import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.LocalHelper;
@@ -167,7 +168,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
      */
     @ParametersAreNonnullByDefault
     default void openBookMarkGroup(Player player, PlayerProfile profile) {
-        List<SlimefunItem> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
+        List<Bookmark> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
         if (items == null || items.isEmpty()) {
             player.sendMessage(ChatColor.RED + "你还没有收藏任何物品!");
             return;

@@ -372,6 +372,12 @@ public class LocalHelper {
     }
 
     @NotNull
+    public static String getAddonName(@Nullable SlimefunAddon addon) {
+        if (addon == null) return def;
+        return addonLocals.getOrDefault(addon.getName(), def);
+    }
+
+    @NotNull
     public static String getAddonName(@NotNull ItemGroup itemGroup, @NotNull String itemId, @NotNull String callback) {
         return itemGroup.getAddon() == null
                 ? def
