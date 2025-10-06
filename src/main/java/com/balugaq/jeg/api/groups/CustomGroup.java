@@ -49,6 +49,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
+import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
@@ -135,11 +136,14 @@ public class CustomGroup extends FlexItemGroup {
             String s = acitons.get(ThreadLocalRandom.current().nextInt(acitons.size()));
             if (s.startsWith("command /")) {
                 String a = s.substring(9);
+                player.closeInventory();
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), a.replace("%player%", player.getName()));
             } else if (s.startsWith("commandp /")) {
                 String a = s.substring(9);
+                player.closeInventory();
                 Bukkit.dispatchCommand(player, a.replace("%player%", player.getName()));
             } else if (s.startsWith("sayp ")) {
+                player.closeInventory();
                 player.chat(s.substring(5).replace("%player%", player.getName()));
             } else if (s.startsWith("lookupitem ")) {
                 PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -156,6 +160,9 @@ public class CustomGroup extends FlexItemGroup {
                         return;
                     }
                 }
+            } else if (s.startsWith("link ")) {
+                ChatUtils.sendURL(player, s.substring(5));
+                player.closeInventory();
             }
         }
     }
