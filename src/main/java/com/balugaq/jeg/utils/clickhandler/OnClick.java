@@ -401,10 +401,10 @@ public interface OnClick {
 
     /**
      * 点击配方类型时:
-     * Q建: 分享配方类型                       // Case 1 按下 Q 键
-     * 右键: 查找使用此配方类型的物品: 搜索: $名字 // Case2 按下右键
-     * Shift左键: 打开配方类型所在物品组（若有）   // Case3 按下 Shift+左键
-     * Shift右键: 查找相关物品/机器: 搜索: 名字   // Case4 按下 Shift+右键
+     * Q建: 分享配方类型
+     * 右键: 查找使用此配方类型的物品: 搜索: $名字
+     * Shift左键: 打开配方类型所在物品组（若有）
+     * Shift右键: 查找相关物品/机器: 搜索: 名字
      */
     interface RecipeType extends OnClick {
         ObjectImmutableList<Action> listActions = ObjectImmutableList.of(

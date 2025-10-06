@@ -38,10 +38,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class MenuListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMenuClick(InventoryClickEvent event) {
-        if (event.getClick() == ClickType.DOUBLE_CLICK) {
-            if (event.getInventory().getHolder() instanceof ChestMenu menu) {
-                if (!(menu instanceof BlockMenu)) {
-                    event.setCancelled(true);
+        if (event.getClick() == ClickType.DOUBLE_CLICK || event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT) {
+            if (event.getRawSlot() >= event.getInventory().getSize()) {
+                if (event.getInventory().getHolder() instanceof ChestMenu menu) {
+                    if (!(menu instanceof BlockMenu)) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
