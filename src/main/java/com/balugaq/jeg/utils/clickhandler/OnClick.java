@@ -686,7 +686,7 @@ public interface OnClick {
 
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem slimefunItem) {
-                return (event, player, slot, cursor, action) -> {
+                return (event, player, slot, s, action) -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
                     ClickType clickType = event.getClick();
@@ -828,7 +828,8 @@ public interface OnClick {
                                 return;
                             }
 
-                            player.setItemOnCursor(StackUtils.getAsQuantity(item, item.getMaxStackSize()));
+                            ItemStack itemStack = slimefunItem == null ? item : Converter.getItem(slimefunItem.getItem());
+                            player.setItemOnCursor(StackUtils.getAsQuantity(itemStack, itemStack.getMaxStackSize()));
                         }
                     }),
                     Action.of("take-item", "作弊模式 - 取出物品", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
@@ -836,7 +837,8 @@ public interface OnClick {
                         int amount = 1;
                         if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
 
-                        player.getInventory().addItem(StackUtils.getAsQuantity(item, amount));
+                        ItemStack itemStack = slimefunItem == null ? item : Converter.getItem(slimefunItem.getItem());
+                        player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
                     }),
                     Action.of("default", "默认", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                         PlayerProfile profile = PlayerProfile.find(player).orElse(null);

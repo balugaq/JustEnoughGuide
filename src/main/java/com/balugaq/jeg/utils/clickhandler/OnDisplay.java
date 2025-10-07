@@ -478,6 +478,8 @@ public interface OnDisplay {
                             ItemFlag.HIDE_ATTRIBUTES,
                             ItemFlag.HIDE_ENCHANTS,
                             JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+
+                    Slimefun.getItemDataService().setItemData(meta, item.getId());
                 });
 
                 menu.addItem(
@@ -515,6 +517,8 @@ public interface OnDisplay {
                             ItemFlag.HIDE_ATTRIBUTES,
                             ItemFlag.HIDE_ENCHANTS,
                             JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+
+                    Slimefun.getItemDataService().setItemData(meta, item.getId());
                 });
 
                 menu.addItem(
