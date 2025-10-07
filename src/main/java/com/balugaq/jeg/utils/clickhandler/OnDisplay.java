@@ -38,6 +38,7 @@ import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
@@ -58,11 +59,11 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * OnDisplay.display(player, item, OnClick.Normal/ItemMark/Bookmark/Search).at(menu, slot, guide, page);
@@ -162,7 +163,7 @@ public interface OnDisplay {
             public void at(ChestMenu menu, int slot, int page) {
                 List<String> additionLore = List.of(
                         "",
-                        itemGroup.getItems().isEmpty()
+                        (!(itemGroup instanceof FlexItemGroup) && itemGroup.getItems().isEmpty())
                                 ? ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon()))
                                 : ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon(), itemGroup.getItems().get(0).getId())),
                         ChatColors.color("&e右键以取消收藏物品组")
@@ -270,12 +271,12 @@ public interface OnDisplay {
     interface Item extends OnDisplay {
         DisplayType Normal = DisplayType.Normal, ItemMark = DisplayType.ItemMark, Bookmark = DisplayType.Bookmark, Search = DisplayType.Search;
 
-        static Item Vanilla(Player player, ItemStack itemStack, boolean vanillaShade, JEGSlimefunGuideImplementation guide) {
-            return new Vanilla(player, itemStack, vanillaShade, guide);
+        static Item Vanilla(Player player, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
+            return new Vanilla(player, slimefunItem, itemStack, guide);
         }
 
-        static Item Normal(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
-            return new Normal(player, item, guide);
+        static Item Normal(Player player, SlimefunItem item, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
+            return new Normal(player, item, itemStack, guide);
         }
 
         static Item ItemMark(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
@@ -303,15 +304,14 @@ public interface OnDisplay {
             return display(player, item.getItem(), type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
-        static Item display(Player player, SlimefunItem slimefunItem, DisplayType type, JEGSlimefunGuideImplementation guide) {
+        static Item display(Player player, SlimefunItem item, DisplayType type, JEGSlimefunGuideImplementation guide) {
+            return display(player, item, Converter.getItem(item.getItem()), type, guide);
+        }
+
+        static Item display(Player player, SlimefunItem slimefunItem, ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
             if (!JEGSlimefunGuideImplementation.hasPermission0(player, slimefunItem)) {
                 return NoPermission(player, slimefunItem, guide);
             }
-
-            if (slimefunItem instanceof VanillaItemShade vis) {
-                return Vanilla(player, vis.getCustomIcon(), true, guide);
-            }
-
 
             if (type == DisplayType.ItemMark) {
                 return ItemMark(player, slimefunItem, guide);
@@ -326,23 +326,27 @@ public interface OnDisplay {
             }
 
             if (!Slimefun.getConfigManager().isResearchingEnabled()) {
-                return Normal(player, slimefunItem, guide);
+                return Normal(player, slimefunItem, itemStack, guide);
             }
 
             io.github.thebusybiscuit.slimefun4.api.researches.Research research = slimefunItem.getResearch();
             if (research == null || !research.isEnabled()) {
-                return Normal(player, slimefunItem, guide);
+                return Normal(player, slimefunItem, itemStack, guide);
             }
 
             PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-            if (profile == null) return Normal(player, slimefunItem, guide);
+            if (profile == null) return Normal(player, slimefunItem, itemStack, guide);
 
             if (profile.getResearches().contains(research)) {
-                return Normal(player, slimefunItem, guide);
+                if (slimefunItem instanceof VanillaItemShade vis) {
+                    return Vanilla(player, slimefunItem, vis.getCustomIcon(), guide);
+                }
+
+                return Normal(player, slimefunItem, itemStack, guide);
             }
 
             if (guide.getMode() == SlimefunGuideMode.CHEAT_MODE) {
-                return Normal(player, slimefunItem, guide);
+                return Normal(player, slimefunItem, itemStack, guide);
             }
 
             if (player.getGameMode() != GameMode.CREATIVE) {
@@ -350,7 +354,7 @@ public interface OnDisplay {
             }
 
             if (Slimefun.getConfigManager().isFreeCreativeResearchingEnabled()) {
-                return Normal(player, slimefunItem, guide);
+                return Normal(player, slimefunItem, itemStack, guide);
             }
 
             return Research(player, slimefunItem, guide);
@@ -364,10 +368,10 @@ public interface OnDisplay {
         static Item display(Player player, ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
             SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);
             if (slimefunItem == null) {
-                return Vanilla(player, itemStack, false, guide);
+                return Vanilla(player, null, itemStack, guide);
             }
 
-            return display(player, slimefunItem, type, guide);
+            return display(player, slimefunItem, itemStack, type, guide);
         }
 
         void at(ChestMenu menu, int slot, int page);
@@ -441,7 +445,7 @@ public interface OnDisplay {
                 menu.addItem(
                         slot,
                         PatchScope.SearchItem.patch(player, icon),
-                        OnClick.Item.Normal.create(guide, menu, page));
+                        OnClick.Item.Normal.create(guide, menu, page, item));
             }
         }
 
@@ -524,13 +528,14 @@ public interface OnDisplay {
         class Normal implements Item {
             private final Player player;
             private final SlimefunItem item;
+            private final ItemStack itemStack;
             private final JEGSlimefunGuideImplementation guide;
 
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
                         slot,
-                        PatchScope.SlimefunItem.patch(player, ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : item.getItem()))),
+                        PatchScope.SlimefunItem.patch(player, ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack))),
                         OnClick.Item.Normal.create(guide, menu, page));
             }
         }
@@ -539,16 +544,16 @@ public interface OnDisplay {
         @Data
         class Vanilla implements Item {
             private final Player player;
+            @Nullable private final SlimefunItem slimefunItem;
             private final ItemStack itemStack;
-            private final boolean vanillaShade;
             private final JEGSlimefunGuideImplementation guide;
 
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
                         slot,
-                        PatchScope.VanillaItem.patch(player, vanillaShade ? ((VanillaItemShade) Objects.requireNonNull(SlimefunItem.getByItem(itemStack))).getCustomIcon() : itemStack),
-                        OnClick.Item.Normal.create(guide, menu, page));
+                        PatchScope.VanillaItem.patch(player, itemStack),
+                        OnClick.Item.Normal.create(guide, menu, page, slimefunItem));
             }
         }
 

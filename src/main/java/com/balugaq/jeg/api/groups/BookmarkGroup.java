@@ -38,6 +38,7 @@ import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -50,6 +51,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -105,6 +107,7 @@ public class BookmarkGroup extends FlexItemGroup {
     private final SlimefunGuideImplementation implementation;
     private final Player player;
     private final int page;
+    @Getter
     private final List<Bookmark> bookmarks;
     private Map<Integer, BookmarkGroup> pageMap = new LinkedHashMap<>();
 
@@ -304,7 +307,7 @@ public class BookmarkGroup extends FlexItemGroup {
                 Bookmark bookmark = bookmarks.get(index);
                 if (bookmark instanceof Bookmark.Item bi) {
                     SlimefunItem slimefunItem = bi.getSlimefunItem();
-                    OnDisplay.Item.display(player, item, OnDisplay.Item.Bookmark, implementation)
+                    OnDisplay.Item.display(player, Converter.getItem(slimefunItem.getItem()), OnDisplay.Item.Bookmark, implementation)
                             .at(chestMenu, contentSlots.get(i), page);
                 }
                 if (bookmark instanceof Bookmark.ItemGroup big) {
