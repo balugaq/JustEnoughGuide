@@ -556,10 +556,11 @@ public interface OnClick {
             return create(guide, menu, page, null);
         }
 
-        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem slimefunItem) {
+        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem sf) {
             return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 ItemStack item = event.getCurrentItem();
                 if (item == null) return false;
+                SlimefunItem slimefunItem = sf == null ? SlimefunItem.getByItem(item) : sf;
                 ClickType clickType = event.getClick();
                 if (clickType == ClickType.DOUBLE_CLICK) return false;
                 // F键

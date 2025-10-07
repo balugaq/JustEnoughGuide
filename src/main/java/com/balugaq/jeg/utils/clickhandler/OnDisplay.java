@@ -44,6 +44,7 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -536,7 +537,7 @@ public interface OnDisplay {
                 menu.addItem(
                         slot,
                         PatchScope.SlimefunItem.patch(player, ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack))),
-                        OnClick.Item.Normal.create(guide, menu, page));
+                        OnClick.Item.Normal.create(guide, menu, page, item));
             }
         }
 
