@@ -37,7 +37,34 @@ shared-chars:
   - "动力"
   - "拆反"
   - "解向"
-  - "界届"
+  - "地下"
+  - "狱界届"
+  - "无不"
+  - "法可"
+  - "存储"
+  - "曼鳗蛮慢"
+  - "0〇零澪"
+  - "I1①壹初"
+  - "2②贰"
+  - "3③叁"
+  - "4④肆亖"
+  - "5⑤五伍"
+  - "6⑥六陆"
+  - "7⑦七"
+  - "8⑧八"
+  - "9⑨九"
+  - "牛奶"
+  - "奶桶"
+  - "熔岩"
+  - "岩浆"
+  - "蛋旦"
+  - "抑异"
+  - "郁域"
+  - "鸡基只坤"
+  - "监坚"
+  - "暮慕睦墓"
+  - "舟州洲粥"
+  - "蜂蜜"
 
 # 是否注册配方补全书
 recipe-complete: true
@@ -202,6 +229,10 @@ custom-format:
     - "BPBBBBBNB"
 
 # 支持颜色符号: &a粘液科技
+# 翻译参考:
+# https://slimefun-wiki.guizhanss.cn/Addons/
+# https://github.com/orgs/SlimefunGuguProject/repositories
+# https://github.com/haiman233
 local-translate:
   Slimefun: "粘液科技"
   ColoredEnderChests: "彩色末影箱"
@@ -230,7 +261,7 @@ local-translate:
   InfernalExpansion: "下界工艺"
   FluffyMachines: "蓬松机器"
   SlimyRepair: "粘液物品修复"
-  InfinityExpansion: "无尽贪婪"
+  InfinityExpansion: "无尽贪婪" # Avoid conflict with InfinityExpansion-Changed
   FoxyMachines: "神秘科技"
   GlobalWarming: "全球变暖"
   GlobiaMachines: "全球机器"
@@ -244,7 +275,7 @@ local-translate:
   FNAmplifications: "FN科技"
   SimpleMaterialGenerators: "简单材料生成器"
   Netheopoiesis: "下界乌托邦"
-  Networks: "网络" # Same as Networks-Changed (sometimes it is NetworksExpansion)
+  Networks: "网络" # Avoid conflict with Networks-Changed, (sometimes it is NetworksExpansion)
   EMC2: "等价交换(EMC2)" # Avoid conflict with EquivalencyTech
   Nexcavate: "文明复兴"
   SimpleStorage: "简易储存"
@@ -259,7 +290,7 @@ local-translate:
   CrystamaeHistoria: "魔法水晶编年史"
   DankTech: "无底储存"
   DankTech2: "无底储存2"
-  Networks-Changed: "网络" # Same as Networks
+  Networks-Changed: "网络(心孜改版)" # Avoid conflict with Networks
   VillagerUtil: "村民工具"
   MissileWarfare: "导弹科技"
   SensibleToolbox: "STB/未来科技"
@@ -351,20 +382,22 @@ local-translate:
   CrispyMachines: "酥脆机器"
   DimensionTraveler: "维度旅者"
   HardlessMachine: "弹跳工具"
-  XingChengCraft: "星辰工艺" # Same as XingChenCraft
-  XingChenCraft: "星辰工艺" # Same as XingChengCraft
-  DefoLiationTech: "落叶科技"
+  XingChengCraft: "星辰工艺" # Same as XingChenCraft, XingCheng_Craft
+  XingChenCraft: "星辰工艺" # Same as XingChengCraft, XingCheng_Craft
+  DefoLiationTech: "落叶科技" # Same as DefoliationTech
   HaimanTech2: "海曼科技院"
   HaimanTech: "海曼科技"
   InfiniteExtensionV2: "无尽扩展V2"
   InfiniteExtension: "无尽扩展"
   OrangeTech: "橘子科技"
   GreedAndCreation: "贪婪与创世"
-  BocchiTechnology: "波奇科技"
+  BocchiTechnology: "波奇科技" # Same as Bocchi_Technology
+  Bocchi_Technology: "波奇科技" # Same as BocchiTechnology
   OreTech: "矿物科技"
-  HLGtech: "生物科技"
+  HLGtech: "生物科技" # Avoid conflict with MobTech
   InfiniteExtensionV2-Reconfiguration: "无尽扩展V2-改版"
-  BigSnakeTech: "大蛇科技"
+  BigSnakeTech: "大蛇科技" # Same as BigSnake-Tech
+  BigSnake-Tech: "大蛇科技" # Same as BigSnakeTech
   EpoTech: "纪元科技"
   EnchanterLimit: "限制附魔机"
   BlockLimiter: "方块限制"
@@ -378,6 +411,7 @@ local-translate:
   Huolaiy: "火莱伊工艺"
   WonderfulTransmitter: "奇妙发射器"
   OreGeneration: "矿物生成器" # Avoid conflict with Mineralgenerator
+  OreGenerationExtension: "矿物生成器拓展"
   SlimeSec: "安全粘液"
   Paradoxium: "凤凰科技"
   LuckyPandas: "幸运熊猫"
@@ -419,7 +453,7 @@ local-translate:
   GeyserHeads: "互通头颅材质"
   VariousClutter: "杂乱物品"
   Mineralgenerator: "Mineral 矿物生成器" # Avoid conflict with OreGeneration
-  CivilizationEvolution: "AG科技"
+  CivilizationEvolution: "AG科技" # Avoid conflict with AgTech
   RemiliasUtilities: "雷米科技"
   BetterChests: "更好的箱子"
   SlimeFood: "粘液美食"
@@ -438,8 +472,8 @@ local-translate:
   SlimefunZT: "SC科技" # Same as SCraft
   SlimefunAddon: "CAPTAINchad12自制拓展" # Unbelievable...
   AngleTech: "倾斜科技"
-  magicexpansion: "魔法" # Same as MagicExpansion
-  MagicExpansion: "魔法" # Same as magicexpansion
+  magicexpansion: "魔法拓展" # Same as MagicExpansion, avoid conflict with Magic
+  MagicExpansion: "魔法拓展" # Same as magicexpansion, avoid conflict with Magic
   SlimefunHopper: "粘液漏斗"
   SlimefunAccessor: "远程访问器"
   ExoticGardenComplex: "异域花园" # Same as ExoticGarden
@@ -459,6 +493,53 @@ local-translate:
   InfinityExpansion2: "无尽贪婪2"
   EtherTech: "虚素科技"
   SlimefunTimeit: "性能监视器"
+  AsianStarProgram: "亚星计划"
+  AgTech: "AG科技 - RSC" # Avoid conflict with CivilizationEvolution
+  CavernTech: "洞穴科技"
+  Creation: "创世"
+  Greed: "贪婪"
+  HoosierTech: "胡希尔科技"
+  HorizonsGears: "地平线装甲"
+  langui: "懒鬼科技"
+  Magic: "魔法" # Same as MagicExpansion, magicexpansion
+  MetaCoin: "数字硬币"
+  MobSimulationPlus: "生物芯片扩展"
+  MoreUniqueTools: "更多奇妙的工具"
+  PinksheepTech: "粉羊科技"
+  PinksheepTech_EpoTech: "纪元拓展"
+  RepairStation: "SC修复站" # Same as SlimeCustomizerRepairStation
+  SlimeCustomizerRepairStation: "SC修复站" # Same as RepairStation
+  SlimefunNetherTech2: "下界科技2"
+  snion: "工业驱动"
+  SuperFood: "超级食品"
+  Typhfun: "Typhfun"
+  WolfyMachines: "狼之机器"
+  XingCheng_Craft: "星辰工艺" # Same as XingChengCraft, XingChenCraft
+  WorldTaste: "尘世百味"
+  Automation: "粘液电脑"
+  MobTech: "生物科技(MT)" # Avoid conflict with HLGTech
+  Strophodungeons: "地牢迷宫"
+  SFTeacher: "粘液科技教程"
+  Slimefunexpansion: "粘液科技拓展"
+  HiveCorporation: "H公司"
+  BlackFishTech: "黑鱼科技"
+  MerakTech: "天璇科技"
+  TinselStar: "箔澜星"
+  Annihilation_Tech: "湮灭科技" # Same as AnnihilationTech
+  AnnihilationTech: "湮灭科技" # Same as Annihilation_Tech
+  HiServerTech: "Hi世界科技"
+  DefoliationTech: "落叶科技" # Same as DefoLiationTech
+  HeadQuantumStorage: "头颅版量子存储"
+  LengShangTech: "冷殇科技"
+  MuzhouTech: "暮舟科技"
+  DFD_InfiniteExtensionV2: "DFD - 无尽V2重构版"
+  DFD_Expand: "DFD - 缘落科技"
+  Blocktreetech: "方块树"
+  TinCraft: "&kabc &fTinCraft &kabc&r"
+  InfinityExpansion-Changed: "无尽贪婪(心孜改版)" # Avoid conflict with InfinityExpansion
+  浮木科技: "浮木科技"
+  Supermarket: "超能力机器"
+  HseerTech: "HseerMC科技"
 
 # Do not change this value unless you know what you are doing.
 config-version: 2.0

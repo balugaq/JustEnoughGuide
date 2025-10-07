@@ -94,7 +94,7 @@ public class LocalHelper {
         addonLocals.put("InfernalExpansion", "下界工艺");
         addonLocals.put("FluffyMachines", "蓬松机器");
         addonLocals.put("SlimyRepair", "粘液物品修复");
-        addonLocals.put("InfinityExpansion", "无尽贪婪");
+        addonLocals.put("InfinityExpansion", "无尽贪婪"); // Avoid conflict with InfinityExpansion-Changed
         addonLocals.put("FoxyMachines", "神秘科技");
         addonLocals.put("GlobalWarming", "全球变暖");
         addonLocals.put("GlobiaMachines", "全球机器");
@@ -108,7 +108,7 @@ public class LocalHelper {
         addonLocals.put("FNAmplifications", "FN科技");
         addonLocals.put("SimpleMaterialGenerators", "简单材料生成器");
         addonLocals.put("Netheopoiesis", "下界乌托邦");
-        addonLocals.put("Networks", "网络"); // Same as Networks-Changed (sometimes it is NetworksExpansion)
+        addonLocals.put("Networks", "网络"); // Avoid conflict with Networks-Changed, (sometimes it is NetworksExpansion)
         addonLocals.put("EMC2", "等价交换(EMC2)"); // Avoid conflict with EquivalencyTech
         addonLocals.put("Nexcavate", "文明复兴");
         addonLocals.put("SimpleStorage", "简易储存");
@@ -123,7 +123,7 @@ public class LocalHelper {
         addonLocals.put("CrystamaeHistoria", "魔法水晶编年史");
         addonLocals.put("DankTech", "无底储存");
         addonLocals.put("DankTech2", "无底储存2");
-        addonLocals.put("Networks-Changed", "网络"); // Same as Networks
+        addonLocals.put("Networks-Changed", "网络"); // Avoid conflict with Networks
         addonLocals.put("VillagerUtil", "村民工具");
         addonLocals.put("MissileWarfare", "导弹科技");
         addonLocals.put("SensibleToolbox", "STB/未来科技");
@@ -223,20 +223,22 @@ public class LocalHelper {
         addonLocals.put("CrispyMachines", "酥脆机器");
         addonLocals.put("DimensionTraveler", "维度旅者");
         addonLocals.put("HardlessMachine", "弹跳工具");
-        addonLocals.put("XingChengCraft", "星辰工艺"); // Same as XingChenCraft
-        addonLocals.put("XingChenCraft", "星辰工艺"); // Same as XingChengCraft
-        addonLocals.put("DefoLiationTech", "落叶科技");
+        addonLocals.put("XingChengCraft", "星辰工艺"); // Same as XingChenCraft, XingCheng_Craft
+        addonLocals.put("XingChenCraft", "星辰工艺"); // Same as XingChengCraft, XingCheng_Craft
+        addonLocals.put("DefoLiationTech", "落叶科技"); // Same as DefoliationTech
         addonLocals.put("HaimanTech2", "海曼科技院");
         addonLocals.put("HaimanTech", "海曼科技");
         addonLocals.put("InfiniteExtensionV2", "无尽扩展V2");
         addonLocals.put("InfiniteExtension", "无尽扩展");
         addonLocals.put("OrangeTech", "橘子科技");
         addonLocals.put("GreedAndCreation", "贪婪与创世");
-        addonLocals.put("BocchiTechnology", "波奇科技");
+        addonLocals.put("BocchiTechnology", "波奇科技"); // Same as Bocchi_Technology
+        addonLocals.put("Bocchi_Technology", "波奇科技"); // Same as BocchiTechnology
         addonLocals.put("OreTech", "矿物科技");
-        addonLocals.put("HLGtech", "生物科技");
+        addonLocals.put("HLGtech", "生物科技"); // Avoid conflict with MobTech
         addonLocals.put("InfiniteExtensionV2-Reconfiguration", "无尽扩展V2-改版");
-        addonLocals.put("BigSnakeTech", "大蛇科技");
+        addonLocals.put("BigSnakeTech", "大蛇科技"); // Same as BigSnake-Tech
+        addonLocals.put("BigSnake-Tech", "大蛇科技"); // Same as BigSnakeTech
         addonLocals.put("EpoTech", "纪元科技");
         addonLocals.put("EnchanterLimit", "限制附魔机");
         addonLocals.put("BlockLimiter", "方块限制");
@@ -291,7 +293,7 @@ public class LocalHelper {
         addonLocals.put("GeyserHeads", "互通头颅材质");
         addonLocals.put("VariousClutter", "杂乱物品");
         addonLocals.put("Mineralgenerator", "Mineral 矿物生成器"); // Avoid conflict with OreGeneration
-        addonLocals.put("CivilizationEvolution", "AG科技");
+        addonLocals.put("CivilizationEvolution", "AG科技"); // Avoid conflict with AgTech
         addonLocals.put("RemiliasUtilities", "雷米科技");
         addonLocals.put("BetterChests", "更好的箱子");
         addonLocals.put("SlimeFood", "粘液美食");
@@ -310,8 +312,8 @@ public class LocalHelper {
         addonLocals.put("SlimefunZT", "SC科技"); // Same as SCrafter
         addonLocals.put("SlimefunAddon", "CAPTAINchad12自制拓展"); // Unbelievable...
         addonLocals.put("AngleTech", "倾斜科技");
-        addonLocals.put("magicexpansion", "魔法"); // Same as MagicExpansion
-        addonLocals.put("MagicExpansion", "魔法"); // Same as magicexpansion
+        addonLocals.put("magicexpansion", "魔法拓展"); // Same as MagicExpansion, avoid conflict with Magic
+        addonLocals.put("MagicExpansion", "魔法拓展"); // Same as magicexpansion, avoid conflict with Magic
         addonLocals.put("SlimefunHopper", "粘液漏斗");
         addonLocals.put("SlimefunAccessor", "远程访问器");
         addonLocals.put("ExoticGardenComplex", "异域花园"); // Same as ExoticGarden
@@ -331,6 +333,52 @@ public class LocalHelper {
         addonLocals.put("InfinityExpansion2", "无尽贪婪2");
         addonLocals.put("EtherTech", "虚素科技");
         addonLocals.put("SlimefunTimeit", "性能监视器");
+        addonLocals.put("AgTech", "AG科技 - RSC"); // Avoid conflict with CivilizationEvolution
+        addonLocals.put("CavernTech", "洞穴科技");
+        addonLocals.put("Creation", "创世");
+        addonLocals.put("Greed", "贪婪");
+        addonLocals.put("HoosierTech", "胡希尔科技");
+        addonLocals.put("HorizonsGears", "地平线装甲");
+        addonLocals.put("langui", "懒鬼科技");
+        addonLocals.put("Magic", "魔法"); // Same as MagicExpansion, magicexpansion
+        addonLocals.put("MetaCoin", "数字硬币");
+        addonLocals.put("MobSimulationPlus", "生物芯片扩展");
+        addonLocals.put("MoreUniqueTools", "更多奇妙的工具");
+        addonLocals.put("PinksheepTech", "粉羊科技");
+        addonLocals.put("PinksheepTech_EpoTech", "纪元拓展");
+        addonLocals.put("RepairStation", "SC修复站"); // Same as SlimeCustomizerRepairStation
+        addonLocals.put("SlimeCustomizerRepairStation", "SC修复站"); // Same as RepairStation
+        addonLocals.put("SlimefunNetherTech2", "下界科技2");
+        addonLocals.put("snion", "工业驱动");
+        addonLocals.put("SuperFood", "超级食品");
+        addonLocals.put("Typhfun", "Typhfun");
+        addonLocals.put("WolfyMachines", "狼之机器");
+        addonLocals.put("XingCheng_Craft", "星辰工艺"); // Same as XingChengCraft, XingChenCraft
+        addonLocals.put("WorldTaste", "尘世百味");
+        addonLocals.put("Automation", "粘液电脑");
+        addonLocals.put("MobTech", "生物科技(MT)"); // Avoid conflict with HLGTech
+        addonLocals.put("Strophodungeons", "地牢迷宫");
+        addonLocals.put("SFTeacher", "粘液科技教程");
+        addonLocals.put("Slimefunexpansion", "粘液科技拓展");
+        addonLocals.put("HiveCorporation", "H公司");
+        addonLocals.put("BlackFishTech", "黑鱼科技");
+        addonLocals.put("MerakTech", "天璇科技");
+        addonLocals.put("TinselStar", "箔澜星");
+        addonLocals.put("Annihilation_Tech", "湮灭科技"); // Same as AnnihilationTech
+        addonLocals.put("AnnihilationTech", "湮灭科技"); // Same as Annihilation_Tech
+        addonLocals.put("HiServerTech", "Hi世界科技");
+        addonLocals.put("DefoliationTech", "落叶科技"); // Same as DefoLiationTech
+        addonLocals.put("HeadQuantumStorage", "头颅版量子存储");
+        addonLocals.put("LengShangTech", "冷殇科技");
+        addonLocals.put("MuzhouTech", "暮舟科技");
+        addonLocals.put("DFD_InfiniteExtensionV2", "DFD - 无尽V2重构版");
+        addonLocals.put("DFD_Expand", "DFD - 缘落科技");
+        addonLocals.put("Blocktreetech", "方块树");
+        addonLocals.put("TinCraft", "&kabc &fTinCraft &kabc&r");
+        addonLocals.put("InfinityExpansion-Changed", "无尽贪婪(心孜改版)"); // Avoid conflict with InfinityExpansion
+        addonLocals.put("浮木科技", "浮木科技");
+        addonLocals.put("Supermarket", "超能力机器");
+        addonLocals.put("HseerTech", "HseerMC科技");
     }
 
     @NotNull

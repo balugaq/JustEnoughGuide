@@ -534,6 +534,10 @@ public interface OnClick {
      * F键: 搜索配方展示物品的名字涉及此物品的名字的物品: 搜索: %名字
      * Q键: 分享物品
      * 在书签中:
+     *   作弊书:
+     *     左键: 给予物品
+     *   生存书:
+     *     左键: 显示配方界面
      * 右键: 取消书签
      * 在标记书签中:
      * 左键: 标记书签
@@ -541,8 +545,8 @@ public interface OnClick {
      * Shift左键: 打开物品所在物品组
      * Shift右键: 查找相关物品/机器: 搜索: 名字
      * 有cheat权限:
-     * (光标空+中键) 放光标上
-     * (创造书 || 光标有物品) 放背包里
+     * (光标空 && 中键) 放光标上
+     * (作弊书 || 光标有物品) 放背包里
      * 显示配方界面
      */
     @SuppressWarnings("ConstantValue")
@@ -557,7 +561,7 @@ public interface OnClick {
         }
 
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem sf) {
-            return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+            return (event, player, slot, s, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 ItemStack item = event.getCurrentItem();
                 if (item == null) return false;
                 SlimefunItem slimefunItem = sf == null ? SlimefunItem.getByItem(item) : sf;
@@ -583,8 +587,9 @@ public interface OnClick {
                 if (clickType == ClickType.SHIFT_RIGHT) {
                     return findAction(player, "shift-right-click").click(guide, player, slot, slimefunItem, item, action, menu, page);
                 }
-                // 有权限
+                // 有cheat权限
                 if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
+                    ItemStack cursor = event.getCursor();
                     if (event.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR)) {
                         return findAction(player, "clone-item").click(guide, player, slot, slimefunItem, item, action, menu, page);
                     }
