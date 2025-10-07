@@ -164,7 +164,7 @@ public interface OnDisplay {
             public void at(ChestMenu menu, int slot, int page) {
                 List<String> additionLore = List.of(
                         "",
-                        (!(itemGroup instanceof FlexItemGroup) && itemGroup.getItems().isEmpty())
+                        (itemGroup instanceof FlexItemGroup || itemGroup.getItems().isEmpty())
                                 ? ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon()))
                                 : ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon(), itemGroup.getItems().get(0).getId())),
                         ChatColors.color("&e右键以取消收藏物品组")
