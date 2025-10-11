@@ -65,6 +65,8 @@ shared-chars:
   - "暮慕睦墓"
   - "舟州洲粥"
   - "蜂蜜"
+  - "竿杆"
+  - "鱼渔"
 
 # 是否注册配方补全书
 recipe-complete: true
