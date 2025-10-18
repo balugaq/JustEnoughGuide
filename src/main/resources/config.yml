@@ -542,6 +542,8 @@ local-translate:
   浮木科技: "浮木科技"
   Supermarket: "超能力机器"
   HseerTech: "HseerMC科技"
+  ZeroSequenceTechnique: "零序技艺"
+  OriginTech: "起源工艺"
 
 # Do not change this value unless you know what you are doing.
 config-version: 2.0

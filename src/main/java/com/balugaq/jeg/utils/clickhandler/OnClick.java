@@ -137,7 +137,7 @@ public interface OnClick {
 
             Component base = LegacyComponentSerializer.legacySection().deserialize(sharedMessage)
                     .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text(CLICK_TO_SEARCH)));
-            Component clickToSearch = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/sf search " + s));
+            Component clickToSearch = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/sf search " + ChatColor.stripColor(s)));
             Component clickToCopy = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, itemName));
             Bukkit.getOnlinePlayers().forEach(p -> {
                 if (ShareInGuideOption.isEnabled(p)) {
@@ -152,7 +152,7 @@ public interface OnClick {
             String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[]{playerName, ChatColors.color(itemName)});
             TextComponent msg = new TextComponent(sharedMessage);
             msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(CLICK_TO_SEARCH)));
-            msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sf search " + s));
+            msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sf search " + ChatColor.stripColor(s)));
 
             Bukkit.getOnlinePlayers().forEach(p -> {
                 if (ShareInGuideOption.isEnabled(p)) {
@@ -421,7 +421,7 @@ public interface OnClick {
                 }),
                 Action.of("right-click", "查找使用此配方类型的物品", (guide, player, slot, recipeType, action, menu, page) -> {
                     String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
-                    player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getSymbol() + recipeTypeName);
+                    player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getSymbol() + ChatColor.stripColor(recipeTypeName));
                 }),
                 Action.of("shift-left", "打开配方类型所在物品组", (guide, player, slot, recipeType, action, menu, page) -> {
                     SlimefunItem machine = recipeType.getMachine();
@@ -433,7 +433,7 @@ public interface OnClick {
                 }),
                 Action.of("shift-right", "查找相关物品/机器", (guide, player, slot, recipeType, action, menu, page) -> {
                     String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
-                    player.chat("/sf search " + recipeTypeName);
+                    player.chat("/sf search " + ChatColor.stripColor(recipeTypeName));
                 }),
                 Action.of("default", "默认", (guide, player, slot, recipeType, action, menu, page) -> {
                 })
@@ -786,19 +786,19 @@ public interface OnClick {
         class Normal implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(ItemStackHelper.getDisplayName(item)).trim();
+                        String itemName = ItemStackHelper.getDisplayName(item).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                        player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getSymbol() + itemName);
+                        player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
                     }),
                     Action.of("q", "分享物品", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                         share(player, ItemStackHelper.getDisplayName(item).trim());
                     }),
                     Action.of("right-click", "搜索物品作用", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(ItemStackHelper.getDisplayName(item)).trim();
+                        String itemName = ItemStackHelper.getDisplayName(item).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                        player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getSymbol() + itemName);
+                        player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
                     }),
                     Action.of("shift-left-click", "打开物品所在物品组", (guide, player, slot, slimefunItem, item, clickAction, menu, p2) -> {
                         if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
@@ -815,9 +815,9 @@ public interface OnClick {
                         });
                     }),
                     Action.of("shift-right-click", "查找相关物品", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        String itemName = ChatColor.stripColor(ItemStackHelper.getDisplayName(item)).trim();
+                        String itemName = ItemStackHelper.getDisplayName(item).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
-                        player.chat("/sf search " + itemName);
+                        player.chat("/sf search " + ChatColor.stripColor(itemName));
                     }),
                     Action.of("clone-item", "作弊模式 - 复制物品", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                         if (!player.isOp() && !player.hasPermission("slimefun.cheat.items")) return;
