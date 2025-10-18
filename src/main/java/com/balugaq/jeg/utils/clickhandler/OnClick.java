@@ -184,6 +184,9 @@ public interface OnClick {
      * OP时:
      * Shift+左键: 复制物品组的key (namespace:key)
      * 若安装了 RSCE，Shift+右键: 获取对应的物品组占位符
+     *
+     * @author balugaq
+     * @since 2.0
      */
     interface ItemGroup extends OnClick {
         ItemGroup Normal = new Normal();
@@ -250,11 +253,19 @@ public interface OnClick {
             });
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @FunctionalInterface
         interface ActionHandle {
             void click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         interface Action extends Keyed {
             static Action of(String key, String name, ActionHandle handle) {
                 return new Action() {
@@ -282,6 +293,10 @@ public interface OnClick {
             boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         class Normal implements ItemGroup {
             ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("shift-right-click", "OP: 获取对应的物品组占位符", (guide, event, player, slot, itemGroup, action, menu, page) -> {
@@ -367,6 +382,10 @@ public interface OnClick {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         class Bookmark implements ItemGroup {
             ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("right-click", "删除标记的物品组", (guide, event, player, slot, itemGroup, action, menu, page) -> {
@@ -412,6 +431,9 @@ public interface OnClick {
      * 右键: 查找使用此配方类型的物品: 搜索: $名字
      * Shift左键: 打开配方类型所在物品组（若有）
      * Shift右键: 查找相关物品/机器: 搜索: 名字
+     *
+     * @author balugaq
+     * @since 2.0
      */
     interface RecipeType extends OnClick {
         ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
@@ -495,11 +517,19 @@ public interface OnClick {
             });
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @FunctionalInterface
         interface ActionHandle {
             void click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page);
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         interface Action extends Keyed {
             static Action of(String key, String name, ActionHandle handle) {
                 return new Action() {
@@ -548,6 +578,9 @@ public interface OnClick {
      * (光标空 && 中键) 放光标上
      * (作弊书 || 光标有物品) 放背包里
      * 显示配方界面
+     *
+     * @author balugaq
+     * @since 2.0
      */
     @SuppressWarnings("ConstantValue")
     interface Item extends OnClick {
@@ -632,11 +665,19 @@ public interface OnClick {
             };
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @FunctionalInterface
         interface ActionHandle {
             void click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page);
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         interface Action extends Keyed {
             static Action of(String key, String name, ActionHandle handle) {
                 return new Action() {
@@ -664,6 +705,10 @@ public interface OnClick {
             boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page);
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         class Bookmark implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("right-click", "删除标记的物品", (guide, player, slot, slimefunItem, item, action, menu, page) -> {
@@ -706,6 +751,10 @@ public interface OnClick {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         class ItemMark implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("left-click", "物品标记", (guide, player, slot, slimefunItem, item, action, menu, page) -> {
@@ -744,6 +793,10 @@ public interface OnClick {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         class Research implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("default", "研究物品", (guide, player, slot, sf, item, action, menu, page) -> {
@@ -782,6 +835,10 @@ public interface OnClick {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @SuppressWarnings("CodeBlock2Expr")
         class Normal implements Item {
             public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
@@ -858,6 +915,10 @@ public interface OnClick {
         }
     }
 
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
     @FunctionalInterface
     interface ClickHandler extends ChestMenu.AdvancedMenuClickHandler {
         static ClickHandler deny() {

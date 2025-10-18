@@ -322,6 +322,10 @@ public class Converter {
         return bukkitItem;
     }
 
+    /**
+     * @author balugaq
+     * @since 1.4
+     */
     @SuppressWarnings("unused")
     public static class Builder {
         public final List<ItemStack> itemStacks = new ArrayList<>();

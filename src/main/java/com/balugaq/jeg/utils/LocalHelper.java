@@ -381,6 +381,7 @@ public class LocalHelper {
         addonLocals.put("HseerTech", "HseerMC科技");
         addonLocals.put("ZeroSequenceTechnique", "零序技艺");
         addonLocals.put("OriginTech", "起源工艺");
+        addonLocals.put("SimpleTech", "简单科技");
     }
 
     @NotNull

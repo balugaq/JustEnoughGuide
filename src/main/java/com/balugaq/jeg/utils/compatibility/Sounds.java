@@ -60,12 +60,6 @@ public class Sounds {
         return registry.get(NamespacedKey.minecraft(key));
     }
 
-    @SuppressWarnings("unused")
-    @Deprecated
-    public static Sound byKeyOr(@NotNull String key, Sound def) {
-        return byKeyOrDefault(key, def);
-    }
-
     public static Sound byKeyOrDefault(@NotNull String key, Sound def) {
         Sound sound = byKey(key);
         return sound == null ? def : sound;

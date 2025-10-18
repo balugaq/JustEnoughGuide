@@ -75,6 +75,10 @@ import java.util.List;
 @SuppressWarnings({"deprecation", "ClassCanBeRecord"})
 @NullMarked
 public interface OnDisplay {
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
     interface ItemGroup extends OnDisplay {
         DisplayType Normal = DisplayType.Normal, Bookmark = DisplayType.Bookmark;
 
@@ -135,10 +139,18 @@ public interface OnDisplay {
 
         void at(ChestMenu menu, int slot, int page);
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         enum DisplayType {
             Normal, Bookmark
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class Normal implements ItemGroup {
@@ -152,6 +164,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @SuppressWarnings("UnnecessaryUnicodeEscape")
         @RequiredArgsConstructor
         @Data
@@ -187,6 +203,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class Locked implements ItemGroup {
@@ -217,6 +237,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class NoPermission implements ItemGroup {
@@ -234,8 +258,11 @@ public interface OnDisplay {
         }
     }
 
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
     interface RecipeType extends OnDisplay {
-
         static RecipeType Normal(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
             return new Normal(player, recipeType, itemStack, guide);
         }
@@ -251,6 +278,10 @@ public interface OnDisplay {
 
         void at(ChestMenu menu, int slot, int page);
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class Normal implements RecipeType {
@@ -269,6 +300,10 @@ public interface OnDisplay {
         }
     }
 
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
     interface Item extends OnDisplay {
         DisplayType Normal = DisplayType.Normal, ItemMark = DisplayType.ItemMark, Bookmark = DisplayType.Bookmark, Search = DisplayType.Search;
 
@@ -377,10 +412,18 @@ public interface OnDisplay {
 
         void at(ChestMenu menu, int slot, int page);
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         enum DisplayType {
             Normal, ItemMark, Bookmark, Search
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class Research implements Item {
@@ -414,6 +457,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @SuppressWarnings("UnnecessaryUnicodeEscape")
         @RequiredArgsConstructor
         @Data
@@ -450,6 +497,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @SuppressWarnings("UnnecessaryUnicodeEscape")
         @RequiredArgsConstructor
         @Data
@@ -489,6 +540,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @SuppressWarnings("UnnecessaryUnicodeEscape")
         @RequiredArgsConstructor
         @Data
@@ -528,6 +583,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class Normal implements Item {
@@ -545,6 +604,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class Vanilla implements Item {
@@ -562,6 +625,10 @@ public interface OnDisplay {
             }
         }
 
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
         @RequiredArgsConstructor
         @Data
         class NoPermission implements Item {
