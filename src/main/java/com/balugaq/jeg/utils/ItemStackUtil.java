@@ -303,4 +303,62 @@ public final class ItemStackUtil {
 
         return glow ? doGlow(itemStack) : itemStack;
     }
+
+    /**
+     * Checks if the given Slimefun item is an instance of the specified class.
+     *
+     * @param item            The Slimefun item.
+     * @param classSimpleName The simple name of the class to check against.
+     * @return True if the item is an instance of the specified class, false otherwise.
+     */
+    public static <T extends SlimefunItem> boolean isInstanceSimple(@NotNull T item, String classSimpleName) {
+        Class<?> clazz = item.getClass();
+        while (clazz != SlimefunItem.class) {
+            if (clazz.getSimpleName().equals(classSimpleName)) {
+                return true;
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unused")
+    public static <T extends SlimefunItem> boolean isInstance(@NotNull T item, String className) {
+        Class<?> clazz = item.getClass();
+        while (clazz != SlimefunItem.class) {
+            if (clazz.getName().equals(className)) {
+                return true;
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return false;
+    }
+
+    public static ItemStack[] translateIntoItemStackArray(String[] strings, int[] amounts) {
+        int v = Math.min(amounts.length, strings.length);
+        ItemStack[] array = new ItemStack[v];
+        for (int i = 0; i < v; i++) {
+            String s = strings[i];
+            if (s == null) {
+                array[i] = null;
+                continue;
+            }
+            int amount = amounts[i];
+
+            SlimefunItem sf = SlimefunItem.getById(s);
+            if (sf != null) {
+                array[i] = StackUtils.getAsQuantity(sf.getItem(), amount);
+            } else {
+                Material material = Material.getMaterial(s);
+                if (material == null) {
+                    array[i] = null;
+                    continue;
+                }
+
+                array[i] = new ItemStack(material, amount);
+            }
+        }
+
+        return array;
+    }
 }

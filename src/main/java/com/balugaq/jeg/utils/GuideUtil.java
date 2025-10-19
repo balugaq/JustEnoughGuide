@@ -330,9 +330,11 @@ public final class GuideUtil {
     @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)
     public static void addCerButton(ChestMenu menu, Player p, PlayerProfile profile, SlimefunItem machine, SlimefunGuideImplementation implementation, Format format) {
         for (int ss : format.getChars('m')) {
-            if (CERCalculator.cerable(machine)) {
-                menu.addItem(ss, PatchScope.Cer.patch(p, getCerMenuButton()),
-                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode())));
+            if (JustEnoughGuide.getConfigManager().isCerPatch()) {
+                if (CERCalculator.cerable(machine)) {
+                    menu.addItem(ss, PatchScope.Cer.patch(p, getCerMenuButton()),
+                            (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode())));
+                }
             }
         }
     }

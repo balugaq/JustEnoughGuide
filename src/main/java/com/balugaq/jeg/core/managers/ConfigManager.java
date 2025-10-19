@@ -93,6 +93,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean FinalTech_VALUE_DISPLAY;
     private final boolean FinalTECH_VALUE_DISPLAY;
     private final boolean ITEM_SHAREABLE;
+    private final boolean CER_PATCH;
 
     public ConfigManager(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
@@ -296,6 +297,7 @@ public class ConfigManager extends AbstractManager {
         this.FinalTech_VALUE_DISPLAY = cfg.getBoolean("improvements.finaltech-emc-display-option", true);
         this.FinalTECH_VALUE_DISPLAY = cfg.getBoolean("improvements.finalTECH-emc-display-option", true);
         this.ITEM_SHAREABLE = cfg.getBoolean("improvements.item-shareable", true);
+        this.CER_PATCH = cfg.getBoolean("improvements.cer-patch", true);
     }
 
     private void setupDefaultConfig() {
@@ -457,5 +459,9 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isDisabledBundleInteraction() {
         return DISABLE_BUNDLE_INTERACTION;
+    }
+
+    public boolean isCerPatch() {
+        return CER_PATCH;
     }
 }

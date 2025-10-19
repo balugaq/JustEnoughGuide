@@ -50,7 +50,7 @@ import java.util.Set;
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings("ConstantValue")
+@SuppressWarnings({"ConstantValue", "deprecation"})
 @Getter
 public enum FilterType {
     BY_RECIPE_ITEM_NAME("#", (player, item, lowerFilterValue, pinyin) -> {

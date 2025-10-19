@@ -334,7 +334,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 getLogger().info("指南选项加载完毕！");
             }
 
-            CERCalculator.load();
+            if (getConfigManager().isCerPatch()) {
+                CERCalculator.load();
+            }
         }
 
         ItemsSetup.setup(this);

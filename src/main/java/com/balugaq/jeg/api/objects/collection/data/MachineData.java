@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.api.objects.collection.data;
 
-import com.balugaq.jeg.api.cost.CERCalculator;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.dynatech.AbstractElectricMachineData;
@@ -54,6 +53,7 @@ import com.balugaq.jeg.api.objects.collection.data.sc.SCCustomMaterialGeneratorD
 import com.balugaq.jeg.api.objects.collection.data.sf.AContainerData;
 import com.balugaq.jeg.api.objects.collection.data.sf.AbstractEnergyProviderData;
 import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -262,7 +262,7 @@ public abstract class MachineData {
             return new GrowingMachineData(recipes, energyPerTick, ticksPerOutput);
         }
 
-        if (CERCalculator.isInstanceSimple(sf, "MachineBlock")) {
+        if (ItemStackUtil.isInstanceSimple(sf, "MachineBlock")) {
             List/*MachineBlockRecipe*/ recipes = ReflectionUtil.getValue(sf, "recipes", List.class);
             int ticksPerOutput = ReflectionUtil.getValue(sf, "ticksPerOutput", int.class);
             int energyPerTick = ReflectionUtil.getValue(sf, "energyPerTick", int.class);
@@ -273,7 +273,7 @@ public abstract class MachineData {
                     String[] strings = ReflectionUtil.getValue(recipe, "strings", String[].class);
                     int[] amounts = ReflectionUtil.getValue(recipe, "amounts", int[].class);
                     ItemStack output = ReflectionUtil.getValue(recipe, "output", ItemStack.class);
-                    rs.add(new MachineBlockRecipe(CERCalculator.translateIntoItemStackArray(strings, amounts), output));
+                    rs.add(new MachineBlockRecipe(ItemStackUtil.translateIntoItemStackArray(strings, amounts), output));
                 }
 
                 return new MachineBlockData(rs, ticksPerOutput, energyPerTick);
@@ -282,7 +282,7 @@ public abstract class MachineData {
             }
         }
 
-        if (CERCalculator.isInstanceSimple(sf, "AbstractElectricMachine") && isAddon(sf, "DynaTech")) {
+        if (ItemStackUtil.isInstanceSimple(sf, "AbstractElectricMachine") && isAddon(sf, "DynaTech")) {
             List/*<MachineRecipe>*/<MachineRecipe> recipes = ReflectionUtil.getValue(sf, "recipes", List.class);
             int energyConsumedPerTick = ReflectionUtil.getValue(sf, "energyConsumedPerTick", int.class);
             int processingSpeed = ReflectionUtil.getValue(sf, "processingSpeed", int.class);
@@ -333,7 +333,7 @@ public abstract class MachineData {
             return new MobDataCardData(chamber, energy, interval, drops.toMap());
         }
 
-        if (sf.getAddon().getName().equals("Logitech") && CERCalculator.isInstanceSimple(sf, "AbstractMachine")) {
+        if (sf.getAddon().getName().equals("Logitech") && ItemStackUtil.isInstanceSimple(sf, "AbstractMachine")) {
             List<MachineRecipe> machineRecipes = ReflectionUtil.getValue(sf, "machineRecipes", List.class);
             Supplier<List<MachineRecipe>> machineRecipeSupplier = ReflectionUtil.getValue(sf, "machineRecipeSupplier", Supplier.class);
             List<MachineRecipe> clone = new ArrayList<>();

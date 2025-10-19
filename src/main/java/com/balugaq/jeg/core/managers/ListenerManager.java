@@ -71,8 +71,10 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new RTSListener());
         listeners.add(new GroupTierEditorListener());
         listeners.add(new GuideGUIFixListener());
-        listeners.add(new CerPatchListener());
         listeners.add(new MenuListener());
+        if (JustEnoughGuide.getConfigManager().isCerPatch()) {
+            listeners.add(new CerPatchListener());
+        }
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
             listeners.add(new RecipeCompletableListener());
         }

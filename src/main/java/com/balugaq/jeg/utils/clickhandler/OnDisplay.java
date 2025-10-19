@@ -44,7 +44,6 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -137,6 +136,7 @@ public interface OnDisplay {
             return Locked(player, locked, guide);
         }
 
+        @SuppressWarnings("unused")
         void at(ChestMenu menu, int slot, int page);
 
         /**
@@ -262,6 +262,7 @@ public interface OnDisplay {
      * @author balugaq
      * @since 2.0
      */
+    @SuppressWarnings("unused")
     interface RecipeType extends OnDisplay {
         static RecipeType Normal(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
             return new Normal(player, recipeType, itemStack, guide);
@@ -612,7 +613,8 @@ public interface OnDisplay {
         @Data
         class Vanilla implements Item {
             private final Player player;
-            @Nullable private final SlimefunItem slimefunItem;
+            @Nullable
+            private final SlimefunItem slimefunItem;
             private final ItemStack itemStack;
             private final JEGSlimefunGuideImplementation guide;
 

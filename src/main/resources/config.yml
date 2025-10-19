@@ -17,6 +17,7 @@ improvements:
   finaltech-emc-display-option: true
   finalTECH-emc-display-option: true
   item-shareable: true
+  cer-patch: true
 
 # 是否禁止在粘液容器中交互收纳袋
 disable-bundle-interaction: true

@@ -38,6 +38,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
@@ -102,7 +103,7 @@ import java.util.stream.Collectors;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape", "ConstantValue", "JavaExistingMethodCanBeUsed"})
+@SuppressWarnings({"deprecation", "unused", "ConstantValue", "JavaExistingMethodCanBeUsed"})
 @NotDisplayInSurvivalMode
 @NotDisplayInCheatMode
 public class SearchGroup extends FlexItemGroup {
@@ -452,7 +453,7 @@ public class SearchGroup extends FlexItemGroup {
                                                     }
                                                     // InfinityExpansion StrainerBase
                                                     if (OOUTPUTS instanceof ItemStack[] outputs) {
-                                                        if (!isInstance(item, "StrainerBase")) {
+                                                        if (!ItemStackUtil.isInstanceSimple(item, "StrainerBase")) {
                                                             continue;
                                                         }
                                                         for (ItemStack output : outputs) {
@@ -465,7 +466,7 @@ public class SearchGroup extends FlexItemGroup {
                                                 }
                                                 // InfinityExpansion Quarry
                                                 else if (Ooutputs instanceof Material[] outputs) {
-                                                    if (!isInstance(item, "Quarry")) {
+                                                    if (!ItemStackUtil.isInstanceSimple(item, "Quarry")) {
                                                         continue;
                                                     }
                                                     for (Material material : outputs) {
@@ -479,7 +480,7 @@ public class SearchGroup extends FlexItemGroup {
                                             }
                                             // InfinityExpansion SingularityConstructor
                                             else if (ORECIPE_LIST instanceof List<?> recipes) {
-                                                if (!isInstance(item, "SingularityConstructor")) {
+                                                if (!ItemStackUtil.isInstanceSimple(item, "SingularityConstructor")) {
                                                     continue;
                                                 }
                                                 for (Object recipe : recipes) {
@@ -506,7 +507,7 @@ public class SearchGroup extends FlexItemGroup {
                                             }
                                         } else {
                                             // InfinityExpansion MaterialGenerator
-                                            if (!isInstance(item, "MaterialGenerator")) {
+                                            if (!ItemStackUtil.isInstanceSimple(item, "MaterialGenerator")) {
                                                 continue;
                                             }
                                             String s = ItemStackHelper.getDisplayName(new ItemStack((Material) Omaterial));
@@ -517,7 +518,7 @@ public class SearchGroup extends FlexItemGroup {
                                     }
                                     // InfinityExpansion ResourceSynthesizer
                                     if (Orecipes instanceof SlimefunItemStack[] recipes) {
-                                        if (!isInstance(item, "ResourceSynthesizer")) {
+                                        if (!ItemStackUtil.isInstanceSimple(item, "ResourceSynthesizer")) {
                                             continue;
                                         }
                                         for (SlimefunItemStack slimefunItemStack : recipes) {
@@ -532,7 +533,7 @@ public class SearchGroup extends FlexItemGroup {
                                     }
                                     // InfinityExpansion GrowingMachine
                                     else if (Orecipes instanceof EnumMap<?, ?> recipes) {
-                                        if (!isInstance(item, "GrowingMachine")) {
+                                        if (!ItemStackUtil.isInstanceSimple(item, "GrowingMachine")) {
                                             continue;
                                         }
                                         recipes.values().forEach(obj -> {
@@ -547,7 +548,7 @@ public class SearchGroup extends FlexItemGroup {
                                     }
                                     // InfinityExpansion MachineBlock
                                     else if (Orecipes instanceof List<?> recipes) {
-                                        if (isInstance(item, "MachineBlock")) {
+                                        if (ItemStackUtil.isInstanceSimple(item, "MachineBlock")) {
                                             // InfinityLib - MachineBlock
                                             for (Object recipe : recipes) {
                                                 String[] strings = (String[])
@@ -584,7 +585,7 @@ public class SearchGroup extends FlexItemGroup {
                                                     }
                                                 }
                                             }
-                                        } else if (isInstance(item, "AbstractElectricMachine")) {
+                                        } else if (ItemStackUtil.isInstanceSimple(item, "AbstractElectricMachine")) {
                                             // DynaTech - AbstractElectricMachine
                                             // recipes -> List<MachineRecipe>
                                             for (Object recipe : recipes) {
@@ -918,25 +919,6 @@ public class SearchGroup extends FlexItemGroup {
                     Debug.debug("Cache 2 (Display Recipes): " + CACHE2.size());
                 },
                 1L);
-    }
-
-    /**
-     * Checks if the given Slimefun item is an instance of the specified class.
-     *
-     * @param item            The Slimefun item.
-     * @param classSimpleName The simple name of the class to check against.
-     * @return True if the item is an instance of the specified class, false otherwise.
-     */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean isInstance(@NotNull SlimefunItem item, String classSimpleName) {
-        Class<?> clazz = item.getClass();
-        while (clazz != SlimefunItem.class) {
-            if (clazz.getSimpleName().equals(classSimpleName)) {
-                return true;
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return false;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

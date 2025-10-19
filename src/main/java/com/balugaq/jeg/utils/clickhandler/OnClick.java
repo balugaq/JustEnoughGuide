@@ -93,7 +93,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author balugaq
  * @since 2.0
  */
-@SuppressWarnings({"deprecation", "IfStatementWithIdenticalBranches"})
+@SuppressWarnings({"deprecation"})
 @NullMarked
 public interface OnClick {
     MessageFormat SHARED_ITEM_MESSAGE = new MessageFormat(ChatColors.color("&a{0} &e分享了 &7[{1}&r&7]&e <点击搜索>"));
@@ -257,6 +257,7 @@ public interface OnClick {
          * @author balugaq
          * @since 2.0
          */
+        @SuppressWarnings("unused")
         @FunctionalInterface
         interface ActionHandle {
             void click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
@@ -266,6 +267,7 @@ public interface OnClick {
          * @author balugaq
          * @since 2.0
          */
+        @SuppressWarnings("unused")
         interface Action extends Keyed {
             static Action of(String key, String name, ActionHandle handle) {
                 return new Action() {
@@ -290,6 +292,7 @@ public interface OnClick {
 
             String name();
 
+            @SuppressWarnings("SameReturnValue")
             boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
         }
 
@@ -298,7 +301,7 @@ public interface OnClick {
          * @since 2.0
          */
         class Normal implements ItemGroup {
-            ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+            final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("shift-right-click", "OP: 获取对应的物品组占位符", (guide, event, player, slot, itemGroup, action, menu, page) -> {
                         if (!player.isOp()) {
                             return;
@@ -387,22 +390,20 @@ public interface OnClick {
          * @since 2.0
          */
         class Bookmark implements ItemGroup {
-            ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    Action.of("right-click", "删除标记的物品组", (guide, event, player, slot, itemGroup, action, menu, page) -> {
-                        EventUtil.callEvent(new GuideEvents.CollectItemGroupEvent(player, itemGroup, slot, action, menu, guide)).ifSuccess(() -> {
-                            PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
-                            if (playerProfile == null) return;
-                            GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                            JustEnoughGuide.getBookmarkManager().removeBookmark(player, itemGroup);
+            final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+                    Action.of("right-click", "删除标记的物品组", (guide, event, player, slot, itemGroup, action, menu, page) -> EventUtil.callEvent(new GuideEvents.CollectItemGroupEvent(player, itemGroup, slot, action, menu, guide)).ifSuccess(() -> {
+                        PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
+                        if (playerProfile == null) return;
+                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                        JustEnoughGuide.getBookmarkManager().removeBookmark(player, itemGroup);
 
-                            List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
-                            if (items == null || items.isEmpty()) {
-                                player.closeInventory();
-                                return;
-                            }
-                            new BookmarkGroup(guide, player, items).open(player, playerProfile, guide.getMode());
-                        });
-                    })
+                        List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
+                        if (items == null || items.isEmpty()) {
+                            player.closeInventory();
+                            return;
+                        }
+                        new BookmarkGroup(guide, player, items).open(player, playerProfile, guide.getMode());
+                    }))
             );
 
             @Override
@@ -461,6 +462,7 @@ public interface OnClick {
                 })
         );
 
+        @SuppressWarnings("SameReturnValue")
         static ObjectImmutableList<Action> listActions() {
             return listActions;
         }
@@ -521,6 +523,7 @@ public interface OnClick {
          * @author balugaq
          * @since 2.0
          */
+        @SuppressWarnings("unused")
         @FunctionalInterface
         interface ActionHandle {
             void click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page);
@@ -530,6 +533,7 @@ public interface OnClick {
          * @author balugaq
          * @since 2.0
          */
+        @SuppressWarnings("unused")
         interface Action extends Keyed {
             static Action of(String key, String name, ActionHandle handle) {
                 return new Action() {
@@ -554,6 +558,7 @@ public interface OnClick {
 
             String name();
 
+            @SuppressWarnings("SameReturnValue")
             boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page);
         }
     }
@@ -564,10 +569,10 @@ public interface OnClick {
      * F键: 搜索配方展示物品的名字涉及此物品的名字的物品: 搜索: %名字
      * Q键: 分享物品
      * 在书签中:
-     *   作弊书:
-     *     左键: 给予物品
-     *   生存书:
-     *     左键: 显示配方界面
+     * 作弊书:
+     * 左键: 给予物品
+     * 生存书:
+     * 左键: 显示配方界面
      * 右键: 取消书签
      * 在标记书签中:
      * 左键: 标记书签
@@ -678,6 +683,7 @@ public interface OnClick {
          * @author balugaq
          * @since 2.0
          */
+        @SuppressWarnings("unused")
         interface Action extends Keyed {
             static Action of(String key, String name, ActionHandle handle) {
                 return new Action() {
@@ -702,6 +708,7 @@ public interface OnClick {
 
             String name();
 
+            @SuppressWarnings("SameReturnValue")
             boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page);
         }
 
@@ -710,7 +717,7 @@ public interface OnClick {
          * @since 2.0
          */
         class Bookmark implements Item {
-            public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+            public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("right-click", "删除标记的物品", (guide, player, slot, slimefunItem, item, action, menu, page) -> {
                         PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
                         if (playerProfile == null) return;
@@ -756,7 +763,7 @@ public interface OnClick {
          * @since 2.0
          */
         class ItemMark implements Item {
-            public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+            public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("left-click", "物品标记", (guide, player, slot, slimefunItem, item, action, menu, page) -> {
                         if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
                         if (slimefunItem == null) return;
@@ -798,7 +805,7 @@ public interface OnClick {
          * @since 2.0
          */
         class Research implements Item {
-            public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+            public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("default", "研究物品", (guide, player, slot, sf, item, action, menu, page) -> {
                         String id = item.getItemMeta().getPersistentDataContainer().get(JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY, PersistentDataType.STRING);
                         if (id == null) return;
@@ -841,7 +848,7 @@ public interface OnClick {
          */
         @SuppressWarnings("CodeBlock2Expr")
         class Normal implements Item {
-            public static ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+            public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                         String itemName = ItemStackHelper.getDisplayName(item).trim();
                         while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));

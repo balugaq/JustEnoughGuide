@@ -70,7 +70,7 @@ import java.util.logging.Level;
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape"})
+@SuppressWarnings({"deprecation", "unused"})
 @NotDisplayInSurvivalMode
 public class HiddenItemsGroup extends FlexItemGroup {
     private static final List<SlimefunItem> ALL_SLIMEFUN_ITEMS =

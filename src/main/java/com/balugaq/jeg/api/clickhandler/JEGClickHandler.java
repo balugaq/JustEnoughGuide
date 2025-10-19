@@ -47,7 +47,7 @@ import java.util.Optional;
  * @author balugaq
  * @since 1.5
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, GuideClickHandler {
 
     @ParametersAreNonnullByDefault

@@ -54,7 +54,6 @@ import com.balugaq.jeg.api.objects.collection.data.sf.AbstractEnergyProviderData
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.StackUtils;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -81,7 +80,7 @@ import java.util.regex.Pattern;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"unused", "JavaExistingMethodCanBeUsed", "deprecation", "ConstantValue"})
+@SuppressWarnings({"unused", "deprecation", "ConstantValue"})
 public class CERCalculator {
     public static final Map<SlimefunItem, MachineData> machines = new HashMap<>();
     public static final Pattern trimp = Pattern.compile("[&§]k[&§]");
@@ -555,34 +554,6 @@ public class CERCalculator {
         return -2.0D;
     }
 
-    public static ItemStack[] translateIntoItemStackArray(String[] strings, int[] amounts) {
-        int v = Math.min(amounts.length, strings.length);
-        ItemStack[] array = new ItemStack[v];
-        for (int i = 0; i < v; i++) {
-            String s = strings[i];
-            if (s == null) {
-                array[i] = null;
-                continue;
-            }
-            int amount = amounts[i];
-
-            SlimefunItem sf = SlimefunItem.getById(s);
-            if (sf != null) {
-                array[i] = StackUtils.getAsQuantity(sf.getItem(), amount);
-            } else {
-                Material material = Material.getMaterial(s);
-                if (material == null) {
-                    array[i] = null;
-                    continue;
-                }
-
-                array[i] = new ItemStack(material, amount);
-            }
-        }
-
-        return array;
-    }
-
     public static double calc(double cost, double outputAmount, double processTicks, double energyCost) {
         if (Double.isInfinite(cost) || Double.isNaN(cost) || Double.isInfinite(outputAmount) || Double.isNaN(outputAmount) || Double.isInfinite(processTicks) || Double.isNaN(processTicks) || Double.isInfinite(energyCost) || Double.isNaN(energyCost)) {
             return -3.0D;
@@ -611,27 +582,5 @@ public class CERCalculator {
         }
         String name = ItemStackHelper.getDisplayName(i2);
         return supertrim(i1).equalsIgnoreCase(supertrim(name));
-    }
-
-    public static <T extends SlimefunItem> boolean isInstanceSimple(@NotNull T item, String classSimpleName) {
-        Class<?> clazz = item.getClass();
-        while (clazz != SlimefunItem.class) {
-            if (clazz.getSimpleName().equals(classSimpleName)) {
-                return true;
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return false;
-    }
-
-    public static <T extends SlimefunItem> boolean isInstance(@NotNull T item, String className) {
-        Class<?> clazz = item.getClass();
-        while (clazz != SlimefunItem.class) {
-            if (clazz.getName().equals(className)) {
-                return true;
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return false;
     }
 }

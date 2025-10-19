@@ -46,12 +46,14 @@ public interface Bookmark {
         return new ItemGroup(itemGroup);
     }
 
+    @SuppressWarnings("ClassCanBeRecord")
     @RequiredArgsConstructor
     @Data
     class Item implements Bookmark {
         final SlimefunItem slimefunItem;
     }
 
+    @SuppressWarnings("ClassCanBeRecord")
     @RequiredArgsConstructor
     @Data
     class ItemGroup implements Bookmark {
