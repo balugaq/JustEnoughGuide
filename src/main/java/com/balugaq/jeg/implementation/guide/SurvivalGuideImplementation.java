@@ -88,10 +88,9 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.RecipeChoice.MaterialChoice;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
@@ -117,7 +116,8 @@ import java.util.logging.Level;
  * @see CheatGuideImplementation
  * @since 1.0
  */
-@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape", "DataFlowIssue"})
+@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape", "DataFlowIssue", "ConstantValue"})
+@NullMarked
 public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implements JEGSlimefunGuideImplementation {
     @Deprecated
     public static final int RTS_SLOT = 6;
@@ -141,7 +141,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     public static final int MAX_ITEM_GROUPS = Formats.main.getChars('G').size();
     public static final int MAX_ITEMS = Formats.sub.getChars('i').size();
 
-    public final @NotNull ItemStack item;
+    public final ItemStack item;
 
     public SurvivalGuideImplementation() {
         ItemMeta meta = SlimefunGuide.getItem(getMode()).getItemMeta();
@@ -164,12 +164,12 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    public @NotNull SlimefunGuideMode getMode() {
+    public SlimefunGuideMode getMode() {
         return SlimefunGuideMode.SURVIVAL_MODE;
     }
 
     @Override
-    public @NotNull ItemStack getItem() {
+    public ItemStack getItem() {
         return item;
     }
 
@@ -182,7 +182,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
      */
     @Override
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public @NotNull List<ItemGroup> getVisibleItemGroups(@NotNull Player p, @NotNull PlayerProfile profile) {
+    public List<ItemGroup> getVisibleItemGroups(Player p, PlayerProfile profile) {
         List<ItemGroup> groups = new LinkedList<>();
 
         for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
@@ -222,7 +222,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    public void openMainMenu(@NotNull PlayerProfile profile, int page) {
+    public void openMainMenu(PlayerProfile profile, int page) {
         Player p = profile.getPlayer();
 
         if (p == null) {
@@ -291,17 +291,16 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Override
     public void showItemGroup0(
-            final @NotNull ChestMenu menu,
-            @NotNull Player p,
-            @NotNull PlayerProfile profile,
-            @NotNull ItemGroup group,
+            final ChestMenu menu,
+            Player p,
+            PlayerProfile profile,
+            ItemGroup group,
             int index) {
         OnDisplay.ItemGroup.display(p, group, OnDisplay.ItemGroup.Normal, this)
                 .at(menu, index, 1);
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void openItemGroup(PlayerProfile profile, ItemGroup itemGroup, int page) {
         Player p = profile.getPlayer();
 
@@ -355,19 +354,19 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         }
 
         List<Integer> indexes = Formats.sub.getChars('i');
-        int itemGroupIndex = MAX_ITEMS * (page - 1);
+        int itemGroupIndex = MAX_ITEMS * (Math.max(page, 1) - 1);
 
         for (int i = 0; i < MAX_ITEMS; i++) {
             int target = itemGroupIndex + i;
 
-            if (target >= itemGroup.getItems().size()) {
+            if (target < 0 || target >= itemGroup.getItems().size()) {
                 break;
             }
 
             SlimefunItem sfitem = itemGroup.getItems().get(target);
 
             if (!sfitem.isDisabledIn(p.getWorld())) {
-                displaySlimefunItem0(menu, itemGroup, p, profile, sfitem, page, indexes.get(i));
+                displaySlimefunItem0(menu, itemGroup, p, profile, sfitem, Math.max(page, 1), indexes.get(i));
             }
         }
 
@@ -380,7 +379,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Override
     public void openNestedItemGroup(
-            @NotNull Player p, @NotNull PlayerProfile profile, @NotNull NestedItemGroup nested, int page) {
+            Player p, PlayerProfile profile, NestedItemGroup nested, int page) {
         GuideHistory history = profile.getGuideHistory();
 
         history.add(nested, page);
@@ -460,11 +459,11 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Override
     public void displaySlimefunItem0(
-            final @NotNull ChestMenu menu,
-            final @NotNull ItemGroup itemGroup,
-            final @NotNull Player p,
-            final @NotNull PlayerProfile profile,
-            final @NotNull SlimefunItem sfitem,
+            final ChestMenu menu,
+            final ItemGroup itemGroup,
+            final Player p,
+            final PlayerProfile profile,
+            final SlimefunItem sfitem,
             int page,
             int index) {
         OnDisplay.Item.display(p, sfitem, OnDisplay.Item.Normal, this)
@@ -472,12 +471,10 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void openSearch(PlayerProfile profile, String input, boolean addToHistory) {
         openSearch(profile, input, 0, addToHistory);
     }
 
-    @ParametersAreNonnullByDefault
     @Override
     public void openSearch(PlayerProfile profile, String input, int page, boolean addToHistory) {
         Player p = profile.getPlayer();
@@ -494,7 +491,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
         Player p = profile.getPlayer();
 
@@ -525,11 +521,11 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Override
     public void showMinecraftRecipe0(
-            Recipe @NotNull [] recipes,
+            Recipe[] recipes,
             int index,
-            final @NotNull ItemStack item,
-            final @NotNull PlayerProfile profile,
-            final @NotNull Player p,
+            final ItemStack item,
+            final PlayerProfile profile,
+            final Player p,
             boolean addToHistory) {
         Recipe recipe = recipes[index];
 
@@ -612,7 +608,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Override
     public <T extends Recipe> void showRecipeChoices0(
-            final @NotNull T recipe, ItemStack[] recipeItems, @NotNull AsyncRecipeChoiceTask task) {
+            final T recipe, ItemStack[] recipeItems, AsyncRecipeChoiceTask task) {
         RecipeChoice[] choices = Slimefun.getMinecraftRecipeService().getRecipeShape(recipe);
 
         List<Integer> recipeSlots = Formats.recipe_vanilla.getChars('r');
@@ -636,13 +632,11 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory) {
         displayItem(profile, item, addToHistory, true);
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial) {
         displayItem(
                 profile,
@@ -653,7 +647,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(
             PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial, Format format) {
         Player p = profile.getPlayer();
@@ -732,29 +725,29 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Override
     public void displayItem0(
-            final @NotNull ChestMenu menu,
-            final @NotNull PlayerProfile profile,
-            final @NotNull Player p,
+            final ChestMenu menu,
+            final PlayerProfile profile,
+            final Player p,
             Object item,
             ItemStack output,
-            final @NotNull RecipeType recipeType,
+            final RecipeType recipeType,
             ItemStack[] recipe,
-            final @NotNull AsyncRecipeChoiceTask task) {
+            final AsyncRecipeChoiceTask task) {
         displayItem(menu, profile, p, item, output, recipeType, recipe, task, Formats.recipe);
     }
 
     @SuppressWarnings("ConstantValue")
     @Override
     public void displayItem(
-            final @NotNull ChestMenu menu,
-            final @NotNull PlayerProfile profile,
-            final @NotNull Player p,
+            final ChestMenu menu,
+            final PlayerProfile profile,
+            final Player p,
             Object item,
             ItemStack output,
-            final @NotNull RecipeType recipeType,
+            final RecipeType recipeType,
             ItemStack[] recipe,
-            final @NotNull AsyncRecipeChoiceTask task,
-            final @NotNull Format format) {
+            final AsyncRecipeChoiceTask task,
+            final Format format) {
         for (int s : format.getChars('b')) {
             addBackButton0(menu, s, p, profile);
         }
@@ -792,13 +785,11 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void createHeader(Player p, PlayerProfile profile, ChestMenu menu) {
         createHeader(p, profile, menu, Formats.main);
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     @ApiStatus.Experimental
     public void createHeader(Player p, PlayerProfile profile, ChestMenu menu, Format format) {
         for (int s : format.getChars('B')) {
@@ -843,7 +834,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     @ApiStatus.Experimental
     public void createHeader(Player p, PlayerProfile profile, ChestMenu menu, ItemGroup itemGroup) {
         for (int s : Formats.main.getChars('B')) {
@@ -882,7 +872,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    public void addBackButton0(@NotNull ChestMenu menu, int slot, @NotNull Player p, @NotNull PlayerProfile profile) {
+    public void addBackButton0(ChestMenu menu, int slot, Player p, PlayerProfile profile) {
         GuideHistory history = profile.getGuideHistory();
 
         if (isSurvivalMode() && history.size() > 1) {
@@ -913,7 +903,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayRecipes0(Player p, PlayerProfile profile, ChestMenu menu, RecipeDisplayItem sfItem, int page) {
         List<ItemStack> recipes = sfItem.getDisplayRecipes();
 
@@ -972,9 +961,9 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
     @Override
     public void addDisplayRecipe0(
-            final @NotNull ChestMenu menu,
-            final @NotNull PlayerProfile profile,
-            final @NotNull List<ItemStack> recipes,
+            final ChestMenu menu,
+            final PlayerProfile profile,
+            final List<ItemStack> recipes,
             int slot,
             int index,
             int page) {
@@ -1000,7 +989,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void printErrorMessage0(Player p, Throwable x) {
         p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
         JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
@@ -1013,7 +1001,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void printErrorMessage0(Player p, SlimefunItem item, Throwable x) {
         p.sendMessage(ChatColor.DARK_RED
                 + "An internal server error has occurred. Please inform an admin, check the console for"

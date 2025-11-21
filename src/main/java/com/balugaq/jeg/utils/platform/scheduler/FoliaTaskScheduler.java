@@ -31,41 +31,42 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.tcoded.folialib.FoliaLib;
 import com.tcoded.folialib.impl.PlatformScheduler;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 2.0
  */
 @Getter
+@NullMarked
 public class FoliaTaskScheduler extends PaperTaskScheduler {
-    private final @NotNull FoliaLib foliaLib;
+    private final FoliaLib foliaLib;
 
     public FoliaTaskScheduler() {
         foliaLib = new FoliaLib(JustEnoughGuide.getInstance());
     }
 
-    public @NotNull PlatformScheduler getPlatformScheduler() {
+    public PlatformScheduler getPlatformScheduler() {
         return foliaLib.getScheduler();
     }
 
-    public void runNextTick(@NotNull Runnable runnable) {
+    public void runNextTick(Runnable runnable) {
         getPlatformScheduler().runNextTick(tsk -> runnable.run());
     }
 
-    public void runLater(@NotNull Runnable runnable, long delay) {
+    public void runLater(Runnable runnable, long delay) {
         getPlatformScheduler().runLater(tsk -> runnable.run(), delay);
     }
 
-    public void runLaterAsync(@NotNull Runnable runnable, long delay) {
+    public void runLaterAsync(Runnable runnable, long delay) {
         getPlatformScheduler().runLaterAsync(tsk -> runnable.run(), delay);
     }
 
-    public void runTimer(@NotNull Runnable runnable, long delay, long period) {
+    public void runTimer(Runnable runnable, long delay, long period) {
         getPlatformScheduler().runTimer(tsk -> runnable.run(), delay, period);
     }
 
-    public void runTimerAsync(@NotNull Runnable runnable, long delay, long period) {
+    public void runTimerAsync(Runnable runnable, long delay, long period) {
         getPlatformScheduler().runTimerAsync(tsk -> runnable.run(), delay, period);
     }
 }

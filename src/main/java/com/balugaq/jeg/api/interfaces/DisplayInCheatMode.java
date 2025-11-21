@@ -28,7 +28,7 @@
 package com.balugaq.jeg.api.interfaces;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -51,7 +51,13 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@NullMarked
 public @interface DisplayInCheatMode {
+    /**
+     * @author balugaq
+     * @since 1.8
+     */
+    @NullMarked
     class Checker {
         /**
          * Check if the {@link ItemGroup} should be forced to display
@@ -59,7 +65,7 @@ public @interface DisplayInCheatMode {
          * @param group The {@link ItemGroup} to check
          * @return true if the {@link ItemGroup} should be forced to display, false otherwise
          */
-        public static boolean contains(@NotNull ItemGroup group) {
+        public static boolean contains(ItemGroup group) {
             String namespace = group.getKey().getNamespace();
             String key = group.getKey().getKey();
             // @formatter:off
@@ -77,7 +83,7 @@ public @interface DisplayInCheatMode {
          * @param group The {@link ItemGroup} to check
          * @return true if the {@link ItemGroup} should be put to the last, false otherwise
          */
-        public static boolean isSpecial(@NotNull ItemGroup group) {
+        public static boolean isSpecial(ItemGroup group) {
             String namespace = group.getKey().getNamespace();
             String key = group.getKey().getKey();
             String className = group.getClass().getName();

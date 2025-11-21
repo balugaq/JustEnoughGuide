@@ -44,7 +44,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
@@ -54,13 +54,13 @@ import java.util.Optional;
  * @since 1.9
  */
 @SuppressWarnings("DataFlowIssue")
+@NullMarked
 public class FireworksOption implements SlimefunGuideOption<Boolean> {
-    @NotNull
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return new NamespacedKey(Slimefun.instance(), "research_fireworks");
     }
 

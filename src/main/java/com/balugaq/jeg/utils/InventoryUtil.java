@@ -32,9 +32,9 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,14 +45,15 @@ import java.util.Map;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ConstantValue"})
 @UtilityClass
+@NullMarked
 public class InventoryUtil {
     @Nullable
     public static ItemStack pushItem(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             final @Nullable ItemStack item,
-            @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @Range(from = 0, to = 53) final int... slots) {
         if (item == null || item.getType() == Material.AIR) {
             return null;
             // throw new IllegalArgumentException("Cannot push null or AIR");
@@ -97,11 +98,10 @@ public class InventoryUtil {
     }
 
     @SuppressWarnings("ConstantValue")
-    @NotNull
     public static Map<ItemStack, Integer> pushItem(
-            final @NotNull Inventory inventory,
-            final @Nullable ItemStack @NotNull [] items,
-            @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            final Inventory inventory,
+            final @Nullable ItemStack[] items,
+            @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.length == 0) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty array");
@@ -117,11 +117,10 @@ public class InventoryUtil {
         return pushItem(inventory, listItems, slots);
     }
 
-    @NotNull
     public static Map<ItemStack, Integer> pushItem(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             final @Nullable List<ItemStack> items,
-            @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.isEmpty()) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty list");
@@ -141,9 +140,9 @@ public class InventoryUtil {
     }
 
     public static boolean fits(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             final @Nullable ItemStack item,
-            @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @Range(from = 0, to = 53) final int... slots) {
         if (item == null || item.getType() == Material.AIR) {
             return true;
         }
@@ -167,9 +166,9 @@ public class InventoryUtil {
     }
 
     public static boolean fits(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             final @Nullable ItemStack @Nullable [] items,
-            @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.length == 0) {
             return false;
         }
@@ -185,14 +184,14 @@ public class InventoryUtil {
     }
 
     public static boolean fits(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             final @Nullable List<ItemStack> items,
-            @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.isEmpty()) {
             return false;
         }
 
-        final List<ItemStack> cloneMenu = new ArrayList<>();
+        final List<@Nullable ItemStack> cloneMenu = new ArrayList<>();
         for (int i = 0; i < 54; i++) {
             cloneMenu.add(null);
         }
@@ -246,19 +245,19 @@ public class InventoryUtil {
         return true;
     }
 
-    public static void consumeItem(@NotNull final Inventory inventory, @Range(from = 0, to = 64) final int slot) {
+    public static void consumeItem(final Inventory inventory, @Range(from = 0, to = 64) final int slot) {
         consumeItem(inventory, slot, 1);
     }
 
     public static void consumeItem(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             @Range(from = 0, to = 53) final int slot,
             final boolean replaceConsumables) {
         consumeItem(inventory, slot, 1, replaceConsumables);
     }
 
     public static void consumeItem(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             @Range(from = 0, to = 53) final int slot,
             @Range(from = 0, to = 64) final int amount) {
         consumeItem(inventory, slot, amount, false);
@@ -266,7 +265,7 @@ public class InventoryUtil {
 
     @SuppressWarnings("deprecation")
     public static void consumeItem(
-            final @NotNull Inventory inventory,
+            final Inventory inventory,
             @Range(from = 0, to = 53) final int slot,
             @Range(from = 0, to = 64) final int amount,
             final boolean replaceConsumables) {

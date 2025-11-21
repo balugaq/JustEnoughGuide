@@ -65,7 +65,8 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecip
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -80,6 +81,7 @@ import java.util.function.Supplier;
  * @since 1.9
  */
 @SuppressWarnings({"DataFlowIssue", "unchecked", "MismatchedQueryAndUpdateOfCollection", "rawtypes", "CommentedOutCode", "IfCanBeSwitch"})
+@NullMarked
 public abstract class MachineData {
     @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)
     public static MachineData get(SlimefunItem sf) {
@@ -335,7 +337,7 @@ public abstract class MachineData {
 
         if (sf.getAddon().getName().equals("Logitech") && ItemStackUtil.isInstanceSimple(sf, "AbstractMachine")) {
             List<MachineRecipe> machineRecipes = ReflectionUtil.getValue(sf, "machineRecipes", List.class);
-            Supplier<List<MachineRecipe>> machineRecipeSupplier = ReflectionUtil.getValue(sf, "machineRecipeSupplier", Supplier.class);
+            Supplier<@Nullable List<MachineRecipe>> machineRecipeSupplier = ReflectionUtil.getValue(sf, "machineRecipeSupplier", Supplier.class);
             List<MachineRecipe> clone = new ArrayList<>();
             if (machineRecipes != null) {
                 clone.addAll(machineRecipes);
@@ -353,9 +355,9 @@ public abstract class MachineData {
         return null;
     }
 
-    public static boolean isAddon(@NotNull SlimefunItem sf, @NotNull String addonName) {
+    public static boolean isAddon(SlimefunItem sf, String addonName) {
         return sf.getAddon().getName().equals(addonName);
     }
 
-    public abstract @NotNull List<CERRecipeGroup.RecipeWrapper> wrap();
+    public abstract List<CERRecipeGroup.RecipeWrapper> wrap();
 }

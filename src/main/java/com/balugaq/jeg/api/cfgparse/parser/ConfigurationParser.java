@@ -34,10 +34,9 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -58,11 +57,11 @@ import java.util.Set;
 @SuppressWarnings({"unchecked", "unused"})
 @UtilityClass
 @ApiStatus.Obsolete
+@NullMarked
 public class ConfigurationParser {
     @ApiStatus.Obsolete
-    @ParametersAreNonnullByDefault
     @SneakyThrows
-    public static <T> @NotNull T parse(final ConfigurationSection section, final Class<T> clazz) {
+    public static <T> T parse(final ConfigurationSection section, final Class<T> clazz) {
         Method method;
         try {
             method = clazz.getDeclaredMethod("fieldNames");
@@ -80,7 +79,7 @@ public class ConfigurationParser {
         }
 
         List<String> list = List.of(fieldNames);
-        LinkedHashMap<Field, Object> read = new LinkedHashMap<>();
+        LinkedHashMap<Field, @Nullable Object> read = new LinkedHashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             if (list.contains(field.getName())) {
                 if (field.isAnnotationPresent(Key.class)) {
@@ -88,7 +87,7 @@ public class ConfigurationParser {
                     String key = define.value();
                     if (Key.ALL_KEY.equals(key)) {
                         Set<String> subKeys = section.getKeys(false);
-                        List<Object> arg = new ArrayList<>();
+                        List<@Nullable Object> arg = new ArrayList<>();
                         for (String subKey : subKeys) {
                             if (List.class.isAssignableFrom(field.getType())
                                     && field.getType().getTypeParameters().length > 0
@@ -122,9 +121,8 @@ public class ConfigurationParser {
     }
 
     @ApiStatus.Obsolete
-    @ParametersAreNonnullByDefault
     @SneakyThrows
-    public static <T> @NotNull T consturctObject(final Class<T> clazz, final LinkedHashMap<Field, Object> read) {
+    public static <T> T consturctObject(final Class<T> clazz, final LinkedHashMap<Field, @Nullable Object> read) {
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
 
@@ -164,7 +162,7 @@ public class ConfigurationParser {
     @SuppressWarnings("rawtypes")
     @ApiStatus.Obsolete
     @SneakyThrows
-    public static <T> @Nullable T parseValue(final @NotNull Class<T> clazz, final @Nullable Object value) {
+    public static <T> @Nullable T parseValue(final Class<T> clazz, final @Nullable Object value) {
         if (value == null) {
             Class<?>[] interfaces = clazz.getInterfaces();
             for (Class<?> interfaceClass : interfaces) {

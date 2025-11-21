@@ -27,7 +27,7 @@
 
 package com.balugaq.jeg.api.cfgparse.annotations;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -41,8 +41,9 @@ import java.lang.annotation.Target;
 @SuppressWarnings("unused")
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@NullMarked
 public @interface Key {
     String ALL_KEY = "ALL_KEY";
 
-    @NotNull String value();
+    String value();
 }

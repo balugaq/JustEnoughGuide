@@ -30,8 +30,8 @@ package com.balugaq.jeg.api.recipe_complete.source.base;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +42,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Getter
+@NullMarked
 public class RecipeCompleteProvider {
     @Getter
     private static final List<SlimefunSource> slimefunSources = new ArrayList<>();
@@ -49,25 +50,25 @@ public class RecipeCompleteProvider {
     @Getter
     private static final List<VanillaSource> vanillaSources = new ArrayList<>();
 
-    public static void addSource(@NotNull SlimefunSource source) {
+    public static void addSource(SlimefunSource source) {
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
             slimefunSources.add(source);
         }
     }
 
-    public static void addSource(@NotNull VanillaSource source) {
+    public static void addSource(VanillaSource source) {
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
             vanillaSources.add(source);
         }
     }
 
     @Nullable
-    public static SlimefunSource removeSlimefunSource(@NotNull SlimefunSource source) {
+    public static SlimefunSource removeSlimefunSource(SlimefunSource source) {
         return slimefunSources.remove(source) ? source : null;
     }
 
     @Nullable
-    public static SlimefunSource removeSlimefunSource(@NotNull JavaPlugin plugin) {
+    public static SlimefunSource removeSlimefunSource(JavaPlugin plugin) {
         for (SlimefunSource source : slimefunSources) {
             if (source.plugin().equals(plugin)) {
                 return slimefunSources.remove(source) ? source : null;
@@ -77,12 +78,12 @@ public class RecipeCompleteProvider {
     }
 
     @Nullable
-    public static VanillaSource removeVanillaSource(@NotNull VanillaSource source) {
+    public static VanillaSource removeVanillaSource(VanillaSource source) {
         return vanillaSources.remove(source) ? source : null;
     }
 
     @Nullable
-    public static VanillaSource removeVanillaSource(@NotNull JavaPlugin plugin) {
+    public static VanillaSource removeVanillaSource(JavaPlugin plugin) {
         for (VanillaSource source : vanillaSources) {
             if (source.plugin().equals(plugin)) {
                 return vanillaSources.remove(source) ? source : null;

@@ -31,7 +31,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -41,17 +41,19 @@ import java.util.function.Supplier;
  * @author balugaq
  * @since 1.6
  */
+@NullMarked
 public class EventUtil {
-    public static <T extends Event> @NotNull EventBuilder<T> callEvent(@NotNull T event) {
+    public static <T extends Event> EventBuilder<T> callEvent(T event) {
         return new EventBuilder<>(event);
     }
 
     @SuppressWarnings({"ClassCanBeRecord", "SameReturnValue", "unused"})
     @Getter
+    @NullMarked
     public static class EventBuilder<T extends Event> {
-        private final @NotNull T event;
+        private final T event;
 
-        public EventBuilder(@NotNull T event) {
+        public EventBuilder(T event) {
             this.event = event;
             try {
                 Bukkit.getPluginManager().callEvent(event);
@@ -60,7 +62,7 @@ public class EventUtil {
             }
         }
 
-        public boolean ifSuccess(@NotNull Runnable runnable) {
+        public boolean ifSuccess(Runnable runnable) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     return true;
@@ -73,7 +75,7 @@ public class EventUtil {
             }
         }
 
-        public boolean ifCancelled(@NotNull Runnable runnable) {
+        public boolean ifCancelled(Runnable runnable) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     runnable.run();
@@ -86,12 +88,12 @@ public class EventUtil {
             }
         }
 
-        public boolean thenRun(@NotNull Runnable runnable) {
+        public boolean thenRun(Runnable runnable) {
             runnable.run();
             return true;
         }
 
-        public boolean ifSuccess(@NotNull Consumer<T> consumer) {
+        public boolean ifSuccess(Consumer<T> consumer) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     return true;
@@ -104,7 +106,7 @@ public class EventUtil {
             }
         }
 
-        public boolean ifCancelled(@NotNull Consumer<T> consumer) {
+        public boolean ifCancelled(Consumer<T> consumer) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     consumer.accept(event);
@@ -117,16 +119,16 @@ public class EventUtil {
             }
         }
 
-        public boolean thenRun(@NotNull Consumer<T> consumer) {
+        public boolean thenRun(Consumer<T> consumer) {
             consumer.accept(event);
             return true;
         }
 
-        public boolean thenRun(@NotNull Function<T, Boolean> function) {
+        public boolean thenRun(Function<T, Boolean> function) {
             return function.apply(event);
         }
 
-        public boolean ifSuccess(@NotNull Function<T, Boolean> function) {
+        public boolean ifSuccess(Function<T, Boolean> function) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     return false;
@@ -138,7 +140,7 @@ public class EventUtil {
             }
         }
 
-        public boolean ifCancelled(@NotNull Function<T, Boolean> function) {
+        public boolean ifCancelled(Function<T, Boolean> function) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     return function.apply(event);
@@ -150,7 +152,7 @@ public class EventUtil {
             }
         }
 
-        public boolean ifSuccess(@NotNull Supplier<Boolean> callable) {
+        public boolean ifSuccess(Supplier<Boolean> callable) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     return false;
@@ -162,7 +164,7 @@ public class EventUtil {
             }
         }
 
-        public boolean ifCancelled(@NotNull Supplier<Boolean> callable) {
+        public boolean ifCancelled(Supplier<Boolean> callable) {
             if (event instanceof Cancellable cancellable) {
                 if (cancellable.isCancelled()) {
                     return callable.get();

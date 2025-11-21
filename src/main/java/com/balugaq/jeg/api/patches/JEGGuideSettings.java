@@ -54,8 +54,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,17 +69,18 @@ import java.util.Optional;
  */
 @SuppressWarnings({"deprecation", "UnnecessaryUnicodeEscape", "DataFlowIssue"})
 @Getter
+@NullMarked
 public class JEGGuideSettings {
     @Getter
     private static final List<SlimefunGuideOption<?>> patched = new ArrayList<>();
 
-    public static void openSettings(final @NotNull Player p, final @NotNull ItemStack guide) {
+    public static void openSettings(final Player p, final ItemStack guide) {
         openSettings(p, guide, 1);
     }
 
     public static void openSettings(
-            final @NotNull Player p,
-            final @NotNull ItemStack guide,
+            final Player p,
+            final ItemStack guide,
             @Range(from = 1, to = Integer.MAX_VALUE) int page) {
         ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "guide.title.settings"));
 
@@ -97,7 +98,7 @@ public class JEGGuideSettings {
     }
 
     private static void addHeader(
-            final @NotNull Player p, final @NotNull ChestMenu menu, final @NotNull ItemStack guide) {
+            final Player p, final ChestMenu menu, final ItemStack guide) {
         LocalizationService locale = Slimefun.getLocalization();
 
         // @formatter:off
@@ -282,9 +283,9 @@ public class JEGGuideSettings {
     }
 
     private static void addConfigurableOptions(
-            final @NotNull Player p,
-            final @NotNull ChestMenu menu,
-            final @NotNull ItemStack guide,
+            final Player p,
+            final ChestMenu menu,
+            final ItemStack guide,
             @Range(from = 1, to = Integer.MAX_VALUE) int page) {
         List<Integer> slots = Formats.settings.getChars('o');
         List<SlimefunGuideOption<?>> options = new ArrayList<>(getOptions());
@@ -344,12 +345,12 @@ public class JEGGuideSettings {
     }
 
     @SuppressWarnings({"unchecked", "DataFlowIssue"})
-    public static @NotNull List<SlimefunGuideOption<?>> getOptions() {
+    public static List<SlimefunGuideOption<?>> getOptions() {
         return (List<SlimefunGuideOption<?>>)
                 ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
     }
 
-    public static void addOption(@NotNull SlimefunGuideOption<?> option) {
+    public static void addOption(SlimefunGuideOption<?> option) {
         SlimefunGuideSettings.addOption(option);
     }
 
@@ -382,17 +383,16 @@ public class JEGGuideSettings {
     }
 
     @SuppressWarnings("unused")
-    public static boolean hasFireworksEnabled(@NotNull Player p) {
+    public static boolean hasFireworksEnabled(Player p) {
         return getOptionValue(p, FireworksOption.class, true);
     }
 
     @SuppressWarnings("unused")
-    public static boolean hasLearningAnimationEnabled(@NotNull Player p) {
+    public static boolean hasLearningAnimationEnabled(Player p) {
         return getOptionValue(p, LearningAnimationOption.class, true);
     }
 
-    @NotNull
-    public static <T extends SlimefunGuideOption<V>, V> V getOptionValue(@NotNull Player p, @NotNull Class<T> optionsClass, @NotNull V defaultValue) {
+    public static <T extends SlimefunGuideOption<V>, V> V getOptionValue(Player p, Class<T> optionsClass, V defaultValue) {
         for (SlimefunGuideOption<?> option : getOptions()) {
             if (optionsClass.isInstance(option)) {
                 T o = optionsClass.cast(option);

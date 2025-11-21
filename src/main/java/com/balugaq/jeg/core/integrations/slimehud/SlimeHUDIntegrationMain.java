@@ -32,16 +32,17 @@ import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class SlimeHUDIntegrationMain implements Integration {
 
     @Override
-    public @NotNull String getHookPlugin() {
+    public String getHookPlugin() {
         return "SlimeHUD";
     }
 

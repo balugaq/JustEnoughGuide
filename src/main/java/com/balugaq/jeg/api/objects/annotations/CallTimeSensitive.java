@@ -27,6 +27,8 @@
 
 package com.balugaq.jeg.api.objects.annotations;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -38,6 +40,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@NullMarked
 public @interface CallTimeSensitive {
     String AfterSlimefunLoaded = "After Slimefun loaded";
     String AfterIntegrationsLoaded = "After Integrations loaded";

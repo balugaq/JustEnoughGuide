@@ -34,17 +34,19 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class ItemsSetup {
-    public static final @NotNull RecipeCompleteGuide RECIPE_COMPLETE_GUIDE;
-    public static final @NotNull SlimefunItem USAGE_INFO;
-    public static final @NotNull SlimefunItem MECHANISM;
-    public static final @NotNull SlimefunItem SUPPORTED_ADDONS_INFO;
+    public static final RecipeCompleteGuide RECIPE_COMPLETE_GUIDE;
+    public static final SlimefunItem USAGE_INFO;
+    public static final SlimefunItem MECHANISM;
+    public static final SlimefunItem SUPPORTED_ADDONS_INFO;
 
     static {
         ItemStack craftingTable = new ItemStack(Material.CRAFTING_TABLE);
@@ -63,27 +65,27 @@ public class ItemsSetup {
                 // @formatter:on
         );
 
-        USAGE_INFO = new SlimefunItem(GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new ItemStack[]{
+        USAGE_INFO = new SlimefunItem(GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
                 null, null, null,
                 null, null, null,
                 null, null, null
         });
 
-        MECHANISM = new SlimefunItem(GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new ItemStack[]{
+        MECHANISM = new SlimefunItem(GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[]{
                 null, null, null,
                 null, null, null,
                 null, null, null
         });
 
         SUPPORTED_ADDONS_INFO = new SlimefunItem(
-                GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new ItemStack[]{
+                GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
                 null, null, null,
                 null, null, null,
                 null, null, null
         });
     }
 
-    public static void setup(@NotNull SlimefunAddon addon) {
+    public static void setup(SlimefunAddon addon) {
         boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
         RECIPE_COMPLETE_GUIDE.register(addon);
         USAGE_INFO.register(addon);

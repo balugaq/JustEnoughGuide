@@ -36,13 +36,14 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.AnvilInventory;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.3
  */
+@NullMarked
 public class RTSEvents {
     /**
      * Represents the event when the RTS is closed.
@@ -52,6 +53,7 @@ public class RTSEvents {
      */
     @SuppressWarnings("unused")
     @Getter
+    @NullMarked
     public static class CloseRTSEvent extends Event {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
@@ -77,7 +79,7 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -86,8 +88,8 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        final @NotNull @Override
-        public HandlerList getHandlers() {
+        @Override
+        public final HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -100,6 +102,7 @@ public class RTSEvents {
      */
     @SuppressWarnings("unused")
     @Getter
+    @NullMarked
     public static class OpenRTSEvent extends Event {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
@@ -144,7 +147,7 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -153,8 +156,8 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        final @NotNull @Override
-        public HandlerList getHandlers() {
+        @Override
+        public final HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -167,12 +170,13 @@ public class RTSEvents {
      */
     @SuppressWarnings("unused")
     @Getter
+    @NullMarked
     public static class SearchTermChangeEvent extends Event {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
         private final Object inventoryView; // Use Object to avoid InventoryView compatibility issues
         private final AnvilInventory openingInventory;
-        private final String oldSearchTerm;
+        private final @Nullable String oldSearchTerm;
         private final String newSearchTerm;
         private final SlimefunGuideMode guideMode;
 
@@ -190,7 +194,7 @@ public class RTSEvents {
                 Player player,
                 Object inventoryView,
                 AnvilInventory openingInventory,
-                String oldSearchTerm,
+                @Nullable String oldSearchTerm,
                 String newSearchTerm,
                 SlimefunGuideMode guideMode) {
             super(false);
@@ -207,7 +211,7 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -216,8 +220,8 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        final @NotNull @Override
-        public HandlerList getHandlers() {
+        @Override
+        public final HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -230,6 +234,7 @@ public class RTSEvents {
      */
     @SuppressWarnings("unused")
     @Getter
+    @NullMarked
     public static class ClickAnvilItemEvent extends Event implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
@@ -260,7 +265,7 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -269,8 +274,8 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        final @NotNull @Override
-        public HandlerList getHandlers() {
+        @Override
+        public final HandlerList getHandlers() {
             return HANDLERS;
         }
 
@@ -303,6 +308,7 @@ public class RTSEvents {
      */
     @SuppressWarnings("unused")
     @Getter
+    @NullMarked
     public static class PageChangeEvent extends Event implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
@@ -336,7 +342,7 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -345,8 +351,8 @@ public class RTSEvents {
          *
          * @return the handler list
          */
-        final @NotNull @Override
-        public HandlerList getHandlers() {
+        @Override
+        public final HandlerList getHandlers() {
             return HANDLERS;
         }
 

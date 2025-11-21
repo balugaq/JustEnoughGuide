@@ -32,18 +32,19 @@ import com.balugaq.jeg.utils.platform.PlatformUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 2.0
  */
+@NullMarked
 public interface TaskScheduler {
-    static @NotNull Server getServer() {
+    static Server getServer() {
         return Bukkit.getServer();
     }
 
-    static @NotNull TaskScheduler create() {
+    static TaskScheduler create() {
         if (PlatformUtil.isLeaves()) return new LeavesTaskScheduler();
         if (PlatformUtil.isLeaf()) return new LeafTaskScheduler();
         if (PlatformUtil.isFolia()) return new FoliaTaskScheduler();
@@ -56,18 +57,18 @@ public interface TaskScheduler {
         throw new IllegalStateException("Unknown Platform, unable to create TaskScheduler");
     }
 
-    default @NotNull Plugin getPlugin() {
+    default Plugin getPlugin() {
         return JustEnoughGuide.getInstance();
     }
 
-    void runNextTick(@NotNull Runnable runnable);
+    void runNextTick(Runnable runnable);
 
-    void runLater(@NotNull Runnable runnable, long delay);
+    void runLater(Runnable runnable, long delay);
 
-    void runLaterAsync(@NotNull Runnable runnable, long delay);
+    void runLaterAsync(Runnable runnable, long delay);
 
-    void runTimer(@NotNull Runnable runnable, long delay, long period);
+    void runTimer(Runnable runnable, long delay, long period);
 
-    void runTimerAsync(@NotNull Runnable runnable, long delay, long period);
+    void runTimerAsync(Runnable runnable, long delay, long period);
 
 }

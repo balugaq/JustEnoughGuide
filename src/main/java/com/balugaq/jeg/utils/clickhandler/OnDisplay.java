@@ -296,7 +296,7 @@ public interface OnDisplay {
                 menu.addItem(
                         slot,
                         itemStack,
-                        OnClick.RecipeType.create(guide, menu, recipeType));
+                        OnClick.RecipeType.Normal.create(guide, menu, recipeType));
             }
         }
     }

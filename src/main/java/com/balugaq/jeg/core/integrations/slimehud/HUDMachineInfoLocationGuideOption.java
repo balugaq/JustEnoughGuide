@@ -38,7 +38,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
@@ -47,35 +47,36 @@ import java.util.Optional;
  * @since 1.9
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
+@NullMarked
 public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HUDLocation> {
-    public static final @NotNull HUDMachineInfoLocationGuideOption instance = new HUDMachineInfoLocationGuideOption();
+    public static final HUDMachineInfoLocationGuideOption instance = new HUDMachineInfoLocationGuideOption();
 
-    public static @NotNull HUDMachineInfoLocationGuideOption instance() {
+    public static HUDMachineInfoLocationGuideOption instance() {
         return instance;
     }
 
-    public static @NotNull NamespacedKey key0() {
+    public static NamespacedKey key0() {
         return new NamespacedKey(JustEnoughGuide.getInstance(), "hud_machine_info_location");
     }
 
-    public static HUDLocation getSelectedOption(@NotNull Player p) {
+    public static HUDLocation getSelectedOption(Player p) {
         return PersistentDataAPI.hasByte(p, key0())
                 ? HUDLocation.values()[PersistentDataAPI.getByte(p, key0())]
                 : HUDLocation.DEFAULT;
     }
 
     @Override
-    public @NotNull SlimefunAddon getAddon() {
+    public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return key0();
     }
 
     @Override
-    public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
+    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         HUDLocation current = getSelectedOption(p, guide).orElse(HUDLocation.DEFAULT);
         boolean bossbar = current == HUDLocation.BOSSBAR;
         boolean actionbar = current == HUDLocation.ACTION_BAR;
@@ -92,14 +93,14 @@ public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HU
     }
 
     @Override
-    public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
+    public void onClick(Player p, ItemStack guide) {
         HUDLocation current = getSelectedOption(p, guide).orElse(HUDLocation.DEFAULT);
         setSelectedOption(p, guide, current.next());
         JEGGuideSettings.openSettings(p, guide);
     }
 
     @Override
-    public @NotNull Optional<HUDLocation> getSelectedOption(@NotNull Player p, ItemStack guide) {
+    public Optional<HUDLocation> getSelectedOption(Player p, ItemStack guide) {
         NamespacedKey key = getKey();
         byte ordinal = PersistentDataAPI.hasByte(p, key) ? PersistentDataAPI.getByte(p, key) : (byte) HUDLocation.DEFAULT.ordinal();
         HUDLocation value = HUDLocation.values()[ordinal];
@@ -107,7 +108,7 @@ public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HU
     }
 
     @Override
-    public void setSelectedOption(@NotNull Player p, ItemStack guide, @NotNull HUDLocation value) {
+    public void setSelectedOption(Player p, ItemStack guide, HUDLocation value) {
         PersistentDataAPI.setByte(p, getKey(), (byte) value.ordinal());
     }
 }

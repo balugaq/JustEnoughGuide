@@ -29,6 +29,7 @@ package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
@@ -37,7 +38,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
@@ -46,37 +47,38 @@ import java.util.Optional;
  * @since 1.9
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
+@NullMarked
 public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boolean> {
-    public static final @NotNull NoticeMissingMaterialGuideOption instance = new NoticeMissingMaterialGuideOption();
+    public static final NoticeMissingMaterialGuideOption instance = new NoticeMissingMaterialGuideOption();
 
-    public static @NotNull NoticeMissingMaterialGuideOption instance() {
+    public static NoticeMissingMaterialGuideOption instance() {
         return instance;
     }
 
-    public static @NotNull NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "notice_missing_material");
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("notice_missing_material");
     }
 
-    public static boolean isEnabled(@NotNull Player p) {
+    public static boolean isEnabled(Player p) {
         return getSelectedOption(p);
     }
 
-    public static boolean getSelectedOption(@NotNull Player p) {
+    public static boolean getSelectedOption(Player p) {
         return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
     }
 
     @Override
-    public @NotNull SlimefunAddon getAddon() {
+    public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return key0();
     }
 
     @Override
-    public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
+    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(false);
         ItemStack item = Converter.getItem(
                 isEnabled(p) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK,
@@ -94,20 +96,20 @@ public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boo
     }
 
     @Override
-    public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
+    public void onClick(Player p, ItemStack guide) {
         setSelectedOption(p, guide, !getSelectedOption(p, guide).orElse(false));
         JEGGuideSettings.openSettings(p, guide);
     }
 
     @Override
-    public @NotNull Optional<Boolean> getSelectedOption(@NotNull Player p, ItemStack guide) {
+    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
         NamespacedKey key = getKey();
         boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == (byte) 1;
         return Optional.of(value);
     }
 
     @Override
-    public void setSelectedOption(@NotNull Player p, ItemStack guide, Boolean value) {
+    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
         PersistentDataAPI.setByte(p, getKey(), value ? (byte) 1 : (byte) 0);
     }
 }

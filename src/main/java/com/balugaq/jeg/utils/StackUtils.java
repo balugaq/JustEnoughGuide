@@ -58,8 +58,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.bukkit.inventory.meta.WritableBookMeta;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +72,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"deprecation", "UnstableApiUsage", "unused"})
 @UtilityClass
+@NullMarked
 public class StackUtils {
     public static final boolean IS_1_17_1 =
             JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17_1);
@@ -84,7 +85,6 @@ public class StackUtils {
     public static final boolean IS_1_21 =
             JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_21);
 
-    @NotNull
     public static ItemStack getAsQuantity(@Nullable ItemStack itemStack, int amount) {
         if (itemStack == null) {
             return new ItemStack(Material.AIR);
@@ -347,7 +347,7 @@ public class StackUtils {
     }
 
     @SuppressWarnings("RedundantIfStatement")
-    public static boolean canQuickEscapeMetaVariant(@NotNull ItemMeta metaOne, @NotNull ItemMeta metaTwo) {
+    public static boolean canQuickEscapeMetaVariant(ItemMeta metaOne, ItemMeta metaTwo) {
         // Damageable (first as everything can be damageable apparently)
         if (metaOne instanceof Damageable instanceOne && metaTwo instanceof Damageable instanceTwo) {
             if (instanceOne.hasDamage() != instanceTwo.hasDamage()) {

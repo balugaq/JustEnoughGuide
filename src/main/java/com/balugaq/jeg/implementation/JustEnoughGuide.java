@@ -47,6 +47,7 @@ import com.balugaq.jeg.implementation.items.GroupSetup;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
 import com.balugaq.jeg.implementation.option.CerPatchGuideOption;
+import com.balugaq.jeg.implementation.option.KeybindsSettingsGuideOption;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
@@ -71,10 +72,10 @@ import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
 import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,48 +98,59 @@ import java.util.logging.Level;
  */
 @SuppressWarnings({"unused", "Lombok", "deprecation", "ResultOfMethodCallIgnored"})
 @Getter
+@NullMarked
 public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public static final int RECOMMENDED_JAVA_VERSION = 17;
     public static final MinecraftVersion RECOMMENDED_MC_VERSION = MinecraftVersion.MINECRAFT_1_16;
 
     @Getter
+    @UnknownNullability
     private static JustEnoughGuide instance = null;
 
     @Getter
+    @UnknownNullability
     private static UUID serverUUID = null;
 
     @Getter
-    private final @NotNull String username;
+    private final String username;
 
     @Getter
-    private final @NotNull String repo;
+    private final String repo;
 
     @Getter
-    private final @NotNull String branch;
+    private final String branch;
 
     @Getter
+    @UnknownNullability
     private BookmarkManager bookmarkManager = null;
 
     @Getter
+    @UnknownNullability
     private CommandManager commandManager = null;
 
     @Getter
+    @UnknownNullability
     private ConfigManager configManager = null;
 
     @Getter
+    @UnknownNullability
     private IntegrationManager integrationManager = null;
 
     @Getter
+    @UnknownNullability
     private ListenerManager listenerManager = null;
 
     @Getter
+    @UnknownNullability
     private RTSBackpackManager rtsBackpackManager = null;
 
     @Getter
+    @UnknownNullability
     private MinecraftVersion minecraftVersion = null;
 
     @Getter
-    private TaskScheduler scheduler;
+    @UnknownNullability
+    private TaskScheduler scheduler = null;
 
     @Getter
     private int javaVersion = 0;
@@ -169,11 +181,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getInstance().listenerManager;
     }
 
-    @Deprecated
-    public static MinecraftVersion getMCVersion() {
-        return getInstance().minecraftVersion;
-    }
-
     public static MinecraftVersion getMinecraftVersion() {
         return getInstance().minecraftVersion;
     }
@@ -182,33 +189,11 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getInstance().scheduler;
     }
 
-    public static @NotNull JustEnoughGuide getInstance() {
+    public static JustEnoughGuide getInstance() {
         return JustEnoughGuide.instance;
     }
 
-    /// //////////////////////////////////////////////////////////////////////////////
-    ///                                                                           ///
-    /// JEG Recipe Complete Compatible                                            ///
-    ///                                                                           ///
-    /// Related-addons:                                                           ///
-    /// - NetworksExpansion                                                       ///
-    /// - SlimeAEPlugin                                                           ///
-    /// Author balugaq                                                            ///
-    /// Since 1.7                                                                 ///
-    ///                                                                           ///
-    /// //////////////////////////////////////////////////////////////////////////////
-
-    @Deprecated
-    public static void vanillaItemsGroupDisplayableFor(@NotNull Player player, boolean displayable) {
-        VanillaItemsGroup.displayableFor(player, displayable);
-    }
-
-    @Deprecated
-    public static boolean vanillaItemsGroupIsDisplayableFor(@NotNull Player player) {
-        return VanillaItemsGroup.isDisplayableFor(player);
-    }
-
-    public static void postServerStartup(@NotNull Runnable runnable) {
+    public static void postServerStartup(Runnable runnable) {
         JustEnoughGuide.runNextTick(runnable);
     }
 
@@ -226,23 +211,23 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         Slimefun.getConfigManager().setAutoLoadingMode(value);
     }
 
-    public static void runNextTick(@NotNull Runnable runnable) {
+    public static void runNextTick(Runnable runnable) {
         getScheduler().runNextTick(runnable);
     }
 
-    public static void runLater(@NotNull Runnable runnable, long delay) {
+    public static void runLater(Runnable runnable, long delay) {
         getScheduler().runLater(runnable, delay);
     }
 
-    public static void runLaterAsync(@NotNull Runnable runnable, long delay) {
+    public static void runLaterAsync(Runnable runnable, long delay) {
         getScheduler().runLaterAsync(runnable, delay);
     }
 
-    public static void runTimer(@NotNull Runnable runnable, long delay, long period) {
+    public static void runTimer(Runnable runnable, long delay, long period) {
         getScheduler().runTimer(runnable, delay, period);
     }
 
-    public static void runTimerAsync(@NotNull Runnable runnable, long delay, long period) {
+    public static void runTimerAsync(Runnable runnable, long delay, long period) {
         getScheduler().runTimerAsync(runnable, delay, period);
     }
 
@@ -325,6 +310,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             if (getConfigManager().isBeginnerOption()) {
                 getLogger().info("正在加载指南选项...");
                 JEGGuideSettings.patchSlimefun();
+                JEGGuideSettings.addOption(KeybindsSettingsGuideOption.instance());
                 JEGGuideSettings.addOption(BeginnersGuideOption.instance());
                 JEGGuideSettings.addOption(CerPatchGuideOption.instance());
                 JEGGuideSettings.addOption(ShareInGuideOption.instance());
@@ -461,7 +447,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      * @return the JavaPlugin instance
      */
     @Override
-    public @NotNull JavaPlugin getJavaPlugin() {
+    public JavaPlugin getJavaPlugin() {
         return this;
     }
 
@@ -487,12 +473,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
     }
 
-    /**
-     * Returns the version of the plugin.
-     *
-     * @return the version of the plugin
-     */
-    public @NotNull String getVersion() {
+    public String getVersion() {
         return getDescription().getVersion();
     }
 

@@ -33,7 +33,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -44,13 +44,14 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NullMarked
 public class GrowingMachineData extends MachineData {
     private final EnumMap<Material, ItemStack[]> recipes;
     private final int ticksPerOutput;
     private final int energyPerTick;
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.entrySet().stream()
                 .map(entry -> new CERRecipeGroup.RecipeWrapper(
                         new ItemStack[]{new ItemStack(entry.getKey())},

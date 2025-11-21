@@ -30,7 +30,7 @@ package com.balugaq.jeg.utils;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import lombok.experimental.UtilityClass;
 import org.bukkit.inventory.ItemFlag;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Field;
 
@@ -42,8 +42,9 @@ import java.lang.reflect.Field;
  * @since 1.2
  */
 @UtilityClass
+@NullMarked
 public class JEGVersionedItemFlag {
-    public static final @NotNull ItemFlag HIDE_ADDITIONAL_TOOLTIP;
+    public static final ItemFlag HIDE_ADDITIONAL_TOOLTIP;
 
     static {
         MinecraftVersion version = JustEnoughGuide.getMinecraftVersion();
@@ -53,8 +54,7 @@ public class JEGVersionedItemFlag {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    @NotNull
-    private static ItemFlag getKey(@NotNull String key) {
+    private static ItemFlag getKey(String key) {
         try {
             Field field = ItemFlag.class.getDeclaredField(key);
             return (ItemFlag) field.get(null);

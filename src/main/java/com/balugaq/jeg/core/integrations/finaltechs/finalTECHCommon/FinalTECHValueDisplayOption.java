@@ -37,7 +37,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
@@ -46,8 +46,9 @@ import java.util.Optional;
  * @since 1.9
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
+@NullMarked
 public class FinalTECHValueDisplayOption implements SlimefunGuideOption<Boolean> {
-    public static final @NotNull FinalTECHValueDisplayOption instance = new FinalTECHValueDisplayOption();
+    public static final FinalTECHValueDisplayOption instance = new FinalTECHValueDisplayOption();
     private static boolean booted = false;
 
     private static void setBooted(boolean booted) {
@@ -67,34 +68,34 @@ public class FinalTECHValueDisplayOption implements SlimefunGuideOption<Boolean>
         setBooted(false);
     }
 
-    public static @NotNull FinalTECHValueDisplayOption instance() {
+    public static FinalTECHValueDisplayOption instance() {
         return instance;
     }
 
-    public static @NotNull NamespacedKey key0() {
+    public static NamespacedKey key0() {
         return new NamespacedKey(JustEnoughGuide.getInstance(), "finaltechv2_emc_item");
     }
 
-    public static boolean isEnabled(@NotNull Player p) {
+    public static boolean isEnabled(Player p) {
         return getSelectedOption(p);
     }
 
-    public static boolean getSelectedOption(@NotNull Player p) {
+    public static boolean getSelectedOption(Player p) {
         return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
     }
 
     @Override
-    public @NotNull SlimefunAddon getAddon() {
+    public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return key0();
     }
 
     @Override
-    public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
+    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
                 isEnabled(p) ? Material.RESPAWN_ANCHOR : Material.REDSTONE_LAMP,
@@ -112,20 +113,20 @@ public class FinalTECHValueDisplayOption implements SlimefunGuideOption<Boolean>
     }
 
     @Override
-    public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
+    public void onClick(Player p, ItemStack guide) {
         setSelectedOption(p, guide, !getSelectedOption(p, guide).orElse(true));
         JEGGuideSettings.openSettings(p, guide);
     }
 
     @Override
-    public @NotNull Optional<Boolean> getSelectedOption(@NotNull Player p, ItemStack guide) {
+    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
         NamespacedKey key = getKey();
         boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == (byte) 1;
         return Optional.of(value);
     }
 
     @Override
-    public void setSelectedOption(@NotNull Player p, ItemStack guide, Boolean value) {
+    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
         PersistentDataAPI.setByte(p, getKey(), value ? (byte) 1 : (byte) 0);
     }
 }

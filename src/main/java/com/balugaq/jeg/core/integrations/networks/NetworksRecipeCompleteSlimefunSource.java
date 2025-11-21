@@ -39,8 +39,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -48,14 +48,15 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
     @SuppressWarnings("deprecation")
     @Override
     public boolean handleable(
-            @NotNull BlockMenu blockMenu,
-            @NotNull Player player,
-            @NotNull ClickAction clickAction,
-            int @NotNull [] ingredientSlots,
+            BlockMenu blockMenu,
+            Player player,
+            ClickAction clickAction,
+            int[] ingredientSlots,
             boolean unordered,
             int recipeDepth) {
         return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
@@ -63,9 +64,9 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
 
     @Override
     public boolean completeRecipeWithGuide(
-            @NotNull BlockMenu blockMenu,
-            GuideEvents.@NotNull ItemButtonClickEvent event,
-            int @NotNull [] ingredientSlots,
+            BlockMenu blockMenu,
+            GuideEvents.ItemButtonClickEvent event,
+            int[] ingredientSlots,
             boolean unordered,
             int recipeDepth) {
         NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
@@ -80,7 +81,7 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
             return false;
         }
 
-        List<RecipeChoice> choices = getRecipe(clickedItem);
+        List<@Nullable RecipeChoice> choices = getRecipe(clickedItem);
         if (choices == null) {
             sendMissingMaterial(player, clickedItem);
             return false;
@@ -164,7 +165,7 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
 
     @SuppressWarnings("removal")
     @Nullable
-    private ItemStack getItemStack(@NotNull NetworkRoot root, @NotNull Player player, @NotNull ItemStack itemStack) {
+    private ItemStack getItemStack(NetworkRoot root, Player player, ItemStack itemStack) {
         ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
         if (i1 != null) {
             return i1;
@@ -175,7 +176,7 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
     }
 
     @Override
-    public @NotNull JavaPlugin plugin() {
+    public JavaPlugin plugin() {
         return NetworksIntegrationMain.getPlugin();
     }
 }

@@ -42,8 +42,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 import java.util.UUID;
@@ -54,23 +54,24 @@ import java.util.UUID;
  */
 @SuppressWarnings({"ConstantValue", "DataFlowIssue"})
 @Getter
+@NullMarked
 public class RTSBackpackManager extends AbstractManager {
     private static final int IDENTIFIER_SLOT = 53;
     private static final String BACKPACK_NAME = "JEGRTSBackpack";
     private static final NamespacedKey STATUS_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "status");
     private static final String OPEN_STATUS = "open";
     private static final String CLOSE_STATUS = "close";
-    private final @NotNull Plugin plugin;
-    private final @NotNull NamespacedKey SERVER_KEY;
-    private final @NotNull NamespacedKey OWNER_KEY;
+    private final Plugin plugin;
+    private final NamespacedKey SERVER_KEY;
+    private final NamespacedKey OWNER_KEY;
 
-    public RTSBackpackManager(@NotNull Plugin plugin) {
+    public RTSBackpackManager(Plugin plugin) {
         this.plugin = plugin;
         this.SERVER_KEY = new NamespacedKey(plugin, "server");
         this.OWNER_KEY = new NamespacedKey(plugin, "owner");
     }
 
-    public static ItemStack @NotNull [] getStorageContents(@NotNull PlayerInventory inventory) {
+    public static ItemStack[] getStorageContents(PlayerInventory inventory) {
         ItemStack[] contents = new ItemStack[36];
         for (int i = 0; i < 36; i++) {
             ItemStack itemStack = inventory.getItem(i);
@@ -84,7 +85,7 @@ public class RTSBackpackManager extends AbstractManager {
      *
      * @param player the player whose inventory to back up
      */
-    public void saveInventoryBackupFor(@NotNull Player player) {
+    public void saveInventoryBackupFor(Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
             return;
@@ -139,7 +140,7 @@ public class RTSBackpackManager extends AbstractManager {
      *
      * @param player the player whose inventory to clear
      */
-    public void clearInventoryFor(@NotNull Player player) {
+    public void clearInventoryFor(Player player) {
         ItemStack[] newContents = new ItemStack[player.getInventory().getStorageContents().length];
         for (int i = 0; i < newContents.length; i++) {
             newContents[i] = new ItemStack(Material.AIR);
@@ -152,7 +153,7 @@ public class RTSBackpackManager extends AbstractManager {
      *
      * @param player the player whose inventory to restore
      */
-    public void restoreInventoryFor(@NotNull Player player) {
+    public void restoreInventoryFor(Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) {
             return;
@@ -168,7 +169,7 @@ public class RTSBackpackManager extends AbstractManager {
         for (PlayerBackpack backpack : backpacks) {
             if (backpack.getName().equals(BACKPACK_NAME)) {
                 Inventory inventory = backpack.getInventory();
-                ItemStack[] contents = inventory.getContents();
+                @Nullable ItemStack[] contents = inventory.getContents();
 
                 ItemStack identifierItem = contents[IDENTIFIER_SLOT];
                 if (identifierItem == null || identifierItem.getType() == Material.AIR) {
@@ -218,7 +219,7 @@ public class RTSBackpackManager extends AbstractManager {
      * @param slot      the slot to set the identifier item
      * @param open      whether the identifier item should indicate an open status
      */
-    public void setIdentifier(@NotNull Player player, @NotNull Inventory inventory, int slot, boolean open) {
+    public void setIdentifier(Player player, Inventory inventory, int slot, boolean open) {
         inventory.setItem(slot, getIdentifierItem(player, open));
     }
 
@@ -229,7 +230,7 @@ public class RTSBackpackManager extends AbstractManager {
      * @param open   whether the identifier item should indicate an open status
      * @return the identifier item
      */
-    public @NotNull ItemStack getIdentifierItem(@NotNull Player player, boolean open) {
+    public ItemStack getIdentifierItem(Player player, boolean open) {
         return Converter.getItem(
                 Converter.getItem(
                         Material.DIRT,
@@ -265,7 +266,7 @@ public class RTSBackpackManager extends AbstractManager {
      * @return true if the item is a valid identifier, false otherwise
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isIdentifier(@Nullable ItemStack item, @NotNull Player player) {
+    public boolean isIdentifier(@Nullable ItemStack item, Player player) {
         if (item == null || item.getType() == Material.AIR) {
             return false;
         }

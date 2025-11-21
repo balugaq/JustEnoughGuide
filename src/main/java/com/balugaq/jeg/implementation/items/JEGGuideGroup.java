@@ -50,7 +50,7 @@ import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -62,6 +62,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Getter
 @NotDisplayInCheatMode
+@NullMarked
 public class JEGGuideGroup extends ClassicGuideGroup {
     public static final ItemStack HEADER = Converter.getItem(
             Material.BEACON, "&bJEG 使用指南", "&b作者: 大香蕉", "&bJEG 优化了粘液科技的指南，使其更人性化。", "&b查看以下指南书以快速上手 JEG 增加的功能。");
@@ -72,7 +73,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
             Formats.helper.getChars('B').stream().mapToInt(i -> i).toArray();
 
     @SuppressWarnings("SameParameterValue")
-    protected JEGGuideGroup(@NotNull NamespacedKey key, @NotNull ItemStack icon) {
+    protected JEGGuideGroup(NamespacedKey key, ItemStack icon) {
         super(key, icon, Integer.MAX_VALUE);
         for (int slot : BORDER_SLOTS) {
             addGuide(slot, ChestMenuUtils.getBackground());
@@ -565,7 +566,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         Formats.helper.renderCustom(this);
     }
 
-    public static void doIf(boolean expression, @NotNull Runnable runnable) {
+    public static void doIf(boolean expression, Runnable runnable) {
         if (expression) {
             try {
                 runnable.run();

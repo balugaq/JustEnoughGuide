@@ -28,7 +28,8 @@
 package com.balugaq.jeg.api.cfgparse.annotations;
 
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -37,10 +38,11 @@ import java.util.Arrays;
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 @SuppressWarnings("unused")
 public interface IParsable {
     @SneakyThrows
-    static String @NotNull [] fieldNames(final @NotNull Class<? extends IParsable> clazz) {
+    static @Nullable String[] fieldNames(final Class<? extends IParsable> clazz) {
         try {
             clazz.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {

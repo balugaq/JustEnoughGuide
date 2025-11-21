@@ -33,7 +33,7 @@ import com.balugaq.jeg.core.integrations.Integration;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,8 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings("DataFlowIssue")
+@SuppressWarnings({"DataFlowIssue", "ConstantValue"})
+@NullMarked
 public class NetworksExpansionIntegrationMain implements Integration {
     public static final int[] ENCODER_RECIPE_SLOTS = new int[]{12, 13, 14, 21, 22, 23, 30, 31, 32};
     public static final int[] CRAFTING_GRID_NEW_STYLE_RECIPE_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
@@ -68,7 +69,7 @@ public class NetworksExpansionIntegrationMain implements Integration {
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     public static JavaPlugin plugin = null;
 
-    public static @NotNull JavaPlugin getPlugin() {
+    public static JavaPlugin getPlugin() {
         if (plugin == null) {
             plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Networks");
         }
@@ -76,20 +77,20 @@ public class NetworksExpansionIntegrationMain implements Integration {
         return plugin;
     }
 
-    public static void rrc(@NotNull String id, int @NotNull [] slots, boolean unordered) {
+    public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
         if (slimefunItem != null) {
             rrc(slimefunItem, slots, unordered);
         }
     }
 
-    public static void rrc(@NotNull SlimefunItem slimefunItem, int @NotNull [] slots, boolean unordered) {
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override
-    public @NotNull String getHookPlugin() {
+    public String getHookPlugin() {
         return "NetworksExpansion";
     }
 

@@ -35,7 +35,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.ref.Reference;
 import java.util.ArrayList;
@@ -52,21 +52,21 @@ import java.util.Set;
  */
 @SuppressWarnings({"ClassCanBeRecord", "deprecation", "ConstantValue"})
 @Getter
+@NullMarked
 public class CacheCommand implements JEGCommand {
-    private @NotNull
-    final Plugin plugin;
+    private final Plugin plugin;
 
     /**
      * Constructs a new CacheCommand instance.
      *
      * @param plugin The plugin instance.
      */
-    public CacheCommand(@NotNull Plugin plugin) {
+    public CacheCommand(Plugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public @NotNull List<String> onTabCompleteRaw(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {
             case 1 -> {
                 return List.of("cache");
@@ -108,10 +108,10 @@ public class CacheCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final @NotNull CommandSender sender,
-            final @NotNull Command command,
-            final @NotNull String label,
-            final @NotNull String @NotNull [] args) {
+            final CommandSender sender,
+            final Command command,
+            final String label,
+            final String[] args) {
         if (sender.isOp()) {
             if (args.length >= 1) {
                 return "cache".equalsIgnoreCase(args[0]);
@@ -122,14 +122,14 @@ public class CacheCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String @NotNull [] args) {
+            final CommandSender sender,
+            Command command,
+            String label,
+            String[] args) {
         onCheck(sender, args);
     }
 
-    private void onCheck(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    private void onCheck(CommandSender sender, String[] args) {
         if (args.length < 3) {
             sender.sendMessage(ChatColor.RED + "Usage: /jeg cache <section> <key>");
             return;

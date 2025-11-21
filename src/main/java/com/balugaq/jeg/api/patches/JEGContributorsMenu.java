@@ -43,7 +43,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,8 +58,9 @@ import java.util.Map;
  * @since 1.8
  */
 @SuppressWarnings({"deprecation", "UnnecessaryUnicodeEscape"})
+@NullMarked
 public class JEGContributorsMenu {
-    public static void open(@NotNull Player p, int page) {
+    public static void open(Player p, int page) {
         ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "guide.title.credits"));
 
         menu.setEmptySlotsClickable(false);
@@ -131,7 +132,7 @@ public class JEGContributorsMenu {
         menu.open(p);
     }
 
-    private static @NotNull ItemStack getContributorHead(@NotNull Player p, @NotNull Contributor contributor) {
+    private static ItemStack getContributorHead(Player p, Contributor contributor) {
         ItemStack skull = SlimefunUtils.getCustomHead(contributor.getTexture());
 
         SkullMeta meta = (SkullMeta) skull.getItemMeta();

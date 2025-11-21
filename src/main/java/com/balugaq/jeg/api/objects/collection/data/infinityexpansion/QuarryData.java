@@ -33,7 +33,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,14 +45,15 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NullMarked
 public class QuarryData extends MachineData {
     private final int INTERVAL;
-    private final Material[] outputs;
+    private final Material @Nullable [] outputs;
     private final int speed;
     private final int energyPerTick;
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
                 null,
                 outputs == null ? null : Arrays.stream(outputs).map(ItemStack::new).toList().toArray(new ItemStack[0]),

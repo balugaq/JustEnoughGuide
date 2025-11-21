@@ -33,8 +33,8 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +49,8 @@ import java.util.UUID;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"unused", "deprecation", "CallToPrintStackTrace", "ResultOfMethodCallIgnored", "JavaExistingMethodCanBeUsed"})
+@SuppressWarnings({"unused", "deprecation", "CallToPrintStackTrace", "ResultOfMethodCallIgnored"})
+@NullMarked
 public class Debug {
     public static final File errorsFolder =
             new File(JustEnoughGuide.getInstance().getDataFolder(), "error-reports");
@@ -62,7 +63,6 @@ public class Debug {
         }
     }
 
-    @NotNull
     public static JavaPlugin getPlugin() {
         if (plugin == null) {
             plugin = JustEnoughGuide.getInstance();
@@ -70,31 +70,22 @@ public class Debug {
         return plugin;
     }
 
-    public static void severe(Object @NotNull ... objects) {
-        StringBuilder sb = new StringBuilder();
-        for (Object obj : objects) {
-            if (obj == null) {
-                sb.append("null");
-            } else {
-                sb.append(obj);
-            }
-            sb.append(" ");
-        }
-        warn(sb.toString());
+    public static void severe(Object... objects) {
+        severe(Arrays.toString(objects));
     }
 
-    public static void severe(@NotNull Throwable e) {
-        warn(e.getMessage());
+    public static void severe(Throwable e) {
+        severe(e.getMessage());
         trace(e);
     }
 
     public static void severe(@Nullable Object object) {
-        warn(object == null ? "null" : object.toString());
+        severe(object == null ? "null" : object.toString());
     }
 
-    public static void severe(String @NotNull ... messages) {
+    public static void severe(String... messages) {
         for (String message : messages) {
-            warn(message);
+            severe(message);
         }
     }
 
@@ -102,20 +93,11 @@ public class Debug {
         log("&e[ERROR] " + message);
     }
 
-    public static void warn(Object @NotNull ... objects) {
-        StringBuilder sb = new StringBuilder();
-        for (Object obj : objects) {
-            if (obj == null) {
-                sb.append("null");
-            } else {
-                sb.append(obj);
-            }
-            sb.append(" ");
-        }
-        warn(sb.toString());
+    public static void warn(Object... objects) {
+        warn(Arrays.toString(objects));
     }
 
-    public static void warn(@NotNull Throwable e) {
+    public static void warn(Throwable e) {
         warn(e.getMessage());
         trace(e);
     }
@@ -124,7 +106,7 @@ public class Debug {
         warn(object == null ? "null" : object.toString());
     }
 
-    public static void warn(String @NotNull ... messages) {
+    public static void warn(String... messages) {
         for (String message : messages) {
             warn(message);
         }
@@ -134,20 +116,11 @@ public class Debug {
         log("&e[WARN] " + message);
     }
 
-    public static void debug(Object @NotNull ... objects) {
-        StringBuilder sb = new StringBuilder();
-        for (Object obj : objects) {
-            if (obj == null) {
-                sb.append("null");
-            } else {
-                sb.append(obj);
-            }
-            sb.append(" ");
-        }
-        debug(sb.toString());
+    public static void debug(Object... objects) {
+        debug(Arrays.toString(objects));
     }
 
-    public static void debug(@NotNull Throwable e) {
+    public static void debug(Throwable e) {
         debug(e.getMessage());
         trace(e);
     }
@@ -156,7 +129,7 @@ public class Debug {
         debug(object == null ? "null" : object.toString());
     }
 
-    public static void debug(String @NotNull ... messages) {
+    public static void debug(String... messages) {
         for (String message : messages) {
             debug(message);
         }
@@ -168,20 +141,11 @@ public class Debug {
         }
     }
 
-    public static void sendMessage(@NotNull Player player, Object @NotNull ... objects) {
-        StringBuilder sb = new StringBuilder();
-        for (Object obj : objects) {
-            if (obj == null) {
-                sb.append("null");
-            } else {
-                sb.append(obj);
-            }
-            sb.append(" ");
-        }
-        sendMessage(player, sb.toString());
+    public static void sendMessage(Player player, Object... objects) {
+        sendMessage(player, Arrays.toString(objects));
     }
 
-    public static void sendMessage(@NotNull Player player, @Nullable Object object) {
+    public static void sendMessage(Player player, @Nullable Object object) {
         if (object == null) {
             sendMessage(player, "null");
             return;
@@ -189,13 +153,13 @@ public class Debug {
         sendMessage(player, object.toString());
     }
 
-    public static void sendMessages(@NotNull Player player, String @NotNull ... messages) {
+    public static void sendMessages(Player player, String... messages) {
         for (String message : messages) {
             sendMessage(player, message);
         }
     }
 
-    public static void sendMessage(@NotNull Player player, String message) {
+    public static void sendMessage(Player player, String message) {
         player.sendMessage("[" + getPlugin().getName() + "]" + message);
     }
 
@@ -203,37 +167,27 @@ public class Debug {
         Thread.dumpStack();
     }
 
-    public static void log(Object @NotNull ... object) {
-        StringBuilder sb = new StringBuilder();
-        for (Object obj : object) {
-            if (obj == null) {
-                sb.append("null");
-            } else {
-                sb.append(obj);
-            }
-            sb.append(" ");
-        }
-
-        log(sb.toString());
+    public static void log(Object... object) {
+        log(Arrays.toString(object));
     }
 
     public static void log(@Nullable Object object) {
         log(object == null ? "null" : object.toString());
     }
 
-    public static void log(String @NotNull ... messages) {
+    public static void log(String... messages) {
         for (String message : messages) {
             log(message);
         }
     }
 
-    public static void log(@NotNull String message) {
+    public static void log(String message) {
         Bukkit.getServer()
                 .getConsoleSender()
                 .sendMessage("[" + JustEnoughGuide.getInstance().getName() + "] " + ChatColors.color(message));
     }
 
-    public static void log(@NotNull Throwable e) {
+    public static void log(Throwable e) {
         Debug.trace(e);
     }
 
@@ -241,15 +195,15 @@ public class Debug {
         log("");
     }
 
-    public static void trace(@NotNull Throwable e) {
+    public static void trace(Throwable e) {
         trace(e, null);
     }
 
-    public static void trace(@NotNull Throwable e, @Nullable String doing) {
+    public static void trace(Throwable e, @Nullable String doing) {
         trace(e, doing, null);
     }
 
-    public static void trace(@NotNull Throwable e, @Nullable String doing, @Nullable Integer code) {
+    public static void trace(Throwable e, @Nullable String doing, @Nullable Integer code) {
         try {
             getPlugin()
                     .getLogger()
@@ -276,7 +230,7 @@ public class Debug {
         }
     }
 
-    public static void traceExactly(@NotNull Throwable e, @Nullable String doing, @Nullable Integer code) {
+    public static void traceExactly(Throwable e, @Nullable String doing, @Nullable Integer code) {
         try {
             getPlugin()
                     .getLogger()
@@ -314,7 +268,7 @@ public class Debug {
         }
     }
 
-    public static void dumpToFile(@NotNull Throwable e, @Nullable Integer code) {
+    public static void dumpToFile(Throwable e, @Nullable Integer code) {
         // Format as: yyyy-MM-dd-HH-mm-ss-e.getClass().getSimpleName()-uuid
         String fileName = "error-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
                 + "-" + e.getClass().getSimpleName() + "-" + UUID.randomUUID() + ".txt";

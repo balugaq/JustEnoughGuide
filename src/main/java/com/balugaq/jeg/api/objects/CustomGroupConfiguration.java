@@ -46,18 +46,24 @@ import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
+/**
+ * @author balugaq
+ * @since 1.9
+ */
+@SuppressWarnings({"unused", "ConstantValue"})
 @NoArgsConstructor
 @Data
+@NullMarked
 public class CustomGroupConfiguration implements IParsable {
     @Required
     @Key("enabled")
@@ -92,7 +98,8 @@ public class CustomGroupConfiguration implements IParsable {
     private Format format;
     private List<Object> objects;
 
-    public static String @NotNull [] fieldNames() {
+    @UnknownNullability
+    public static String[] fieldNames() {
         return IParsable.fieldNames(CustomGroupConfiguration.class);
     }
 
@@ -105,34 +112,31 @@ public class CustomGroupConfiguration implements IParsable {
         return this.tier;
     }
 
-    @NotNull
     public String id() {
         return this.id;
     }
 
-    @NotNull
     public Display display() {
         return this.display;
     }
 
-    @NotNull
     public Mode mode() {
         return this.mode;
     }
 
-    public @NotNull String @NotNull [] items() {
+    public String[] items() {
         return this.items;
     }
 
-    public @NotNull String @NotNull [] groups() {
+    public String[] groups() {
         return this.groups;
     }
 
-    public @NotNull String @NotNull [] formats() {
+    public String[] formats() {
         return this.formats;
     }
 
-    public @NotNull Format format() {
+    public Format format() {
         if (this.format != null) return format;
         this.format = new Format() {
             @Override
@@ -146,7 +150,6 @@ public class CustomGroupConfiguration implements IParsable {
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    @NotNull
     public List<Object> objects() {
         if (this.objects != null) return this.objects;
 
@@ -168,22 +171,31 @@ public class CustomGroupConfiguration implements IParsable {
         return objects;
     }
 
-    public @NotNull NamespacedKey key() {
+    public NamespacedKey key() {
         return KeyUtil.newKey(id);
     }
 
-    public @NotNull ItemStack item() {
+    public ItemStack item() {
         return display.item();
     }
 
+    /**
+     * @author balugaq
+     * @since 1.9
+     */
     @SuppressWarnings("unused")
     public enum Mode {
         TRANSFER,
         MERGE
     }
 
+    /**
+     * @author balugaq
+     * @since 1.9
+     */
     @SuppressWarnings("unused")
     @Data
+    @NullMarked
     public static class Display implements IParsable {
         @Required
         @Key("material")
@@ -195,12 +207,12 @@ public class CustomGroupConfiguration implements IParsable {
 
         @Nullable ItemStack itemStack;
 
-        public static @NotNull String @NotNull [] fieldNames() {
+        @UnknownNullability
+        public static String[] fieldNames() {
             return IParsable.fieldNames(Display.class);
         }
 
-        final @NotNull
-        public ItemStack item() {
+        public final ItemStack item() {
             if (itemStack != null) return itemStack;
             itemStack = getHashLike(material);
             if (itemStack != null) return itemStack = Converter.getItem(itemStack, this.name);
@@ -220,22 +232,22 @@ public class CustomGroupConfiguration implements IParsable {
             return itemStack = Converter.getItem(material, this.name);
         }
 
-        public boolean isHashcodeLike(@NotNull String value) {
+        public boolean isHashcodeLike(String value) {
             return value.matches("^[a-fA-F0-9]{32,}$");
         }
 
-        public boolean isBase64Like(@NotNull String value) {
+        public boolean isBase64Like(String value) {
             return value.length() > 32
                     && value.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
         }
 
-        public boolean isURLLike(@NotNull String value) {
+        public boolean isURLLike(String value) {
             return value.matches(
                     "^https?://(?:[-\\w]+\\.)?[-\\w]+(?:\\.[a-zA-Z]{2,5}|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?::\\d{1,5})?(/[-\\w./]*)*(\\?[-\\w.&=]*)?(#[-\\w]*)?$");
         }
 
         @Nullable
-        private ItemStack getHashLike(@NotNull String material) {
+        private ItemStack getHashLike(String material) {
             if (!isHashcodeLike(material)) {
                 return null;
             }
@@ -249,7 +261,7 @@ public class CustomGroupConfiguration implements IParsable {
         }
 
         @Nullable
-        private ItemStack getBase64Like(@NotNull String material) {
+        private ItemStack getBase64Like(String material) {
             if (!isBase64Like(material)) {
                 return null;
             }
@@ -263,7 +275,7 @@ public class CustomGroupConfiguration implements IParsable {
         }
 
         @Nullable
-        private ItemStack getURLLike(@NotNull String material) {
+        private ItemStack getURLLike(String material) {
             if (!isURLLike(material)) {
                 return null;
             }

@@ -44,7 +44,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,19 +55,17 @@ import java.util.Optional;
  * @since 1.9
  */
 @SuppressWarnings("DataFlowIssue")
+@NullMarked
 public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
-    @NotNull
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
-    @NotNull
     public NamespacedKey getKey() {
         return new NamespacedKey(Slimefun.instance(), "research_learning_animation");
     }
 
-    @NotNull
-    public Optional<ItemStack> getDisplayItem(@NotNull Player p, @NotNull ItemStack guide) {
+    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         SlimefunConfigManager cfgManager = Slimefun.getConfigManager();
         if (cfgManager.isResearchingEnabled() && !cfgManager.isLearningAnimationDisabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
@@ -83,18 +81,18 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
         }
     }
 
-    public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
+    public void onClick(Player p, ItemStack guide) {
         this.setSelectedOption(p, guide, !(Boolean) this.getSelectedOption(p, guide).orElse(true));
         JEGGuideSettings.openSettings(p, guide);
     }
 
-    public Optional<Boolean> getSelectedOption(@NotNull Player p, @NotNull ItemStack guide) {
+    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
         NamespacedKey key = this.getKey();
         boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == 1;
         return Optional.of(value);
     }
 
-    public void setSelectedOption(@NotNull Player p, @NotNull ItemStack guide, @NotNull Boolean value) {
+    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
         PersistentDataAPI.setByte(p, this.getKey(), (byte) (value ? 1 : 0));
     }
 }

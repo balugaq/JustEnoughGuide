@@ -27,10 +27,13 @@
 
 package com.balugaq.jeg.api.objects.enums;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public enum HUDLocation {
     BOSSBAR,
     ACTION_BAR,

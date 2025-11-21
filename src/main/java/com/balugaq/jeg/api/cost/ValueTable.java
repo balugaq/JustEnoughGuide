@@ -42,7 +42,8 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.StonecuttingRecipe;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,8 @@ import java.util.Map;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"unused", "deprecation", "DataFlowIssue"})
+@SuppressWarnings({"unused", "deprecation", "DataFlowIssue", "ConstantValue"})
+@NullMarked
 public class ValueTable {
     private static final int THRESHOLD = 50;
     private static final HashMap<Integer, Double> valueMap = new HashMap<>();
@@ -81,7 +83,7 @@ public class ValueTable {
         return getValue(sf.getItem());
     }
 
-    public static double getValue(ItemStack itemStack, int amount) {
+    public static double getValue(@Nullable ItemStack itemStack, int amount) {
         if (itemStack == null) {
             return 0.0D;
         }
@@ -117,7 +119,7 @@ public class ValueTable {
         return getValue(StackUtils.getAsQuantity(itemStack, 1), itemStack.getAmount());
     }
 
-    public static double getValue(ItemStack[] itemStacks) {
+    public static double getValue(@Nullable ItemStack[] itemStacks) {
         double v = 0.0D;
         for (ItemStack itemStack : itemStacks) {
             v += getValue(itemStack);
@@ -408,7 +410,7 @@ public class ValueTable {
         setValue(SlimefunItem.getById("BASIC_CIRCUIT_BOARD").getItem(), 1024);
     }
 
-    private static double getItemValueVanilla(@NotNull ItemStack itemStack, int depth) {
+    private static double getItemValueVanilla(ItemStack itemStack, int depth) {
         if (depth > THRESHOLD) {
             return 128.0D;
         }
@@ -440,7 +442,7 @@ public class ValueTable {
         }
     }
 
-    private static double handleRecipeVanilla(@NotNull Recipe recipe, int depth) {
+    private static double handleRecipeVanilla(Recipe recipe, int depth) {
         if (recipe instanceof ShapedRecipe shapedRecipe) {
             return handleShapedRecipe(shapedRecipe, depth);
         } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
@@ -456,7 +458,7 @@ public class ValueTable {
         }
     }
 
-    private static double handleShapedRecipe(@NotNull ShapedRecipe shapedRecipe, int depth) {
+    private static double handleShapedRecipe(ShapedRecipe shapedRecipe, int depth) {
         double value = 0.0D;
         Map<Character, Double> valueMap = new HashMap<>();
 
@@ -484,7 +486,7 @@ public class ValueTable {
         return value;
     }
 
-    private static double handleShapelessRecipe(@NotNull ShapelessRecipe shapelessRecipe, int depth) {
+    private static double handleShapelessRecipe(ShapelessRecipe shapelessRecipe, int depth) {
         double value = 0.0D;
 
         for (ItemStack itemStack : shapelessRecipe.getIngredientList()) {
@@ -500,14 +502,14 @@ public class ValueTable {
         return value;
     }
 
-    private static double handleCookingRecipe(@NotNull CookingRecipe<?> cookingRecipe, int depth) {
+    private static double handleCookingRecipe(CookingRecipe<?> cookingRecipe, int depth) {
         double value = getItemValueVanilla(cookingRecipe.getInput(), depth);
 
         value /= cookingRecipe.getResult().getAmount();
         return value;
     }
 
-    private static double handleSmithingRecipe(@NotNull SmithingRecipe smithingRecipe, int depth) {
+    private static double handleSmithingRecipe(SmithingRecipe smithingRecipe, int depth) {
         double baseValue = getItemValueVanilla(smithingRecipe.getBase().getItemStack(), depth);
         double additionValue = getItemValueVanilla(smithingRecipe.getAddition().getItemStack(), depth);
 
@@ -516,14 +518,14 @@ public class ValueTable {
         return value;
     }
 
-    private static double handleStonecuttingRecipe(@NotNull StonecuttingRecipe stonecuttingRecipe, int depth) {
+    private static double handleStonecuttingRecipe(StonecuttingRecipe stonecuttingRecipe, int depth) {
         double value = getItemValueVanilla(stonecuttingRecipe.getInput(), depth);
 
         value /= stonecuttingRecipe.getResult().getAmount();
         return value;
     }
 
-    private static double getItemValueSlimefun(@NotNull SlimefunItem slimefunItem, int depth) {
+    private static double getItemValueSlimefun(SlimefunItem slimefunItem, int depth) {
         if (depth > THRESHOLD) {
             return 128.0D;
         }
@@ -547,7 +549,7 @@ public class ValueTable {
     }
 
     @SuppressWarnings("ConstantValue")
-    private static double handleRecipeSlimefun(@NotNull ItemStack[] recipe, int outputAmount, int depth) {
+    private static double handleRecipeSlimefun(ItemStack[] recipe, int outputAmount, int depth) {
         double value = 0.0D;
 
         for (ItemStack itemStack : recipe) {

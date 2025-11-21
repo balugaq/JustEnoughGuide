@@ -28,6 +28,7 @@
 package com.balugaq.jeg.api.objects.enums;
 
 import com.balugaq.jeg.api.groups.SearchGroup;
+import com.balugaq.jeg.api.interfaces.Api;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
@@ -40,7 +41,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.Reference;
 import java.util.List;
@@ -153,10 +153,8 @@ public enum FilterType {
     }),
     BY_MATERIAL_NAME("~", (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue));
 
-    private @NotNull
-    final String symbol;
-    private @NotNull
-    final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;
+    private final String symbol;
+    private final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;
 
     /**
      * Constructs a new FilterType instance with the specified flag and filter function.
@@ -164,13 +162,14 @@ public enum FilterType {
      * @param symbol The string symbol of the filter type.
      * @param filter The filter function to determine whether an item matches the filter.
      */
-    FilterType(@NotNull String symbol, @NotNull DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
+    FilterType(String symbol, DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
         this.symbol = symbol;
         this.filter = filter;
     }
 
     @Deprecated
-    public @NotNull String getFlag() {
+    @Api
+    public String getFlag() {
         return symbol;
     }
 

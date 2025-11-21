@@ -39,8 +39,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -50,6 +51,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class FinalTechItemPatchListener implements Listener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
             PatchScope.SlimefunItem,
@@ -59,8 +61,8 @@ public class FinalTechItemPatchListener implements Listener {
             PatchScope.ItemRecipeIngredient);
     public static final String DEFAULT_INPUT_VALUE = "0";
     public static final String DEFAULT_OUTPUT_VALUE = "INFINITY";
-    public static Class<?> class_ItemValueTable = null;
-    public static Object ItemValueTableInstance = null;
+    public static @UnknownNullability Class<?> class_ItemValueTable = null;
+    public static @UnknownNullability Object ItemValueTableInstance = null;
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean initValueTable() {
@@ -80,6 +82,7 @@ public class FinalTechItemPatchListener implements Listener {
         return ItemValueTableInstance != null;
     }
 
+    @UnknownNullability
     public static String getOrCalItemInputValue(@Nullable ItemStack itemStack) {
         if (!initValueTable()) {
             return DEFAULT_INPUT_VALUE;
@@ -92,6 +95,7 @@ public class FinalTechItemPatchListener implements Listener {
         return (String) ReflectionUtil.invokeMethod(ItemValueTableInstance, "getOrCalItemInputValue", itemStack);
     }
 
+    @UnknownNullability
     public static String getOrCalItemOutputValue(@Nullable ItemStack itemStack) {
         if (!initValueTable()) {
             return DEFAULT_OUTPUT_VALUE;
@@ -105,7 +109,7 @@ public class FinalTechItemPatchListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void patchItem(@NotNull PatchEvent event) {
+    public void patchItem(PatchEvent event) {
         PatchScope scope = event.getPatchScope();
         if (notValid(scope)) {
             return;
@@ -119,16 +123,16 @@ public class FinalTechItemPatchListener implements Listener {
         patchItem(event.getItemStack(), scope);
     }
 
-    public boolean notValid(@NotNull PatchScope patchScope) {
+    public boolean notValid(PatchScope patchScope) {
         return !VALID_SCOPES.contains(patchScope);
     }
 
-    public boolean disabledOption(@NotNull Player player) {
+    public boolean disabledOption(Player player) {
         return !FinalTechValueDisplayOption.isEnabled(player);
     }
 
     @SuppressWarnings("deprecation")
-    public void patchItem(@Nullable ItemStack itemStack, @NotNull PatchScope scope) {
+    public void patchItem(@Nullable ItemStack itemStack, PatchScope scope) {
         if (itemStack == null) {
             return;
         }

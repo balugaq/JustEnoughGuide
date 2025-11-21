@@ -46,16 +46,26 @@ public interface Bookmark {
         return new ItemGroup(itemGroup);
     }
 
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
     @SuppressWarnings("ClassCanBeRecord")
     @RequiredArgsConstructor
     @Data
+    @NullMarked
     class Item implements Bookmark {
         final SlimefunItem slimefunItem;
     }
 
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
     @SuppressWarnings("ClassCanBeRecord")
     @RequiredArgsConstructor
     @Data
+    @NullMarked
     class ItemGroup implements Bookmark {
         final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup;
     }

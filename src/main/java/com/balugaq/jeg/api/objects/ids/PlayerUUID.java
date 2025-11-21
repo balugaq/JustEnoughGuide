@@ -28,21 +28,22 @@
 package com.balugaq.jeg.api.objects.ids;
 
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.UUID;
 
 @SuppressWarnings("unused")
+@NullMarked
 public class PlayerUUID extends CustomID {
-    public PlayerUUID(@NotNull UUID uuid) {
+    public PlayerUUID(UUID uuid) {
         super(uuid);
     }
 
-    public static @NotNull PlayerUUID warp(@NotNull UUID uuid) {
+    public static PlayerUUID warp(UUID uuid) {
         return new PlayerUUID(uuid);
     }
 
-    public static @NotNull PlayerUUID warp(@NotNull Player player) {
+    public static PlayerUUID warp(Player player) {
         return warp(player.getUniqueId());
     }
 }

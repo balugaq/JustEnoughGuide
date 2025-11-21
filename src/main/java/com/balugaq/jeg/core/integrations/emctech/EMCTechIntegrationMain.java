@@ -32,13 +32,14 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.sefiraat.emctech.utils.EmcUtils;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class EMCTechIntegrationMain implements Integration {
     /**
      * Get EMC value of itemStack
@@ -47,7 +48,7 @@ public class EMCTechIntegrationMain implements Integration {
      * @return 0.0D if no EMC value, or EMC value
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    public static double getEMCInDematerializer(@NotNull ItemStack itemStack) {
+    public static double getEMCInDematerializer(ItemStack itemStack) {
         return EmcUtils.getEmcValue(itemStack);
     }
 
@@ -58,12 +59,12 @@ public class EMCTechIntegrationMain implements Integration {
      * @return 0.0D if no EMC value, or EMC value
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    public static double getEMCInMaterializer(@NotNull ItemStack itemStack) {
+    public static double getEMCInMaterializer(ItemStack itemStack) {
         return EmcUtils.getEmcValueMultiplied(itemStack);
     }
 
     @Override
-    public @NotNull String getHookPlugin() {
+    public String getHookPlugin() {
         return "EMCTech";
     }
 

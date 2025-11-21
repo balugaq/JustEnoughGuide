@@ -28,6 +28,7 @@
 package com.balugaq.jeg.api.objects.collection.cooldown;
 
 import lombok.Data;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.7
  */
 @Data
+@NullMarked
 public class CooldownPool<Key> {
     private final Map<Key, Long> pool = new ConcurrentHashMap<>();
     private final long cooldownMillis;

@@ -45,20 +45,4 @@ public abstract class AbstractManager {
      */
     public void unload() {
     }
-
-    /**
-     * Load the manager.
-     */
-    @Deprecated
-    public void onLoad() {
-        load();
-    }
-
-    /**
-     * Unload the manager.
-     */
-    @Deprecated
-    public void onUnload() {
-        unload();
-    }
 }

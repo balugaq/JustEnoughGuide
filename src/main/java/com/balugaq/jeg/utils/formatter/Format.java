@@ -35,7 +35,7 @@ import lombok.ToString;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +49,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 @Getter
 @ToString
+@NullMarked
 public abstract class Format {
     public static final Map<Character, ItemStack> customMapping = new HashMap<>();
     public final Map<Integer, Character> mapping = new HashMap<>();
@@ -62,7 +63,7 @@ public abstract class Format {
     public abstract void loadMapping();
 
     @ApiStatus.Obsolete
-    public void loadMapping(@NotNull List<String> format) {
+    public void loadMapping(List<String> format) {
         int index = -1;
         for (String string : format) {
             for (char c : string.toCharArray()) {
@@ -75,7 +76,7 @@ public abstract class Format {
     }
 
     @ApiStatus.Obsolete
-    public List<Integer> getChars(@NotNull String s) {
+    public List<Integer> getChars(String s) {
         return getChars(s.toCharArray()[0]);
     }
 
@@ -97,7 +98,7 @@ public abstract class Format {
     }
 
     @SuppressWarnings("deprecation")
-    public void renderCustom(@NotNull ChestMenu menu) {
+    public void renderCustom(ChestMenu menu) {
         for (Map.Entry<Character, ItemStack> entry : customMapping.entrySet()) {
             for (int slot : getChars(entry.getKey())) {
                 menu.addItem(slot, entry.getValue());
@@ -108,7 +109,7 @@ public abstract class Format {
         }
     }
 
-    public void renderCustom(@NotNull GuideGroup menu) {
+    public void renderCustom(GuideGroup menu) {
         for (Map.Entry<Character, ItemStack> entry : customMapping.entrySet()) {
             for (int slot : getChars(entry.getKey())) {
                 menu.addGuide(slot, entry.getValue());

@@ -33,9 +33,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +59,7 @@ import java.util.Map;
  * @since 1.0
  */
 @SuppressWarnings({"ConstantValue", "unused"})
+@NullMarked
 public class ConfigManager extends AbstractManager {
     private final boolean AUTO_UPDATE;
     private final boolean DEBUG;
@@ -71,31 +71,35 @@ public class ConfigManager extends AbstractManager {
     private final boolean RTS_SEARCH;
     private final boolean BEGINNER_OPTION;
     private final boolean DISABLE_BUNDLE_INTERACTION;
-    private final @NotNull String SURVIVAL_GUIDE_TITLE;
-    private final @NotNull String CHEAT_GUIDE_TITLE;
-    private final @NotNull String SETTINGS_GUIDE_TITLE;
-    private final @NotNull String CREDITS_GUIDE_TITLE;
-    private final @NotNull List<String> SHARED_CHARS;
-    private final @NotNull List<String> BLACKLIST;
-    private final @NotNull List<String> MAIN_FORMAT;
-    private final @NotNull List<String> NESTED_GROUP_FORMAT;
-    private final @NotNull List<String> SUB_GROUP_FORMAT;
-    private final @NotNull List<String> RECIPE_FORMAT;
-    private final @NotNull List<String> HELPER_FORMAT;
-    private final @NotNull List<String> RECIPE_VANILLA_FORMAT;
-    private final @NotNull List<String> RECIPE_DISPLAY_FORMAT;
-    private final @NotNull List<String> SETTINGS_FORMAT;
-    private final @NotNull List<String> CONTRIBUTORS_FORMAT;
-    private final @NotNull Map<String, String> LOCAL_TRANSLATE;
-    private final @NotNull List<String> BANLIST;
-    private final @NotNull JavaPlugin plugin;
+    private final String SURVIVAL_GUIDE_TITLE;
+    private final String CHEAT_GUIDE_TITLE;
+    private final String SETTINGS_GUIDE_TITLE;
+    private final String CREDITS_GUIDE_TITLE;
+    private final List<String> SHARED_CHARS;
+    private final List<String> BLACKLIST;
+    private final List<String> MAIN_FORMAT;
+    private final List<String> NESTED_GROUP_FORMAT;
+    private final List<String> SUB_GROUP_FORMAT;
+    private final List<String> RECIPE_FORMAT;
+    private final List<String> HELPER_FORMAT;
+    private final List<String> RECIPE_VANILLA_FORMAT;
+    private final List<String> RECIPE_DISPLAY_FORMAT;
+    private final List<String> SETTINGS_FORMAT;
+    private final List<String> CONTRIBUTORS_FORMAT;
+    private final List<String> KEYBINDS_FORMAT;
+    private final List<String> KEYBIND_FORMAT;
+    private final List<String> ACTION_SELECT_FORMAT;
+    private final Map<String, String> LOCAL_TRANSLATE;
+    private final List<String> BANLIST;
+    private final JavaPlugin plugin;
     private final boolean EMC_VALUE_DISPLAY;
     private final boolean FinalTech_VALUE_DISPLAY;
     private final boolean FinalTECH_VALUE_DISPLAY;
     private final boolean ITEM_SHAREABLE;
     private final boolean CER_PATCH;
+    private final boolean ALLOW_ACTION_REDIRECT;
 
-    public ConfigManager(@NotNull JavaPlugin plugin) {
+    public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
         setupDefaultConfig();
         FileConfiguration cfg = plugin.getConfig();
@@ -284,11 +288,50 @@ public class ConfigManager extends AbstractManager {
             this.CONTRIBUTORS_FORMAT = rawContributorsFormat;
         }
 
+        List<String> rawKeybindsFormat = cfg.getStringList("custom-format.keybinds");
+        if (rawKeybindsFormat == null || rawKeybindsFormat.isEmpty()) {
+            this.KEYBINDS_FORMAT = new ArrayList<>();
+            this.KEYBINDS_FORMAT.add("BBBBBBBBB");
+            this.KEYBINDS_FORMAT.add("BiiiiiiiB");
+            this.KEYBINDS_FORMAT.add("BiiiiiiiB");
+            this.KEYBINDS_FORMAT.add("BiiiiiiiB");
+            this.KEYBINDS_FORMAT.add("BiiiiiiiB");
+            this.KEYBINDS_FORMAT.add("BPBBBBBNB");
+        } else {
+            this.KEYBINDS_FORMAT = rawKeybindsFormat;
+        }
+
+        List<String> rawKeybindFormat = cfg.getStringList("custom-format.keybind");
+        if (rawKeybindFormat == null || rawKeybindFormat.isEmpty()) {
+            this.KEYBIND_FORMAT = new ArrayList<>();
+            this.KEYBIND_FORMAT.add("BbBBBBBBB");
+            this.KEYBIND_FORMAT.add("BxyzBxyzB");
+            this.KEYBIND_FORMAT.add("BxyzBxyzB");
+            this.KEYBIND_FORMAT.add("BxyzBxyzB");
+            this.KEYBIND_FORMAT.add("BxyzBxyzB");
+            this.KEYBIND_FORMAT.add("BPBBBBBNB");
+        } else {
+            this.KEYBIND_FORMAT = rawKeybindFormat;
+        }
+
+        List<String> rawActionSelectFormat = cfg.getStringList("custom-format.action-select");
+        if (rawActionSelectFormat == null || rawActionSelectFormat.isEmpty()) {
+            this.ACTION_SELECT_FORMAT = new ArrayList<>();
+            this.ACTION_SELECT_FORMAT.add("iiiiiiiii");
+            this.ACTION_SELECT_FORMAT.add("iiiiiiiii");
+            this.ACTION_SELECT_FORMAT.add("BPBBBBBNB");
+        } else {
+            this.ACTION_SELECT_FORMAT = rawActionSelectFormat;
+        }
+
         this.LOCAL_TRANSLATE = new HashMap<>();
         ConfigurationSection c = cfg.getConfigurationSection("local-translate");
         if (c != null) {
             for (String k : c.getKeys(false)) {
-                this.LOCAL_TRANSLATE.put(k, c.getString(k));
+                String s = c.getString(k);
+                if (s != null) {
+                    this.LOCAL_TRANSLATE.put(k, s);
+                }
             }
         }
 
@@ -298,6 +341,7 @@ public class ConfigManager extends AbstractManager {
         this.FinalTECH_VALUE_DISPLAY = cfg.getBoolean("improvements.finalTECH-emc-display-option", true);
         this.ITEM_SHAREABLE = cfg.getBoolean("improvements.item-shareable", true);
         this.CER_PATCH = cfg.getBoolean("improvements.cer-patch", true);
+        this.ALLOW_ACTION_REDIRECT = cfg.getBoolean("improvements.allow-action-redirect", true);
     }
 
     private void setupDefaultConfig() {
@@ -324,7 +368,6 @@ public class ConfigManager extends AbstractManager {
         }
     }
 
-    @ParametersAreNonnullByDefault
     private void checkKey(FileConfiguration existingConfig, FileConfiguration resourceConfig, String key) {
         final Object currentValue = existingConfig.get(key);
         final Object newValue = resourceConfig.get(key);
@@ -365,19 +408,19 @@ public class ConfigManager extends AbstractManager {
         return BEGINNER_OPTION;
     }
 
-    public @NotNull String getSurvivalGuideTitle() {
+    public String getSurvivalGuideTitle() {
         return SURVIVAL_GUIDE_TITLE;
     }
 
-    public @NotNull String getCheatGuideTitle() {
+    public String getCheatGuideTitle() {
         return CHEAT_GUIDE_TITLE;
     }
 
-    public @NotNull String getSettingsGuideTitle() {
+    public String getSettingsGuideTitle() {
         return SETTINGS_GUIDE_TITLE;
     }
 
-    public @NotNull String getCreditsGuideTitle() {
+    public String getCreditsGuideTitle() {
         return CREDITS_GUIDE_TITLE;
     }
 
@@ -385,55 +428,67 @@ public class ConfigManager extends AbstractManager {
         return RTS_SEARCH;
     }
 
-    public @NotNull List<String> getSharedChars() {
+    public List<String> getSharedChars() {
         return SHARED_CHARS;
     }
 
-    public @NotNull List<String> getBlacklist() {
+    public List<String> getBlacklist() {
         return BLACKLIST;
     }
 
-    public @NotNull List<String> getMainFormat() {
+    public List<String> getMainFormat() {
         return MAIN_FORMAT;
     }
 
-    public @NotNull List<String> getNestedGroupFormat() {
+    public List<String> getNestedGroupFormat() {
         return NESTED_GROUP_FORMAT;
     }
 
-    public @NotNull List<String> getSubGroupFormat() {
+    public List<String> getSubGroupFormat() {
         return SUB_GROUP_FORMAT;
     }
 
-    public @NotNull List<String> getRecipeFormat() {
+    public List<String> getRecipeFormat() {
         return RECIPE_FORMAT;
     }
 
-    public @NotNull List<String> getHelperFormat() {
+    public List<String> getHelperFormat() {
         return HELPER_FORMAT;
     }
 
-    public @NotNull List<String> getRecipeVanillaFormat() {
+    public List<String> getRecipeVanillaFormat() {
         return RECIPE_VANILLA_FORMAT;
     }
 
-    public @NotNull List<String> getRecipeDisplayFormat() {
+    public List<String> getRecipeDisplayFormat() {
         return RECIPE_DISPLAY_FORMAT;
     }
 
-    public @NotNull List<String> getSettingsFormat() {
+    public List<String> getSettingsFormat() {
         return SETTINGS_FORMAT;
     }
 
-    public @NotNull List<String> getContributorsFormat() {
+    public List<String> getContributorsFormat() {
         return CONTRIBUTORS_FORMAT;
     }
 
-    public @NotNull Map<String, String> getLocalTranslate() {
+    public List<String> getKeybindsFormat() {
+        return KEYBINDS_FORMAT;
+    }
+
+    public List<String> getKeybindFormat() {
+        return KEYBIND_FORMAT;
+    }
+
+    public List<String> getActionSelectFormat() {
+        return ACTION_SELECT_FORMAT;
+    }
+
+    public Map<String, String> getLocalTranslate() {
         return LOCAL_TRANSLATE;
     }
 
-    public @NotNull List<String> getBanlist() {
+    public List<String> getBanlist() {
         return BANLIST;
     }
 
@@ -463,5 +518,9 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isCerPatch() {
         return CER_PATCH;
+    }
+
+    public boolean isAllowActionRedirect() {
+        return ALLOW_ACTION_REDIRECT;
     }
 }

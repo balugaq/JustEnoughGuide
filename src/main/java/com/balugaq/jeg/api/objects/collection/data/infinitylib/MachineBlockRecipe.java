@@ -29,6 +29,8 @@ package com.balugaq.jeg.api.objects.collection.data.infinitylib;
 
 import lombok.Data;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
@@ -36,7 +38,8 @@ import org.bukkit.inventory.ItemStack;
  */
 @SuppressWarnings("ClassCanBeRecord")
 @Data
+@NullMarked
 public class MachineBlockRecipe {
-    private final ItemStack[] inputs;
+    private final @Nullable ItemStack[] inputs;
     private final ItemStack output;
 }

@@ -34,7 +34,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -44,13 +44,14 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NullMarked
 public class SingularityConstructorData extends MachineData {
     private final List<Recipe> RECIPE_LIST;
     private final int energyPerTick;
     private final int speed;
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return RECIPE_LIST.stream().map(
                 recipe -> new CERRecipeGroup.RecipeWrapper(
                         new ItemStack[]{recipe.getInput()},
@@ -66,6 +67,7 @@ public class SingularityConstructorData extends MachineData {
      */
     @SuppressWarnings("ClassCanBeRecord")
     @Data
+    @NullMarked
     public static class Recipe {
         private final SlimefunItemStack output;
         private final ItemStack input;

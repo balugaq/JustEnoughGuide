@@ -33,7 +33,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Set;
@@ -44,12 +44,13 @@ import java.util.Set;
  */
 @EqualsAndHashCode(callSuper = false)
 @Data
+@NullMarked
 public class AbstractEnergyProviderData extends MachineData {
     private final Set<MachineFuel> fuelTypes;
     private final int energyProduction;
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return fuelTypes.stream()
                 .map(fuel -> new CERRecipeGroup.RecipeWrapper(
                         new ItemStack[]{fuel.getInput()},

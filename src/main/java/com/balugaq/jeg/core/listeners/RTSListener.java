@@ -81,8 +81,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -96,8 +97,9 @@ import java.util.Map;
  * @author balugaq
  * @since 1.4
  */
-@SuppressWarnings({"deprecation", "UnnecessaryUnicodeEscape"})
+@SuppressWarnings({"deprecation", "UnnecessaryUnicodeEscape", "ConstantValue"})
 @Getter
+@NullMarked
 public class RTSListener implements Listener {
     public static final NamespacedKey FAKE_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "fake_item");
     public static final NamespacedKey CHEAT_AMOUNT_KEY =
@@ -138,7 +140,7 @@ public class RTSListener implements Listener {
      *
      * @param player the player to quit RTS mode
      */
-    public static void quitRTS(@NotNull Player player) {
+    public static void quitRTS(Player player) {
         if (isRTSPlayer(player)) {
             synchronized (openingPlayers) {
                 openingPlayers.remove(player);
@@ -199,7 +201,7 @@ public class RTSListener implements Listener {
      * @param event the OpenRTSEvent to handle
      */
     @EventHandler
-    public void onOpenRTS(RTSEvents.@NotNull OpenRTSEvent event) {
+    public void onOpenRTS(RTSEvents.OpenRTSEvent event) {
         Player player = event.getPlayer();
         Debug.debug("[RTS] Opening for " + player.getName());
         synchronized (openingPlayers) {
@@ -241,7 +243,7 @@ public class RTSListener implements Listener {
      * @param event the SearchTermChangeEvent to handle
      */
     @EventHandler
-    public void onRTS(RTSEvents.@NotNull SearchTermChangeEvent event) {
+    public void onRTS(RTSEvents.SearchTermChangeEvent event) {
         Player player = event.getPlayer();
         Debug.debug("[RTS] Searching for " + player.getName());
         SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(event.getGuideMode());
@@ -294,7 +296,7 @@ public class RTSListener implements Listener {
      * @param event the PageChangeEvent to handle
      */
     @EventHandler
-    public void onRTSPageChange(RTSEvents.@NotNull PageChangeEvent event) {
+    public void onRTSPageChange(RTSEvents.PageChangeEvent event) {
         Player player = event.getPlayer();
         Debug.debug("[RTS] Changing page for " + player.getName());
         int page = event.getNewPage();
@@ -329,7 +331,7 @@ public class RTSListener implements Listener {
      * @param event the CloseRTSEvent to handle
      */
     @EventHandler
-    public void onCloseRTS(RTSEvents.@NotNull CloseRTSEvent event) {
+    public void onCloseRTS(RTSEvents.CloseRTSEvent event) {
         Player player = event.getPlayer();
         quitRTS(player);
     }
@@ -340,10 +342,10 @@ public class RTSListener implements Listener {
      * @param event the PlayerJoinEvent to handle
      */
     @EventHandler
-    public void restore(@NotNull PlayerJoinEvent event) {
+    public void restore(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         quitRTS(player);
-        ItemStack[] itemStacks = player.getInventory().getContents();
+        @Nullable ItemStack[] itemStacks = player.getInventory().getContents();
         for (ItemStack itemStack : itemStacks) {
             if (isFakeItem(itemStack)) {
                 itemStack.setAmount(0);
@@ -359,7 +361,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerRespawnEvent to handle
      */
     @EventHandler
-    public void restore(@NotNull PlayerRespawnEvent event) {
+    public void restore(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -372,7 +374,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerQuitEvent to handle
      */
     @EventHandler
-    public void onQuit(@NotNull PlayerQuitEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -385,7 +387,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerDeathEvent to handle
      */
     @EventHandler
-    public void onDeath(@NotNull PlayerDeathEvent event) {
+    public void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -400,7 +402,7 @@ public class RTSListener implements Listener {
      * @param event the InventoryOpenEvent to handle
      */
     @EventHandler
-    public void onOpenInventory(@NotNull InventoryOpenEvent event) {
+    public void onOpenInventory(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
         if (isRTSPlayer(player)) {
             quitRTS(player);
@@ -414,7 +416,7 @@ public class RTSListener implements Listener {
      */
     @SuppressWarnings("DataFlowIssue")
     @EventHandler
-    public void onLookup(@NotNull InventoryClickEvent event) {
+    public void onLookup(InventoryClickEvent event) {
         Player player = (Player) event.getView().getPlayer();
         if (isRTSPlayer(player)) {
             InventoryAction action = event.getAction();
@@ -489,7 +491,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerInteractEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onInteract(@NotNull PlayerInteractEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -508,7 +510,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerDropItemEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onDrop(@NotNull PlayerDropItemEvent event) {
+    public void onDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -527,7 +529,7 @@ public class RTSListener implements Listener {
      * @param event the BlockPlaceEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onBlockPlace(@NotNull BlockPlaceEvent event) {
+    public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -546,7 +548,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerSwapHandItemsEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onSwapHand(@NotNull PlayerSwapHandItemsEvent event) {
+    public void onSwapHand(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -571,7 +573,7 @@ public class RTSListener implements Listener {
      * @param event the AsyncPlayerChatEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onAsyncChat(@NotNull AsyncPlayerChatEvent event) {
+    public void onAsyncChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -584,7 +586,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerCommandPreprocessEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
+    public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -597,7 +599,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerArmorStandManipulateEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onArmorStandManipulate(@NotNull PlayerArmorStandManipulateEvent event) {
+    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -610,7 +612,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerChatEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onChat(@NotNull PlayerChatEvent event) {
+    public void onChat(PlayerChatEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -623,7 +625,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerItemConsumeEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onArmor(@NotNull PlayerItemConsumeEvent event) {
+    public void onArmor(PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -641,7 +643,7 @@ public class RTSListener implements Listener {
      * @param event the InventoryClickEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if (!isRTSPlayer(player)) {
             ItemStack itemStack = event.getCurrentItem();
@@ -657,7 +659,7 @@ public class RTSListener implements Listener {
      * @param event the EntityPickupItemEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onPickup(@NotNull EntityPickupItemEvent event) {
+    public void onPickup(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (isRTSPlayer(player)) {
                 event.setCancelled(true);
@@ -671,7 +673,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerRightClickEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onRightClick(@NotNull PlayerRightClickEvent event) {
+    public void onRightClick(PlayerRightClickEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.cancel();
@@ -689,7 +691,7 @@ public class RTSListener implements Listener {
      * @param event the PlayerInteractEntityEvent to handle
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onInteractEntity(@NotNull PlayerInteractEntityEvent event) {
+    public void onInteractEntity(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         if (isRTSPlayer(player)) {
             event.setCancelled(true);
@@ -709,6 +711,7 @@ public class RTSListener implements Listener {
      * @return the fake ItemStack, or null if the SlimefunItem or player is null
      */
     @Contract("null, _ -> null; _, null -> null; !null, !null -> !null")
+    @UnknownNullability
     public ItemStack getFakeItem(@Nullable SlimefunItem slimefunItem, @Nullable Player player) {
         if (slimefunItem == null || player == null) {
             return null;

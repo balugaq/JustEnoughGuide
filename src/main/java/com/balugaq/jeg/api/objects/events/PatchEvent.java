@@ -38,7 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
@@ -46,28 +46,29 @@ import org.jetbrains.annotations.NotNull;
  */
 @SuppressWarnings("unused")
 @Getter
+@NullMarked
 public class PatchEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final @NotNull PatchScope patchScope;
-    private final @NotNull Player player;
+    private final PatchScope patchScope;
+    private final Player player;
 
     @Setter
-    private @NotNull ItemStack itemStack;
+    private ItemStack itemStack;
 
     public PatchEvent(
-            final @NotNull PatchScope patchScope, final @NotNull Player player, final @NotNull ItemStack itemStack) {
+            final PatchScope patchScope, final Player player, final ItemStack itemStack) {
         super(!Bukkit.isPrimaryThread());
         this.patchScope = patchScope;
         this.player = player;
         this.itemStack = itemStack;
     }
 
-    public static @NotNull HandlerList getHandlerList() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static @NotNull ItemStack patch(
-            final @NotNull PatchScope patchScope, final @NotNull Player player, final @NotNull ItemStack itemStack) {
+    public static ItemStack patch(
+            final PatchScope patchScope, final Player player, final ItemStack itemStack) {
         PatchEvent event = new PatchEvent(patchScope, player, Converter.getItem(ItemStackUtil.getCleanItem(itemStack)));
         try {
             Bukkit.getPluginManager().callEvent(event);
@@ -78,7 +79,7 @@ public class PatchEvent extends Event {
     }
 
     @Override
-    public final @NotNull HandlerList getHandlers() {
+    public final HandlerList getHandlers() {
         return handlers;
     }
 }

@@ -34,7 +34,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactive;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +46,14 @@ import java.util.Objects;
  */
 @SuppressWarnings({"unused", "ConstantValue"})
 @UtilityClass
+@NullMarked
 public class SlimefunRegistryUtil {
-    public static @NotNull SlimefunItem registerItem(@NotNull SlimefunItem item, @NotNull SlimefunAddon addon) {
+    public static SlimefunItem registerItem(SlimefunItem item, SlimefunAddon addon) {
         item.register(addon);
         return item;
     }
 
-    public static void unregisterItems(@NotNull SlimefunAddon addon) {
+    public static void unregisterItems(SlimefunAddon addon) {
         List<SlimefunItem> copy = new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems());
         for (SlimefunItem item : copy) {
             if (item.getAddon().equals(addon)) {
@@ -61,7 +62,7 @@ public class SlimefunRegistryUtil {
         }
     }
 
-    public static void unregisterItem(@NotNull SlimefunItem item) {
+    public static void unregisterItem(SlimefunItem item) {
         if (item == null) {
             return;
         }
@@ -99,7 +100,7 @@ public class SlimefunRegistryUtil {
         }
     }
 
-    public static void unregisterItemGroups(@NotNull SlimefunAddon addon) {
+    public static void unregisterItemGroups(SlimefunAddon addon) {
         List<ItemGroup> copy;
         synchronized (Slimefun.getRegistry().getAllItemGroups()) {
             copy = new ArrayList<>(Slimefun.getRegistry().getAllItemGroups());
@@ -111,7 +112,7 @@ public class SlimefunRegistryUtil {
         }
     }
 
-    public static void unregisterItemGroup(@NotNull ItemGroup itemGroup) {
+    public static void unregisterItemGroup(ItemGroup itemGroup) {
         if (itemGroup == null) {
             return;
         }

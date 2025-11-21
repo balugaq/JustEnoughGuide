@@ -44,8 +44,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +59,14 @@ import java.util.Optional;
  * @author balugaq
  * @since 1.1
  */
+@SuppressWarnings("ConstantValue")
 @UtilityClass
+@NullMarked
 public final class ItemStackUtil {
+    @Unmodifiable
+    private static final ItemStack AIR = new ItemStack(Material.AIR);
+    @Unmodifiable
+    private static final ItemStack BARRIER = new ItemStack(Material.BARRIER);
     @Author("lijinhong11")
     private static final Map<String, String> materialMappings = Map.of(
             "GRASS", "SHORT_GRASS",
@@ -67,8 +74,16 @@ public final class ItemStackUtil {
             "SCUTE", "TURTLE_SCUTE",
             "TURTLE_SCUTE", "SCUTE");
 
+    public static ItemStack air() {
+        return AIR;
+    }
+
+    public static ItemStack barrier() {
+        return BARRIER;
+    }
+
     @Author("lijinhong11")
-    public static @NotNull ItemStack doGlow(@NotNull ItemStack item) {
+    public static ItemStack doGlow(ItemStack item) {
         item.addUnsafeEnchantment(Enchantment.INFINITY, 1);
         item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
@@ -81,7 +96,6 @@ public final class ItemStackUtil {
      * @param item The MyItemStack to be converted.
      * @return A pure ItemStack.
      */
-    @NotNull
     public static ItemStack getCleanItem(@Nullable ItemStack item) {
         if (item == null) {
             return new ItemStack(Material.AIR);
@@ -96,7 +110,7 @@ public final class ItemStackUtil {
         return cleanItem;
     }
 
-    public static @NotNull ItemStack getAsQuantity(@Nullable ItemStack itemStack, int amount) {
+    public static ItemStack getAsQuantity(@Nullable ItemStack itemStack, int amount) {
         if (itemStack == null) {
             return new ItemStack(Material.AIR);
         } else {
@@ -166,11 +180,11 @@ public final class ItemStackUtil {
     @Author("lijinhong11 & balugaq")
     public static ItemStack readItem(
             char c,
-            final @NotNull ConfigurationSection section,
+            final ConfigurationSection section,
             String type,
-            final @NotNull String material,
-            final @NotNull String name,
-            final @NotNull List<String> lore,
+            final String material,
+            final String name,
+            final List<String> lore,
             boolean glow,
             boolean hasEnchantment,
             int modelId,
@@ -311,7 +325,7 @@ public final class ItemStackUtil {
      * @param classSimpleName The simple name of the class to check against.
      * @return True if the item is an instance of the specified class, false otherwise.
      */
-    public static <T extends SlimefunItem> boolean isInstanceSimple(@NotNull T item, String classSimpleName) {
+    public static <T extends SlimefunItem> boolean isInstanceSimple(T item, String classSimpleName) {
         Class<?> clazz = item.getClass();
         while (clazz != SlimefunItem.class) {
             if (clazz.getSimpleName().equals(classSimpleName)) {
@@ -323,7 +337,7 @@ public final class ItemStackUtil {
     }
 
     @SuppressWarnings("unused")
-    public static <T extends SlimefunItem> boolean isInstance(@NotNull T item, String className) {
+    public static <T extends SlimefunItem> boolean isInstance(T item, String className) {
         Class<?> clazz = item.getClass();
         while (clazz != SlimefunItem.class) {
             if (clazz.getName().equals(className)) {
@@ -334,9 +348,9 @@ public final class ItemStackUtil {
         return false;
     }
 
-    public static ItemStack[] translateIntoItemStackArray(String[] strings, int[] amounts) {
+    public static @Nullable ItemStack[] translateIntoItemStackArray(String[] strings, int[] amounts) {
         int v = Math.min(amounts.length, strings.length);
-        ItemStack[] array = new ItemStack[v];
+        @Nullable ItemStack[] array = new ItemStack[v];
         for (int i = 0; i < v; i++) {
             String s = strings[i];
             if (s == null) {

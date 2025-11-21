@@ -25,50 +25,19 @@
  *
  */
 
-package com.balugaq.jeg.api.objects.collection;
+package com.balugaq.jeg.utils.formatter;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.jetbrains.annotations.NotNull;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.0
  */
-@SuppressWarnings("unused")
-@AllArgsConstructor
-@Data
-public class Triplet<A, B, C> implements Cloneable {
-    public @NotNull
-    final A first;
-    public @NotNull
-    final B second;
-    public @NotNull
-    final C third;
-
-    @NotNull
-    public A first() {
-        return first;
-    }
-
-    @NotNull
-    public B second() {
-        return second;
-    }
-
-    @NotNull
-    public C third() {
-        return third;
-    }
-
-    @SuppressWarnings("unchecked")
+@NullMarked
+public class KeybindsFormat extends Format {
     @Override
-    @NotNull
-    public Triplet<A, B, C> clone() {
-        try {
-            return (Triplet<A, B, C>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
+    public void loadMapping() {
+        loadMapping(JustEnoughGuide.getConfigManager().getKeybindsFormat());
     }
 }

@@ -55,6 +55,9 @@ public class Formats {
     public static final RecipeDisplayFormat recipe_display = new RecipeDisplayFormat();
     public static final SettingsFormat settings = new SettingsFormat();
     public static final ContributorsFormat contributors = new ContributorsFormat();
+    public static final KeybindsFormat keybinds = new KeybindsFormat();
+    public static final KeybindFormat keybind = new KeybindFormat();
+    public static final ActionSelectFormat actionSelect = new ActionSelectFormat();
 
     static {
         main.loadMapping();
@@ -66,6 +69,10 @@ public class Formats {
         recipe_display.loadMapping();
         settings.loadMapping();
         contributors.loadMapping();
+        keybinds.loadMapping();
+        keybind.loadMapping();
+        actionSelect.loadMapping();
+        actionSelect.setSize(4 * 9);
 
         loadCustomIcon();
     }

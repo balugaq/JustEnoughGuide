@@ -51,7 +51,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,14 +63,14 @@ import java.util.Optional;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"DataFlowIssue", "deprecation"})
+@SuppressWarnings({"DataFlowIssue", "deprecation", "ConstantValue"})
+@NullMarked
 public class PlayerLanguageOption implements SlimefunGuideOption<String> {
-    @NotNull
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return Slimefun.getLocalization().getKey();
     }
 

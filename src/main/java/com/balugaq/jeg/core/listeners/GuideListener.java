@@ -50,9 +50,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,6 +65,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("DuplicatedCode")
 @Getter
+@NullMarked
 public class GuideListener implements Listener {
     public static final int OPEN_GUIDE_DEFAULT_FATAL_ERROR_CODE = 12208;
     public static final int OPEN_GUIDE_ASYNC_FATAL_ERROR_CODE = 12209;
@@ -78,8 +78,6 @@ public class GuideListener implements Listener {
     }
 
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)")
-    @NotNull
-    @ParametersAreNonnullByDefault
     @Internal
     public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
         ItemStack item = e.getItem();
@@ -96,7 +94,7 @@ public class GuideListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onGuideOpen(@NotNull SlimefunGuideOpenEvent e) {
+    public void onGuideOpen(SlimefunGuideOpenEvent e) {
         e.setCancelled(true);
 
         Player p = e.getPlayer();
@@ -121,7 +119,7 @@ public class GuideListener implements Listener {
     }
 
     @Internal
-    public void openGuide(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
+    public void openGuide(Player player, SlimefunGuideMode mode) {
         Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
         if (optional.isPresent()) {
@@ -140,7 +138,7 @@ public class GuideListener implements Listener {
     }
 
     @Internal
-    public void openGuideAsync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
+    public void openGuideAsync(Player player, SlimefunGuideMode mode) {
         JustEnoughGuide.runLaterAsync(() -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
@@ -161,7 +159,7 @@ public class GuideListener implements Listener {
     }
 
     @Internal
-    public void openGuideSync(@NotNull Player player, @NotNull SlimefunGuideMode mode) {
+    public void openGuideSync(Player player, SlimefunGuideMode mode) {
         JustEnoughGuide.runLater(() -> {
             Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
@@ -183,7 +181,7 @@ public class GuideListener implements Listener {
 
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract(PlayerRightClickEvent)")
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onInteract(@NotNull PlayerRightClickEvent e) {
+    public void onInteract(PlayerRightClickEvent e) {
         Player p = e.getPlayer();
 
         if (tryOpenGuide(p, e, SlimefunGuideMode.SURVIVAL_MODE) == Event.Result.ALLOW) {
@@ -208,7 +206,7 @@ public class GuideListener implements Listener {
 
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onJoin(PlayerJoinEvent)")
     @EventHandler
-    public void onJoin(@NotNull PlayerJoinEvent e) {
+    public void onJoin(PlayerJoinEvent e) {
         if (this.giveOnFirstJoin && !e.getPlayer().hasPlayedBefore()) {
             Player p = e.getPlayer();
             if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {

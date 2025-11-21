@@ -28,12 +28,15 @@
 package com.balugaq.jeg.api.cfgparse.annotations;
 
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 @SuppressWarnings("unused")
+@NullMarked
 public interface IDefaultValue<T> {
+
     @Nullable T defaultValue();
 }

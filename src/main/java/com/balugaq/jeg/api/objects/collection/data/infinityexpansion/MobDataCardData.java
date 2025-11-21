@@ -33,7 +33,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +44,7 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NullMarked
 public class MobDataCardData extends MachineData {
     private final SlimefunItem chamber;
     private final int chamberEnergy;
@@ -51,7 +52,7 @@ public class MobDataCardData extends MachineData {
     private final Map<ItemStack, Float> itemStackDoubleMap;
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
                 null,
                 itemStackDoubleMap.keySet().toArray(new ItemStack[0]),

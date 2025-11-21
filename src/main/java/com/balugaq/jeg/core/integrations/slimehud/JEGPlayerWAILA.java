@@ -53,8 +53,10 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -66,17 +68,18 @@ import java.util.logging.Level;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "ConstantValue"})
+@NullMarked
 public class JEGPlayerWAILA extends PlayerWAILA {
     public static final boolean IS_1_20_1 =
             JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_20_1);
     public static final long TICK_RATE = SlimeHUD.getInstance().getConfig().getLong("waila.tick-rate");
-    public final @NotNull Supplier<BossBar> kyoriBossBarSupplier;
+    public final Supplier<BossBar> kyoriBossBarSupplier;
     public boolean visible;
     public @Nullable BossBar kyoriBossBar = null;
 
     @SuppressWarnings("DataFlowIssue")
-    public JEGPlayerWAILA(@NotNull Player player, @Nullable PlayerWAILA waila) {
+    public JEGPlayerWAILA(Player player, @Nullable PlayerWAILA waila) {
         super(player);
         getWAILABar().removePlayer(player);
         kyoriBossBarSupplier = () -> {
@@ -101,8 +104,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         }
     }
 
-    @NotNull
-    public static JEGPlayerWAILA wrap(@NotNull Player player, @Nullable PlayerWAILA waila) {
+    public static JEGPlayerWAILA wrap(Player player, @Nullable PlayerWAILA waila) {
         boolean f = waila != null && !waila.getClass().getSimpleName().equals("JEGPlayerWAILA");
 
         if (waila instanceof JEGPlayerWAILA jpw) {
@@ -116,11 +118,11 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         return v2;
     }
 
-    public static @NotNull BarColor toBarColor(BossBar.@NotNull Color color) {
+    public static BarColor toBarColor(BossBar.Color color) {
         return BarColor.valueOf(color.name());
     }
 
-    public static BossBar.@NotNull Color toBossBarColor(@NotNull String color) {
+    public static BossBar.Color toBossBarColor(String color) {
         return switch (color.trim().toLowerCase()) {
             case "red", "yellow", "green", "blue", "purple", "pink", "white" ->
                     BossBar.Color.valueOf(color.toUpperCase());
@@ -153,18 +155,19 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         return waila;
     }
 
-    @NotNull
     public static Map<UUID, PlayerWAILA> getWailaMap() {
         return WAILAManager.getInstance().getWailas();
     }
 
-    public static void wrap(@NotNull Player player) {
+    public static void wrap(Player player) {
         synchronized (getWailaMap()) {
             getWailaMap().compute(player.getUniqueId(), (k, waila) -> runTaskAsync(JustEnoughGuide.getInstance(), JEGPlayerWAILA.wrap(player, waila)));
         }
     }
 
-    public static <T extends BukkitRunnable> T runTaskAsync(@NotNull Plugin plugin, @Nullable T runnable) {
+    @UnknownNullability
+    @Contract("_, null -> null; _, !null -> !null")
+    public static <T extends BukkitRunnable> T runTaskAsync(Plugin plugin, @Nullable T runnable) {
         if (runnable == null) {
             return null;
         }
@@ -253,7 +256,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         // JEG Patch end - Player custom HUD location
     }
 
-    public void bossbar(@NotNull String facing) {
+    public void bossbar(String facing) {
         if (facing.isEmpty()) {
             setVisible(false);
         } else {
@@ -265,7 +268,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         }
     }
 
-    public void actionbar(@NotNull String facing) {
+    public void actionbar(String facing) {
         if (PlatformUtil.isPaper()) {
             getPlayer().sendActionBar(LegacyComponentSerializer.legacySection().deserialize(facing));
         } else {
@@ -273,7 +276,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         }
     }
 
-    public @NotNull PlayerWAILA setVisible(boolean visible) {
+    public PlayerWAILA setVisible(boolean visible) {
         this.visible = visible;
         if (kyoriBossBarSupplier.get() != null) {
             getWAILABar().setVisible(false);
@@ -305,14 +308,14 @@ public class JEGPlayerWAILA extends PlayerWAILA {
     }
 
     @SuppressWarnings("unused")
-    public void setColor(BossBar.@NotNull Color color) {
+    public void setColor(BossBar.Color color) {
         getWAILABar().setColor(toBarColor(color));
         if (kyoriBossBarSupplier.get() != null) {
             kyoriBossBarSupplier.get().color(BossBar.Color.valueOf(color.name()));
         }
     }
 
-    public void setColor(@NotNull BarColor color) {
+    public void setColor(BarColor color) {
         getWAILABar().setColor(color);
         if (kyoriBossBarSupplier.get() != null) {
             kyoriBossBarSupplier.get().color(BossBar.Color.valueOf(color.name()));
@@ -320,7 +323,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
     }
 
     @SuppressWarnings("unused")
-    public @NotNull PlayerWAILA toOrigin() {
+    public PlayerWAILA toOrigin() {
         PlayerWAILA waila = new PlayerWAILA(getPlayer());
         waila.setPaused(isPaused());
         org.bukkit.boss.BossBar bukkit = getWAILABar();

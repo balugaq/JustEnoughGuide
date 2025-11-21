@@ -33,12 +33,13 @@ import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class GuideGUIFixListener implements Listener {
     /**
      * Fix Official Slimefun: SlimefunItemStack break changes
@@ -47,7 +48,7 @@ public class GuideGUIFixListener implements Listener {
      * @param event PatchEvent
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    public void patchItem(@NotNull PatchEvent event) {
+    public void patchItem(PatchEvent event) {
         event.setItemStack(Converter.getItem(ItemStackUtil.getCleanItem(event.getItemStack())));
     }
 }

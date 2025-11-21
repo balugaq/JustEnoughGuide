@@ -36,9 +36,9 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Target block has {@link BlockMenu}
@@ -47,23 +47,24 @@ import org.jetbrains.annotations.Range;
  * @since 1.9
  */
 @SuppressWarnings("unused")
+@NullMarked
 public interface SlimefunSource extends Source {
     @SuppressWarnings("deprecation")
     boolean handleable(
-            @NotNull BlockMenu blockMenu,
-            @NotNull Player player,
-            @NotNull ClickAction clickAction,
-            @Range(from = 0, to = 53) int @NotNull [] ingredientSlots,
+            BlockMenu blockMenu,
+            Player player,
+            ClickAction clickAction,
+            @Range(from = 0, to = 53) int[] ingredientSlots,
             boolean unordered,
             int recipeDepth);
 
     @CanIgnoreReturnValue
     @SuppressWarnings("deprecation")
     default boolean openGuide(
-            @NotNull BlockMenu blockMenu,
-            @NotNull Player player,
-            @NotNull ClickAction clickAction,
-            @Range(from = 0, to = 53) int @NotNull [] ingredientSlots,
+            BlockMenu blockMenu,
+            Player player,
+            ClickAction clickAction,
+            @Range(from = 0, to = 53) int[] ingredientSlots,
             boolean unordered,
             int recipeDepth) {
         return openGuide(blockMenu, player, clickAction, ingredientSlots, unordered, recipeDepth, null);
@@ -71,10 +72,10 @@ public interface SlimefunSource extends Source {
 
     @SuppressWarnings("deprecation")
     default boolean openGuide(
-            @NotNull BlockMenu blockMenu,
-            @NotNull Player player,
-            @NotNull ClickAction clickAction,
-            int @NotNull [] ingredientSlots,
+            BlockMenu blockMenu,
+            Player player,
+            ClickAction clickAction,
+            int[] ingredientSlots,
             boolean unordered,
             int recipeDepth,
             @Nullable Runnable callback) {
@@ -148,9 +149,9 @@ public interface SlimefunSource extends Source {
 
     @CanIgnoreReturnValue
     boolean completeRecipeWithGuide(
-            @NotNull BlockMenu blockMenu,
-            GuideEvents.@NotNull ItemButtonClickEvent event,
-            @Range(from = 0, to = 53) int @NotNull [] ingredientSlots,
+            BlockMenu blockMenu,
+            GuideEvents.ItemButtonClickEvent event,
+            @Range(from = 0, to = 53) int[] ingredientSlots,
             boolean unordered,
             int recipeDepth);
 }

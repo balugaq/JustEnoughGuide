@@ -18,6 +18,7 @@ improvements:
   finalTECH-emc-display-option: true
   item-shareable: true
   cer-patch: true
+  allow-action-redirect: true
 
 # 是否禁止在粘液容器中交互收纳袋
 disable-bundle-interaction: true
@@ -229,6 +230,39 @@ custom-format:
     - "ppppppppp"
     - "ppppppppp"
     - "ppppppppp"
+    - "BPBBBBBNB"
+  # 按键绑定集
+  # B = 背景板
+  # b = 返回
+  # i = 按键绑定子集
+  keybinds:
+    - "BbBBBBBBB"
+    - "BiiiiiiiB"
+    - "BiiiiiiiB"
+    - "BiiiiiiiB"
+    - "BiiiiiiiB"
+    - "BPBBBBBNB"
+  # 按键绑定子集
+  # B = 背景板
+  # b = 返回
+  # x = 原按键
+  # y = 分隔板
+  # z = 映射按键
+  keybind:
+    - "BbBBBBBBB"
+    - "BxyzBxyzB"
+    - "BxyzBxyzB"
+    - "BxyzBxyzB"
+    - "BxyzBxyzB"
+    - "BPBBBBBNB"
+  # 按键选择
+  # B = 背景板
+  # b = 返回
+  # i = 按键
+  action-select:
+    - "BbBBBBBBB"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
     - "BPBBBBBNB"
 
 # 支持颜色符号: &a粘液科技

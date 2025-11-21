@@ -32,7 +32,7 @@ import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -42,6 +42,7 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NullMarked
 public class AContainerData extends MachineData {
     private final List<MachineRecipe> recipes;
     private final int energyConsumption;
@@ -49,7 +50,7 @@ public class AContainerData extends MachineData {
 
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
                 .map(recipe -> new CERRecipeGroup.RecipeWrapper(
                         recipe.getInput(),

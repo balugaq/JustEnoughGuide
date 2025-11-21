@@ -33,12 +33,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 @SuppressWarnings({"deprecated", "deprecation", "DataFlowIssue"})
+@NullMarked
 public class WatchdogHandler implements Listener {
     public static Object instance = null;
     public static long timeoutTime = 0;

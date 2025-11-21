@@ -29,7 +29,7 @@ package com.balugaq.jeg.api.interfaces;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -52,9 +52,15 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@NullMarked
 public @interface NotDisplayInCheatMode {
+    /**
+     * @author balugaq
+     * @since 1.8
+     */
+    @NullMarked
     class Checker {
-        public static boolean contains(@NotNull ItemGroup group) {
+        public static boolean contains(ItemGroup group) {
             String namespace = group.getKey().getNamespace();
             String key = group.getKey().getKey();
             String className = group.getClass().getName();

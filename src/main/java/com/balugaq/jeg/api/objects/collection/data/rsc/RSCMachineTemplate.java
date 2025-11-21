@@ -28,6 +28,7 @@
 package com.balugaq.jeg.api.objects.collection.data.rsc;
 
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -35,5 +36,6 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public record RSCMachineTemplate(ItemStack template, List<RSCCustomMachineRecipe> recipes) {
 }

@@ -28,6 +28,7 @@
 package com.balugaq.jeg.api.objects.collection.data.rsc;
 
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import java.util.Map;
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public record RSCLinkedOutput(ItemStack[] freeOutput, Map<Integer, ItemStack> linkedOutput, int[] freeChances,
                               Map<Integer, Integer> linkedChances) {
 }

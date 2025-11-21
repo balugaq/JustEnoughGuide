@@ -29,6 +29,7 @@ package com.balugaq.jeg.api.objects.collection.data.rsc;
 
 import lombok.Data;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,7 @@ import java.util.Set;
  */
 @SuppressWarnings("ClassCanBeRecord")
 @Data
+@NullMarked
 public class RSCCustomLinkedMachineRecipe {
     private final int ticks;
     private final Set<Integer> noConsumes;

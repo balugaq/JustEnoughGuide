@@ -37,53 +37,33 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 /**
- * {@link SearchButtonClickEvent}
- * {@link RTSButtonClickEvent}
- * {@link ItemGroupButtonClickEvent}
- * {@link ItemButtonClickEvent}
- * {@link PreviousButtonClickEvent}
- * {@link NextButtonClickEvent}
- * {@link BookMarkButtonClickEvent}
- * {@link ItemMarkButtonClickEvent}
- * {@link BackButtonClickEvent}
- * {@link WikiButtonClickEvent}
- * {@link RecipeTypeButtonClickEvent}
- * {@link BigRecipeButtonClickEvent}
- * {@link AuthorInformationButtonClickEvent}
- * {@link FeatureButtonClickEvent}
- * {@link SearchItemEvent}
- * {@link ResearchItemEvent}
- * {@link CollectItemEvent}
- * {@link SettingsButtonClickEvent}
- * {@link BeginnerButtonClickEvent}
- * {@link GroupLinkButtonClickEvent}
- * {@link CerButtonClickEvent}
- *
  * @author balugaq
  * @since 1.7
  */
 @SuppressWarnings({"deprecation", "unused"})
+@NullMarked
 public class GuideEvents {
     /**
      * @author balugaq
      * @since 1.7
      */
+    @NullMarked
     public interface JEGGuideEvent {
         @Nullable ItemStack getClickedItem();
 
         @Range(from = 0, to = 53)
         int getClickedSlot();
 
-        @NotNull ClickAction getClickAction();
+        ClickAction getClickAction();
 
-        @NotNull ChestMenu getMenu();
+        ChestMenu getMenu();
 
-        @NotNull SlimefunGuideImplementation getGuide();
+        SlimefunGuideImplementation getGuide();
     }
 
     /**
@@ -91,25 +71,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class GroupLinkButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public GroupLinkButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -119,25 +100,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class BeginnerButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BeginnerButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -147,25 +129,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class SettingsButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public SettingsButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -175,25 +158,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class CollectItemEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public CollectItemEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -203,27 +187,28 @@ public class GuideEvents {
      * @since 2.0
      */
     @Getter
+    @NullMarked
     public static class CollectItemGroupEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
-        private final @NotNull ItemGroup itemGroup;
+        private final ItemGroup itemGroup;
 
         public CollectItemGroupEvent(
-                final @NotNull Player who,
-                final @NotNull ItemGroup itemGroup,
+                final Player who,
+                final ItemGroup itemGroup,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, itemGroup.getItem(who), clickedSlot, clickAction, menu, guide);
             this.itemGroup = itemGroup;
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -233,25 +218,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class ResearchItemEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ResearchItemEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -261,19 +247,20 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class SearchItemEvent extends Event implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
-        private final @NotNull Player player;
-        private final @NotNull String searchTerm;
+        private final Player player;
+        private final String searchTerm;
         private boolean cancelled = false;
 
-        public SearchItemEvent(final @NotNull Player player, final @NotNull String searchTerm) {
+        public SearchItemEvent(final Player player, final String searchTerm) {
             super(false);
             this.player = player;
             this.searchTerm = searchTerm;
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
@@ -288,7 +275,7 @@ public class GuideEvents {
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -298,25 +285,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class FeatureButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public FeatureButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -326,25 +314,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class AuthorInformationButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public AuthorInformationButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -354,25 +343,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class BigRecipeButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BigRecipeButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -382,25 +372,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class RecipeTypeButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public RecipeTypeButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -410,25 +401,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class WikiButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public WikiButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -438,25 +430,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class BackButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BackButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -466,25 +459,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class ItemMarkButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ItemMarkButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -494,25 +488,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class BookMarkButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BookMarkButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -522,25 +517,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class NextButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public NextButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -550,25 +546,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class PreviousButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public PreviousButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -578,25 +575,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class ItemButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ItemButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -606,25 +604,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class ItemGroupButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ItemGroupButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -634,25 +633,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class RTSButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public RTSButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -662,25 +662,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class SearchButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public SearchButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -690,25 +691,142 @@ public class GuideEvents {
      * @since 1.9
      */
     @Getter
+    @NullMarked
     public static class CerButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public CerButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
+            return HANDLERS;
+        }
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @Getter
+    @NullMarked
+    public static class KeybindsButtonClickEvent extends GuideEvent {
+        private static final HandlerList HANDLERS = new HandlerList();
+
+        public KeybindsButtonClickEvent(
+                final Player who,
+                final @Nullable ItemStack clickedItem,
+                @Range(from = 0, to = 53) int clickedSlot,
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
+            super(who, clickedItem, clickedSlot, clickAction, menu, guide);
+        }
+
+        public static HandlerList getHandlerList() {
+            return HANDLERS;
+        }
+
+        @Override
+        public HandlerList getHandlers() {
+            return HANDLERS;
+        }
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @Getter
+    @NullMarked
+    public static class KeybindButtonClickEvent extends GuideEvent {
+        private static final HandlerList HANDLERS = new HandlerList();
+
+        public KeybindButtonClickEvent(
+                final Player who,
+                final @Nullable ItemStack clickedItem,
+                @Range(from = 0, to = 53) int clickedSlot,
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
+            super(who, clickedItem, clickedSlot, clickAction, menu, guide);
+        }
+
+        public static HandlerList getHandlerList() {
+            return HANDLERS;
+        }
+
+        @Override
+        public HandlerList getHandlers() {
+            return HANDLERS;
+        }
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @Getter
+    @NullMarked
+    public static class ActionButtonClickEvent extends GuideEvent {
+        private static final HandlerList HANDLERS = new HandlerList();
+
+        public ActionButtonClickEvent(
+                final Player who,
+                final @Nullable ItemStack clickedItem,
+                @Range(from = 0, to = 53) int clickedSlot,
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
+            super(who, clickedItem, clickedSlot, clickAction, menu, guide);
+        }
+
+        public static HandlerList getHandlerList() {
+            return HANDLERS;
+        }
+
+        @Override
+        public HandlerList getHandlers() {
+            return HANDLERS;
+        }
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @Getter
+    @NullMarked
+    public static class SubKeybindsButtonClickEvent extends GuideEvent {
+        private static final HandlerList HANDLERS = new HandlerList();
+
+        public SubKeybindsButtonClickEvent(
+                final Player who,
+                final @Nullable ItemStack clickedItem,
+                @Range(from = 0, to = 53) int clickedSlot,
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
+            super(who, clickedItem, clickedSlot, clickAction, menu, guide);
+        }
+
+        public static HandlerList getHandlerList() {
+            return HANDLERS;
+        }
+
+        @Override
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -718,25 +836,26 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public static class UnknownButtonClickEvent extends GuideEvent {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public UnknownButtonClickEvent(
-                final @NotNull Player who,
+                final Player who,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
-        public static @NotNull HandlerList getHandlerList() {
+        public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -746,22 +865,23 @@ public class GuideEvents {
      * @since 1.7
      */
     @Getter
+    @NullMarked
     public abstract static class GuideEvent extends Event implements Cancellable {
-        private final @NotNull Player player;
+        private final Player player;
         private final @Nullable ItemStack clickedItem;
         private final @Range(from = 0, to = 53) int clickedSlot;
-        private final @NotNull ClickAction clickAction;
-        private final @NotNull ChestMenu menu;
-        private final @NotNull SlimefunGuideImplementation guide;
+        private final ClickAction clickAction;
+        private final ChestMenu menu;
+        private final SlimefunGuideImplementation guide;
         public boolean cancelled = false;
 
         public GuideEvent(
-                final @NotNull Player player,
+                final Player player,
                 final @Nullable ItemStack clickedItem,
                 @Range(from = 0, to = 53) int clickedSlot,
-                final @NotNull ClickAction clickAction,
-                final @NotNull ChestMenu menu,
-                final @NotNull SlimefunGuideImplementation guide) {
+                final ClickAction clickAction,
+                final ChestMenu menu,
+                final SlimefunGuideImplementation guide) {
             super(false);
             this.player = player;
             this.clickedItem = clickedItem;

@@ -30,7 +30,7 @@ package com.balugaq.jeg.api.interfaces;
 import com.balugaq.jeg.core.commands.JEGCommands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,7 @@ import java.util.List;
  * @since 1.1
  */
 @SuppressWarnings("unused")
+@NullMarked
 public interface JEGCommand {
     /**
      * This method is used to define a tab complete for a command.
@@ -51,8 +52,7 @@ public interface JEGCommand {
      * @param args   The arguments of the command.
      * @return The tab complete of the command.
      */
-    @NotNull
-    default List<String> onTabCompleteRaw(@NotNull CommandSender sender, @NotNull String[] args) {
+    default List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         return new ArrayList<>();
     }
 
@@ -66,10 +66,10 @@ public interface JEGCommand {
      * @return If the command can be executed.
      */
     default boolean canCommand(
-            final @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] args) {
+            final CommandSender sender,
+            Command command,
+            String label,
+            String[] args) {
         return false;
     }
 
@@ -82,8 +82,8 @@ public interface JEGCommand {
      * @param args    The arguments of the command.
      */
     void onCommand(
-            final @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] args);
+            final CommandSender sender,
+            Command command,
+            String label,
+            String[] args);
 }

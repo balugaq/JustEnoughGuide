@@ -42,10 +42,9 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,16 +53,17 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public interface Source {
     int RECIPE_DEPTH_THRESHOLD = 8;
 
-    @NotNull JavaPlugin plugin();
+    JavaPlugin plugin();
 
     @SuppressWarnings("ConstantValue")
-    default @Nullable List<RecipeChoice> getRecipe(@NotNull ItemStack itemStack) {
+    default @Nullable List<@Nullable RecipeChoice> getRecipe(ItemStack itemStack) {
         SlimefunItem sf = SlimefunItem.getByItem(itemStack);
         if (sf != null) {
-            List<RecipeChoice> raw = new ArrayList<>(Arrays.stream(sf.getRecipe())
+            List<@Nullable RecipeChoice> raw = new ArrayList<>(Arrays.stream(sf.getRecipe())
                     .map(item -> item == null ? null : new SimpleRecipeChoice(item))
                     .toList());
 
@@ -76,7 +76,7 @@ public interface Source {
             Recipe[] recipes = Slimefun.getMinecraftRecipeService().getRecipesFor(itemStack);
             for (Recipe recipe : recipes) {
                 if (recipe instanceof ShapedRecipe shapedRecipe) {
-                    List<RecipeChoice> choices = new ArrayList<>(9);
+                    List<@Nullable RecipeChoice> choices = new ArrayList<>(9);
                     String[] shape = shapedRecipe.getShape();
 
                     for (int i = 0; i < 3; i++) {
@@ -96,7 +96,7 @@ public interface Source {
 
                     return choices;
                 } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
-                    List<RecipeChoice> raw = new ArrayList<>(shapelessRecipe.getChoiceList());
+                    List<@Nullable RecipeChoice> raw = new ArrayList<>(shapelessRecipe.getChoiceList());
 
                     for (int i = raw.size(); i < 9; i++) {
                         raw.add(null);
@@ -110,12 +110,10 @@ public interface Source {
         return null;
     }
 
-    @ParametersAreNonnullByDefault
     default @Nullable ItemStack getItemStackFromPlayerInventory(Player player, ItemStack itemStack) {
         return getItemStackFromPlayerInventory(player, itemStack, 1);
     }
 
-    @ParametersAreNonnullByDefault
     default @Nullable ItemStack getItemStackFromPlayerInventory(Player player, ItemStack itemStack, int amount) {
         int total = amount;
 
@@ -149,11 +147,11 @@ public interface Source {
         return null;
     }
 
-    default boolean depthInRange(@NotNull Player player, int depth) {
+    default boolean depthInRange(Player player, int depth) {
         return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
     }
 
-    default void sendMissingMaterial(@NotNull Player player, @NotNull ItemStack itemStack) {
+    default void sendMissingMaterial(Player player, ItemStack itemStack) {
         if (NoticeMissingMaterialGuideOption.isEnabled(player)) {
             var k = player.getUniqueId();
             if (!RecipeCompletableListener.missingMaterials.containsKey(k)) {

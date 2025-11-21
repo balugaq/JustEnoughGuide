@@ -28,7 +28,7 @@
 package com.balugaq.jeg.api.objects;
 
 import com.balugaq.jeg.utils.Debug;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A simple timer class.
@@ -37,9 +37,10 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.2
  */
 @SuppressWarnings("unused")
+@NullMarked
 public class Timer {
     public static long start;
-    public @NotNull
+    public
     final String name;
     public long starts;
 
@@ -48,7 +49,7 @@ public class Timer {
      *
      * @param name The name of the timer.
      */
-    public Timer(@NotNull String name) {
+    public Timer(String name) {
         this.name = name;
     }
 

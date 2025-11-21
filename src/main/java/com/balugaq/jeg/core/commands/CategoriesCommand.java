@@ -44,11 +44,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +59,7 @@ import java.util.List;
  */
 @SuppressWarnings({"ClassCanBeRecord", "SwitchStatementWithTooFewBranches"})
 @Getter
+@NullMarked
 public class CategoriesCommand implements JEGCommand {
     private final Plugin plugin;
 
@@ -76,7 +76,6 @@ public class CategoriesCommand implements JEGCommand {
      * @param p      the player that will be viewing this menu
      */
     @SuppressWarnings("deprecation")
-    @ParametersAreNonnullByDefault
     private static void populateCategoryMenu(
             ChestMenu menu, List<ItemGroup> groups, @Range(from = 1, to = Integer.MAX_VALUE) int page, Player p) {
         for (int i = 0; i < 54; i++) {
@@ -134,12 +133,12 @@ public class CategoriesCommand implements JEGCommand {
         }
     }
 
-    private static @Nullable ItemGroup getItemGroupOrNull(@NotNull List<ItemGroup> groups, int index) {
+    private static @Nullable ItemGroup getItemGroupOrNull(List<ItemGroup> groups, int index) {
         return index < groups.size() ? groups.get(index) : null;
     }
 
     @Override
-    public @NotNull List<String> onTabCompleteRaw(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {
             case 1 -> {
                 return List.of("categories");
@@ -153,10 +152,10 @@ public class CategoriesCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final @NotNull CommandSender sender,
-            final @NotNull Command command,
-            final @NotNull String label,
-            final @NotNull String @NotNull [] args) {
+            final CommandSender sender,
+            final Command command,
+            final String label,
+            final String[] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
                 return "categories".equalsIgnoreCase(args[0]);
@@ -168,10 +167,10 @@ public class CategoriesCommand implements JEGCommand {
     @Override
     @SuppressWarnings("deprecation")
     public void onCommand(
-            final @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] args) {
+            final CommandSender sender,
+            Command command,
+            String label,
+            String[] args) {
         if (sender instanceof Player player) {
             ChestMenu menu = new ChestMenu("&6物品组大全");
             menu.setSize(54);

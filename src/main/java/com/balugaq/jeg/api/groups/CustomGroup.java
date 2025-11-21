@@ -41,7 +41,6 @@ import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
@@ -55,28 +54,22 @@ import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
 
 @SuppressWarnings({"deprecation", "unused"})
 @Getter
-public class CustomGroup extends FlexItemGroup {
-    public final @NotNull CustomGroupConfiguration configuration;
+@NullMarked
+public class CustomGroup extends BaseGroup<CustomGroup> {
+    public final CustomGroupConfiguration configuration;
     public final List<String> acitons = new ArrayList<>();
     public final List<Object> objects; // ItemGroup first, SlimefunItem then.
-    private final int page;
-    private Map<Integer, CustomGroup> pageMap = new LinkedHashMap<>();
 
-    @ParametersAreNonnullByDefault
+
     public CustomGroup(CustomGroupConfiguration configuration) {
         super(configuration.key(), configuration.item(), configuration.tier());
         this.configuration = configuration;
@@ -109,26 +102,11 @@ public class CustomGroup extends FlexItemGroup {
         this.pageMap.put(1, this);
     }
 
-    @ParametersAreNonnullByDefault
-    public CustomGroup(CustomGroup customGroup, int page) {
-        super(customGroup.configuration.key(), customGroup.configuration.item(), customGroup.configuration.tier());
-        this.configuration = customGroup.configuration;
-        this.objects = customGroup.objects;
-        this.page = page;
-        this.pageMap.put(page, this);
-    }
-
-    @ParametersAreNonnullByDefault
-    @Override
-    public boolean isVisible(Player player, PlayerProfile playerProfile, SlimefunGuideMode slimefunGuideMode) {
-        return true;
-    }
-
     @Override
     public void open(
-            @NotNull Player player,
-            @NotNull PlayerProfile playerProfile,
-            @NotNull SlimefunGuideMode slimefunGuideMode) {
+            Player player,
+            PlayerProfile playerProfile,
+            SlimefunGuideMode slimefunGuideMode) {
         if (acitons.isEmpty()) {
             playerProfile.getGuideHistory().add(this, this.page);
             this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
@@ -167,19 +145,10 @@ public class CustomGroup extends FlexItemGroup {
         }
     }
 
-    /**
-     * Generates the menu for the player.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     * @return The generated menu.
-     */
-    @NotNull
-    private ChestMenu generateMenu(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
+    public ChestMenu generateMenu(
+            final Player player,
+            final PlayerProfile playerProfile,
+            final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu(ItemStackHelper.getDisplayName(configuration.item()));
 
         OnClick.preset(chestMenu);
@@ -202,7 +171,6 @@ public class CustomGroup extends FlexItemGroup {
                     }));
         }
 
-        // Search feature!
         for (int ss : Formats.sub.getChars('S')) {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(
@@ -300,60 +268,8 @@ public class CustomGroup extends FlexItemGroup {
         return chestMenu;
     }
 
-    public void ifig(Object object, @NotNull Consumer<ItemGroup> consumer) {
-        if (object instanceof ItemGroup ig) {
-            consumer.accept(ig);
-        }
-    }
-
-    public void ifsf(Object object, @NotNull Consumer<SlimefunItem> consumer) {
-        if (object instanceof SlimefunItem si) {
-            consumer.accept(si);
-        }
-    }
-
-    /**
-     * Prints an error message to the player.
-     *
-     * @param p    The player.
-     * @param item The Slimefun item.
-     * @param x    The exception.
-     */
-    @ParametersAreNonnullByDefault
-    private void printErrorMessage(@NotNull Player p, @NotNull SlimefunItem item, @NotNull Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
-    }
-
     @Override
     public boolean isCrossAddonItemGroup() {
         return true;
-    }
-
-    /**
-     * Gets the customGroup by page.
-     *
-     * @param page The page number.
-     * @return The customGroup by page.
-     */
-    @NotNull
-    private CustomGroup getByPage(int page) {
-        if (this.pageMap.containsKey(page)) {
-            return this.pageMap.get(page);
-        } else {
-            synchronized (this.pageMap.get(1)) {
-                if (this.pageMap.containsKey(page)) {
-                    return this.pageMap.get(page);
-                }
-
-                CustomGroup customGroup = new CustomGroup(this, page);
-                customGroup.pageMap = this.pageMap;
-                this.pageMap.put(page, customGroup);
-                return customGroup;
-            }
-        }
     }
 }

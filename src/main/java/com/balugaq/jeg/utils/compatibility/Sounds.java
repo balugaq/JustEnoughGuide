@@ -34,24 +34,26 @@ import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.6
  */
 @SuppressWarnings("deprecation")
+@NullMarked
 public class Sounds {
     public static final Sound GUIDE_BUTTON_CLICK_SOUND =
             byKeyOrDefault("item.book.page_turn", byName("ITEM_BOOK_PAGE_TURN"));
     public static final Sound COLLECTED_ITEM = byKeyOrDefault("entity.player.levelup", byName("ENTITY_PLAYER_LEVELUP"));
 
-    public static @Nullable Sound byName(@NotNull String name) {
+    public static @Nullable Sound byName(String name) {
         return ReflectionUtil.getStaticValue(Sound.class, name, Sound.class);
     }
 
-    public static @Nullable Sound byKey(@NotNull String key) {
+    public static @Nullable Sound byKey(String key) {
         Registry<Sound> registry = Bukkit.getRegistry(Sound.class);
         if (registry == null) {
             return null;
@@ -60,16 +62,16 @@ public class Sounds {
         return registry.get(NamespacedKey.minecraft(key));
     }
 
-    public static Sound byKeyOrDefault(@NotNull String key, Sound def) {
+    public static Sound byKeyOrDefault(String key, @UnknownNullability Sound def) {
         Sound sound = byKey(key);
         return sound == null ? def : sound;
     }
 
-    public static void playFor(@NotNull Player player, @Nullable Sound sound) {
+    public static void playFor(Player player, @Nullable Sound sound) {
         playFor(player, sound, 1.0F, 1.0F);
     }
 
-    public static void playFor(@NotNull Player player, @Nullable Sound sound, float volume, float pitch) {
+    public static void playFor(Player player, @Nullable Sound sound, float volume, float pitch) {
         if (sound == null) {
             return;
         }

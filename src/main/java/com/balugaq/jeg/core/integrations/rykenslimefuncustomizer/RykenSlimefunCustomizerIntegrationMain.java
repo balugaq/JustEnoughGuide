@@ -33,8 +33,8 @@ import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,25 +44,26 @@ import java.util.List;
  * @since 1.9
  */
 @SuppressWarnings({"unchecked", "unused"})
+@NullMarked
 public class RykenSlimefunCustomizerIntegrationMain implements Integration {
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     public static @Nullable Class<? extends SlimefunItem> classCustomWorkbench = null;
     public static @Nullable Class<? extends SlimefunItem> classCustomLinkedRecipeMachine = null;
 
-    public static void rrc(@NotNull String id, int @NotNull [] slots, boolean unordered) {
+    public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
         if (slimefunItem != null) {
             rrc(slimefunItem, slots, unordered);
         }
     }
 
-    public static void rrc(@NotNull SlimefunItem slimefunItem, int @NotNull [] slots, boolean unordered) {
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override
-    public @NotNull String getHookPlugin() {
+    public String getHookPlugin() {
         return "RykenSlimefunCustomizer";
     }
 

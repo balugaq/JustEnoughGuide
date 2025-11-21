@@ -35,9 +35,9 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
@@ -46,8 +46,9 @@ import org.jetbrains.annotations.Range;
 @Getter
 @SuppressWarnings({"deprecation", "unused"})
 @Data
+@NullMarked
 public abstract class Processor {
-    private final @NotNull Strategy strategy;
+    private final Strategy strategy;
 
     /**
      * A simple Mixin processor
@@ -65,13 +66,13 @@ public abstract class Processor {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public abstract boolean process(
-            final @NotNull SlimefunGuideImplementation guide,
-            final @NotNull ChestMenu menu,
-            final @NotNull InventoryClickEvent event,
-            final @NotNull Player player,
+            final SlimefunGuideImplementation guide,
+            final ChestMenu menu,
+            final InventoryClickEvent event,
+            final Player player,
             final @Range(from = 0, to = 53) int clickedSlot,
             final @Nullable ItemStack clickedItemStack,
-            final @NotNull ClickAction clickAction,
+            final ClickAction clickAction,
             final @Nullable Boolean processedResult);
 
     /**

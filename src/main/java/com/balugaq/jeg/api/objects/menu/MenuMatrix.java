@@ -27,11 +27,12 @@
 
 package com.balugaq.jeg.api.objects.menu;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"deprecation", "unused"})
 @Getter
+@NullMarked
 public class MenuMatrix {
     private final List<String> labels = new ArrayList<>();
     private final Map<Character, ItemStack> itemStackMap = new HashMap<>();
@@ -52,53 +54,62 @@ public class MenuMatrix {
     public MenuMatrix() {
     }
 
-    public @NotNull MenuMatrix addLine(String label) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addLine(String label) {
         labels.add(label);
         return this;
     }
 
-    public @NotNull MenuMatrix addLine(String @NotNull ... labels) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addLine(String... labels) {
         for (String label : labels) {
             addLine(label);
         }
         return this;
     }
 
-    public @NotNull MenuMatrix addLine(@NotNull List<String> labels) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addLine(List<String> labels) {
         for (String label : labels) {
             addLine(label);
         }
         return this;
     }
 
-    public @NotNull MenuMatrix addItem(Character label, ItemStack item, ChestMenu.MenuClickHandler handler) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addItem(Character label, ItemStack item, ChestMenu.MenuClickHandler handler) {
         this.itemStackMap.put(label, item);
         this.handlerMap.put(label, handler);
         return this;
     }
 
-    public @NotNull MenuMatrix addItem(Character label, ItemStack item) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addItem(Character label, ItemStack item) {
         return addItem(label, item, (p, s, i, a) -> false);
     }
 
-    public @NotNull MenuMatrix addHandler(Character label, ChestMenu.MenuClickHandler handler) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addHandler(Character label, ChestMenu.MenuClickHandler handler) {
         this.handlerMap.put(label, handler);
         return this;
     }
 
-    public @NotNull MenuMatrix addItem(@NotNull String label, ItemStack item, ChestMenu.MenuClickHandler handler) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addItem(String label, ItemStack item, ChestMenu.MenuClickHandler handler) {
         return addItem(label.charAt(0), item, handler);
     }
 
-    public @NotNull MenuMatrix addItem(@NotNull String label, ItemStack item) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addItem(String label, ItemStack item) {
         return addItem(label.charAt(0), item, (p, s, i, a) -> false);
     }
 
-    public @NotNull MenuMatrix addHandler(@NotNull String label, ChestMenu.MenuClickHandler handler) {
+    @CanIgnoreReturnValue
+    public MenuMatrix addHandler(String label, ChestMenu.MenuClickHandler handler) {
         return addHandler(label.charAt(0), handler);
     }
 
-    public void build(@NotNull BlockMenuPreset preset) {
+    public void build(BlockMenuPreset preset) {
         int index = 0;
         for (String label : labels) {
             for (int j = 0; j < label.length(); j++) {
@@ -114,7 +125,7 @@ public class MenuMatrix {
         }
     }
 
-    public int getChar(Character label) {
+    public int getChar(char label) {
         for (int i = 0; i < labels.size(); i++) {
             String line = labels.get(i);
             for (int j = 0; j < line.length(); j++) {
@@ -127,11 +138,11 @@ public class MenuMatrix {
         return -1;
     }
 
-    public int getChar(@NotNull String label) {
+    public int getChar(String label) {
         return getChar(label.charAt(0));
     }
 
-    public int[] getChars(Character label) {
+    public int[] getChars(char label) {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < labels.size(); i++) {
             String line = labels.get(i);
@@ -150,7 +161,7 @@ public class MenuMatrix {
         return array;
     }
 
-    public int[] getChars(@NotNull String label) {
+    public int[] getChars(String label) {
         return getChars(label.charAt(0));
     }
 }

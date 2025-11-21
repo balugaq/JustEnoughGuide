@@ -48,7 +48,6 @@ import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
 import com.github.houbb.pinyin.util.PinyinHelper;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
@@ -69,13 +68,11 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecip
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
@@ -84,14 +81,12 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -106,10 +101,9 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"deprecation", "unused", "ConstantValue", "JavaExistingMethodCanBeUsed"})
 @NotDisplayInSurvivalMode
 @NotDisplayInCheatMode
-public class SearchGroup extends FlexItemGroup {
+@NullMarked
+public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final ConcurrentHashMap<UUID, String> searchTerms = new ConcurrentHashMap<>();
-    @Deprecated
-    public static final Integer ACONTAINER_OFFSET = 50000;
 
     public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE =
             new Char2ObjectOpenHashMap<>(); // fast way for by item name
@@ -117,85 +111,37 @@ public class SearchGroup extends FlexItemGroup {
             new Char2ObjectOpenHashMap<>(); // fast way for by display item name
     public static final Map<String, Reference<Set<String>>> SPECIAL_CACHE = new HashMap<>();
 
-    @Deprecated
-    public static final Set<String> SHARED_CHARS = new HashSet<>();
-
-    @Deprecated
-    public static final Set<String> BLACKLIST = new HashSet<>();
-
     public static final Boolean SHOW_HIDDEN_ITEM_GROUPS =
             Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch();
     public static final Integer DEFAULT_HASH_SIZE = 5000;
     public static final Map<SlimefunItem, Integer> ENABLED_ITEMS = new HashMap<>(DEFAULT_HASH_SIZE);
     public static final Set<SlimefunItem> AVAILABLE_ITEMS = new HashSet<>(DEFAULT_HASH_SIZE);
 
-    @Deprecated
-    public static final Integer[] BORDER = new Integer[]{0, 2, 3, 4, 5, 6, 8, 45, 47, 48, 49, 50, 51, 53};
-
-    @Deprecated
-    public static final Integer[] MAIN_CONTENT = new Integer[]{
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44
-    };
-
     public static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
 
-    @Deprecated
-    private static final int BACK_SLOT = 1;
-
-    @Deprecated
-    private static final int SEARCH_SLOT = 7;
-
-    @Deprecated
-    private static final int PREVIOUS_SLOT = 46;
-
-    @Deprecated
-    private static final int NEXT_SLOT = 52;
-
-    public static @NotNull Boolean LOADED = false;
+    public static boolean LOADED = false;
     public final SlimefunGuideImplementation implementation;
     public final Player player;
     public final String searchTerm;
-    public final Boolean pinyin;
-    public final @NotNull Integer page;
+    public final boolean pinyin;
     public final List<SlimefunItem> slimefunItemList;
     public final boolean re_search_when_cache_failed;
-    public Map<Integer, SearchGroup> pageMap = new LinkedHashMap<>();
 
-    /**
-     * Constructor for the SearchGroup.
-     *
-     * @param implementation The Slimefun guide implementation.
-     * @param player         The player who opened the guide.
-     * @param searchTerm     The search term.
-     * @param pinyin         Whether the search term is in Pinyin.
-     */
     public SearchGroup(
             SlimefunGuideImplementation implementation,
-            final @NotNull Player player,
-            final @NotNull String searchTerm,
+            final Player player,
+            final String searchTerm,
             boolean pinyin) {
         this(implementation, player, searchTerm, pinyin, true);
     }
 
-    /**
-     * Constructor for the SearchGroup.
-     *
-     * @param implementation              The Slimefun guide implementation.
-     * @param player                      The player who opened the guide.
-     * @param searchTerm                  The search term.
-     * @param pinyin                      Whether the search term is in Pinyin.
-     * @param re_search_when_cache_failed Whether to re-search when cache failed.
-     */
     public SearchGroup(
             SlimefunGuideImplementation implementation,
-            final @NotNull Player player,
-            final @NotNull String searchTerm,
+            final Player player,
+            final String searchTerm,
             boolean pinyin,
             boolean re_search_when_cache_failed) {
-        super(new NamespacedKey(JAVA_PLUGIN, "jeg_search_group_" + UUID.randomUUID()), new ItemStack(Material.BARRIER));
+        super();
         if (!LOADED) {
             init();
         }
@@ -209,33 +155,6 @@ public class SearchGroup extends FlexItemGroup {
         this.pageMap.put(1, this);
     }
 
-    /**
-     * Constructor for the SearchGroup.
-     *
-     * @param searchGroup The SearchGroup to copy.
-     * @param page        The page to display.
-     */
-    protected SearchGroup(@NotNull SearchGroup searchGroup, int page) {
-        super(searchGroup.key, new ItemStack(Material.BARRIER));
-        this.page = page;
-        this.searchTerm = searchGroup.searchTerm;
-        this.pinyin = searchGroup.pinyin;
-        this.player = searchGroup.player;
-        this.re_search_when_cache_failed = searchGroup.re_search_when_cache_failed;
-        this.implementation = searchGroup.implementation;
-        this.slimefunItemList = searchGroup.slimefunItemList;
-        this.pageMap.put(page, this);
-    }
-
-    /**
-     * Checks if the search filter is applicable.
-     *
-     * @param slimefunItem The Slimefun item to check.
-     * @param searchTerm   The search term.
-     * @param pinyin       Whether the search term is in Pinyin.
-     * @return True if the search filter is applicable, false otherwise.
-     */
-    @ParametersAreNonnullByDefault
     public static boolean isSearchFilterApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
         if (slimefunItem == null) {
             return false;
@@ -244,15 +163,6 @@ public class SearchGroup extends FlexItemGroup {
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
-    /**
-     * Checks if the search filter is applicable.
-     *
-     * @param itemStack  The item stack to check.
-     * @param searchTerm The search term.
-     * @param pinyin     Whether the search term is in Pinyin.
-     * @return True if the search filter is applicable, false otherwise.
-     */
-    @ParametersAreNonnullByDefault
     public static boolean isSearchFilterApplicable(ItemStack itemStack, String searchTerm, boolean pinyin) {
         if (itemStack == null) {
             return false;
@@ -262,15 +172,6 @@ public class SearchGroup extends FlexItemGroup {
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
-    /**
-     * Checks if the search filter is applicable.
-     *
-     * @param itemName   The item name to check.
-     * @param searchTerm The search term.
-     * @param pinyin     Whether the search term is in Pinyin.
-     * @return True if the search filter is applicable, false otherwise.
-     */
-    @ParametersAreNonnullByDefault
     public static boolean isSearchFilterApplicable(String itemName, String searchTerm, boolean pinyin) {
         if (itemName.isEmpty()) {
             return false;
@@ -298,44 +199,24 @@ public class SearchGroup extends FlexItemGroup {
         return PinyinHelper.toPinyin(string, style, "");
     }
 
-    /**
-     * Filters items based on the given filter type, filter value, and pinyin flag.
-     *
-     * @param player      The player.
-     * @param filterType  The filter type.
-     * @param filterValue The filter value.
-     * @param pinyin      Whether the search term is in Pinyin.
-     * @param items       The list of items to filter.
-     * @return The filtered list of items.
-     */
-    public static @NotNull List<SlimefunItem> filterItems(
+    public static List<SlimefunItem> filterItems(
             Player player,
-            @NotNull FilterType filterType,
-            @NotNull String filterValue,
+            FilterType filterType,
+            String filterValue,
             boolean pinyin,
-            @NotNull List<SlimefunItem> items) {
+            List<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
                 .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
                 .toList();
     }
 
-    /**
-     * Filters items based on the given filter type, filter value, and pinyin flag.
-     *
-     * @param player      The player.
-     * @param filterType  The filter type.
-     * @param filterValue The filter value.
-     * @param pinyin      Whether the search term is in Pinyin.
-     * @param items       The set of items to filter.
-     * @return The filtered set of items.
-     */
-    public static @NotNull Set<SlimefunItem> filterItems(
+    public static Set<SlimefunItem> filterItems(
             Player player,
-            @NotNull FilterType filterType,
-            @NotNull String filterValue,
+            FilterType filterType,
+            String filterValue,
             boolean pinyin,
-            @NotNull Set<SlimefunItem> items) {
+            Set<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
                 .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
@@ -922,7 +803,7 @@ public class SearchGroup extends FlexItemGroup {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean inBanlist(@NotNull SlimefunItem slimefunItem) {
+    public static boolean inBanlist(SlimefunItem slimefunItem) {
         return inBanlist(slimefunItem.getItemName());
     }
 
@@ -936,7 +817,7 @@ public class SearchGroup extends FlexItemGroup {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean inBlacklist(@NotNull SlimefunItem slimefunItem) {
+    public static boolean inBlacklist(SlimefunItem slimefunItem) {
         return inBlacklist(slimefunItem.getItemName());
     }
 
@@ -949,7 +830,7 @@ public class SearchGroup extends FlexItemGroup {
         return false;
     }
 
-    public static boolean onlyAscii(@NotNull String str) {
+    public static boolean onlyAscii(String str) {
         for (char c : str.toCharArray()) {
             if (c > 127) {
                 return false;
@@ -958,7 +839,7 @@ public class SearchGroup extends FlexItemGroup {
         return true;
     }
 
-    public static int levenshteinDistance(@NotNull String s1, @NotNull String s2) {
+    public static int levenshteinDistance(String s1, String s2) {
         if (s1.length() < s2.length()) {
             return levenshteinDistance(s2, s1);
         }
@@ -998,7 +879,7 @@ public class SearchGroup extends FlexItemGroup {
      * @param searchTerm The search term
      * @return The name fit score. Non-negative integer.
      */
-    public static int nameFit(@NotNull String name, @NotNull String searchTerm) {
+    public static int nameFit(String name, String searchTerm) {
         int distance = levenshteinDistance(searchTerm.toLowerCase(Locale.ROOT), name.toLowerCase(Locale.ROOT));
         int maxLen = Math.max(searchTerm.length(), name.length());
 
@@ -1012,8 +893,8 @@ public class SearchGroup extends FlexItemGroup {
         return matchScore;
     }
 
-    public static @NotNull List<SlimefunItem> sortByNameFit(
-            @NotNull Set<SlimefunItem> origin, @NotNull String searchTerm) {
+    public static List<SlimefunItem> sortByNameFit(
+            Set<SlimefunItem> origin, String searchTerm) {
         return origin.stream()
                 .sorted(Comparator.comparingInt(item ->
                         /* Intentionally negative */
@@ -1021,8 +902,8 @@ public class SearchGroup extends FlexItemGroup {
                 .toList();
     }
 
-    public static @NotNull List<SlimefunItem> sortByPinyinContinuity(
-            @NotNull Set<SlimefunItem> origin, @NotNull String searchTerm) {
+    public static List<SlimefunItem> sortByPinyinContinuity(
+            Set<SlimefunItem> origin, String searchTerm) {
         return origin.stream()
                 .sorted(Comparator.comparingInt(item ->
                         /* Intentionally negative */
@@ -1030,66 +911,19 @@ public class SearchGroup extends FlexItemGroup {
                 .toList();
     }
 
-    /**
-     * Always returns false.
-     *
-     * @param player            The player to print the error message to.
-     * @param playerProfile     The player profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     * @return false.
-     */
     @Override
     public boolean isVisible(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
+            final Player player,
+            final PlayerProfile playerProfile,
+            final SlimefunGuideMode slimefunGuideMode) {
         return false;
     }
 
-    /**
-     * Opens the search group.
-     *
-     * @param player            The player who opened the guide.
-     * @param playerProfile     The player profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     */
     @Override
-    public void open(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        playerProfile.getGuideHistory().add(this, this.page);
-        this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
-    }
-
-    /**
-     * Refreshes the search group.
-     *
-     * @param player            The player who opened the guide.
-     * @param playerProfile     The player profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     */
-    public void refresh(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-        this.open(player, playerProfile, slimefunGuideMode);
-    }
-
-    /**
-     * Generates the menu for the search group.
-     *
-     * @param player            The player who opened the guide.
-     * @param playerProfile     The player profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     * @return The generated menu.
-     */
-    @NotNull
-    private ChestMenu generateMenu(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
+    public ChestMenu generateMenu(
+            final Player player,
+            final PlayerProfile playerProfile,
+            final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu =
                 new ChestMenu("你正在搜索: %item%".replace("%item%", ChatUtils.crop(ChatColor.WHITE, searchTerm)));
 
@@ -1115,7 +949,6 @@ public class SearchGroup extends FlexItemGroup {
                     }));
         }
 
-        // Search feature!
         for (int ss : Formats.sub.getChars('S')) {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(
@@ -1208,81 +1041,13 @@ public class SearchGroup extends FlexItemGroup {
         return chestMenu;
     }
 
-    /**
-     * Gets the search group by page.
-     *
-     * @param page The page to get.
-     * @return The search group by page.
-     */
-    @NotNull
-    public SearchGroup getByPage(int page) {
-        if (this.pageMap.containsKey(page)) {
-            return this.pageMap.get(page);
-        } else {
-            synchronized (this.pageMap.get(1)) {
-                if (this.pageMap.containsKey(page)) {
-                    return this.pageMap.get(page);
-                }
-
-                SearchGroup searchGroup = new SearchGroup(this, page);
-                searchGroup.pageMap = this.pageMap;
-                this.pageMap.put(page, searchGroup);
-                return searchGroup;
-            }
-        }
-    }
-
-    /**
-     * Gets all matched items based on the search term and pinyin flag.
-     *
-     * @param p          The player.
-     * @param searchTerm The search term.
-     * @param pinyin     Whether the search term is in Pinyin.
-     * @return The matched items.
-     */
     @Deprecated
-    public @NotNull List<SlimefunItem> getAllMatchedItems(
-            @NotNull Player p, @NotNull String searchTerm, boolean pinyin) {
+    public List<SlimefunItem> getAllMatchedItems(
+            Player p, String searchTerm, boolean pinyin) {
         return filterItems(p, searchTerm, pinyin);
     }
 
-    /**
-     * Prints an error message.
-     *
-     * @param p The player.
-     * @param x The exception.
-     */
-    @ParametersAreNonnullByDefault
-    private void printErrorMessage(Player p, Throwable x) {
-        p.sendMessage("&4服务器发生了一个内部错误. 请联系管理员处理.");
-        JAVA_PLUGIN.getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
-    }
-
-    /**
-     * Prints an error message.
-     *
-     * @param p    The player.
-     * @param item The Slimefun item.
-     * @param x    The exception.
-     */
-    @ParametersAreNonnullByDefault
-    private void printErrorMessage(Player p, SlimefunItem item, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
-    }
-
-    /**
-     * Filters items based on the search term and pinyin flag.
-     *
-     * @param player     The player.
-     * @param searchTerm The search term.
-     * @param pinyin     Whether the search term is in Pinyin.
-     * @return The matched items.
-     */
-    public @NotNull List<SlimefunItem> filterItems(@NotNull Player player, @NotNull String searchTerm, boolean pinyin) {
+    public List<SlimefunItem> filterItems(Player player, String searchTerm, boolean pinyin) {
         StringBuilder actualSearchTermBuilder = new StringBuilder();
         String[] split = searchTerm.split(" ");
         Map<FilterType, String> filters = new HashMap<>();
@@ -1397,40 +1162,22 @@ public class SearchGroup extends FlexItemGroup {
         }
     }
 
-    /**
-     * Filters items based on the given filter type, filter value, and pinyin flag.
-     *
-     * @param filterType  The filter type.
-     * @param filterValue The filter value.
-     * @param pinyin      Whether the search term is in Pinyin.
-     * @param items       The list of items to filter.
-     * @return The filtered list of items.
-     */
-    public @NotNull List<SlimefunItem> filterItems(
-            @NotNull FilterType filterType,
-            @NotNull String filterValue,
+    public List<SlimefunItem> filterItems(
+            FilterType filterType,
+            String filterValue,
             boolean pinyin,
-            @NotNull List<SlimefunItem> items) {
+            List<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
                 .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
                 .toList();
     }
 
-    /**
-     * Filters items based on the given filter type, filter value, and pinyin flag.
-     *
-     * @param filterType  The filter type.
-     * @param filterValue The filter value.
-     * @param pinyin      Whether the search term is in Pinyin.
-     * @param items       The set of items to filter.
-     * @return The filtered set of items.
-     */
-    public @NotNull Set<SlimefunItem> filterItems(
-            @NotNull FilterType filterType,
-            @NotNull String filterValue,
+    public Set<SlimefunItem> filterItems(
+            FilterType filterType,
+            String filterValue,
             boolean pinyin,
-            @NotNull Set<SlimefunItem> items) {
+            Set<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
                 .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))

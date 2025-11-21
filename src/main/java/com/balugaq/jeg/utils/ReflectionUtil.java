@@ -29,9 +29,9 @@ package com.balugaq.jeg.utils;
 
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -47,10 +47,11 @@ import java.util.Objects;
  */
 @SuppressWarnings({"unchecked", "unused"})
 @UtilityClass
+@NullMarked
 public class ReflectionUtil {
 
     @SuppressWarnings("UnusedReturnValue")
-    public static boolean setValue(@NotNull Object object, @NotNull String field, @Nullable Object value) {
+    public static boolean setValue(Object object, String field, @Nullable Object value) {
         try {
             Field declaredField = getField(object.getClass(), field);
             if (declaredField == null) {
@@ -65,7 +66,7 @@ public class ReflectionUtil {
         return true;
     }
 
-    public static <T> boolean setStaticValue(@NotNull Class<T> clazz, @NotNull String field, @Nullable Object value) {
+    public static <T> boolean setStaticValue(Class<T> clazz, String field, @Nullable Object value) {
         try {
             Field declaredField = getField(clazz, field);
             if (declaredField == null) {
@@ -80,7 +81,7 @@ public class ReflectionUtil {
         return true;
     }
 
-    public static @Nullable Object getStaticValue(@NotNull Class<?> clazz, @NotNull String field) {
+    public static @Nullable Object getStaticValue(Class<?> clazz, String field) {
         try {
             Field declaredField = getField(clazz, field);
             if (declaredField == null) {
@@ -95,7 +96,7 @@ public class ReflectionUtil {
     }
 
     public static <T> @Nullable T getStaticValue(
-            @NotNull Class<?> clazz, @NotNull String field, @NotNull Class<T> cast) {
+            Class<?> clazz, String field, Class<T> cast) {
         try {
             Field declaredField = getField(clazz, field);
             if (declaredField == null) {
@@ -109,7 +110,7 @@ public class ReflectionUtil {
         }
     }
 
-    public static @Nullable Method getMethod(@NotNull Class<?> clazz, @NotNull String methodName, boolean noargs) {
+    public static @Nullable Method getMethod(Class<?> clazz, String methodName, boolean noargs) {
         while (clazz != Object.class) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName) && (!noargs || method.getParameterTypes().length == 0)) {
@@ -122,7 +123,7 @@ public class ReflectionUtil {
         return getMethod(clazz, methodName);
     }
 
-    public static @Nullable Method getMethod(@NotNull Class<?> clazz, @NotNull String methodName) {
+    public static @Nullable Method getMethod(Class<?> clazz, String methodName) {
         while (clazz != Object.class) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName)) {
@@ -135,8 +136,8 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Method getMethod(
-            @NotNull Class<?> clazz,
-            @NotNull String methodName,
+            Class<?> clazz,
+            String methodName,
             @Range(from = 0, to = Short.MAX_VALUE) int parameterCount) {
         while (clazz != Object.class) {
             for (Method method : clazz.getDeclaredMethods()) {
@@ -150,7 +151,7 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Method getMethod(
-            @NotNull Class<?> clazz, @NotNull String methodName, @NotNull Class<?> @NotNull ... parameterTypes) {
+            Class<?> clazz, String methodName, Class<?>... parameterTypes) {
         while (clazz != Object.class) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterTypes.length) {
@@ -183,7 +184,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static @Nullable Field getField(@NotNull Class<?> clazz, @NotNull String fieldName) {
+    public static @Nullable Field getField(Class<?> clazz, String fieldName) {
         while (clazz != Object.class) {
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.getName().equals(fieldName)) {
@@ -195,7 +196,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static @Nullable Class<?> getClass(@NotNull Class<?> clazz, @NotNull String className) {
+    public static @Nullable Class<?> getClass(Class<?> clazz, String className) {
         while (clazz != Object.class) {
             if (clazz.getSimpleName().equals(className)) {
                 return clazz;
@@ -205,7 +206,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static <T> @Nullable T getValue(@NotNull Object object, @NotNull String fieldName, @NotNull Class<T> cast) {
+    public static <T> @Nullable T getValue(Object object, String fieldName, Class<T> cast) {
         try {
             Field field = getField(object.getClass(), fieldName);
             if (field != null) {
@@ -220,7 +221,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static @Nullable Object getValue(@NotNull Object object, @NotNull String fieldName) {
+    public static @Nullable Object getValue(Object object, String fieldName) {
         try {
             Field field = getField(object.getClass(), fieldName);
             if (field != null) {
@@ -235,7 +236,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static <T, V> @Nullable T getProperty(Object o, @NotNull Class<V> clazz, @NotNull String fieldName)
+    public static <T, V> @Nullable T getProperty(Object o, Class<V> clazz, String fieldName)
             throws IllegalAccessException {
         Field field = getField(clazz, fieldName);
         if (field != null) {
@@ -250,7 +251,7 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Pair<Field, Class<?>> getDeclaredFieldsRecursively(
-            @NotNull Class<?> clazz, @NotNull String fieldName) {
+            Class<?> clazz, String fieldName) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -266,7 +267,7 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Constructor<?> getConstructor(
-            @NotNull Class<?> clazz, @Nullable Class<?> @Nullable ... parameterTypes) {
+            Class<?> clazz, @Nullable Class<?> @Nullable ... parameterTypes) {
         try {
             return clazz.getDeclaredConstructor(parameterTypes);
         } catch (NoSuchMethodException e) {
@@ -277,7 +278,7 @@ public class ReflectionUtil {
 
     @Nullable
     public static Object invokeMethod(
-            @NotNull Object object, @NotNull String methodName, @Nullable Object @Nullable ... args) {
+            Object object, String methodName, @Nullable Object @Nullable ... args) {
         try {
             Method method;
             if (args == null) {
@@ -316,7 +317,7 @@ public class ReflectionUtil {
 
     @Nullable
     public static Object invokeStaticMethod(
-            @NotNull Class<?> clazz, @NotNull String methodName, @Nullable Object @Nullable ... args) {
+            Class<?> clazz, String methodName, @Nullable Object @Nullable ... args) {
         try {
             Method method;
             if (args == null) {

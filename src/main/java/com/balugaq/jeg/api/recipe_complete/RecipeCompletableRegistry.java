@@ -30,8 +30,8 @@ package com.balugaq.jeg.api.recipe_complete;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
@@ -39,13 +39,14 @@ import org.jetbrains.annotations.Range;
  */
 @SuppressWarnings("unused")
 @ApiStatus.Obsolete
+@NullMarked
 public class RecipeCompletableRegistry {
     /**
      * @param slimefunItem the {@link SlimefunItem} to add
      * @see RecipeCompletableListener.NotApplicable
      */
     @ApiStatus.Obsolete
-    public static void addNotApplicableItem(@NotNull SlimefunItem slimefunItem) {
+    public static void addNotApplicableItem(SlimefunItem slimefunItem) {
         RecipeCompletableListener.addNotApplicableItem(slimefunItem);
     }
 
@@ -54,24 +55,24 @@ public class RecipeCompletableRegistry {
      * @see RecipeCompletableListener.NotApplicable
      */
     @ApiStatus.Obsolete
-    public static void removeNotApplicableItem(@NotNull SlimefunItem slimefunItem) {
+    public static void removeNotApplicableItem(SlimefunItem slimefunItem) {
         RecipeCompletableListener.removeNotApplicableItem(slimefunItem);
     }
 
     @ApiStatus.Obsolete
     public static void registerRecipeCompletable(
-            @NotNull SlimefunItem slimefunItem, @Range(from = 0, to = 53) int @NotNull [] slots) {
+            SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots) {
         RecipeCompletableListener.registerRecipeCompletable(slimefunItem, slots);
     }
 
     @ApiStatus.Obsolete
     public static void registerRecipeCompletable(
-            @NotNull SlimefunItem slimefunItem, @Range(from = 0, to = 53) int @NotNull [] slots, boolean unordered) {
+            SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots, boolean unordered) {
         RecipeCompletableListener.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @ApiStatus.Obsolete
-    public static void unregisterRecipeCompletable(@NotNull SlimefunItem slimefunItem) {
+    public static void unregisterRecipeCompletable(SlimefunItem slimefunItem) {
         RecipeCompletableListener.unregisterRecipeCompletable(slimefunItem);
     }
 }

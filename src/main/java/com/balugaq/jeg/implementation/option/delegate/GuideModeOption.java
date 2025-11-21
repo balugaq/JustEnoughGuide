@@ -46,9 +46,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,18 +58,16 @@ import java.util.Optional;
  * @since 1.9
  */
 @SuppressWarnings({"deprecation", "DataFlowIssue", "ExtractMethodRecommender"})
+@NullMarked
 public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
-    @NotNull
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
-    @NotNull
     public NamespacedKey getKey() {
         return new NamespacedKey(Slimefun.instance(), "guide_mode");
     }
 
-    @NotNull
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (!p.hasPermission("slimefun.cheat.items")) {
             return Optional.empty();
@@ -104,7 +101,7 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
         }
     }
 
-    public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
+    public void onClick(Player p, ItemStack guide) {
         Optional<SlimefunGuideMode> current = this.getSelectedOption(p, guide);
         if (current.isPresent()) {
             SlimefunGuideMode next = this.getNextMode(p, current.get());
@@ -114,8 +111,7 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
         JEGGuideSettings.openSettings(p, guide);
     }
 
-    @NotNull
-    private SlimefunGuideMode getNextMode(@NotNull Player p, @NotNull SlimefunGuideMode mode) {
+    private SlimefunGuideMode getNextMode(Player p, SlimefunGuideMode mode) {
         if (p.hasPermission("slimefun.cheat.items")) {
             return mode == SlimefunGuideMode.SURVIVAL_MODE ? SlimefunGuideMode.CHEAT_MODE : SlimefunGuideMode.SURVIVAL_MODE;
         } else {
@@ -123,12 +119,10 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
         }
     }
 
-    @NotNull
-    public Optional<SlimefunGuideMode> getSelectedOption(@NotNull Player p, @NotNull ItemStack guide) {
+    public Optional<SlimefunGuideMode> getSelectedOption(Player p, ItemStack guide) {
         return SlimefunUtils.isItemSimilar(guide, SlimefunGuide.getItem(SlimefunGuideMode.CHEAT_MODE), true, false) ? Optional.of(SlimefunGuideMode.CHEAT_MODE) : Optional.of(SlimefunGuideMode.SURVIVAL_MODE);
     }
 
-    @ParametersAreNonnullByDefault
     public void setSelectedOption(Player p, ItemStack guide, SlimefunGuideMode value) {
         guide.setItemMeta(SlimefunGuide.getItem(value).getItemMeta());
     }

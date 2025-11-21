@@ -65,6 +65,7 @@ public class Models {
             new SlimefunItemStack("JEG_VANILLA_ITEMS_GROUP", Converter.getItem(Material.CRAFTING_TABLE, "&7原版物品")));
     public static final ItemStack JEG_ITEMS_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, "&bJEG 物品")));
+    public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(Material.YELLOW_STAINED_GLASS_PANE, " ", " ");
     public static final SlimefunItemStack RECIPE_COMPLETE_GUIDE = new SlimefunItemStack(
             "JEG_RECIPE_COMPLETE_BOOK",
             Converter.getItem(
@@ -139,4 +140,10 @@ public class Models {
                     "&7- &a魔法",
                     "&7- &a青山科技",
                     "&7- &a迷狱生机"));
+    public static final ItemStack ITEM_MARK_BACKGROUND = Converter.getItem(
+            Material.GREEN_STAINED_GLASS_PANE,
+            "&a&l添加收藏物",
+            "",
+            "&7左键物品添加到收藏中"
+    );
 }

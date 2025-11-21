@@ -95,9 +95,8 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.RecipeChoice.MaterialChoice;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
@@ -129,6 +128,7 @@ import java.util.logging.Logger;
  * @since 1.0
  */
 @SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape", "ConstantValue", "DataFlowIssue"})
+@NullMarked
 public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements JEGSlimefunGuideImplementation {
     @Deprecated
     public static final int MAX_ITEM_GROUPS = SurvivalGuideImplementation.MAX_ITEM_GROUPS;
@@ -151,7 +151,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     @Deprecated
     public final int[] recipeSlots = SurvivalGuideImplementation.recipeSlots;
 
-    public final @NotNull ItemStack item;
+    public final ItemStack item;
 
     public CheatGuideImplementation() {
         ItemMeta meta = SlimefunGuide.getItem(getMode()).getItemMeta();
@@ -173,8 +173,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         item = new SlimefunGuideItem(this, name);
     }
 
-    @ParametersAreNonnullByDefault
-    public static @NotNull ItemStack getDisplayItem(Player p, boolean isSlimefunRecipe, ItemStack item) {
+    public static ItemStack getDisplayItem(Player p, boolean isSlimefunRecipe, ItemStack item) {
         if (isSlimefunRecipe) {
             SlimefunItem slimefunItem = SlimefunItem.getByItem(item);
 
@@ -203,12 +202,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         }
     }
 
-    @ParametersAreNonnullByDefault
     public static boolean hasPermission(Player p, SlimefunItem item) {
         return Slimefun.getPermissionsService().hasPermission(p, item);
     }
 
-    public static boolean isTaggedGroupType(@NotNull ItemGroup itemGroup) {
+    public static boolean isTaggedGroupType(ItemGroup itemGroup) {
         Class<?> clazz = itemGroup.getClass();
         return clazz == ItemGroup.class
                 || clazz == SubItemGroup.class
@@ -223,12 +221,12 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    public @NotNull SlimefunGuideMode getMode() {
+    public SlimefunGuideMode getMode() {
         return SlimefunGuideMode.CHEAT_MODE;
     }
 
     @Override
-    public @NotNull ItemStack getItem() {
+    public ItemStack getItem() {
         return item;
     }
 
@@ -240,7 +238,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
      * @return a {@link List} of visible {@link ItemGroup} instances
      */
     @Override
-    public @NotNull List<ItemGroup> getVisibleItemGroups(@NotNull Player p, @NotNull PlayerProfile profile) {
+    public List<ItemGroup> getVisibleItemGroups(Player p, PlayerProfile profile) {
         return getVisibleItemGroups(p, profile, false);
     }
 
@@ -253,8 +251,8 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
      * @return a {@link List} of visible {@link ItemGroup} instances
      */
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public @NotNull List<ItemGroup> getVisibleItemGroups(
-            @NotNull Player p, @NotNull PlayerProfile profile, boolean guideTierMode) {
+    public List<ItemGroup> getVisibleItemGroups(
+            Player p, PlayerProfile profile, boolean guideTierMode) {
         List<ItemGroup> groups = new LinkedList<>();
         List<ItemGroup> specialGroups = new LinkedList<>();
         for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
@@ -314,7 +312,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
      * @param page    The page number to open.
      */
     @Override
-    public void openMainMenu(@NotNull PlayerProfile profile, int page) {
+    public void openMainMenu(PlayerProfile profile, int page) {
         Player p = profile.getPlayer();
 
         if (p == null) {
@@ -385,19 +383,19 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @Override
     public void showItemGroup0(
-            final @NotNull ChestMenu menu,
-            @NotNull Player p,
-            @NotNull PlayerProfile profile,
-            @NotNull ItemGroup group,
+            final ChestMenu menu,
+            Player p,
+            PlayerProfile profile,
+            ItemGroup group,
             int index) {
         showItemGroup0(menu, p, profile, group, index, 1);
     }
 
     public void showItemGroup0(
-            final @NotNull ChestMenu menu,
-            @NotNull Player p,
-            @NotNull PlayerProfile profile,
-            @NotNull ItemGroup group,
+            final ChestMenu menu,
+            Player p,
+            PlayerProfile profile,
+            ItemGroup group,
             int index,
             int page) {
         OnDisplay.ItemGroup.display(p, group, OnDisplay.ItemGroup.Normal, this)
@@ -405,7 +403,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void openItemGroup(PlayerProfile profile, ItemGroup itemGroup, int page) {
         Player p = profile.getPlayer();
 
@@ -459,19 +456,19 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         }
 
         List<Integer> indexes = Formats.sub.getChars('i');
-        int itemGroupIndex = SurvivalGuideImplementation.MAX_ITEMS * (page - 1);
+        int itemGroupIndex = SurvivalGuideImplementation.MAX_ITEMS * (Math.max(page, 1) - 1);
 
         for (int i = 0; i < SurvivalGuideImplementation.MAX_ITEMS; i++) {
             int target = itemGroupIndex + i;
 
-            if (target >= itemGroup.getItems().size()) {
+            if (target < 0 || target >= itemGroup.getItems().size()) {
                 break;
             }
 
             SlimefunItem sfitem = itemGroup.getItems().get(target);
 
             if (!sfitem.isDisabledIn(p.getWorld())) {
-                displaySlimefunItem0(menu, itemGroup, p, profile, sfitem, page, indexes.get(i));
+                displaySlimefunItem0(menu, itemGroup, p, profile, sfitem, Math.max(page, 1), indexes.get(i));
             }
         }
 
@@ -484,7 +481,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @Override
     public void openNestedItemGroup(
-            @NotNull Player p, @NotNull PlayerProfile profile, @NotNull NestedItemGroup nested, int page) {
+            Player p, PlayerProfile profile, NestedItemGroup nested, int page) {
         GuideHistory history = profile.getGuideHistory();
 
         history.add(nested, page);
@@ -578,11 +575,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @Override
     public void displaySlimefunItem0(
-            final @NotNull ChestMenu menu,
-            final @NotNull ItemGroup itemGroup,
-            final @NotNull Player p,
-            final @NotNull PlayerProfile profile,
-            final @NotNull SlimefunItem sfitem,
+            final ChestMenu menu,
+            final ItemGroup itemGroup,
+            final Player p,
+            final PlayerProfile profile,
+            final SlimefunItem sfitem,
             int page,
             int index) {
         OnDisplay.Item.display(p, sfitem, OnDisplay.Item.Normal, this)
@@ -590,13 +587,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void openSearch(PlayerProfile profile, String input, boolean addToHistory) {
         openSearch(profile, input, 0, addToHistory);
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void openSearch(PlayerProfile profile, String input, int page, boolean addToHistory) {
         Player p = profile.getPlayer();
 
@@ -612,7 +607,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(PlayerProfile profile, ItemStack item, int index, boolean addToHistory) {
         Player p = profile.getPlayer();
 
@@ -643,11 +637,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @Override
     public void showMinecraftRecipe0(
-            Recipe @NotNull [] recipes,
+            Recipe[] recipes,
             int index,
-            final @NotNull ItemStack item,
-            final @NotNull PlayerProfile profile,
-            final @NotNull Player p,
+            final ItemStack item,
+            final PlayerProfile profile,
+            final Player p,
             boolean addToHistory) {
         Recipe recipe = recipes[index];
 
@@ -724,7 +718,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @Override
     public <T extends Recipe> void showRecipeChoices0(
-            final @NotNull T recipe, ItemStack[] recipeItems, @NotNull AsyncRecipeChoiceTask task) {
+            final T recipe, ItemStack[] recipeItems, AsyncRecipeChoiceTask task) {
         RecipeChoice[] choices = Slimefun.getMinecraftRecipeService().getRecipeShape(recipe);
 
         List<Integer> recipeSlots = Formats.recipe_vanilla.getChars('r');
@@ -748,13 +742,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory) {
         displayItem(profile, item, addToHistory, true);
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial) {
         displayItem(
                 profile,
@@ -765,7 +757,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void displayItem(
             PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial, Format format) {
         Player p = profile.getPlayer();
@@ -841,28 +832,28 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @Override
     public void displayItem0(
-            final @NotNull ChestMenu menu,
-            final @NotNull PlayerProfile profile,
-            final @NotNull Player p,
+            final ChestMenu menu,
+            final PlayerProfile profile,
+            final Player p,
             Object item,
             ItemStack output,
-            final @NotNull RecipeType recipeType,
+            final RecipeType recipeType,
             ItemStack[] recipe,
-            final @NotNull AsyncRecipeChoiceTask task) {
+            final AsyncRecipeChoiceTask task) {
         displayItem(menu, profile, p, item, output, recipeType, recipe, task, Formats.recipe);
     }
 
     @Override
     public void displayItem(
-            final @NotNull ChestMenu menu,
-            final @NotNull PlayerProfile profile,
-            final @NotNull Player p,
+            final ChestMenu menu,
+            final PlayerProfile profile,
+            final Player p,
             Object item,
             ItemStack output,
-            final @NotNull RecipeType recipeType,
+            final RecipeType recipeType,
             ItemStack[] recipe,
-            final @NotNull AsyncRecipeChoiceTask task,
-            final @NotNull Format format) {
+            final AsyncRecipeChoiceTask task,
+            final Format format) {
         for (int s : format.getChars('b')) {
             addBackButton0(menu, s, p, profile);
         }
@@ -896,12 +887,10 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void createHeader(Player p, PlayerProfile profile, ChestMenu menu) {
         createHeader(p, profile, menu, Formats.main);
     }
 
-    @ParametersAreNonnullByDefault
     @Override
     public void createHeader(Player p, PlayerProfile profile, ChestMenu menu, Format format) {
         for (int s : format.getChars('B')) {
@@ -949,7 +938,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         format.renderCustom(menu);
     }
 
-    @ParametersAreNonnullByDefault
     @Override
     public void createHeader(Player p, PlayerProfile profile, ChestMenu menu, ItemGroup itemGroup) {
         for (int s : Formats.main.getChars('B')) {
@@ -992,7 +980,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    public void addBackButton0(@NotNull ChestMenu menu, int slot, @NotNull Player p, @NotNull PlayerProfile profile) {
+    public void addBackButton0(ChestMenu menu, int slot, Player p, PlayerProfile profile) {
         GuideHistory history = profile.getGuideHistory();
 
         if (isSurvivalMode() && history.size() > 1) {
@@ -1030,7 +1018,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         }
     }
 
-    @ParametersAreNonnullByDefault
     @Override
     public void displayRecipes0(Player p, PlayerProfile profile, ChestMenu menu, RecipeDisplayItem sfItem, int page) {
         List<ItemStack> recipes = sfItem.getDisplayRecipes();
@@ -1093,9 +1080,9 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
 
     @Override
     public void addDisplayRecipe0(
-            final @NotNull ChestMenu menu,
-            final @NotNull PlayerProfile profile,
-            final @NotNull List<ItemStack> recipes,
+            final ChestMenu menu,
+            final PlayerProfile profile,
+            final List<ItemStack> recipes,
             int slot,
             int index,
             int page) {
@@ -1121,22 +1108,19 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    @NotNull
-    public ChestMenu create0(@NotNull Player p) {
+    public ChestMenu create0(Player p) {
         ChestMenu menu = new ChestMenu(JustEnoughGuide.getConfigManager().getCheatGuideTitle());
 
         OnClick.preset(menu);
         return menu;
     }
 
-    @ParametersAreNonnullByDefault
     @Override
     public void printErrorMessage0(Player p, Throwable x) {
         p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
         JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
     }
 
-    @ParametersAreNonnullByDefault
     @Override
     public void printErrorMessage0(Player p, SlimefunItem item, Throwable x) {
         p.sendMessage(ChatColor.DARK_RED

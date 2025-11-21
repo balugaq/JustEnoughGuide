@@ -37,7 +37,7 @@ import com.balugaq.jeg.utils.formatter.Formats;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,7 +45,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author balugaq
+ * @since 1.9
+ */
 @SuppressWarnings("unused")
+@NullMarked
 public class CustomGroupConfigurations {
     public static final String FILE_NAME = "custom-groups.yml";
     public static final File fileCustomGroups =
@@ -112,7 +117,7 @@ public class CustomGroupConfigurations {
         return groups.get(id);
     }
 
-    public static @NotNull List<CustomGroup> getGroups() {
+    public static List<CustomGroup> getGroups() {
         return new ArrayList<>(groups.values());
     }
 }

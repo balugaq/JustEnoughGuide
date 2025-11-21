@@ -31,15 +31,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class PlayerWAILAUpdateListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         JEGPlayerWAILA.wrap(event.getPlayer());
     }
 }

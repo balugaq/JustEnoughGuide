@@ -29,35 +29,36 @@ package com.balugaq.jeg.utils.platform.scheduler;
 
 import lombok.Getter;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 2.0
  */
 @Getter
+@NullMarked
 public class BukkitTaskScheduler implements TaskScheduler {
-    public @NotNull BukkitScheduler getBukkitScheduler() {
+    public BukkitScheduler getBukkitScheduler() {
         return TaskScheduler.getServer().getScheduler();
     }
 
-    public void runNextTick(@NotNull Runnable runnable) {
+    public void runNextTick(Runnable runnable) {
         getBukkitScheduler().runTask(getPlugin(), runnable);
     }
 
-    public void runLater(@NotNull Runnable runnable, long delay) {
+    public void runLater(Runnable runnable, long delay) {
         getBukkitScheduler().runTaskLater(getPlugin(), runnable, delay);
     }
 
-    public void runLaterAsync(@NotNull Runnable runnable, long delay) {
+    public void runLaterAsync(Runnable runnable, long delay) {
         getBukkitScheduler().runTaskLaterAsynchronously(getPlugin(), runnable, delay);
     }
 
-    public void runTimer(@NotNull Runnable runnable, long delay, long period) {
+    public void runTimer(Runnable runnable, long delay, long period) {
         getBukkitScheduler().runTaskTimer(getPlugin(), runnable, delay, period);
     }
 
-    public void runTimerAsync(@NotNull Runnable runnable, long delay, long period) {
+    public void runTimerAsync(Runnable runnable, long delay, long period) {
         getBukkitScheduler().runTaskTimerAsynchronously(getPlugin(), runnable, delay, period);
     }
 }

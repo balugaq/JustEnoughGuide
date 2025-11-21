@@ -28,7 +28,7 @@
 package com.balugaq.jeg.utils.formatter;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +37,9 @@ import java.util.List;
  * @author balugaq
  * @since 1.6
  */
+@NullMarked
 public class RecipeDisplayFormat extends Format {
-    public static @NotNull List<Integer> fenceShuffle(@NotNull List<Integer> list) {
+    public static List<Integer> fenceShuffle(List<Integer> list) {
         int size = list.size();
         int splitPoint = (size + 1) / 2;
 

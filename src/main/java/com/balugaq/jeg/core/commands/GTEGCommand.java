@@ -35,7 +35,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -47,6 +47,7 @@ import java.util.List;
  */
 @SuppressWarnings({"ClassCanBeRecord", "SwitchStatementWithTooFewBranches"})
 @Getter
+@NullMarked
 public class GTEGCommand implements JEGCommand {
     private final Plugin plugin;
 
@@ -55,7 +56,7 @@ public class GTEGCommand implements JEGCommand {
     }
 
     @Override
-    public @NotNull List<String> onTabCompleteRaw(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {
             case 1 -> {
                 return List.of("gteg");
@@ -69,10 +70,10 @@ public class GTEGCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final @NotNull CommandSender sender,
-            final @NotNull Command command,
-            final @NotNull String label,
-            final @NotNull String @NotNull [] args) {
+            final CommandSender sender,
+            final Command command,
+            final String label,
+            final String[] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
                 return "gteg".equalsIgnoreCase(args[0]);
@@ -83,10 +84,10 @@ public class GTEGCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] args) {
+            final CommandSender sender,
+            Command command,
+            String label,
+            String[] args) {
         if (sender instanceof Player player) {
             giveGuide(player);
         } else {
@@ -94,7 +95,7 @@ public class GTEGCommand implements JEGCommand {
         }
     }
 
-    private void giveGuide(@NotNull Player player) {
+    private void giveGuide(Player player) {
         player.getInventory().addItem(GroupTierEditorGuide.instance().clone());
     }
 }

@@ -29,7 +29,7 @@ package com.balugaq.jeg.api.objects.collection;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
@@ -37,25 +37,21 @@ import org.jetbrains.annotations.NotNull;
  */
 @AllArgsConstructor
 @Data
+@NullMarked
 public class Pair<F, S> implements Cloneable {
-    public @NotNull
-    final F first;
-    public @NotNull
-    final S second;
+    public final F first;
+    public final S second;
 
-    @NotNull
     public F first() {
         return first;
     }
 
-    @NotNull
     public S second() {
         return second;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    @NotNull
     public Pair<F, S> clone() {
         try {
             return (Pair<F, S>) super.clone();

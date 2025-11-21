@@ -28,12 +28,13 @@
 package com.balugaq.jeg.api.interfaces;
 
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.7
  */
+@NullMarked
 public interface CustomIconDisplay {
-    @NotNull ItemStack getCustomIcon();
+    ItemStack getCustomIcon();
 }

@@ -31,9 +31,10 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.UUID;
 
 /**
  * @author balugaq
@@ -41,20 +42,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @SuppressWarnings("unused")
 @UtilityClass
+@NullMarked
 public class KeyUtil {
-    @NotNull
-    public static NamespacedKey newKey(@NotNull String key) {
+    @Unmodifiable
+    private static final NamespacedKey PLACEHOLDER_KEY = KeyUtil.newKey("placeholder");
+
+    public static NamespacedKey placeholder() {
+        return PLACEHOLDER_KEY;
+    }
+
+    public static NamespacedKey random() {
+        return newKey(UUID.randomUUID().toString());
+    }
+
+    public static NamespacedKey newKey(String key) {
         return new NamespacedKey(JustEnoughGuide.getInstance(), key);
     }
 
-    @ParametersAreNonnullByDefault
-    @NotNull
     public static NamespacedKey customKey(Plugin plugin, String key) {
         return new NamespacedKey(plugin, key);
     }
 
-    @ParametersAreNonnullByDefault
-    @NotNull
     public static NamespacedKey customKey(String namespace, String key) {
         return new NamespacedKey(namespace, key);
     }

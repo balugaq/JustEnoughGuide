@@ -30,7 +30,7 @@ package com.balugaq.jeg.api.objects;
 import com.balugaq.jeg.utils.StackUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -39,20 +39,21 @@ import java.util.List;
  * @since 1.9
  */
 @SuppressWarnings("unused")
+@NullMarked
 public class SimpleRecipeChoice extends RecipeChoice.ExactChoice implements RecipeChoice {
-    public SimpleRecipeChoice(@NotNull ItemStack choice) {
+    public SimpleRecipeChoice(ItemStack choice) {
         super(choice);
     }
 
-    public SimpleRecipeChoice(@NotNull ItemStack @NotNull ... choices) {
+    public SimpleRecipeChoice(ItemStack... choices) {
         super(choices);
     }
 
-    public SimpleRecipeChoice(@NotNull List<ItemStack> choices) {
+    public SimpleRecipeChoice(List<ItemStack> choices) {
         super(choices);
     }
 
-    public boolean test(@NotNull ItemStack other) {
+    public boolean test(ItemStack other) {
         for (ItemStack choice : this.getChoices()) {
             if (StackUtils.itemsMatch(choice, other, true, false)) {
                 return true;

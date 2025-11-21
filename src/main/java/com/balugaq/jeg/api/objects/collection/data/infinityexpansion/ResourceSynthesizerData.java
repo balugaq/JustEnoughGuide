@@ -34,7 +34,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -44,12 +44,13 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NullMarked
 public class ResourceSynthesizerData extends MachineData {
     private final List<Recipe> recipes;
     private final int energyPerTick;
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
                 .map(recipe -> new CERRecipeGroup.RecipeWrapper(
                         new ItemStack[]{Converter.getItem(recipe.getInput1()), Converter.getItem(recipe.getInput2())},
@@ -65,6 +66,7 @@ public class ResourceSynthesizerData extends MachineData {
      */
     @SuppressWarnings("ClassCanBeRecord")
     @Data
+    @NullMarked
     public static class Recipe {
         private final SlimefunItemStack input1;
         private final SlimefunItemStack input2;

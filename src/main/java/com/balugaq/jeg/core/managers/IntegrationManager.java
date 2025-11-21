@@ -70,7 +70,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,9 +84,10 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings({"unused", "LombokGetterMayBeUsed"})
 @Getter
+@NullMarked
 public class IntegrationManager extends AbstractManager {
-    private final @NotNull List<Integration> integrations = new ArrayList<>();
-    private final @NotNull JavaPlugin plugin;
+    private final List<Integration> integrations = new ArrayList<>();
+    private final JavaPlugin plugin;
 
     @Deprecated
     private final boolean hasRecipeCompletableWithGuide = false;
@@ -131,7 +132,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledTsingshanTechnology_Fixed;
     private boolean enabledWilderNether;
 
-    public IntegrationManager(@NotNull JavaPlugin plugin) {
+    public IntegrationManager(JavaPlugin plugin) {
         this.plugin = plugin;
         JustEnoughGuide
                 .runLater(
@@ -224,7 +225,7 @@ public class IntegrationManager extends AbstractManager {
                         1L);
     }
 
-    public static boolean classExists(@NotNull String className) {
+    public static boolean classExists(String className) {
         try {
             Class.forName(className);
             return true;
@@ -233,11 +234,11 @@ public class IntegrationManager extends AbstractManager {
         }
     }
 
-    public static void scheduleRun(@NotNull Runnable runnable) {
+    public static void scheduleRun(Runnable runnable) {
         JustEnoughGuide.runLater(runnable, 2L);
     }
 
-    public static void scheduleRunAsync(@NotNull Runnable runnable) {
+    public static void scheduleRunAsync(Runnable runnable) {
         JustEnoughGuide.runLaterAsync(runnable, 2L);
     }
 
@@ -281,7 +282,7 @@ public class IntegrationManager extends AbstractManager {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public Run addIntegration(boolean enabled, @NotNull Supplier<Integration> supplier) {
+    public Run addIntegration(boolean enabled, Supplier<Integration> supplier) {
         if (enabled) {
             Integration integration = supplier.get();
             integrations.add(integration);
@@ -306,7 +307,7 @@ public class IntegrationManager extends AbstractManager {
             return FAILURE.clone();
         }
 
-        public Run or(@NotNull Supplier<Run> callable) {
+        public Run or(Supplier<Run> callable) {
             if (!success) {
                 return callable.get();
             } else {

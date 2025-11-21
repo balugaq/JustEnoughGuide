@@ -43,7 +43,6 @@ import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
@@ -56,24 +55,16 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Data;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * @author balugaq
@@ -82,62 +73,26 @@ import java.util.logging.Level;
 @SuppressWarnings({"deprecation", "unused"})
 @NotDisplayInSurvivalMode
 @NotDisplayInCheatMode
-public class CERRecipeGroup extends FlexItemGroup {
-    public static final DecimalFormat format = new DecimalFormat("#.###");
+@NullMarked
+public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
+    public static final DecimalFormat FORMAT = new DecimalFormat("#.###");
     public static final ChestMenu.MenuClickHandler subMenuOpen = (p, s, i, a) -> {
-        // ?
+        // todo
         return false;
     };
-    private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
     private final SlimefunGuideImplementation implementation;
-    private final Player player;
-    private final int page;
-    private final SlimefunItem machine;
-    private final List<RecipeWrapper> recipes;
     private final List<Pair<ItemStack, ChestMenu.MenuClickHandler>> icons;
-    private Map<Integer, CERRecipeGroup> pageMap = new LinkedHashMap<>();
 
-    /**
-     * Constructor of CERRecipeGroup.
-     *
-     * @param implementation The Slimefun guide implementation.
-     * @param player         The player who opened the group.
-     * @param machine        The machine
-     * @param recipes        The list of marked items.
-     */
-    @ParametersAreNonnullByDefault
     public CERRecipeGroup(
-            final @NotNull SlimefunGuideImplementation implementation,
-            final @NotNull Player player,
-            final @NotNull SlimefunItem machine,
-            final @NotNull List<RecipeWrapper> recipes) {
-        super(
-                new NamespacedKey(JAVA_PLUGIN, "jeg_cer_recipe_group_" + UUID.randomUUID()),
-                new ItemStack(Material.BARRIER));
+            final SlimefunGuideImplementation implementation,
+            final Player player,
+            final SlimefunItem machine,
+            final List<RecipeWrapper> recipes) {
+        super();
         this.page = 1;
-        this.player = player;
         this.implementation = implementation;
-        this.recipes = recipes;
         this.pageMap.put(1, this);
-        this.machine = machine;
         this.icons = getDisplayIcons(player, machine, recipes);
-    }
-
-    /**
-     * Constructor of CERRecipeGroup.
-     *
-     * @param cer  The CERRecipeGroup to copy.
-     * @param page The page number to display.
-     */
-    protected CERRecipeGroup(@NotNull CERRecipeGroup cer, int page) {
-        super(cer.key, new ItemStack(Material.BARRIER));
-        this.page = page;
-        this.player = cer.player;
-        this.implementation = cer.implementation;
-        this.recipes = cer.recipes;
-        this.icons = cer.icons;
-        this.machine = cer.machine;
-        this.pageMap.put(page, this);
     }
 
     public static List<Pair<ItemStack, ChestMenu.MenuClickHandler>> getDisplayIcons(Player p, SlimefunItem machine, List<RecipeWrapper> wrappers) {
@@ -208,7 +163,7 @@ public class CERRecipeGroup extends FlexItemGroup {
 
                     double cer = CERCalculator.getCER(machine, ItemStackHelper.getDisplayName(output));
                     lore.add(" ");
-                    lore.add(ChatColors.color("&a性价比: " + format.format(cer)));
+                    lore.add(ChatColors.color("&a性价比: " + FORMAT.format(cer)));
                     meta.setLore(lore);
                     display.setItemMeta(meta);
                     list.add(new Pair<>(
@@ -222,66 +177,19 @@ public class CERRecipeGroup extends FlexItemGroup {
         return list;
     }
 
-    /**
-     * Always returns false.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     * @return false.
-     */
     @Override
     public boolean isVisible(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
+            final Player player,
+            final PlayerProfile playerProfile,
+            final SlimefunGuideMode slimefunGuideMode) {
         return false;
     }
 
-    /**
-     * Opens the group for the player.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     */
     @Override
-    public void open(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        playerProfile.getGuideHistory().add(this, this.page);
-        this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
-    }
-
-    /**
-     * Reopens the menu for the player.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     */
-    public void refresh(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
-        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-        this.open(player, playerProfile, slimefunGuideMode);
-    }
-
-    /**
-     * Generates the menu for the player.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     * @return The generated menu.
-     */
-    @NotNull
-    private ChestMenu generateMenu(
-            final @NotNull Player player,
-            final @NotNull PlayerProfile playerProfile,
-            final @NotNull SlimefunGuideMode slimefunGuideMode) {
+    public ChestMenu generateMenu(
+            final Player player,
+            final PlayerProfile playerProfile,
+            final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("&a性价比预览（仅供参考）");
 
         OnClick.preset(chestMenu);
@@ -323,7 +231,6 @@ public class CERRecipeGroup extends FlexItemGroup {
                     }));
         }
 
-        // Search feature!
         for (int ss : Formats.sub.getChars('S')) {
             chestMenu.addItem(ss, PatchScope.Search.patch(playerProfile, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(
@@ -333,7 +240,7 @@ public class CERRecipeGroup extends FlexItemGroup {
 
                         Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
                         ChatInput.waitForPlayer(
-                                JAVA_PLUGIN,
+                                JustEnoughGuide.getInstance(),
                                 pl,
                                 msg -> implementation.openSearch(
                                         playerProfile,
@@ -393,71 +300,6 @@ public class CERRecipeGroup extends FlexItemGroup {
         return chestMenu;
     }
 
-    /**
-     * Gets the CERRecipeGroup by page.
-     *
-     * @param page The page number.
-     * @return The CERRecipeGroup by page.
-     */
-    @NotNull
-    private CERRecipeGroup getByPage(int page) {
-        if (this.pageMap.containsKey(page)) {
-            return this.pageMap.get(page);
-        } else {
-            synchronized (this.pageMap.get(1)) {
-                if (this.pageMap.containsKey(page)) {
-                    return this.pageMap.get(page);
-                }
-
-                CERRecipeGroup cer = new CERRecipeGroup(this, page);
-                cer.pageMap = this.pageMap;
-                this.pageMap.put(page, cer);
-                return cer;
-            }
-        }
-    }
-
-    /**
-     * Checks if the item group is accessible for the player.
-     *
-     * @param p            The player.
-     * @param slimefunItem The Slimefun item.
-     * @return True if the item group is accessible for the player.
-     */
-    @ParametersAreNonnullByDefault
-    private boolean isItemGroupAccessible(@NotNull Player p, @NotNull SlimefunItem slimefunItem) {
-        return Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch()
-                || slimefunItem.getItemGroup().isAccessible(p);
-    }
-
-    /**
-     * Prints an error message to the player.
-     *
-     * @param p The player.
-     * @param x The exception.
-     */
-    @ParametersAreNonnullByDefault
-    private void printErrorMessage(@NotNull Player p, @NotNull Throwable x) {
-        p.sendMessage("&4服务器发生了一个内部错误. 请联系管理员处理.");
-        JAVA_PLUGIN.getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
-    }
-
-    /**
-     * Prints an error message to the player.
-     *
-     * @param p    The player.
-     * @param item The Slimefun item.
-     * @param x    The exception.
-     */
-    @ParametersAreNonnullByDefault
-    private void printErrorMessage(@NotNull Player p, @NotNull SlimefunItem item, @NotNull Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
-    }
-
     public int iconsLength() {
         return icons.size();
     }
@@ -468,9 +310,10 @@ public class CERRecipeGroup extends FlexItemGroup {
      */
     @SuppressWarnings("ClassCanBeRecord")
     @Data
+    @NullMarked
     public static class RecipeWrapper {
-        private final @Nullable ItemStack[] input;
-        private final ItemStack[] output;
+        private final @Nullable ItemStack @Nullable [] input;
+        private final @Nullable ItemStack @Nullable [] output;
         private final long ticks;
         private final long totalEnergyCost;
     }

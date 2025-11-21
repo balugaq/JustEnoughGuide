@@ -66,9 +66,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +80,7 @@ import java.util.regex.Pattern;
  * @since 1.9
  */
 @SuppressWarnings({"unused", "deprecation", "ConstantValue"})
+@NullMarked
 public class CERCalculator {
     public static final Map<SlimefunItem, MachineData> machines = new HashMap<>();
     public static final Pattern trimp = Pattern.compile("[&§]k[&§]");
@@ -114,7 +114,7 @@ public class CERCalculator {
         return machines.containsKey(sf);
     }
 
-    public static double getCER(@NotNull SlimefunItem sf, @NotNull String searchTerm) {
+    public static double getCER(SlimefunItem sf, String searchTerm) {
         if (sf == null || sf.isDisabled() || searchTerm == null || !machines.containsKey(sf)) {
             return -1.0D;
         }
@@ -124,7 +124,6 @@ public class CERCalculator {
 
     @SuppressWarnings("StatementWithEmptyBody")
     @SneakyThrows
-    @ParametersAreNonnullByDefault
     private static double calc0(SlimefunItem sf, Predicate<ItemStack> predicate) {
         String className = sf.getClass().getName();
         double cost = ValueTable.getValue(sf);

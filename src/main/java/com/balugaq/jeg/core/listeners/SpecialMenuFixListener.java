@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Deque;
 import java.util.Optional;
@@ -46,6 +46,7 @@ import java.util.Optional;
  * @since 1.3
  */
 @SuppressWarnings("unused")
+@NullMarked
 public class SpecialMenuFixListener implements Listener {
     /**
      * Fixes the bug where the special menu is not closed properly.
@@ -53,7 +54,7 @@ public class SpecialMenuFixListener implements Listener {
      * @param event The event.
      */
     @EventHandler
-    public void onSpecialMenuClose(@NotNull InventoryCloseEvent event) {
+    public void onSpecialMenuClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         Optional<PlayerProfile> optional = PlayerProfile.find(player);
         if (optional.isPresent()) {
@@ -76,7 +77,7 @@ public class SpecialMenuFixListener implements Listener {
                         return;
                     }
                     if (SpecialMenuProvider.PLACEHOLDER_SEARCH_TERM.equals(string)) {
-                        // remove the last entry from the queue, which is the placeholder search term
+                        // remove the last entry from the queue, which is the random search term
                         queue.removeLast();
                     } else {
                         return;

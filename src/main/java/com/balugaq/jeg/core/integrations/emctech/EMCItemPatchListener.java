@@ -37,8 +37,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -49,6 +49,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public class EMCItemPatchListener implements Listener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
             PatchScope.SlimefunItem,
@@ -59,7 +60,7 @@ public class EMCItemPatchListener implements Listener {
     public static final DecimalFormat EMCFormat = new DecimalFormat("#.###");
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void patchItem(@NotNull PatchEvent event) {
+    public void patchItem(PatchEvent event) {
         PatchScope scope = event.getPatchScope();
         if (notValid(scope)) {
             return;
@@ -73,16 +74,16 @@ public class EMCItemPatchListener implements Listener {
         patchItem(event.getItemStack(), scope);
     }
 
-    public boolean notValid(@NotNull PatchScope patchScope) {
+    public boolean notValid(PatchScope patchScope) {
         return !VALID_SCOPES.contains(patchScope);
     }
 
-    public boolean disabledOption(@NotNull Player player) {
+    public boolean disabledOption(Player player) {
         return !EMCValueDisplayOption.isEnabled(player);
     }
 
     @SuppressWarnings("deprecation")
-    public void patchItem(@Nullable ItemStack itemStack, @NotNull PatchScope scope) {
+    public void patchItem(@Nullable ItemStack itemStack, PatchScope scope) {
         if (itemStack == null) {
             return;
         }

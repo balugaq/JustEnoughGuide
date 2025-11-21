@@ -31,13 +31,14 @@ import com.balugaq.jeg.api.objects.events.PatchEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 @SuppressWarnings("unused")
+@NullMarked
 public enum PatchScope {
     Background,
     Back,
@@ -80,10 +81,14 @@ public enum PatchScope {
     CerRecipeBorderInput,
     CerRecipeBorderOutput,
     CerRecipeBorderInputOutput,
-    Research;
+    Research,
+    KeybindsSet,
+    SubKeybindsSet,
+    Keybind,
+    KeybindActionBorder,
+    Action;
 
-    @NotNull
-    public ItemStack patch(@NotNull PlayerProfile profile, @NotNull ItemStack itemStack) {
+    public ItemStack patch(PlayerProfile profile, ItemStack itemStack) {
         Player player = profile.getPlayer();
         if (player == null) {
             return itemStack;
@@ -91,8 +96,7 @@ public enum PatchScope {
         return patch(player, itemStack);
     }
 
-    @NotNull
-    public ItemStack patch(@NotNull Player player, @NotNull ItemStack itemStack) {
+    public ItemStack patch(Player player, ItemStack itemStack) {
         return PatchEvent.patch(this, player, itemStack);
     }
 }

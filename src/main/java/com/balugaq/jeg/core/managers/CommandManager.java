@@ -38,7 +38,7 @@ import com.balugaq.jeg.core.commands.ReloadCommand;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -49,12 +49,13 @@ import java.util.List;
  * @since 1.0
  */
 @Getter
+@NullMarked
 public class CommandManager extends AbstractManager {
 
-    private final @NotNull JustEnoughGuide plugin;
-    private final @NotNull JEGCommands commands;
+    private final JustEnoughGuide plugin;
+    private final JEGCommands commands;
 
-    public CommandManager(@NotNull JustEnoughGuide plugin) {
+    public CommandManager(JustEnoughGuide plugin) {
         this.plugin = plugin;
         this.commands = new JEGCommands(plugin);
         this.commands.addCommand(new HelpCommand(plugin));

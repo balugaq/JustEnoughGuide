@@ -31,6 +31,8 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -39,6 +41,7 @@ import java.util.List;
  * @since 1.9
  */
 @Getter
+@NullMarked
 public class RSCCustomMachineRecipe extends MachineRecipe {
     private final List<Integer> chances;
     private final IntList noConsume; // probably not exist, empty list by default
@@ -55,7 +58,7 @@ public class RSCCustomMachineRecipe extends MachineRecipe {
             boolean chooseOneIfHas,
             boolean forDisplay,
             boolean hide,
-            IntList noConsumeIndexes) {
+            @Nullable IntList noConsumeIndexes) {
         super(seconds, input.clone(), output.clone());
 
         this.chances = chances;

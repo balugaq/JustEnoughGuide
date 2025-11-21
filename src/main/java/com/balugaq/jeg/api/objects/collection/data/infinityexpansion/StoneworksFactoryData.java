@@ -33,7 +33,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Set;
@@ -44,12 +44,13 @@ import java.util.Set;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NullMarked
 public class StoneworksFactoryData extends MachineData {
     private final Set<Material> materials;
     private final int energyPerTick;
 
     @Override
-    public @NotNull List<CERRecipeGroup.RecipeWrapper> wrap() {
+    public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(null, materials.stream().map(ItemStack::new).toList().toArray(new ItemStack[0]), 1, energyPerTick));
     }
 }

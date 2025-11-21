@@ -34,10 +34,9 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
 /**
@@ -46,28 +45,25 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
 @UtilityClass
+@NullMarked
 public class ClipboardUtil {
     @Deprecated
-    @ParametersAreNonnullByDefault
     public static void send(Player player, String display, String hover, String text) {
         player.spigot().sendMessage(makeComponent(display, hover, text));
     }
 
     @Deprecated
-    @ParametersAreNonnullByDefault
     public static void send(Player player, TextComponent component) {
         player.spigot().sendMessage(component);
     }
 
     @Deprecated
-    @ParametersAreNonnullByDefault
-    public static @NotNull TextComponent makeComponent(String display, String hover, String text) {
+    public static TextComponent makeComponent(String display, String hover, String text) {
         return makeComponent(display, hover, text, null);
     }
 
     @Deprecated
-    @ParametersAreNonnullByDefault
-    public static @NotNull TextComponent makeComponent(
+    public static TextComponent makeComponent(
             String display, String hover, String text, @Nullable Consumer<TextComponent> consumer) {
         TextComponent msg = new TextComponent(ChatColors.color(display));
         msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColors.color(hover))));

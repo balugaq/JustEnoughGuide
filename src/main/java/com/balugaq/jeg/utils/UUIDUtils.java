@@ -27,7 +27,7 @@
 
 package com.balugaq.jeg.utils;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.UUID;
 
@@ -35,8 +35,9 @@ import java.util.UUID;
  * @author Ddggdd135
  * @since 1.4
  */
+@NullMarked
 public class UUIDUtils {
-    public static byte[] toByteArray(@NotNull UUID uuid) {
+    public static byte[] toByteArray(UUID uuid) {
         long mostSigBits = uuid.getMostSignificantBits();
         long leastSigBits = uuid.getLeastSignificantBits();
         byte[] bytes = new byte[16];

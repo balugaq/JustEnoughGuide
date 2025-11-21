@@ -37,9 +37,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +51,16 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"deprecation", "unused"})
 @ApiStatus.Experimental
+@NullMarked
 public class CustomItemStack implements Cloneable {
-    private final @NotNull ItemStack delegate;
+    private final ItemStack delegate;
 
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack.
      *
      * @param item the Bukkit ItemStack to create from
      */
-    public CustomItemStack(@NotNull ItemStack item) {
+    public CustomItemStack(ItemStack item) {
         this.delegate = item.clone();
     }
 
@@ -68,7 +69,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @param material the Material to create from
      */
-    public CustomItemStack(@NotNull Material material) {
+    public CustomItemStack(Material material) {
         this.delegate = new ItemStack(material);
     }
 
@@ -78,7 +79,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemStack        the Bukkit ItemStack to create from
      * @param itemMetaConsumer the consumer to modify the item metadata
      */
-    public CustomItemStack(@NotNull ItemStack itemStack, @NotNull Consumer<ItemMeta> itemMetaConsumer) {
+    public CustomItemStack(ItemStack itemStack, Consumer<ItemMeta> itemMetaConsumer) {
         this.delegate = itemStack.clone();
         Preconditions.checkNotNull(itemMetaConsumer, "ItemMeta consumer cannot be null");
         editItemMeta(itemMetaConsumer);
@@ -90,7 +91,7 @@ public class CustomItemStack implements Cloneable {
      * @param material the Material to create from
      * @param meta     the consumer to modify the item metadata
      */
-    public CustomItemStack(@NotNull Material material, @NotNull Consumer<ItemMeta> meta) {
+    public CustomItemStack(Material material, Consumer<ItemMeta> meta) {
         this(new ItemStack(material), meta);
     }
 
@@ -101,7 +102,7 @@ public class CustomItemStack implements Cloneable {
      * @param name      the name of the item
      * @param lore      the lore of the item
      */
-    public CustomItemStack(@NotNull ItemStack itemStack, @Nullable String name, @NotNull List<String> lore) {
+    public CustomItemStack(ItemStack itemStack, @Nullable String name, List<String> lore) {
         this(itemStack, name, lore.toArray(new String[0]));
     }
 
@@ -112,7 +113,7 @@ public class CustomItemStack implements Cloneable {
      * @param name      the name of the item
      * @param lore      the lore of the item
      */
-    public CustomItemStack(@NotNull ItemStack itemStack, @Nullable String name, @NotNull String @NotNull ... lore) {
+    public CustomItemStack(ItemStack itemStack, @Nullable String name, String... lore) {
         this(itemStack, itemMeta -> {
             if (name != null) {
                 itemMeta.setDisplayName(color(name));
@@ -135,7 +136,7 @@ public class CustomItemStack implements Cloneable {
      * @param name      the name of the item
      * @param lore      the lore of the item
      */
-    public CustomItemStack(@NotNull ItemStack itemStack, Color color, @Nullable String name, String @NotNull ... lore) {
+    public CustomItemStack(ItemStack itemStack, Color color, @Nullable String name, String... lore) {
         this(itemStack, itemMeta -> {
             if (name != null) {
                 itemMeta.setDisplayName(color(name));
@@ -163,7 +164,7 @@ public class CustomItemStack implements Cloneable {
      * @param name     the name of the item
      * @param lore     the lore of the item
      */
-    public CustomItemStack(@NotNull Material material, String name, String... lore) {
+    public CustomItemStack(Material material, @Nullable String name, String... lore) {
         this(new ItemStack(material), name, lore);
     }
 
@@ -174,7 +175,7 @@ public class CustomItemStack implements Cloneable {
      * @param name     the name of the item
      * @param lore     the lore of the item
      */
-    public CustomItemStack(@NotNull Material material, String name, @NotNull List<String> lore) {
+    public CustomItemStack(Material material, @Nullable String name, List<String> lore) {
         this(new ItemStack(material), name, lore.toArray(new String[0]));
     }
 
@@ -184,7 +185,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemStack the Bukkit ItemStack to create from
      * @param list      the list of lore
      */
-    public CustomItemStack(@NotNull ItemStack itemStack, @NotNull List<String> list) {
+    public CustomItemStack(ItemStack itemStack, List<String> list) {
         this(itemStack, list.get(0), list.subList(1, list.size()).toArray(new String[0]));
     }
 
@@ -194,7 +195,7 @@ public class CustomItemStack implements Cloneable {
      * @param material the Material to create from
      * @param list     the list of lore
      */
-    public CustomItemStack(@NotNull Material material, @NotNull List<String> list) {
+    public CustomItemStack(Material material, List<String> list) {
         this(new ItemStack(material), list);
     }
 
@@ -204,7 +205,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemStack the Bukkit ItemStack to create from
      * @param amount    the amount of the item
      */
-    public CustomItemStack(@NotNull ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
+    public CustomItemStack(ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
         this.delegate = itemStack.clone();
         this.delegate.setAmount(amount);
     }
@@ -215,7 +216,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemStack the Bukkit ItemStack to create from
      * @param material  the Material of the item
      */
-    public CustomItemStack(@NotNull ItemStack itemStack, @NotNull Material material) {
+    public CustomItemStack(ItemStack itemStack, Material material) {
         this.delegate = itemStack.clone();
         this.delegate.setType(material);
     }
@@ -226,7 +227,7 @@ public class CustomItemStack implements Cloneable {
      * @param raw the string to translate
      * @return the translated string
      */
-    public static @NotNull String color(@NotNull String raw) {
+    public static String color(String raw) {
         return ChatColors.color(Preconditions.checkNotNull(raw, "raw cannot be null"));
     }
 
@@ -235,7 +236,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the delegate Bukkit ItemStack
      */
-    public @NotNull ItemStack getDelegate() {
+    public ItemStack getDelegate() {
         return delegate.clone();
     }
 
@@ -244,7 +245,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the Material of the item
      */
-    public @NotNull Material getType() {
+    public Material getType() {
         return delegate.getType();
     }
 
@@ -253,7 +254,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @param material the Material to set
      */
-    public void setType(@NotNull Material material) {
+    public void setType(Material material) {
         delegate.setType(material);
     }
 
@@ -309,7 +310,7 @@ public class CustomItemStack implements Cloneable {
      * @param flags the item flags to add
      * @return the CustomItemStack with the added flags
      */
-    public @NotNull CustomItemStack addFlags(@NotNull ItemFlag @NotNull ... flags) {
+    public CustomItemStack addFlags(ItemFlag... flags) {
         Preconditions.checkNotNull(flags, "flags cannot be null");
         Preconditions.checkArgument(flags.length > 0, "flags cannot be empty");
         return editItemMeta(meta -> meta.addItemFlags(flags));
@@ -320,7 +321,7 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the Bukkit ItemStack
      */
-    public @NotNull ItemStack asBukkit() {
+    public ItemStack asBukkit() {
         return delegate.clone();
     }
 
@@ -330,7 +331,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemMetaConsumer the consumer to modify the item metadata
      * @return the CustomItemStack with the edited metadata
      */
-    public @NotNull CustomItemStack editItemMeta(@NotNull Consumer<ItemMeta> itemMetaConsumer) {
+    public CustomItemStack editItemMeta(Consumer<ItemMeta> itemMetaConsumer) {
         Preconditions.checkNotNull(itemMetaConsumer, "ItemMeta consumer cannot be null");
 
         ItemMeta meta = delegate.getItemMeta();
@@ -347,7 +348,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemStackConsumer the consumer to modify the item stack
      * @return the CustomItemStack with the edited stack
      */
-    public @NotNull CustomItemStack editItemStack(@NotNull Consumer<ItemStack> itemStackConsumer) {
+    public CustomItemStack editItemStack(Consumer<ItemStack> itemStackConsumer) {
         Preconditions.checkNotNull(itemStackConsumer, "ItemStack consumer cannot be null");
 
         itemStackConsumer.accept(delegate);
@@ -360,7 +361,7 @@ public class CustomItemStack implements Cloneable {
      * @param data the custom model data to set
      * @return the CustomItemStack with the set custom model data
      */
-    public @NotNull CustomItemStack setCustomModelData(@Range(from = 0, to = Integer.MAX_VALUE) int data) {
+    public CustomItemStack setCustomModelData(@Range(from = 0, to = Integer.MAX_VALUE) int data) {
         return editItemMeta(meta -> meta.setCustomModelData(data == 0 ? null : data));
     }
 
@@ -370,7 +371,7 @@ public class CustomItemStack implements Cloneable {
      * @return the cloned CustomItemStack
      */
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public @NotNull CustomItemStack clone() {
+    public CustomItemStack clone() {
         return new CustomItemStack(getDelegate());
     }
 }

@@ -27,11 +27,14 @@
 
 package com.balugaq.jeg.api.objects.exceptions;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * @author balugaq
  * @since 1.6
  */
 @SuppressWarnings("unused")
+@NullMarked
 public class ArgumentMissingException extends RuntimeException {
     public ArgumentMissingException() {
         super();

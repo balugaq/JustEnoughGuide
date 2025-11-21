@@ -28,12 +28,13 @@
 package com.balugaq.jeg.api.objects.ids;
 
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.UUID;
 
 @SuppressWarnings("unused")
 @Data
+@NullMarked
 public class CustomID {
-    private final @NotNull UUID uuid;
+    private final UUID uuid;
 }

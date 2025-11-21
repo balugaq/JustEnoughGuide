@@ -27,10 +27,13 @@
 
 package com.balugaq.jeg.core.integrations;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * @author balugaq
  * @since 1.9
  */
+@NullMarked
 public interface Integration {
     String getHookPlugin();
 

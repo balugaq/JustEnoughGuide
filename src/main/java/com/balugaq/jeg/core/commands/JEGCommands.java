@@ -35,8 +35,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +49,11 @@ import java.util.List;
  */
 @SuppressWarnings({"unused", "deprecation", "ConstantValue"})
 @Getter
+@NullMarked
 public class JEGCommands implements TabExecutor {
     private final JavaPlugin plugin;
     private final List<JEGCommand> commands = new ArrayList<>();
-    private final @NotNull JEGCommand defaultCommand;
+    private final JEGCommand defaultCommand;
 
     public JEGCommands(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -65,10 +66,10 @@ public class JEGCommands implements TabExecutor {
 
     @Override
     public boolean onCommand(
-            final @NotNull CommandSender sender,
-            final @NotNull Command command,
-            final @NotNull String label,
-            final @NotNull String @NotNull [] args) {
+            final CommandSender sender,
+            final Command command,
+            final String label,
+            final String[] args) {
         if (!sender.isOp()) {
             sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
             return false;
@@ -92,7 +93,7 @@ public class JEGCommands implements TabExecutor {
         return true;
     }
 
-    public @NotNull List<String> onTabCompleteRaw(@NotNull CommandSender sender, @NotNull String[] args) {
+    public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         List<String> result = new ArrayList<>();
         for (JEGCommand jegCommand : this.commands) {
             List<String> partial = jegCommand.onTabCompleteRaw(sender, args);
@@ -106,10 +107,10 @@ public class JEGCommands implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(
-            final @NotNull CommandSender sender,
-            final @NotNull Command command,
-            final @NotNull String label,
-            final @NotNull String @NotNull [] args) {
+            final CommandSender sender,
+            final Command command,
+            final String label,
+            final String[] args) {
         if (sender.isOp()) {
             List<String> raw = onTabCompleteRaw(sender, args);
             return StringUtil.copyPartialMatches(args[args.length - 1], raw, new ArrayList<>());

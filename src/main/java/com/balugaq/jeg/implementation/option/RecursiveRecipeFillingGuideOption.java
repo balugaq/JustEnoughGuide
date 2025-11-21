@@ -29,6 +29,7 @@ package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
@@ -39,7 +40,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
@@ -50,33 +51,34 @@ import static com.balugaq.jeg.api.recipe_complete.source.base.Source.RECIPE_DEPT
  * @since 1.9
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
+@NullMarked
 public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<Integer> {
-    public static final @NotNull RecursiveRecipeFillingGuideOption instance = new RecursiveRecipeFillingGuideOption();
+    public static final RecursiveRecipeFillingGuideOption instance = new RecursiveRecipeFillingGuideOption();
 
-    public static @NotNull RecursiveRecipeFillingGuideOption instance() {
+    public static RecursiveRecipeFillingGuideOption instance() {
         return instance;
     }
 
-    public static @NotNull NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "recursive_recipe_filling");
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("recursive_recipe_filling");
     }
 
-    public static int getDepth(@NotNull Player p) {
+    public static int getDepth(Player p) {
         return PersistentDataAPI.getInt(p, key0(), 1);
     }
 
     @Override
-    public @NotNull SlimefunAddon getAddon() {
+    public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return key0();
     }
 
     @Override
-    public @NotNull Optional<ItemStack> getDisplayItem(@NotNull Player p, ItemStack guide) {
+    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         int value = getSelectedOption(p, guide).orElse(1);
         if (value > RECIPE_DEPTH_THRESHOLD) {
             value = RECIPE_DEPTH_THRESHOLD;
@@ -98,7 +100,7 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
     }
 
     @Override
-    public void onClick(@NotNull Player p, @NotNull ItemStack guide) {
+    public void onClick(Player p, ItemStack guide) {
         p.closeInventory();
         p.sendMessage(ChatColors.color("&a请输入配方补全深度"));
         ChatInput.waitForPlayer(JustEnoughGuide.getInstance(), p, s -> {
@@ -118,12 +120,12 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
     }
 
     @Override
-    public @NotNull Optional<Integer> getSelectedOption(@NotNull Player p, ItemStack guide) {
+    public Optional<Integer> getSelectedOption(Player p, ItemStack guide) {
         return Optional.of(getDepth(p));
     }
 
     @Override
-    public void setSelectedOption(@NotNull Player p, ItemStack guide, Integer value) {
+    public void setSelectedOption(Player p, ItemStack guide, Integer value) {
         PersistentDataAPI.setInt(p, getKey(), value);
     }
 }
