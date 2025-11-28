@@ -112,37 +112,39 @@ public interface SlimefunSource extends Source {
         }
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
-        RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
-            BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
-            if (actualMenu == null) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return;
-            }
+        RecipeCompletableListener.addCallback(
+                player.getUniqueId(), ((event, profile) -> {
+                    BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
+                    if (actualMenu == null) {
+                        if (callback != null) {
+                            callback.run();
+                        }
+                        return;
+                    }
 
-            if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return;
-            }
+                    if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
+                        if (callback != null) {
+                            callback.run();
+                        }
+                        return;
+                    }
 
-            int times = 1;
-            if (event.getClickAction().isRightClicked()) {
-                times = 64;
-            }
+                    int times = 1;
+                    if (event.getClickAction().isRightClicked()) {
+                        times = 64;
+                    }
 
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(actualMenu, event, ingredientSlots, unordered, recipeDepth);
-            }
+                    for (int i = 0; i < times; i++) {
+                        completeRecipeWithGuide(actualMenu, event, ingredientSlots, unordered, recipeDepth);
+                    }
 
-            player.updateInventory();
-            actualMenu.open(player);
-            if (callback != null) {
-                callback.run();
-            }
-        }));
+                    player.updateInventory();
+                    actualMenu.open(player);
+                    if (callback != null) {
+                        callback.run();
+                    }
+                })
+        );
         RecipeCompletableListener.tagGuideOpen(player);
         return true;
     }

@@ -63,9 +63,12 @@ public class RTSEvents {
         /**
          * Constructs a new CloseRTSEvent.
          *
-         * @param player        The player who closed the RTS.
-         * @param stateSnapshot The state snapshot of the anvil GUI.
-         * @param guideMode     The guide mode.
+         * @param player
+         *         The player who closed the RTS.
+         * @param stateSnapshot
+         *         The state snapshot of the anvil GUI.
+         * @param guideMode
+         *         The guide mode.
          */
         public CloseRTSEvent(Player player, AnvilGUI.StateSnapshot stateSnapshot, SlimefunGuideMode guideMode) {
             super(!Bukkit.isPrimaryThread());
@@ -114,9 +117,12 @@ public class RTSEvents {
         /**
          * Constructs a new OpenRTSEvent.
          *
-         * @param player           The player who opened the RTS.
-         * @param openingInventory The opening inventory.
-         * @param guideMode        The guide mode.
+         * @param player
+         *         The player who opened the RTS.
+         * @param openingInventory
+         *         The opening inventory.
+         * @param guideMode
+         *         The guide mode.
          */
         public OpenRTSEvent(Player player, AnvilInventory openingInventory, SlimefunGuideMode guideMode) {
             this(player, openingInventory, guideMode, null);
@@ -125,10 +131,14 @@ public class RTSEvents {
         /**
          * Constructs a new OpenRTSEvent.
          *
-         * @param player           The player who opened the RTS.
-         * @param openingInventory The opening inventory.
-         * @param guideMode        The guide mode.
-         * @param presetSearchTerm The preset search term.
+         * @param player
+         *         The player who opened the RTS.
+         * @param openingInventory
+         *         The opening inventory.
+         * @param guideMode
+         *         The guide mode.
+         * @param presetSearchTerm
+         *         The preset search term.
          */
         public OpenRTSEvent(
                 Player player,
@@ -183,12 +193,18 @@ public class RTSEvents {
         /**
          * Constructs a new SearchTermChangeEvent.
          *
-         * @param player           The player who changed the search term.
-         * @param inventoryView    The inventory view (as Object for compatibility).
-         * @param openingInventory The opening inventory.
-         * @param oldSearchTerm    The old search term.
-         * @param newSearchTerm    The new search term.
-         * @param guideMode        The guide mode.
+         * @param player
+         *         The player who changed the search term.
+         * @param inventoryView
+         *         The inventory view (as Object for compatibility).
+         * @param openingInventory
+         *         The opening inventory.
+         * @param oldSearchTerm
+         *         The old search term.
+         * @param newSearchTerm
+         *         The new search term.
+         * @param guideMode
+         *         The guide mode.
          */
         public SearchTermChangeEvent(
                 Player player,
@@ -246,10 +262,14 @@ public class RTSEvents {
         /**
          * Constructs a new ClickAnvilItemEvent.
          *
-         * @param player        The player who clicked the anvil item.
-         * @param stateSnapshot The state snapshot of the anvil GUI.
-         * @param slot          The slot that was clicked.
-         * @param guideMode     The guide mode.
+         * @param player
+         *         The player who clicked the anvil item.
+         * @param stateSnapshot
+         *         The state snapshot of the anvil GUI.
+         * @param slot
+         *         The slot that was clicked.
+         * @param guideMode
+         *         The guide mode.
          */
         public ClickAnvilItemEvent(
                 Player player, AnvilGUI.StateSnapshot stateSnapshot, int slot, SlimefunGuideMode guideMode) {
@@ -292,7 +312,8 @@ public class RTSEvents {
         /**
          * Sets the cancellation state of the event.
          *
-         * @param cancelled the cancellation state
+         * @param cancelled
+         *         the cancellation state
          */
         @Override
         public void setCancelled(boolean cancelled) {
@@ -321,11 +342,16 @@ public class RTSEvents {
         /**
          * Constructs a new PageChangeEvent.
          *
-         * @param player           The player who changed the page.
-         * @param openingInventory The opening inventory.
-         * @param oldPage          The old page number.
-         * @param newPage          The new page number.
-         * @param guideMode        The guide mode.
+         * @param player
+         *         The player who changed the page.
+         * @param openingInventory
+         *         The opening inventory.
+         * @param oldPage
+         *         The old page number.
+         * @param newPage
+         *         The new page number.
+         * @param guideMode
+         *         The guide mode.
          */
         public PageChangeEvent(
                 Player player, AnvilInventory openingInventory, int oldPage, int newPage, SlimefunGuideMode guideMode) {
@@ -359,7 +385,8 @@ public class RTSEvents {
         /**
          * Sets the cancellation state of the event.
          *
-         * @param cancelled the cancellation state
+         * @param cancelled
+         *         the cancellation state
          */
         @Override
         public void setCancelled(boolean cancelled) {

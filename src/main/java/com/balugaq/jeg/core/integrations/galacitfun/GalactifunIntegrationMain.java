@@ -41,7 +41,7 @@ import java.util.List;
  */
 @NullMarked
 public class GalactifunIntegrationMain implements Integration {
-    public static final int[] ASSEMBLY_TABLE_INPUT_SLOTS = new int[]{
+    public static final int[] ASSEMBLY_TABLE_INPUT_SLOTS = new int[] {
             0, 1, 2, 3, 4, 5,
             9, 10, 11, 12, 13, 14,
             18, 19, 20, 21, 22, 23,

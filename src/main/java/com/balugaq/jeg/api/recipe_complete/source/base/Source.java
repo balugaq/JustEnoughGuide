@@ -64,8 +64,9 @@ public interface Source {
         SlimefunItem sf = SlimefunItem.getByItem(itemStack);
         if (sf != null) {
             List<@Nullable RecipeChoice> raw = new ArrayList<>(Arrays.stream(sf.getRecipe())
-                    .map(item -> item == null ? null : new SimpleRecipeChoice(item))
-                    .toList());
+                                                                       .map(item -> item == null ? null :
+                                                                               new SimpleRecipeChoice(item))
+                                                                       .toList());
 
             for (int i = raw.size(); i < 9; i++) {
                 raw.add(null);
@@ -111,7 +112,7 @@ public interface Source {
     }
 
     default @Nullable ItemStack getItemStackFromPlayerInventory(Player player, ItemStack itemStack) {
-        return getItemStackFromPlayerInventory(player, itemStack, 1);
+        return getItemStackFromPlayerInventory(player, itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
     }
 
     default @Nullable ItemStack getItemStackFromPlayerInventory(Player player, ItemStack itemStack, int amount) {

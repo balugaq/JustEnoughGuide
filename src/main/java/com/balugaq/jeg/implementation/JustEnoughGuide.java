@@ -90,8 +90,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 /**
- * This is the main class of the JustEnoughGuide plugin.
- * It depends on the Slimefun4 plugin and provides a set of features to improve the game experience.
+ * This is the main class of the JustEnoughGuide plugin. It depends on the Slimefun4 plugin and provides a set of
+ * features to improve the game experience.
  *
  * @author balugaq
  * @since 1.0
@@ -283,10 +283,12 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
             newGuides.put(
                     SlimefunGuideMode.SURVIVAL_MODE,
-                    survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide());
+                    survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide()
+            );
             newGuides.put(
                     SlimefunGuideMode.CHEAT_MODE,
-                    cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide());
+                    cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide()
+            );
 
             try {
                 ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
@@ -465,7 +467,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     /**
      * Logs a debug message if debugging is enabled.
      *
-     * @param message the debug message to log
+     * @param message
+     *         the debug message to log
      */
     public void debug(String message) {
         if (getConfigManager().isDebug()) {
@@ -495,7 +498,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         } else if (!minecraftVersion.isAtLeast(RECOMMENDED_MC_VERSION)) {
             getLogger()
                     .warning("当前 Minecraft 版本过低(" + minecraftVersion.humanize() + "), 请使用 Minecraft "
-                            + RECOMMENDED_MC_VERSION.humanize() + " 或以上版本!");
+                                     + RECOMMENDED_MC_VERSION.humanize() + " 或以上版本!");
         }
 
         if (javaVersion < RECOMMENDED_JAVA_VERSION) {

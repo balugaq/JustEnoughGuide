@@ -56,6 +56,7 @@ public class StrainerBaseData extends MachineData {
                     add(POTATO);
                 }}).toArray(new ItemStack[0]),
                 40,
-                0));
+                0
+        ));
     }
 }

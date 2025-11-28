@@ -28,8 +28,7 @@
 package com.balugaq.jeg.api.objects.events;
 
 /**
- * This package contains all the events which are
- * used in JEG and outer connection.
+ * This package contains all the events which are used in JEG and outer connection.
  *
  * @author balugaq
  * @since 1.3

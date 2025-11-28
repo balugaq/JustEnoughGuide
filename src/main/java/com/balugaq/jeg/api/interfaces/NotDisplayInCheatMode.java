@@ -37,15 +37,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to indicate that a class should not be displayed in the cheat mode menu.
- * Priority higher than {@link DisplayInCheatMode}
+ * This annotation is used to indicate that a class should not be displayed in the cheat mode menu. Priority higher than
+ * {@link DisplayInCheatMode}
  * <p>
  * Usage:
  * <p>
- * &#064;NotDisplayInCheatMode
- * public class MyGroup extends ItemGroup {
- * //...
- * }
+ * &#064;NotDisplayInCheatMode public class MyGroup extends ItemGroup { //... }
  *
  * @author balugaq
  * @since 1.1

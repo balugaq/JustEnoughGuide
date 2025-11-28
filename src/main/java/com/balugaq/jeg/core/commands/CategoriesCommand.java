@@ -70,10 +70,14 @@ public class CategoriesCommand implements JEGCommand {
     /**
      * Populates the category gui. 45 items per page.
      *
-     * @param menu   the SCMenu to populate
-     * @param groups the List of itemgroups
-     * @param page   the page number
-     * @param p      the player that will be viewing this menu
+     * @param menu
+     *         the SCMenu to populate
+     * @param groups
+     *         the List of itemgroups
+     * @param page
+     *         the page number
+     * @param p
+     *         the player that will be viewing this menu
      */
     @SuppressWarnings("deprecation")
     private static void populateCategoryMenu(
@@ -106,11 +110,13 @@ public class CategoriesCommand implements JEGCommand {
                 catMeta.setLore(categoryLore);
                 catItem.setItemMeta(catMeta);
                 menu.replaceExistingItem(i, catItem);
-                menu.addMenuClickHandler(i, (p1, s1, i1, a1) -> {
-                    ClipboardUtil.send(p1, "&d点击复制: " + id, "&d点击复制", id);
-                    ClipboardUtil.send(p1, "&d点击复制: " + className, "&d点击复制", className);
-                    return false;
-                });
+                menu.addMenuClickHandler(
+                        i, (p1, s1, i1, a1) -> {
+                            ClipboardUtil.send(p1, "&d点击复制: " + id, "&d点击复制", id);
+                            ClipboardUtil.send(p1, "&d点击复制: " + className, "&d点击复制", className);
+                            return false;
+                        }
+                );
             } else {
                 menu.replaceExistingItem(i, Converter.getItem(ItemStackUtil.getCleanItem(null)));
             }
@@ -118,18 +124,22 @@ public class CategoriesCommand implements JEGCommand {
 
         if (page > 1) {
             menu.replaceExistingItem(46, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a上一页"));
-            menu.addMenuClickHandler(46, (pl, s, is, action) -> {
-                populateCategoryMenu(menu, groups, page - 1, p);
-                return false;
-            });
+            menu.addMenuClickHandler(
+                    46, (pl, s, is, action) -> {
+                        populateCategoryMenu(menu, groups, page - 1, p);
+                        return false;
+                    }
+            );
         }
 
         if (getItemGroupOrNull(groups, 45 * page + 1) != null) {
             menu.replaceExistingItem(52, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a下一页"));
-            menu.addMenuClickHandler(52, (pl, s, is, action) -> {
-                populateCategoryMenu(menu, groups, page + 1, p);
-                return false;
-            });
+            menu.addMenuClickHandler(
+                    52, (pl, s, is, action) -> {
+                        populateCategoryMenu(menu, groups, page + 1, p);
+                        return false;
+                    }
+            );
         }
     }
 

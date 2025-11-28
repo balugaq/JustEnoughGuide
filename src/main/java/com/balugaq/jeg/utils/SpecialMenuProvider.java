@@ -122,7 +122,8 @@ public class SpecialMenuProvider {
                     PlayerProfile.class,
                     SlimefunGuideMode.class,
                     SlimefunItem.class,
-                    int.class);
+                    int.class
+            );
             if (method != null) {
                 method.setAccessible(true);
                 methodRecipeItemGroup_getBySlimefunItem = method;
@@ -219,7 +220,8 @@ public class SpecialMenuProvider {
                     try {
                         Method method = ReflectionUtil.getMethod(
                                 Class.forName("me.matl114.logitech.utils.util_class.menu_class.MenuFactory"),
-                                "buildGuide");
+                                "buildGuide"
+                        );
                         if (method != null) {
                             method.setAccessible(true);
                             methodMenuFactory_buildGuide = method;
@@ -323,7 +325,8 @@ public class SpecialMenuProvider {
                     Class.forName("io.github.mooy1.infinityexpansion.categories.InfinityGroup$BackEntry"),
                     BlockMenu.class,
                     PlayerProfile.class,
-                    SlimefunGuideImplementation.class);
+                    SlimefunGuideImplementation.class
+            );
             if (constructor != null) {
                 constructor.setAccessible(true);
                 constructorInfinityExpansion_BackEntry = constructor;
@@ -361,7 +364,8 @@ public class SpecialMenuProvider {
                     Class.forName("me.lucasgithuber.obsidianexpansion.utils.ObsidianForgeGroup$BackEntry"),
                     BlockMenu.class,
                     PlayerProfile.class,
-                    SlimefunGuideImplementation.class);
+                    SlimefunGuideImplementation.class
+            );
             if (constructor != null) {
                 constructor.setAccessible(true);
                 constructorObsidianExpansion_BackEntry = constructor;
@@ -550,7 +554,8 @@ public class SpecialMenuProvider {
         } catch (Throwable ignored) {
             try {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(
-                        null, slimefunItem, new CustomMenuHandlerImpl_utils(), null); // Why catch Throwable failed, fuck Logitech
+                        null, slimefunItem, new CustomMenuHandlerImpl_utils(), null); // Why catch Throwable failed,
+                // fuck Logitech
             } catch (Throwable ignored2) {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, null, null);
             }
@@ -756,10 +761,12 @@ public class SpecialMenuProvider {
     }
 
     /**
-     * This method is used to insert useless history into the player profile.
-     * It is used to fix the bug of the special menu not working in some cases.
+     * This method is used to insert useless history into the player profile. It is used to fix the bug of the special
+     * menu not working in some cases.
      *
-     * @param playerProfile The player profile to insert useless history
+     * @param playerProfile
+     *         The player profile to insert useless history
+     *
      * @author balugaq
      * @see SpecialMenuFixListener
      * @since 1.3

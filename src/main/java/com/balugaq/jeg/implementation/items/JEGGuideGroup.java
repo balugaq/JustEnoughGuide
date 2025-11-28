@@ -105,7 +105,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 Debug.trace(e);
                             }
                             return false;
-                        }));
+                        }
+                )
+        );
 
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
@@ -118,7 +120,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         doIf(
                 JustEnoughGuide.getConfigManager().isBookmark(),
@@ -130,7 +133,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 "&b介绍: 你可以打开一个物品组，对于支持的附属。",
                                 "&b      你可以点击物品组界面下方的“书”图标以进入标记状态。",
                                 "&a      点击返回按钮以退出标记状态。",
-                                "&b点击尝试功能。"),
+                                "&b点击尝试功能。"
+                        ),
                         (p, s, i, a) -> {
                             try {
                                 if (Slimefun.instance() == null) {
@@ -165,7 +169,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 Debug.trace(e);
                             }
                             return false;
-                        }));
+                        }
+                )
+        );
 
         doIf(
                 JustEnoughGuide.getConfigManager().isBookmark(),
@@ -177,7 +183,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 "&b介绍: 你可以查看你标记过的物品。",
                                 "&b      你可以点击物品组界面下方的“下界之星”图标以查看标记过的物品。",
                                 "&a      点击返回按钮以退出查看状态。",
-                                "&b点击尝试功能。"),
+                                "&b点击尝试功能。"
+                        ),
                         (p, s, i, a) -> {
                             try {
                                 if (Slimefun.instance() == null) {
@@ -203,7 +210,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 Debug.trace(e);
                             }
                             return false;
-                        }));
+                        }
+                )
+        );
 
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
@@ -212,7 +221,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b功能: 跳转物品组",
                         "&b介绍: 当你在查阅一个物品的配方时，你可以快速跳转到所需物品所属的物品组。",
                         "&b      你可以 Shift + 左键 点击所需物品，以快速跳转到该物品所属的物品组。",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         if (Slimefun.instance() == null) {
@@ -249,7 +259,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
@@ -258,7 +269,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b功能: 快速搜索",
                         "&b介绍: 当你在查阅一个物品的配方时，你可以快速搜索物品、材料、配方类型的名字",
                         "&b      你可以 Shift + 右键 点击所需物品，你可以快速搜索物品、材料、配方类型的名字",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         if (Slimefun.instance() == null) {
@@ -300,7 +312,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         doIf(
                 Slimefun.getConfigManager().isResearchingEnabled(),
@@ -310,7 +323,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 Material.ENCHANTED_BOOK,
                                 "&b功能: 便携研究",
                                 "&b介绍: 你可以当你在查看物品的配方时，如果有未解锁的物品，可以点击以快速解锁。",
-                                "&b点击尝试功能。"),
+                                "&b点击尝试功能。"
+                        ),
                         (p, s, i, a) -> {
                             try {
                                 if (Slimefun.instance() == null) {
@@ -348,7 +362,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 Debug.trace(e);
                             }
                             return false;
-                        }));
+                        }
+                )
+        );
 
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
@@ -357,7 +373,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b功能: 智能搜索",
                         "&b介绍: 当你使用搜索时，会自动搜索相关的机器，并添加到显示列表中",
                         "&c     不支持拼音搜索。",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search 硫酸盐");
@@ -366,7 +383,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         String flag_recipe_item_name = FilterType.BY_RECIPE_ITEM_NAME.getSymbol();
         addGuide(
@@ -378,7 +396,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b      例如: " + flag_recipe_item_name + "电池 附加搜索 配方使用的物品的名字包含\"电池\" 的物品",
                         "&c      不支持拼音搜索。",
                         "&c      附加搜索会组合生效",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_recipe_item_name + "电池");
@@ -387,7 +406,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         String flag_recipe_type_name = FilterType.BY_RECIPE_TYPE_NAME.getSymbol();
         addGuide(
@@ -399,7 +419,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b      例如: " + flag_recipe_type_name + "工作台 附加搜索 配方类型名称包含\"工作台\" 的物品",
                         "&c      不支持拼音搜索。",
                         "&c      附加搜索会组合生效",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_recipe_type_name + "工作台");
@@ -408,7 +429,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         String flag_display_item_name = FilterType.BY_DISPLAY_ITEM_NAME.getSymbol();
         addGuide(
@@ -420,7 +442,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b      例如: " + flag_display_item_name + "铜粉 附加搜索 配方展示涉及的物品的名字包含\"铜粉\" 的物品",
                         "&c      不支持拼音搜索。",
                         "&c      附加搜索会组合生效",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_display_item_name + "铜粉");
@@ -429,7 +452,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         String flag_addon_name = FilterType.BY_ADDON_NAME.getSymbol();
         addGuide(
@@ -441,7 +465,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b      例如: " + flag_addon_name + "粘液科技 附加搜索 附属名称包含\"粘液科技\" 的物品",
                         "&c      不支持拼音搜索。",
                         "&c      附加搜索会组合生效",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_addon_name + "粘液科技");
@@ -450,7 +475,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         String flag_item_name = FilterType.BY_ITEM_NAME.getSymbol();
         addGuide(
@@ -462,7 +488,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b      例如: " + flag_item_name + "电池 附加搜索 物品名称包含\"电池\" 的物品",
                         "&b      支持拼音搜索。",
                         "&c      附加搜索会组合生效",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_item_name + "电池");
@@ -471,7 +498,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         String flag_item_lore = FilterType.BY_ITEM_LORE.getSymbol();
         addGuide(
@@ -493,7 +521,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         String flag_material_name = FilterType.BY_MATERIAL_NAME.getSymbol();
         addGuide(
@@ -505,7 +534,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         "&b      例如: " + flag_material_name + "iron 附加搜索 物品材质名称包含\"iron\" 的物品",
                         "&c      不支持拼音搜索。",
                         "&c      附加搜索会组合生效",
-                        "&b点击尝试功能。"),
+                        "&b点击尝试功能。"
+                ),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search " + flag_material_name + "iron");
@@ -514,7 +544,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
@@ -561,7 +592,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                         Debug.trace(e);
                     }
                     return false;
-                });
+                }
+        );
 
         Formats.helper.renderCustom(this);
     }

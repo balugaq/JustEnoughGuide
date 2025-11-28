@@ -65,24 +65,29 @@ public class ItemsSetup {
                 // @formatter:on
         );
 
-        USAGE_INFO = new SlimefunItem(GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
+        USAGE_INFO = new SlimefunItem(
+                GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new @Nullable ItemStack[] {
                 null, null, null,
                 null, null, null,
                 null, null, null
-        });
+        }
+        );
 
-        MECHANISM = new SlimefunItem(GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[]{
+        MECHANISM = new SlimefunItem(
+                GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[] {
                 null, null, null,
                 null, null, null,
                 null, null, null
-        });
+        }
+        );
 
         SUPPORTED_ADDONS_INFO = new SlimefunItem(
-                GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
+                GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[] {
                 null, null, null,
                 null, null, null,
                 null, null, null
-        });
+        }
+        );
     }
 
     public static void setup(SlimefunAddon addon) {

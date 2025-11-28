@@ -127,10 +127,14 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
                         if (depthInRange(player, recipeDepth + 1)) {
                             completeRecipeWithGuide(
                                     blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
+                                                                         event.getClickedSlot(),
+                                                                         event.getClickAction(), event.getMenu(),
+                                                                         event.getGuide()),
                                     ingredientSlots,
                                     unordered,
-                                    recipeDepth + 1);
+                                    recipeDepth + 1
+                            );
                         } else {
                             sendMissingMaterial(player, itemStack);
                         }
@@ -149,10 +153,14 @@ public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSo
                         if (depthInRange(player, recipeDepth + 1)) {
                             completeRecipeWithGuide(
                                     blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
+                                                                         event.getClickedSlot(),
+                                                                         event.getClickAction(), event.getMenu(),
+                                                                         event.getGuide()),
                                     ingredientSlots,
                                     unordered,
-                                    recipeDepth + 1);
+                                    recipeDepth + 1
+                            );
                         } else {
                             sendMissingMaterial(player, itemStack);
                         }

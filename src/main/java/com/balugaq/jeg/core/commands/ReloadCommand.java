@@ -40,8 +40,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 
 /**
- * This is the implementation of the "/jeg reload" command.
- * It reloads the JEG plugin configuration.
+ * This is the implementation of the "/jeg reload" command. It reloads the JEG plugin configuration.
  *
  * @author balugaq
  * @since 1.1

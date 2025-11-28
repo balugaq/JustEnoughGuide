@@ -157,38 +157,45 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
 
         for (int ss : Formats.sub.getChars('b')) {
             chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
-            chestMenu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(
-                            new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                    playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
-                        }
-                        return false;
-                    }));
+            chestMenu.addMenuClickHandler(
+                    ss, (pl, s, is, action) -> EventUtil.callEvent(
+                                    new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
+                            .ifSuccess(() -> {
+                                GuideHistory guideHistory = playerProfile.getGuideHistory();
+                                if (action.isShiftClicked()) {
+                                    SlimefunGuide.openMainMenu(
+                                            playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                                } else {
+                                    guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                                }
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('S')) {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
-            chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        pl.closeInventory();
+            chestMenu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
+                                                                           implementation))
+                            .ifSuccess(() -> {
+                                pl.closeInventory();
 
-                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                        ChatInput.waitForPlayer(
-                                JustEnoughGuide.getInstance(),
-                                pl,
-                                msg -> implementation.openSearch(
-                                        playerProfile,
-                                        msg,
-                                        implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE));
+                                Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                                ChatInput.waitForPlayer(
+                                        JustEnoughGuide.getInstance(),
+                                        pl,
+                                        msg -> implementation.openSearch(
+                                                playerProfile,
+                                                msg,
+                                                implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
+                                        )
+                                );
 
-                        return false;
-                    }));
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('P')) {
@@ -201,15 +208,21 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
                                     this.page,
                                     (this.objects.size() - 1)
                                             / Formats.sub.getChars('i').size()
-                                            + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        CustomGroup customGroup = this.getByPage(Math.max(this.page - 1, 1));
-                        customGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    }));
+                                            + 1
+                            )
+                    )
+            );
+            chestMenu.addMenuClickHandler(
+                    ss, (p, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
+                                                                             implementation))
+                            .ifSuccess(() -> {
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                CustomGroup customGroup = this.getByPage(Math.max(this.page - 1, 1));
+                                customGroup.open(player, playerProfile, slimefunGuideMode);
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('N')) {
@@ -222,19 +235,26 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
                                     this.page,
                                     (this.objects.size() - 1)
                                             / Formats.sub.getChars('i').size()
-                                            + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        CustomGroup customGroup = this.getByPage(Math.min(
-                                this.page + 1,
-                                (this.objects.size() - 1)
-                                        / Formats.sub.getChars('i').size()
-                                        + 1));
-                        customGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    }));
+                                            + 1
+                            )
+                    )
+            );
+            chestMenu.addMenuClickHandler(
+                    ss, (p, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
+                                                                         implementation))
+                            .ifSuccess(() -> {
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                CustomGroup customGroup = this.getByPage(Math.min(
+                                        this.page + 1,
+                                        (this.objects.size() - 1)
+                                                / Formats.sub.getChars('i').size()
+                                                + 1
+                                ));
+                                customGroup.open(player, playerProfile, slimefunGuideMode);
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('B')) {
@@ -251,7 +271,8 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
                     OnDisplay.Item.display(player, item, OnDisplay.Item.Normal, implementation)
                             .at(chestMenu, contentSlots.get(i), page);
                 } else if (o instanceof ItemGroup itemGroup) {
-                    if (GuideUtil.getGuide(player, GuideListener.guideModeMap.getOrDefault(player, SlimefunGuideMode.SURVIVAL_MODE)) instanceof JEGSlimefunGuideImplementation guide) {
+                    if (GuideUtil.getGuide(player, GuideListener.guideModeMap.getOrDefault(player,
+                                                                                           SlimefunGuideMode.SURVIVAL_MODE)) instanceof JEGSlimefunGuideImplementation guide) {
                         guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));
                     }
                 }

@@ -301,7 +301,8 @@ public class ReflectionUtil {
                             Arrays.stream(args)
                                     .filter(Objects::nonNull)
                                     .map(Object::getClass)
-                                    .toArray(Class[]::new));
+                                    .toArray(Class[]::new)
+                    );
                 }
             }
 
@@ -340,7 +341,8 @@ public class ReflectionUtil {
                             Arrays.stream(args)
                                     .filter(Objects::nonNull)
                                     .map(Object::getClass)
-                                    .toArray(Class[]::new));
+                                    .toArray(Class[]::new)
+                    );
                 }
             }
             if (method != null) {

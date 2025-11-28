@@ -50,7 +50,9 @@ public class CooldownPool<Key> {
     /**
      * Check cooldown
      *
-     * @param key key
+     * @param key
+     *         key
+     *
      * @return true if cooldown is over, false otherwise
      */
     public boolean checkCooldown(Key key) {

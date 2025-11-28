@@ -41,7 +41,7 @@ import java.util.List;
  */
 @NullMarked
 public class WilderNetherIntegrationMain implements Integration {
-    public static final int[] BLACKSTONE_STOVE_INPUT_SLOTS = new int[]{12, 13, 14, 21, 22, 23, 25, 19};
+    public static final int[] BLACKSTONE_STOVE_INPUT_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 25, 19};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(String id, int[] slots, boolean unordered) {

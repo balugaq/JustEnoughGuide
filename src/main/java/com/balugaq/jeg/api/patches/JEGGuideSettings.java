@@ -127,7 +127,9 @@ public class JEGGuideSettings {
                 "guide.credits.description",
                 msg -> msg.replace(
                         "%contributors%",
-                        String.valueOf(github.getContributors().size()))));
+                        String.valueOf(github.getContributors().size())
+                )
+        ));
         contributorsLore.add("");
         contributorsLore.add("&7\u21E8 &e" + locale.getMessage(p, "guide.credits.open"));
 
@@ -257,11 +259,13 @@ public class JEGGuideSettings {
                                         "&7\u21E8 &eClick to go to the Slimefun4 Bug Tracker")));
                 // @formatter:on
 
-                menu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                    pl.closeInventory();
-                    ChatUtils.sendURL(pl, "https://github.com/SlimefunGuguProject/Slimefun4/issues");
-                    return false;
-                });
+                menu.addMenuClickHandler(
+                        ss, (pl, slot, item, action) -> {
+                            pl.closeInventory();
+                            ChatUtils.sendURL(pl, "https://github.com/SlimefunGuguProject/Slimefun4/issues");
+                            return false;
+                        }
+                );
             } else {
                 menu.addItem(ss, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
             }
@@ -274,11 +278,14 @@ public class JEGGuideSettings {
                             p,
                             Converter.getItem(
                                     Material.TOTEM_OF_UNDYING,
-                                    ChatColor.RED + locale.getMessage(p, "guide.work-in-progress"))),
+                                    ChatColor.RED + locale.getMessage(p, "guide.work-in-progress")
+                            )
+                    ),
                     (pl, slot, item, action) -> {
                         // Add something here
                         return false;
-                    });
+                    }
+            );
         }
     }
 
@@ -291,7 +298,8 @@ public class JEGGuideSettings {
         List<SlimefunGuideOption<?>> options = new ArrayList<>(getOptions());
         options.removeIf(option -> {
             String sm = option.getClass().getSimpleName();
-            return option.getAddon() instanceof Slimefun && (sm.equals("FireworksOption") || sm.equals("LearningAnimationOption"));
+            return option.getAddon() instanceof Slimefun && (sm.equals("FireworksOption") || sm.equals(
+                    "LearningAnimationOption"));
         });
         int maxPage = (int) Math.ceil(options.size() / (double) slots.size());
         List<SlimefunGuideOption<?>> split = options.stream()
@@ -312,10 +320,12 @@ public class JEGGuideSettings {
 
             if (item.isPresent()) {
                 menu.addItem(slot, PatchScope.GuideOption.patch(p, item.get()));
-                menu.addMenuClickHandler(slot, (pl, s, stack, action) -> {
-                    option.onClick(p, guide);
-                    return false;
-                });
+                menu.addMenuClickHandler(
+                        slot, (pl, s, stack, action) -> {
+                            option.onClick(p, guide);
+                            return false;
+                        }
+                );
             } else {
                 fail++;
             }
@@ -323,24 +333,28 @@ public class JEGGuideSettings {
 
         for (int ss : Formats.settings.getChars('P')) {
             menu.addItem(ss, ChestMenuUtils.getPreviousButton(p, page, maxPage));
-            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                if (page > 1) {
-                    openSettings(pl, guide, page - 1);
-                }
+            menu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> {
+                        if (page > 1) {
+                            openSettings(pl, guide, page - 1);
+                        }
 
-                return false;
-            });
+                        return false;
+                    }
+            );
         }
 
         for (int ss : Formats.settings.getChars('N')) {
             menu.addItem(ss, ChestMenuUtils.getNextButton(p, page, maxPage));
-            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                if (page + 1 < maxPage) {
-                    openSettings(pl, guide, page + 1);
-                }
+            menu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> {
+                        if (page + 1 < maxPage) {
+                            openSettings(pl, guide, page + 1);
+                        }
 
-                return false;
-            });
+                        return false;
+                    }
+            );
         }
     }
 
@@ -392,7 +406,8 @@ public class JEGGuideSettings {
         return getOptionValue(p, LearningAnimationOption.class, true);
     }
 
-    public static <T extends SlimefunGuideOption<V>, V> V getOptionValue(Player p, Class<T> optionsClass, V defaultValue) {
+    public static <T extends SlimefunGuideOption<V>, V> V getOptionValue(Player p, Class<T> optionsClass,
+                                                                         V defaultValue) {
         for (SlimefunGuideOption<?> option : getOptions()) {
             if (optionsClass.isInstance(option)) {
                 T o = optionsClass.cast(option);

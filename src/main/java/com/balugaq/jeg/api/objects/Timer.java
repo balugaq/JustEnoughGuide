@@ -47,7 +47,8 @@ public class Timer {
     /**
      * Constructs a new timer instance.
      *
-     * @param name The name of the timer.
+     * @param name
+     *         The name of the timer.
      */
     public Timer(String name) {
         this.name = name;

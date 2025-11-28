@@ -43,8 +43,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Optional;
 
 /**
- * This class is used to represent the option to show the beginner's guide.
- * which is editable in the settings menu.
+ * This class is used to represent the option to show the beginner's guide. which is editable in the settings menu.
  *
  * @author balugaq
  * @since 1.5
@@ -91,7 +90,8 @@ public class BeginnersGuideOption implements SlimefunGuideOption<Boolean> {
                 "&7在查阅一个物品的时候",
                 "&7Shift+右键点击搜索这个物品的名字.",
                 "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 新手指引");
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 新手指引"
+        );
         return Optional.of(item);
     }
 

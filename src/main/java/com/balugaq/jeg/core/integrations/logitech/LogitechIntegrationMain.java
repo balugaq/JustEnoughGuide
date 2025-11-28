@@ -46,11 +46,12 @@ import java.util.List;
  */
 @NullMarked
 public class LogitechIntegrationMain implements Integration {
-    public static final int[] MANUAL_CRAFTER_INPUT_SLOTS = new int[]{
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+    public static final int[] MANUAL_CRAFTER_INPUT_SLOTS = new int[] {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+            29,
             33, 34, 35, 36, 37, 38, 42, 43, 44, 45, 46, 47, 51, 52, 53
     };
-    public static final int[] BUG_CRAFTER_INPUT_SLOTS = new int[]{
+    public static final int[] BUG_CRAFTER_INPUT_SLOTS = new int[] {
             0, 1, 2, 3, 4, 5,
             9, 10, 11, 12, 13, 14,
             18, 19, 20, 21, 22, 23,
@@ -132,13 +133,15 @@ public class LogitechIntegrationMain implements Integration {
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.COMPRESSOR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(
                         me.matl114.logitech.SlimefunItem.AddSlimefunItems.ENHANCED_CRAFT_MANUAL,
-                        MANUAL_CRAFTER_INPUT_SLOTS);
+                        MANUAL_CRAFTER_INPUT_SLOTS
+                );
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.FURNACE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.GOLD_PAN_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.GRIND_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(
                         me.matl114.logitech.SlimefunItem.AddSlimefunItems.MAGIC_WORKBENCH_MANUAL,
-                        MANUAL_CRAFTER_INPUT_SLOTS);
+                        MANUAL_CRAFTER_INPUT_SLOTS
+                );
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ORE_CRUSHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ORE_WASHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.PRESSURE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
@@ -146,7 +149,8 @@ public class LogitechIntegrationMain implements Integration {
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.TABLESAW_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(
                         me.matl114.logitech.SlimefunItem.AddSlimefunItems.MULTICRAFTTABLE_MANUAL,
-                        MANUAL_CRAFTER_INPUT_SLOTS);
+                        MANUAL_CRAFTER_INPUT_SLOTS
+                );
                 if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
                     try {
                         rrc(me.matl114.logitech.SlimefunItem.AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
@@ -161,7 +165,8 @@ public class LogitechIntegrationMain implements Integration {
                     try {
                         rrc(
                                 me.matl114.logitech.SlimefunItem.AddDepends.NTWWORKBENCH_MANUAL,
-                                MANUAL_CRAFTER_INPUT_SLOTS);
+                                MANUAL_CRAFTER_INPUT_SLOTS
+                        );
                     } catch (Throwable ignored2) {
                     }
                 }

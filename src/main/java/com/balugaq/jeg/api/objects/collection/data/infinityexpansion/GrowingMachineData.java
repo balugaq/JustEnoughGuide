@@ -54,10 +54,11 @@ public class GrowingMachineData extends MachineData {
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.entrySet().stream()
                 .map(entry -> new CERRecipeGroup.RecipeWrapper(
-                        new ItemStack[]{new ItemStack(entry.getKey())},
+                        new ItemStack[] {new ItemStack(entry.getKey())},
                         entry.getValue(),
                         ticksPerOutput,
-                        (long) ticksPerOutput * energyPerTick))
+                        (long) ticksPerOutput * energyPerTick
+                ))
                 .toList();
     }
 }

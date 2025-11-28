@@ -53,10 +53,11 @@ public class ResourceSynthesizerData extends MachineData {
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
                 .map(recipe -> new CERRecipeGroup.RecipeWrapper(
-                        new ItemStack[]{Converter.getItem(recipe.getInput1()), Converter.getItem(recipe.getInput2())},
-                        new ItemStack[]{Converter.getItem(recipe.getOutput())},
+                        new ItemStack[] {Converter.getItem(recipe.getInput1()), Converter.getItem(recipe.getInput2())},
+                        new ItemStack[] {Converter.getItem(recipe.getOutput())},
                         1,
-                        energyPerTick))
+                        energyPerTick
+                ))
                 .toList();
     }
 

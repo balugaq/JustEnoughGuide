@@ -90,7 +90,8 @@ public class FinalTechValueDisplayOption implements SlimefunGuideOption<Boolean>
                 "&7注: 此EMC数值为",
                 "&7旧乱序中的数值",
                 "&7不等同于新乱序, EMCTech等附属的数值",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 旧乱序EMC值显示");
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 旧乱序EMC值显示"
+        );
         return Optional.of(item);
     }
 

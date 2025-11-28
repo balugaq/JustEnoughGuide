@@ -42,10 +42,11 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class GuideGUIFixListener implements Listener {
     /**
-     * Fix Official Slimefun: SlimefunItemStack break changes
-     * Fix 1.21+ Minecraft bug: SlimefunItemStack cannot cast to CraftItemStack
+     * Fix Official Slimefun: SlimefunItemStack break changes Fix 1.21+ Minecraft bug: SlimefunItemStack cannot cast to
+     * CraftItemStack
      *
-     * @param event PatchEvent
+     * @param event
+     *         PatchEvent
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void patchItem(PatchEvent event) {

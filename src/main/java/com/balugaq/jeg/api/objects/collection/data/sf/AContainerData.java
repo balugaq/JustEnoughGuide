@@ -56,7 +56,8 @@ public class AContainerData extends MachineData {
                         recipe.getInput(),
                         recipe.getOutput(),
                         recipe.getTicks() / speed,
-                        (long) energyConsumption * recipe.getTicks() / speed))
+                        (long) energyConsumption * recipe.getTicks() / speed
+                ))
                 .toList();
     }
 }

@@ -58,9 +58,8 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 
 /**
- * This class used to create groups to display all the marked items in the guide.
- * Displayed items are already marked in {@link ItemMarkGroup}
- * Players can't open this group if players haven't marked any item.
+ * This class used to create groups to display all the marked items in the guide. Displayed items are already marked in
+ * {@link ItemMarkGroup} Players can't open this group if players haven't marked any item.
  *
  * @author balugaq
  * @since 1.1
@@ -95,38 +94,45 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
 
         for (int ss : Formats.sub.getChars('b')) {
             chestMenu.addItem(ss, PatchScope.Back.patch(playerProfile, ChestMenuUtils.getBackButton(player)));
-            chestMenu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(
-                            new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                    playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
-                        }
-                        return false;
-                    }));
+            chestMenu.addMenuClickHandler(
+                    ss, (pl, s, is, action) -> EventUtil.callEvent(
+                                    new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
+                            .ifSuccess(() -> {
+                                GuideHistory guideHistory = playerProfile.getGuideHistory();
+                                if (action.isShiftClicked()) {
+                                    SlimefunGuide.openMainMenu(
+                                            playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                                } else {
+                                    guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                                }
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('S')) {
             chestMenu.addItem(ss, PatchScope.Search.patch(playerProfile, ChestMenuUtils.getSearchButton(player)));
-            chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        pl.closeInventory();
+            chestMenu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
+                                                                           implementation))
+                            .ifSuccess(() -> {
+                                pl.closeInventory();
 
-                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                        ChatInput.waitForPlayer(
-                                JustEnoughGuide.getInstance(),
-                                pl,
-                                msg -> implementation.openSearch(
-                                        playerProfile,
-                                        msg,
-                                        implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE));
+                                Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                                ChatInput.waitForPlayer(
+                                        JustEnoughGuide.getInstance(),
+                                        pl,
+                                        msg -> implementation.openSearch(
+                                                playerProfile,
+                                                msg,
+                                                implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
+                                        )
+                                );
 
-                        return false;
-                    }));
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('P')) {
@@ -139,15 +145,21 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
                                     this.page,
                                     (this.bookmarks.size() - 1)
                                             / Formats.sub.getChars('i').size()
-                                            + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        BookmarkGroup bookMarkGroup = this.getByPage(Math.max(this.page - 1, 1));
-                        bookMarkGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    }));
+                                            + 1
+                            )
+                    )
+            );
+            chestMenu.addMenuClickHandler(
+                    ss, (p, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
+                                                                             implementation))
+                            .ifSuccess(() -> {
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                BookmarkGroup bookMarkGroup = this.getByPage(Math.max(this.page - 1, 1));
+                                bookMarkGroup.open(player, playerProfile, slimefunGuideMode);
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('N')) {
@@ -160,19 +172,26 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
                                     this.page,
                                     (this.bookmarks.size() - 1)
                                             / Formats.sub.getChars('i').size()
-                                            + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        BookmarkGroup bookMarkGroup = this.getByPage(Math.min(
-                                this.page + 1,
-                                (this.bookmarks.size() - 1)
-                                        / Formats.sub.getChars('i').size()
-                                        + 1));
-                        bookMarkGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    }));
+                                            + 1
+                            )
+                    )
+            );
+            chestMenu.addMenuClickHandler(
+                    ss, (p, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
+                                                                         implementation))
+                            .ifSuccess(() -> {
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                BookmarkGroup bookMarkGroup = this.getByPage(Math.min(
+                                        this.page + 1,
+                                        (this.bookmarks.size() - 1)
+                                                / Formats.sub.getChars('i').size()
+                                                + 1
+                                ));
+                                bookMarkGroup.open(player, playerProfile, slimefunGuideMode);
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('B')) {
@@ -187,7 +206,8 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
                 Bookmark bookmark = bookmarks.get(index);
                 if (bookmark instanceof Bookmark.Item bi) {
                     SlimefunItem slimefunItem = bi.getSlimefunItem();
-                    OnDisplay.Item.display(player, Converter.getItem(slimefunItem.getItem()), OnDisplay.Item.Bookmark, implementation)
+                    OnDisplay.Item.display(player, Converter.getItem(slimefunItem.getItem()), OnDisplay.Item.Bookmark
+                                    , implementation)
                             .at(chestMenu, contentSlots.get(i), page);
                 }
                 if (bookmark instanceof Bookmark.ItemGroup big) {

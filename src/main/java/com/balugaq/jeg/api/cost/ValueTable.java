@@ -537,7 +537,8 @@ public class ValueTable {
             return 0.0D;
         } else {
             double value = 0.0D;
-            double recipeValue = handleRecipeSlimefun(slimefunItem.getRecipe(), slimefunItem.getRecipeOutput().getAmount() + 1, depth + 1);
+            double recipeValue = handleRecipeSlimefun(slimefunItem.getRecipe(),
+                                                      slimefunItem.getRecipeOutput().getAmount() + 1, depth + 1);
             if (recipeValue > 0.0D) {
                 recipeValue = (double) Math.round(recipeValue * 100.0D) / 100.0D;
                 value = recipeValue;

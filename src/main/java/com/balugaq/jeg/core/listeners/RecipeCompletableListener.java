@@ -90,13 +90,15 @@ import java.util.function.BiConsumer;
 @NullMarked
 public class RecipeCompletableListener implements Listener {
     public static final NamespacedKey RECIPE_COMPLETE_EXIT_KEY = KeyUtil.newKey("recipe_complete_exit");
-    public static final int[] DISPENSER_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-    public static final ConcurrentHashMap<UUID, GuideEvents.ItemButtonClickEvent> LAST_EVENTS = new ConcurrentHashMap<>();
+    public static final int[] DISPENSER_SLOTS = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    public static final ConcurrentHashMap<UUID, GuideEvents.ItemButtonClickEvent> LAST_EVENTS =
+            new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<UUID, GuideHistory> GUIDE_HISTORY = new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<UUID, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile>> PROFILE_CALLBACKS =
             new ConcurrentHashMap<>();
     public static final Set<UUID> listening = ConcurrentHashMap.newKeySet();
-    public static final ConcurrentHashMap<SlimefunItem, Pair<int[], Boolean>> INGREDIENT_SLOTS = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<SlimefunItem, Pair<int[], Boolean>> INGREDIENT_SLOTS =
+            new ConcurrentHashMap<>();
     public static final ArrayList<SlimefunItem> NOT_APPLICABLE_ITEMS = new ArrayList<>();
     public static final ConcurrentHashMap<UUID, Location> DISPENSER_LISTENING = new ConcurrentHashMap<>();
     public static final NamespacedKey LAST_RECIPE_COMPLETE_KEY = KeyUtil.newKey("last_recipe_complete");
@@ -104,34 +106,38 @@ public class RecipeCompletableListener implements Listener {
     private static @UnknownNullability ItemStack RECIPE_COMPLETABLE_BOOK_ITEM = null;
 
     static {
-        JustEnoughGuide.runTimerAsync(() -> {
-            for (UUID uuid : missingMaterials.keySet()) {
-                Player player = Bukkit.getPlayer(uuid);
-                if (player == null) {
-                    continue;
-                }
+        JustEnoughGuide.runTimerAsync(
+                () -> {
+                    for (UUID uuid : missingMaterials.keySet()) {
+                        Player player = Bukkit.getPlayer(uuid);
+                        if (player == null) {
+                            continue;
+                        }
 
-                var v = missingMaterials.get(uuid);
-                ArrayList<ItemStack> clone;
-                synchronized (v) {
-                    clone = new ArrayList<>(v);
-                    v.clear();
-                }
+                        var v = missingMaterials.get(uuid);
+                        ArrayList<ItemStack> clone;
+                        synchronized (v) {
+                            clone = new ArrayList<>(v);
+                            v.clear();
+                        }
 
-                Map<ItemStack, Integer> map = new HashMap<>();
-                for (ItemStack item : clone) {
-                    map.merge(StackUtils.getAsQuantity(item, 1), item.getAmount(), Integer::sum);
-                }
+                        Map<ItemStack, Integer> map = new HashMap<>();
+                        for (ItemStack item : clone) {
+                            map.merge(StackUtils.getAsQuantity(item, 1), item.getAmount(), Integer::sum);
+                        }
 
-                for (var entry : map.entrySet()) {
-                    player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(entry.getKey()) + "&ax" + entry.getValue()));
-                }
-            }
-        }, 1L, 20L);
+                        for (var entry : map.entrySet()) {
+                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(entry.getKey()) + "&ax" + entry.getValue()));
+                        }
+                    }
+                }, 1L, 20L
+        );
     }
 
     /**
-     * @param slimefunItem the {@link SlimefunItem} to add
+     * @param slimefunItem
+     *         the {@link SlimefunItem} to add
+     *
      * @see NotApplicable
      */
     public static void addNotApplicableItem(SlimefunItem slimefunItem) {
@@ -139,7 +145,9 @@ public class RecipeCompletableListener implements Listener {
     }
 
     /**
-     * @param slimefunItem the {@link SlimefunItem} to remove
+     * @param slimefunItem
+     *         the {@link SlimefunItem} to remove
+     *
      * @see NotApplicable
      */
     public static void removeNotApplicableItem(SlimefunItem slimefunItem) {
@@ -199,7 +207,8 @@ public class RecipeCompletableListener implements Listener {
                                         slots,
                                         unordered,
                                         1,
-                                        () -> exitSelectingItemStackToRecipeComplete(player));
+                                        () -> exitSelectingItemStackToRecipeComplete(player)
+                                );
                                 break;
                             }
                         }

@@ -41,7 +41,7 @@ import java.util.List;
  */
 @NullMarked
 public class AlchimiaVitaeIntegrationMain implements Integration {
-    public static final int[] AV_CRAFTER_INPUT_SLOTS = new int[]{
+    public static final int[] AV_CRAFTER_INPUT_SLOTS = new int[] {
             0, 1, 2,
             9, 10, 11,
             18, 19, 20

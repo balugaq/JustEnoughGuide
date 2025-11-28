@@ -28,8 +28,7 @@
 package com.balugaq.jeg.utils.compatibility;
 
 /**
- * This package contains classes that are used to provide compatibility
- * with different Slimefun versions.
+ * This package contains classes that are used to provide compatibility with different Slimefun versions.
  *
  * @author balugaq
  * @since 1.4

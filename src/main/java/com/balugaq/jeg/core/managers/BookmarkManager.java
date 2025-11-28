@@ -57,10 +57,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * This class is responsible for managing bookmarks.
- * It provides methods to add, remove, get, and clear bookmarks.
- * This feature is based on CN-Slimefun4's {@link SlimefunDatabaseManager}
- * to create a backpack for each player and store their bookmarks in it.
+ * This class is responsible for managing bookmarks. It provides methods to add, remove, get, and clear bookmarks. This
+ * feature is based on CN-Slimefun4's {@link SlimefunDatabaseManager} to create a backpack for each player and store
+ * their bookmarks in it.
  *
  * @author balugaq
  * @since 1.1
@@ -106,16 +105,18 @@ public class BookmarkManager extends AbstractManager {
             bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(bookmarksItem, itemMeta -> {
-            List<String> lore = itemMeta.getLore();
-            if (lore == null) {
-                lore = new ArrayList<>();
-            }
-            String id = slimefunItem.getId();
-            lore.remove(id);
-            lore.add(id);
-            itemMeta.setLore(lore);
-        }));
+        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+                bookmarksItem, itemMeta -> {
+                    List<String> lore = itemMeta.getLore();
+                    if (lore == null) {
+                        lore = new ArrayList<>();
+                    }
+                    String id = slimefunItem.getId();
+                    lore.remove(id);
+                    lore.add(id);
+                    itemMeta.setLore(lore);
+                }
+        ));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -130,16 +131,18 @@ public class BookmarkManager extends AbstractManager {
             bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(bookmarksItem, itemMeta -> {
-            List<String> lore = itemMeta.getLore();
-            if (lore == null) {
-                lore = new ArrayList<>();
-            }
-            String id = "itemgroup:" + itemGroup.getKey();
-            lore.remove(id);
-            lore.add(id);
-            itemMeta.setLore(lore);
-        }));
+        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+                bookmarksItem, itemMeta -> {
+                    List<String> lore = itemMeta.getLore();
+                    if (lore == null) {
+                        lore = new ArrayList<>();
+                    }
+                    String id = "itemgroup:" + itemGroup.getKey();
+                    lore.remove(id);
+                    lore.add(id);
+                    itemMeta.setLore(lore);
+                }
+        ));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -215,14 +218,16 @@ public class BookmarkManager extends AbstractManager {
             return;
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(bookmarksItem, itemMeta -> {
-            List<String> lore = itemMeta.getLore();
-            if (lore == null) {
-                return;
-            }
-            lore.remove(slimefunItem.getId());
-            itemMeta.setLore(lore);
-        }));
+        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+                bookmarksItem, itemMeta -> {
+                    List<String> lore = itemMeta.getLore();
+                    if (lore == null) {
+                        return;
+                    }
+                    lore.remove(slimefunItem.getId());
+                    itemMeta.setLore(lore);
+                }
+        ));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -236,14 +241,16 @@ public class BookmarkManager extends AbstractManager {
             return;
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(bookmarksItem, itemMeta -> {
-            List<String> lore = itemMeta.getLore();
-            if (lore == null) {
-                return;
-            }
-            lore.remove("itemgroup:" + itemGroup.getKey());
-            itemMeta.setLore(lore);
-        }));
+        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+                bookmarksItem, itemMeta -> {
+                    List<String> lore = itemMeta.getLore();
+                    if (lore == null) {
+                        return;
+                    }
+                    lore.remove("itemgroup:" + itemGroup.getKey());
+                    itemMeta.setLore(lore);
+                }
+        ));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -355,11 +362,14 @@ public class BookmarkManager extends AbstractManager {
     }
 
     public ItemStack markItemAsBookmarksItem(ItemStack itemStack, Player player) {
-        return ItemStackUtil.getCleanItem(Converter.getItem(itemStack, itemMeta -> itemMeta.getPersistentDataContainer()
-                .set(
-                        BOOKMARKS_KEY,
-                        PersistentDataType.STRING,
-                        player.getUniqueId().toString())));
+        return ItemStackUtil.getCleanItem(Converter.getItem(
+                itemStack, itemMeta -> itemMeta.getPersistentDataContainer()
+                        .set(
+                                BOOKMARKS_KEY,
+                                PersistentDataType.STRING,
+                                player.getUniqueId().toString()
+                        )
+        ));
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

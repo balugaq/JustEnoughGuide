@@ -108,7 +108,8 @@ public class GroupResorter {
                                 }
                             }
                         },
-                        1L);
+                        1L
+                );
     }
 
     public static boolean isSelecting(final Player player) {

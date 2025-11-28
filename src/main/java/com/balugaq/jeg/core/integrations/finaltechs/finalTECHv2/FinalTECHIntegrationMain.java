@@ -45,7 +45,7 @@ import java.util.List;
  */
 @NullMarked
 public class FinalTECHIntegrationMain implements Integration {
-    public static final int[] MATRIX_CRAFTING_TABLE_INPUT_SLOTS = new int[]{
+    public static final int[] MATRIX_CRAFTING_TABLE_INPUT_SLOTS = new int[] {
             0, 1, 2, 3, 4, 5,
             9, 10, 11, 12, 13, 14,
             18, 19, 20, 21, 22, 23,
@@ -53,8 +53,9 @@ public class FinalTECHIntegrationMain implements Integration {
             36, 37, 38, 39, 40, 41,
             45, 46, 47, 48, 49, 50
     };
-    public static final int[] MANUAL_CRAFTER_INPUT_SLOTS = new int[]{
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+    public static final int[] MANUAL_CRAFTER_INPUT_SLOTS = new int[] {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+            29,
             30, 31, 32, 33, 34, 35
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();

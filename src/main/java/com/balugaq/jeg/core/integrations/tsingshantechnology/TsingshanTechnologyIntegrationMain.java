@@ -41,7 +41,7 @@ import java.util.List;
  */
 @NullMarked
 public class TsingshanTechnologyIntegrationMain implements Integration {
-    public static final int[] QS_INPUT_SLOTS = new int[]{19, 20, 21, 28, 29, 30, 37, 38, 39};
+    public static final int[] QS_INPUT_SLOTS = new int[] {19, 20, 21, 28, 29, 30, 37, 38, 39};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(String id, int[] slots, boolean unordered) {

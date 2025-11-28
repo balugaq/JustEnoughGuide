@@ -88,7 +88,8 @@ public class ShareOutGuideOption implements SlimefunGuideOption<Boolean> {
                 "&7在粘液书中的物品上按 Q 时",
                 "&7是否向他人分享这个物品",
                 "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 向他人分享物品");
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 向他人分享物品"
+        );
         return Optional.of(item);
     }
 

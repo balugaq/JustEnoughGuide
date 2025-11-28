@@ -51,17 +51,25 @@ public abstract class Processor {
     private final Strategy strategy;
 
     /**
-     * A simple Mixin processor
-     * Handles the events to happen when player clicked.
+     * A simple Mixin processor Handles the events to happen when player clicked.
      *
-     * @param guide            the guide
-     * @param menu             the menu
-     * @param event            the event
-     * @param player           the player
-     * @param clickedSlot      the clicked slot
-     * @param clickedItemStack the clicked item stack
-     * @param clickAction      the click action
-     * @param processedResult  the processed result, null if the {@link Processor#getStrategy()} is {@link Strategy#HEAD}.
+     * @param guide
+     *         the guide
+     * @param menu
+     *         the menu
+     * @param event
+     *         the event
+     * @param player
+     *         the player
+     * @param clickedSlot
+     *         the clicked slot
+     * @param clickedItemStack
+     *         the clicked item stack
+     * @param clickAction
+     *         the click action
+     * @param processedResult
+     *         the processed result, null if the {@link Processor#getStrategy()} is {@link Strategy#HEAD}.
+     *
      * @return false if the process is handled successfully, true and handle other {@link Processor}s otherwise.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

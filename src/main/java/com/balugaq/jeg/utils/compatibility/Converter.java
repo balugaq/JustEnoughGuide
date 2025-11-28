@@ -60,7 +60,9 @@ public class Converter {
     /**
      * Converts a {@link SlimefunItemStack} to a Bukkit ItemStack.
      *
-     * @param slimefunItemStack the {@link SlimefunItemStack} to convert
+     * @param slimefunItemStack
+     *         the {@link SlimefunItemStack} to convert
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(SlimefunItemStack slimefunItemStack) {
@@ -68,9 +70,12 @@ public class Converter {
     }
 
     /**
-     * Converts a {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to a Bukkit ItemStack.
+     * Converts a {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to a Bukkit
+     * ItemStack.
      *
-     * @param cis the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
+     * @param cis
+     *         the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack cis) {
@@ -80,7 +85,9 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack.
      *
-     * @param itemStack the Bukkit ItemStack to convert
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(ItemStack itemStack) {
@@ -90,7 +97,9 @@ public class Converter {
     /**
      * Converts a Material to a Bukkit ItemStack.
      *
-     * @param material the Material to convert
+     * @param material
+     *         the Material to convert
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material) {
@@ -100,8 +109,11 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with custom metadata.
      *
-     * @param itemStack        the Bukkit ItemStack to convert
-     * @param itemMetaConsumer the consumer to modify the item metadata
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     * @param itemMetaConsumer
+     *         the consumer to modify the item metadata
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
@@ -112,8 +124,11 @@ public class Converter {
     /**
      * Converts a Material to a Bukkit ItemStack with custom metadata.
      *
-     * @param material the Material to convert
-     * @param consumer the consumer to modify the item metadata
+     * @param material
+     *         the Material to convert
+     * @param consumer
+     *         the consumer to modify the item metadata
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material, Consumer<ItemMeta> consumer) {
@@ -123,9 +138,13 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a name and lore.
      *
-     * @param itemStack the Bukkit ItemStack to convert
-     * @param name      the name of the item
-     * @param lore      the lore of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
@@ -136,9 +155,13 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a name and lore.
      *
-     * @param itemStack the Bukkit ItemStack to convert
-     * @param name      the name of the item
-     * @param lore      the lore of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
@@ -149,10 +172,15 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a color, name, and lore.
      *
-     * @param itemStack the Bukkit ItemStack to convert
-     * @param color     the color of the item
-     * @param name      the name of the item
-     * @param lore      the lore of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     * @param color
+     *         the color of the item
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
@@ -163,9 +191,13 @@ public class Converter {
     /**
      * Converts a Material to a Bukkit ItemStack with a name and lore.
      *
-     * @param material the Material to convert
-     * @param name     the name of the item
-     * @param lore     the lore of the item
+     * @param material
+     *         the Material to convert
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
@@ -176,9 +208,13 @@ public class Converter {
     /**
      * Converts a Material to a Bukkit ItemStack with a name and lore.
      *
-     * @param material the Material to convert
-     * @param name     the name of the item
-     * @param lore     the lore of the item
+     * @param material
+     *         the Material to convert
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material, String name, List<String> lore) {
@@ -188,8 +224,11 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a list of lore.
      *
-     * @param itemStack the Bukkit ItemStack to convert
-     * @param list      the list of lore
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     * @param list
+     *         the list of lore
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(ItemStack itemStack, List<String> list) {
@@ -199,8 +238,11 @@ public class Converter {
     /**
      * Converts a Material to a Bukkit ItemStack with a list of lore.
      *
-     * @param material the Material to convert
-     * @param list     the list of lore
+     * @param material
+     *         the Material to convert
+     * @param list
+     *         the list of lore
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material, List<String> list) {
@@ -210,8 +252,11 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a specified amount.
      *
-     * @param itemStack the Bukkit ItemStack to convert
-     * @param amount    the amount of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     * @param amount
+     *         the amount of the item
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
@@ -222,8 +267,11 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a specified Material.
      *
-     * @param itemStack the Bukkit ItemStack to convert
-     * @param material  the Material of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to convert
+     * @param material
+     *         the Material of the item
+     *
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(ItemStack itemStack, Material material) {
@@ -238,7 +286,9 @@ public class Converter {
     /**
      * Converts a {@link SlimefunItemStack} to a Bukkit ItemStack.
      *
-     * @param item the {@link SlimefunItemStack} to convert
+     * @param item
+     *         the {@link SlimefunItemStack} to convert
+     *
      * @return the converted Bukkit ItemStack
      */
     @SuppressWarnings({"RedundantClassCall", "ConstantValue"})
@@ -279,9 +329,12 @@ public class Converter {
     }
 
     /**
-     * Converts a {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to a Bukkit ItemStack.
+     * Converts a {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to a Bukkit
+     * ItemStack.
      *
-     * @param item the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
+     * @param item
+     *         the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
+     *
      * @return the converted Bukkit ItemStack
      */
     @SuppressWarnings({"RedundantClassCall", "ConstantValue"})

@@ -68,7 +68,8 @@ public class JEGContributorsMenu {
 
         ChestMenuUtils.drawBackground(
                 menu,
-                Formats.contributors.getChars('B').stream().mapToInt(i -> i).toArray());
+                Formats.contributors.getChars('B').stream().mapToInt(i -> i).toArray()
+        );
 
         for (int ss : Formats.contributors.getChars('b')) {
             menu.addItem(
@@ -76,11 +77,15 @@ public class JEGContributorsMenu {
                     PatchScope.Back.patch(
                             p,
                             Converter.getItem(ChestMenuUtils.getBackButton(
-                                    p, "", "&7" + Slimefun.getLocalization().getMessage(p, "guide.back.settings")))));
-            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                JEGGuideSettings.openSettings(pl, p.getInventory().getItemInMainHand());
-                return false;
-            });
+                                    p, "", "&7" + Slimefun.getLocalization().getMessage(p, "guide.back.settings")))
+                    )
+            );
+            menu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> {
+                        JEGGuideSettings.openSettings(pl, p.getInventory().getItemInMainHand());
+                        return false;
+                    }
+            );
         }
 
         List<Contributor> contributors =
@@ -95,37 +100,43 @@ public class JEGContributorsMenu {
             int ss = slots.get(i - page * sizePerPage);
 
             menu.addItem(ss, PatchScope.Contributor.patch(p, skull));
-            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                if (contributor.getProfile() != null) {
-                    pl.closeInventory();
-                    ChatUtils.sendURL(pl, contributor.getProfile());
-                }
-                return false;
-            });
+            menu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> {
+                        if (contributor.getProfile() != null) {
+                            pl.closeInventory();
+                            ChatUtils.sendURL(pl, contributor.getProfile());
+                        }
+                        return false;
+                    }
+            );
         }
 
         int pages = (contributors.size() - 1) / sizePerPage + 1;
 
         for (int ss : Formats.contributors.getChars('P')) {
             menu.addItem(ss, PatchScope.PreviousPage.patch(p, ChestMenuUtils.getPreviousButton(p, page + 1, pages)));
-            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                if (page > 0) {
-                    open(pl, page - 1);
-                }
+            menu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> {
+                        if (page > 0) {
+                            open(pl, page - 1);
+                        }
 
-                return false;
-            });
+                        return false;
+                    }
+            );
         }
 
         for (int ss : Formats.contributors.getChars('N')) {
             menu.addItem(ss, PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, page + 1, pages)));
-            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> {
-                if (page + 1 < pages) {
-                    open(pl, page + 1);
-                }
+            menu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> {
+                        if (page + 1 < pages) {
+                            open(pl, page + 1);
+                        }
 
-                return false;
-            });
+                        return false;
+                    }
+            );
         }
 
         Formats.contributors.renderCustom(menu);
@@ -166,7 +177,7 @@ public class JEGContributorsMenu {
         if (contributor.getProfile() != null) {
             lore.add("");
             lore.add(ChatColors.color("&7\u21E8 &e")
-                    + Slimefun.getLocalization().getMessage(p, "guide.credits.profile-link"));
+                             + Slimefun.getLocalization().getMessage(p, "guide.credits.profile-link"));
         }
 
         meta.setLore(lore);

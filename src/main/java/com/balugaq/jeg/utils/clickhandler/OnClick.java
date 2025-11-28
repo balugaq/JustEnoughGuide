@@ -105,7 +105,7 @@ public interface OnClick {
     static void preset(ChestMenu menu) {
         menu.setEmptySlotsClickable(false);
         menu.addPlayerInventoryClickHandler((p, s, i, a) ->
-                p.isOp() || p.hasPermission("slimefun.cheat.items")
+                                                    p.isOp() || p.hasPermission("slimefun.cheat.items")
         );
         menu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
     }
@@ -134,13 +134,15 @@ public interface OnClick {
         if (s.isEmpty()) return;
         String playerName = player.getName();
 
-        String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[]{playerName, ChatColors.color(itemName)});
+        String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[] {playerName, ChatColors.color(itemName)});
         if (PlatformUtil.isPaper()) {
 
             Component base = LegacyComponentSerializer.legacySection().deserialize(sharedMessage)
                     .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text(CLICK_TO_SEARCH)));
-            Component clickToSearch = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/sf search " + ChatColor.stripColor(s)));
-            Component clickToCopy = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, itemName));
+            Component clickToSearch =
+                    base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/sf search " + ChatColor.stripColor(s)));
+            Component clickToCopy =
+                    base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, itemName));
             Bukkit.getOnlinePlayers().forEach(p -> {
                 if (ShareInGuideOption.isEnabled(p)) {
                     if (p.hasPermission("slimefun.command.search")) {
@@ -172,7 +174,8 @@ public interface OnClick {
         return keybindSets;
     }
 
-    static <T extends BaseAction> ObjectImmutableList<T> merge(ObjectImmutableList<T> overridable, ObjectImmutableList<T> list) {
+    static <T extends BaseAction> ObjectImmutableList<T> merge(ObjectImmutableList<T> overridable,
+                                                               ObjectImmutableList<T> list) {
         ArrayList<T> merge = new ArrayList<>(overridable);
         for (T action : list) {
             boolean set = false;
@@ -202,23 +205,9 @@ public interface OnClick {
     ObjectImmutableList<? extends BaseAction> listActions();
 
     /**
-     * 点击物品组时:
-     * 如果是在 4 月 1 日，有 114 / 514 的几率打开Never gonna give you up页面（在聊天栏弹出链接，当天只会弹出一次）
-     * 在书签中:
-     * 右键: 取消书签
-     * 在标记书签中:
-     * 左键: 标记书签
-     * 在交换物品组时:
-     * 点击的是特殊物品组: (FlexItemGroup)
-     * 左键: 打开
-     * 右键: 选择
-     * 点击的是普通物品组: (!FlexItemGroup)
-     * 左键: 选择
-     * 左键: 打开
-     * 右键: 收藏物品组
-     * OP时:
-     * Shift+左键: 复制物品组的key (namespace:key)
-     * 若安装了 RSCE，Shift+右键: 获取对应的物品组占位符
+     * 点击物品组时: 如果是在 4 月 1 日，有 114 / 514 的几率打开Never gonna give you up页面（在聊天栏弹出链接，当天只会弹出一次） 在书签中: 右键: 取消书签 在标记书签中: 左键:
+     * 标记书签 在交换物品组时: 点击的是特殊物品组: (FlexItemGroup) 左键: 打开 右键: 选择 点击的是普通物品组: (!FlexItemGroup) 左键: 选择 左键: 打开 右键: 收藏物品组 OP时:
+     * Shift+左键: 复制物品组的key (namespace:key) 若安装了 RSCE，Shift+右键: 获取对应的物品组占位符
      *
      * @author balugaq
      * @since 2.0
@@ -270,7 +259,9 @@ public interface OnClick {
                 }
 
                 @Override
-                public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
+                public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player,
+                                     int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
+                                     ClickAction clickAction, ChestMenu menu, int page) {
                     player.sendMessage("&c未找到按键: " + key);
                     return false;
                 }
@@ -282,7 +273,8 @@ public interface OnClick {
             };
         }
 
-        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
+        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
+                                    io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
             return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 if (!easterredPlayer.contains(player.getUniqueId())) {
                     LocalDate date = LocalDate.now();
@@ -297,15 +289,18 @@ public interface OnClick {
 
                 ClickType clickType = event.getClick();
                 if (clickType == ClickType.RIGHT) {
-                    return findAction(player, "right-click").click(guide, event, player, slot, itemGroup, action, menu, 1);
+                    return findAction(player, "right-click").click(guide, event, player, slot, itemGroup, action,
+                                                                   menu, 1);
                 }
 
                 if (clickType == ClickType.SHIFT_LEFT) {
-                    return findAction(player, "shift-left-click").click(guide, event, player, slot, itemGroup, action, menu, 1);
+                    return findAction(player, "shift-left-click").click(guide, event, player, slot, itemGroup, action
+                            , menu, 1);
                 }
 
                 if (clickType == ClickType.SHIFT_RIGHT) {
-                    return findAction(player, "shift-right-click").click(guide, event, player, slot, itemGroup, action, menu, 1);
+                    return findAction(player, "shift-right-click").click(guide, event, player, slot, itemGroup,
+                                                                         action, menu, 1);
                 }
 
                 return findAction(player, "default").click(guide, event, player, slot, itemGroup, action, menu, 1);
@@ -320,7 +315,9 @@ public interface OnClick {
         @FunctionalInterface
         @NullMarked
         interface ActionHandle {
-            void click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
+            void click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot,
+                       io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction,
+                       ChestMenu menu, int page);
         }
 
         /**
@@ -347,7 +344,10 @@ public interface OnClick {
                     }
 
                     @Override
-                    public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
+                    public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event,
+                                         Player player, int slot,
+                                         io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
+                                         ClickAction clickAction, ChestMenu menu, int page) {
                         handle.click(guide, event, player, slot, itemGroup, clickAction, menu, page);
                         return false;
                     }
@@ -385,7 +385,10 @@ public interface OnClick {
                     }
 
                     @Override
-                    public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
+                    public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event,
+                                         Player player, int slot,
+                                         io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
+                                         ClickAction clickAction, ChestMenu menu, int page) {
                         handle.click(guide, event, player, slot, itemGroup, clickAction, menu, page);
                         return false;
                     }
@@ -398,7 +401,9 @@ public interface OnClick {
             }
 
             @SuppressWarnings("SameReturnValue")
-            boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page);
+            boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot,
+                          io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction,
+                          ChestMenu menu, int page);
         }
 
         /**
@@ -408,81 +413,104 @@ public interface OnClick {
         @NullMarked
         class Normal implements ItemGroup {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    OpAction.of("shift-right-click", "OP: 获取对应的物品组占位符", Material.DECORATED_POT, (guide, event, player, slot, itemGroup, action, menu, page) -> {
-                        if (!player.isOp()) {
-                            return;
-                        }
+                    OpAction.of(
+                            "shift-right-click", "OP: 获取对应的物品组占位符", Material.DECORATED_POT, (guide, event, player,
+                                                                                                        slot,
+                                                                                                        itemGroup,
+                                                                                                        action, menu,
+                                                                                                        page) -> {
+                                if (!player.isOp()) {
+                                    return;
+                                }
 
-                        if (!JustEnoughGuide.getIntegrationManager().isEnabledRSCEditor()) {
-                            return;
-                        }
+                                if (!JustEnoughGuide.getIntegrationManager().isEnabledRSCEditor()) {
+                                    return;
+                                }
 
-                        NamespacedKey key = itemGroup.getKey();
-                        String id = "RSC_EDITOR_ITEM_GROUP_" + key.getNamespace().toUpperCase() + "_" + key.getKey().toUpperCase();
-                        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-                        if (slimefunItem == null) {
-                            return;
-                        }
+                                NamespacedKey key = itemGroup.getKey();
+                                String id =
+                                        "RSC_EDITOR_ITEM_GROUP_" + key.getNamespace().toUpperCase() + "_" + key.getKey().toUpperCase();
+                                SlimefunItem slimefunItem = SlimefunItem.getById(id);
+                                if (slimefunItem == null) {
+                                    return;
+                                }
 
-                        player.getInventory().addItem(ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem())));
-                    }),
-                    OpAction.of("shift-left-click", "OP: 复制物品组的key", Material.TRIPWIRE_HOOK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
-                        if (!player.isOp()) {
-                            return;
-                        }
+                                player.getInventory().addItem(ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem())));
+                            }
+                    ),
+                    OpAction.of(
+                            "shift-left-click", "OP: 复制物品组的key", Material.TRIPWIRE_HOOK, (guide, event, player, slot,
+                                                                                                itemGroup, action,
+                                                                                                menu, page) -> {
+                                if (!player.isOp()) {
+                                    return;
+                                }
 
-                        NamespacedKey key = itemGroup.getKey();
-                        String s = key.toString();
-                        if (PlatformUtil.isPaper()) {
-                            Component base = Component.text("点击复制物品组的key: ", TextColor.color(0x00FF00)).append(Component.text(s, TextColor.color(0xFFFF00))).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("点击复制", TextColor.color(0xFFFF00))));
-                            Component clickToCopy = base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, s));
-                            player.sendMessage(clickToCopy);
-                        } else {
-                            ClipboardUtil.send(player, ClipboardUtil.makeComponent("&e点击复制物品组的key", s, s));
-                        }
-                    }),
-                    Action.of("right-click", "收藏物品组/选择待交换的物品组", Material.KNOWLEDGE_BOOK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
-                        if (GroupResorter.isSelecting(player)) {
-                            if (itemGroup instanceof FlexItemGroup) {
-                                io.github.thebusybiscuit.slimefun4.api.items.ItemGroup selected = GroupResorter.getSelectedGroup(player);
-                                if (selected == null) {
-                                    player.sendMessage(ChatColors.color("&a已选择待交换的物品组: &e" + itemGroup.getDisplayName(player)));
-                                    GroupResorter.setSelectedGroup(player, itemGroup);
+                                NamespacedKey key = itemGroup.getKey();
+                                String s = key.toString();
+                                if (PlatformUtil.isPaper()) {
+                                    Component base =
+                                            Component.text("点击复制物品组的key: ", TextColor.color(0x00FF00)).append(Component.text(s, TextColor.color(0xFFFF00))).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("点击复制", TextColor.color(0xFFFF00))));
+                                    Component clickToCopy =
+                                            base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, s));
+                                    player.sendMessage(clickToCopy);
                                 } else {
-                                    GroupResorter.swap(selected, itemGroup);
-                                    GroupResorter.setSelectedGroup(player, null);
-                                    player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
-                                    PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                                    if (profile == null) return;
-                                    guide.openItemGroup(profile, itemGroup, page);
+                                    ClipboardUtil.send(player, ClipboardUtil.makeComponent("&e点击复制物品组的key", s, s));
                                 }
                             }
-                        }
-
-                        JustEnoughGuide.getBookmarkManager().addBookmark(player, itemGroup);
-                        player.sendMessage(ChatColors.color("&a已收藏物品组: &e" + itemGroup.getDisplayName(player)));
-                    }),
-                    Action.of("default", "默认", Material.COMPASS, (guide, event, player, slot, itemGroup, action, menu, page) -> {
-                        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                        if (profile == null) return;
-
-                        if (GroupResorter.isSelecting(player)) {
-                            if (!(itemGroup instanceof FlexItemGroup)) {
-                                io.github.thebusybiscuit.slimefun4.api.items.ItemGroup selected = GroupResorter.getSelectedGroup(player);
-                                if (selected == null) {
-                                    player.sendMessage(ChatColors.color("&a已选择待交换的物品组: &e" + itemGroup.getDisplayName(player)));
-                                    GroupResorter.setSelectedGroup(player, itemGroup);
-                                } else {
-                                    GroupResorter.swap(selected, itemGroup);
-                                    GroupResorter.setSelectedGroup(player, null);
-                                    player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
-                                    guide.openItemGroup(profile, itemGroup, page);
+                    ),
+                    Action.of(
+                            "right-click", "收藏物品组/选择待交换的物品组", Material.KNOWLEDGE_BOOK, (guide, event, player, slot,
+                                                                                                      itemGroup,
+                                                                                                      action, menu,
+                                                                                                      page) -> {
+                                if (GroupResorter.isSelecting(player)) {
+                                    if (itemGroup instanceof FlexItemGroup) {
+                                        io.github.thebusybiscuit.slimefun4.api.items.ItemGroup selected =
+                                                GroupResorter.getSelectedGroup(player);
+                                        if (selected == null) {
+                                            player.sendMessage(ChatColors.color("&a已选择待交换的物品组: &e" + itemGroup.getDisplayName(player)));
+                                            GroupResorter.setSelectedGroup(player, itemGroup);
+                                        } else {
+                                            GroupResorter.swap(selected, itemGroup);
+                                            GroupResorter.setSelectedGroup(player, null);
+                                            player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
+                                            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                                            if (profile == null) return;
+                                            guide.openItemGroup(profile, itemGroup, page);
+                                        }
+                                    }
                                 }
-                            }
-                        }
 
-                        guide.openItemGroup(profile, itemGroup, page);
-                    })
+                                JustEnoughGuide.getBookmarkManager().addBookmark(player, itemGroup);
+                                player.sendMessage(ChatColors.color("&a已收藏物品组: &e" + itemGroup.getDisplayName(player)));
+                            }
+                    ),
+                    Action.of(
+                            "default", "默认", Material.COMPASS, (guide, event, player, slot, itemGroup, action, menu,
+                                                                  page) -> {
+                                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                                if (profile == null) return;
+
+                                if (GroupResorter.isSelecting(player)) {
+                                    if (!(itemGroup instanceof FlexItemGroup)) {
+                                        io.github.thebusybiscuit.slimefun4.api.items.ItemGroup selected =
+                                                GroupResorter.getSelectedGroup(player);
+                                        if (selected == null) {
+                                            player.sendMessage(ChatColors.color("&a已选择待交换的物品组: &e" + itemGroup.getDisplayName(player)));
+                                            GroupResorter.setSelectedGroup(player, itemGroup);
+                                        } else {
+                                            GroupResorter.swap(selected, itemGroup);
+                                            GroupResorter.setSelectedGroup(player, null);
+                                            player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
+                                            guide.openItemGroup(profile, itemGroup, page);
+                                        }
+                                    }
+                                }
+
+                                guide.openItemGroup(profile, itemGroup, page);
+                            }
+                    )
             );
 
             @Override
@@ -508,19 +536,23 @@ public interface OnClick {
         @NullMarked
         class Bookmark extends Normal {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    Action.of("right-click", "删除标记的物品组", Material.BARREL, (guide, event, player, slot, itemGroup, action, menu, page) -> EventUtil.callEvent(new GuideEvents.CollectItemGroupEvent(player, itemGroup, slot, action, menu, guide)).ifSuccess(() -> {
-                        PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
-                        if (playerProfile == null) return;
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        JustEnoughGuide.getBookmarkManager().removeBookmark(player, itemGroup);
+                    Action.of(
+                            "right-click", "删除标记的物品组", Material.BARREL, (guide, event, player, slot, itemGroup,
+                                                                                 action, menu, page) -> EventUtil.callEvent(new GuideEvents.CollectItemGroupEvent(player, itemGroup, slot, action, menu, guide)).ifSuccess(() -> {
+                                PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
+                                if (playerProfile == null) return;
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                JustEnoughGuide.getBookmarkManager().removeBookmark(player, itemGroup);
 
-                        List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
-                        if (items == null || items.isEmpty()) {
-                            player.closeInventory();
-                            return;
-                        }
-                        new BookmarkGroup(guide, items).open(player, playerProfile, guide.getMode());
-                    }))
+                                List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items =
+                                        JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
+                                if (items == null || items.isEmpty()) {
+                                    player.closeInventory();
+                                    return;
+                                }
+                                new BookmarkGroup(guide, items).open(player, playerProfile, guide.getMode());
+                            })
+                    )
             );
 
             @Override
@@ -539,12 +571,14 @@ public interface OnClick {
             }
 
             @Override
-            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
+            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
+                                       io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
                 return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                     ClickType clickType = event.getClick();
                     // 注入右键
                     if (clickType == ClickType.RIGHT) {
-                        return findAction(player, "right-click").click(guide, event, player, slot, itemGroup, action, menu, 1);
+                        return findAction(player, "right-click").click(guide, event, player, slot, itemGroup, action,
+                                                                       menu, 1);
                     }
 
                     return super.create(guide, menu, itemGroup).onClick(event, player, slot, cursor, action);
@@ -554,11 +588,7 @@ public interface OnClick {
     }
 
     /**
-     * 点击配方类型时:
-     * Q建: 分享配方类型
-     * 右键: 查找使用此配方类型的物品: 搜索: $名字
-     * Shift左键: 打开配方类型所在物品组（若有）
-     * Shift右键: 查找相关物品/机器: 搜索: 名字
+     * 点击配方类型时: Q建: 分享配方类型 右键: 查找使用此配方类型的物品: 搜索: $名字 Shift左键: 打开配方类型所在物品组（若有） Shift右键: 查找相关物品/机器: 搜索: 名字
      *
      * @author balugaq
      * @since 2.0
@@ -607,7 +637,9 @@ public interface OnClick {
                 }
 
                 @Override
-                public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page) {
+                public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                                     io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
+                                     ClickAction clickAction, ChestMenu menu, int page) {
                     player.sendMessage("&c未找到按键: " + key);
                     return false;
                 }
@@ -619,7 +651,8 @@ public interface OnClick {
             };
         }
 
-        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType) {
+        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
+                                    io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType) {
             return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 ItemStack item = event.getCurrentItem();
                 if (item == null) return false;
@@ -651,7 +684,9 @@ public interface OnClick {
         @SuppressWarnings("unused")
         @FunctionalInterface
         interface ActionHandle {
-            void click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page);
+            void click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                       io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction,
+                       ChestMenu menu, int page);
         }
 
         /**
@@ -679,7 +714,9 @@ public interface OnClick {
                     }
 
                     @Override
-                    public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page) {
+                    public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                                         io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
+                                         ClickAction clickAction, ChestMenu menu, int page) {
                         handle.click(guide, player, slot, recipeType, clickAction, menu, page);
                         return false;
                     }
@@ -692,7 +729,9 @@ public interface OnClick {
             }
 
             @SuppressWarnings("SameReturnValue")
-            boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page);
+            boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                          io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
+                          ClickAction clickAction, ChestMenu menu, int page);
         }
 
         /**
@@ -702,28 +741,42 @@ public interface OnClick {
         @NullMarked
         class Normal implements RecipeType {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    Action.of("q", "分享配方类型", Material.CLOCK, (guide, player, slot, recipeType, action, menu, page) -> {
-                        String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
-                        share(player, recipeTypeName);
-                    }),
-                    Action.of("right-click", "查找使用此配方类型的物品", Material.NAME_TAG, (guide, player, slot, recipeType, action, menu, page) -> {
-                        String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
-                        player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getSymbol() + ChatColor.stripColor(recipeTypeName));
-                    }),
-                    Action.of("shift-left", "打开配方类型所在物品组", Material.CAULDRON, (guide, player, slot, recipeType, action, menu, page) -> {
-                        SlimefunItem machine = recipeType.getMachine();
-                        if (machine != null) {
-                            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                            if (profile == null) return;
-                            guide.openItemGroup(profile, machine.getItemGroup(), 1);
-                        }
-                    }),
-                    Action.of("shift-right", "查找相关物品/机器", Material.ANVIL, (guide, player, slot, recipeType, action, menu, page) -> {
-                        String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
-                        player.chat("/sf search " + ChatColor.stripColor(recipeTypeName));
-                    }),
-                    Action.of("default", "默认", Material.COMPASS, (guide, player, slot, recipeType, action, menu, page) -> {
-                    })
+                    Action.of(
+                            "q", "分享配方类型", Material.CLOCK, (guide, player, slot, recipeType, action, menu, page) -> {
+                                String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
+                                share(player, recipeTypeName);
+                            }
+                    ),
+                    Action.of(
+                            "right-click", "查找使用此配方类型的物品", Material.NAME_TAG, (guide, player, slot, recipeType,
+                                                                                           action, menu, page) -> {
+                                String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
+                                player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getSymbol() + ChatColor.stripColor(recipeTypeName));
+                            }
+                    ),
+                    Action.of(
+                            "shift-left", "打开配方类型所在物品组", Material.CAULDRON, (guide, player, slot, recipeType, action,
+                                                                                        menu, page) -> {
+                                SlimefunItem machine = recipeType.getMachine();
+                                if (machine != null) {
+                                    PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                                    if (profile == null) return;
+                                    guide.openItemGroup(profile, machine.getItemGroup(), 1);
+                                }
+                            }
+                    ),
+                    Action.of(
+                            "shift-right", "查找相关物品/机器", Material.ANVIL, (guide, player, slot, recipeType, action,
+                                                                                 menu, page) -> {
+                                String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
+                                player.chat("/sf search " + ChatColor.stripColor(recipeTypeName));
+                            }
+                    ),
+                    Action.of(
+                            "default", "默认", Material.COMPASS,
+                            (guide, player, slot, recipeType, action, menu, page) -> {
+                            }
+                    )
             );
 
             @Override
@@ -745,25 +798,9 @@ public interface OnClick {
     }
 
     /**
-     * 点击物品时:
-     * 物品未解锁时: 解锁物品
-     * F键: 搜索配方展示物品的名字涉及此物品的名字的物品: 搜索: %名字
-     * Q键: 分享物品
-     * 在书签中:
-     * 作弊书:
-     * 左键: 给予物品
-     * 生存书:
-     * 左键: 显示配方界面
-     * 右键: 取消书签
-     * 在标记书签中:
-     * 左键: 标记书签
-     * 右键: 查找物品用途: 搜索: #名字
-     * Shift左键: 打开物品所在物品组
-     * Shift右键: 查找相关物品/机器: 搜索: 名字
-     * 有cheat权限:
-     * (光标空 && 中键) 放光标上
-     * (作弊书 || 光标有物品) 放背包里
-     * 显示配方界面
+     * 点击物品时: 物品未解锁时: 解锁物品 F键: 搜索配方展示物品的名字涉及此物品的名字的物品: 搜索: %名字 Q键: 分享物品 在书签中: 作弊书: 左键: 给予物品 生存书: 左键: 显示配方界面 右键: 取消书签
+     * 在标记书签中: 左键: 标记书签 右键: 查找物品用途: 搜索: #名字 Shift左键: 打开物品所在物品组 Shift右键: 查找相关物品/机器: 搜索: 名字 有cheat权限: (光标空 && 中键) 放光标上
+     * (作弊书 || 光标有物品) 放背包里 显示配方界面
      *
      * @author balugaq
      * @since 2.0
@@ -796,7 +833,8 @@ public interface OnClick {
             return create(guide, menu, page, null);
         }
 
-        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem sf) {
+        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
+                                    @Nullable SlimefunItem sf) {
             return (event, player, slot, s, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 ItemStack item = event.getCurrentItem();
                 if (item == null) return false;
@@ -813,24 +851,29 @@ public interface OnClick {
                 }
                 // 右键
                 if (clickType == ClickType.RIGHT) {
-                    return findAction(player, "right-click").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                    return findAction(player, "right-click").click(guide, player, slot, slimefunItem, item, action,
+                                                                   menu, page);
                 }
                 // Shift+左键
                 if (clickType == ClickType.SHIFT_LEFT) {
-                    return findAction(player, "shift-left-click").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                    return findAction(player, "shift-left-click").click(guide, player, slot, slimefunItem, item,
+                                                                        action, menu, page);
                 }
                 // Shift+右键
                 if (clickType == ClickType.SHIFT_RIGHT) {
-                    return findAction(player, "shift-right-click").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                    return findAction(player, "shift-right-click").click(guide, player, slot, slimefunItem, item,
+                                                                         action, menu, page);
                 }
                 // 有cheat权限
                 if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
                     ItemStack cursor = event.getCursor();
                     if (event.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR)) {
-                        return findAction(player, "clone-item").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                        return findAction(player, "clone-item").click(guide, player, slot, slimefunItem, item, action
+                                , menu, page);
                     }
                     if (guide.getMode() == SlimefunGuideMode.CHEAT_MODE || (cursor != null && cursor.getType() != Material.AIR)) {
-                        return findAction(player, "take-item").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                        return findAction(player, "take-item").click(guide, player, slot, slimefunItem, item, action,
+                                                                     menu, page);
                     }
                 }
 
@@ -861,7 +904,9 @@ public interface OnClick {
                 }
 
                 @Override
-                public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page) {
+                public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                                     @Nullable SlimefunItem slimefunItem, ItemStack itemStack,
+                                     ClickAction clickAction, ChestMenu menu, int page) {
                     return false;
                 }
 
@@ -879,7 +924,9 @@ public interface OnClick {
         @NullMarked
         @FunctionalInterface
         interface ActionHandle {
-            void click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page);
+            void click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                       @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction,
+                       ChestMenu menu, int page);
         }
 
         /**
@@ -906,7 +953,9 @@ public interface OnClick {
                     }
 
                     @Override
-                    public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page) {
+                    public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                                         @Nullable SlimefunItem slimefunItem, ItemStack itemStack,
+                                         ClickAction clickAction, ChestMenu menu, int page) {
                         handle.click(guide, player, slot, slimefunItem, itemStack, clickAction, menu, page);
                         return false;
                     }
@@ -944,7 +993,9 @@ public interface OnClick {
                     }
 
                     @Override
-                    public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page) {
+                    public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                                         @Nullable SlimefunItem slimefunItem, ItemStack itemStack,
+                                         ClickAction clickAction, ChestMenu menu, int page) {
                         handle.click(guide, player, slot, slimefunItem, itemStack, clickAction, menu, page);
                         return false;
                     }
@@ -957,7 +1008,9 @@ public interface OnClick {
             }
 
             @SuppressWarnings("SameReturnValue")
-            boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction, ChestMenu menu, int page);
+            boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+                          @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction,
+                          ChestMenu menu, int page);
         }
 
         /**
@@ -967,22 +1020,26 @@ public interface OnClick {
         @NullMarked
         class Bookmark extends Normal {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    Action.of("right-click", "删除标记的物品", Material.BARREL, (guide, player, slot, slimefunItem, item, action, menu, page) -> {
-                        PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
-                        if (playerProfile == null) return;
-                        if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
-                        if (slimefunItem == null) return;
+                    Action.of(
+                            "right-click", "删除标记的物品", Material.BARREL, (guide, player, slot, slimefunItem, item,
+                                                                               action, menu, page) -> {
+                                PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
+                                if (playerProfile == null) return;
+                                if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
+                                if (slimefunItem == null) return;
 
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        JustEnoughGuide.getBookmarkManager().removeBookmark(player, slimefunItem);
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                JustEnoughGuide.getBookmarkManager().removeBookmark(player, slimefunItem);
 
-                        List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
-                        if (items == null || items.isEmpty()) {
-                            player.closeInventory();
-                            return;
-                        }
-                        new BookmarkGroup(guide, items).open(player, playerProfile, guide.getMode());
-                    })
+                                List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items =
+                                        JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
+                                if (items == null || items.isEmpty()) {
+                                    player.closeInventory();
+                                    return;
+                                }
+                                new BookmarkGroup(guide, items).open(player, playerProfile, guide.getMode());
+                            }
+                    )
             );
 
             @Override
@@ -996,7 +1053,8 @@ public interface OnClick {
             }
 
             @Override
-            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem slimefunItem) {
+            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
+                                       @Nullable SlimefunItem slimefunItem) {
                 return (event, player, slot, s, action) -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
@@ -1004,7 +1062,8 @@ public interface OnClick {
                     if (clickType == ClickType.DOUBLE_CLICK) return false;
                     // 注入右键
                     if (clickType == ClickType.RIGHT) {
-                        return findAction(player, "right-click").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                        return findAction(player, "right-click").click(guide, player, slot, slimefunItem, item,
+                                                                       action, menu, page);
                     }
 
                     return super.create(guide, menu, page, slimefunItem).onClick(event, player, slot, item, action);
@@ -1024,18 +1083,22 @@ public interface OnClick {
         @NullMarked
         class ItemMark extends Normal {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    Action.of("left-click", "物品标记", Material.WRITABLE_BOOK, (guide, player, slot, slimefunItem, item, action, menu, page) -> {
-                        if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
-                        if (slimefunItem == null) return;
-                        SlimefunItem finalSlimefunItem = slimefunItem;
-                        EventUtil.callEvent(new GuideEvents.CollectItemEvent(player, item, slot, action, menu, guide)).ifSuccess(() -> {
-                            JustEnoughGuide.getBookmarkManager().addBookmark(player, finalSlimefunItem);
-                            player.sendMessage(ChatColor.GREEN + "已添加到收藏列表!");
-                            player.playSound(player.getLocation(), Sounds.COLLECTED_ITEM, 1f, 1f);
+                    Action.of(
+                            "left-click", "物品标记", Material.WRITABLE_BOOK, (guide, player, slot, slimefunItem, item,
+                                                                               action, menu, page) -> {
+                                if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
+                                if (slimefunItem == null) return;
+                                SlimefunItem finalSlimefunItem = slimefunItem;
+                                EventUtil.callEvent(new GuideEvents.CollectItemEvent(player, item, slot, action, menu
+                                        , guide)).ifSuccess(() -> {
+                                    JustEnoughGuide.getBookmarkManager().addBookmark(player, finalSlimefunItem);
+                                    player.sendMessage(ChatColor.GREEN + "已添加到收藏列表!");
+                                    player.playSound(player.getLocation(), Sounds.COLLECTED_ITEM, 1f, 1f);
 
-                            return false;
-                        });
-                    })
+                                    return false;
+                                });
+                            }
+                    )
             );
 
             @Override
@@ -1049,7 +1112,8 @@ public interface OnClick {
             }
 
             @Override
-            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem slimefunItem) {
+            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
+                                       @Nullable SlimefunItem slimefunItem) {
                 return (event, player, slot, cursor, action) -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
@@ -1057,7 +1121,8 @@ public interface OnClick {
                     if (clickType == ClickType.DOUBLE_CLICK) return false;
                     // 注入左键
                     if (clickType == ClickType.LEFT) {
-                        return findAction(player, "left-click").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                        return findAction(player, "left-click").click(guide, player, slot, slimefunItem, item, action
+                                , menu, page);
                     }
 
                     return Normal.create(guide, menu, page, slimefunItem).onClick(event, player, slot, item, action);
@@ -1077,24 +1142,30 @@ public interface OnClick {
         @NullMarked
         class Research implements Item {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    Action.of("default", "研究物品", Material.ENCHANTED_BOOK, (guide, player, slot, sf, item, action, menu, page) -> {
-                        String id = item.getItemMeta().getPersistentDataContainer().get(JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY, PersistentDataType.STRING);
-                        if (id == null) return;
-                        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-                        if (slimefunItem == null) return;
-                        io.github.thebusybiscuit.slimefun4.api.researches.Research research = slimefunItem.getResearch();
-                        if (research == null) return;
-                        PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
-                        if (playerProfile == null) return;
+                    Action.of(
+                            "default", "研究物品", Material.ENCHANTED_BOOK, (guide, player, slot, sf, item, action, menu,
+                                                                             page) -> {
+                                String id =
+                                        item.getItemMeta().getPersistentDataContainer().get(JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY, PersistentDataType.STRING);
+                                if (id == null) return;
+                                SlimefunItem slimefunItem = SlimefunItem.getById(id);
+                                if (slimefunItem == null) return;
+                                io.github.thebusybiscuit.slimefun4.api.researches.Research research =
+                                        slimefunItem.getResearch();
+                                if (research == null) return;
+                                PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
+                                if (playerProfile == null) return;
 
-                        research.unlockFromGuide(
-                                guide,
-                                player,
-                                playerProfile,
-                                slimefunItem,
-                                slimefunItem.getItemGroup(),
-                                page);
-                    })
+                                research.unlockFromGuide(
+                                        guide,
+                                        player,
+                                        playerProfile,
+                                        slimefunItem,
+                                        slimefunItem.getItemGroup(),
+                                        page
+                                );
+                            }
+                    )
             );
 
             @Override
@@ -1108,12 +1179,14 @@ public interface OnClick {
             }
 
             @Override
-            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page, @Nullable SlimefunItem slimefunItem) {
+            public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
+                                       @Nullable SlimefunItem slimefunItem) {
                 return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
                     if (event.getClick() == ClickType.DOUBLE_CLICK) return false;
-                    return findAction(player, "default").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                    return findAction(player, "default").click(guide, player, slot, slimefunItem, item, action, menu,
+                                                               page);
                 });
             }
 
@@ -1131,68 +1204,102 @@ public interface OnClick {
         @SuppressWarnings("CodeBlock2Expr")
         class Normal implements Item {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                    Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", Material.FURNACE, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        String itemName = ItemStackHelper.getDisplayName(item).trim();
-                        while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
+                    Action.of(
+                            "f", "搜索配方展示物品的名字涉及此物品的名字的物品", Material.FURNACE, (guide, player, slot, slimefunItem, item
+                                    , clickAction, menu, page) -> {
+                                String itemName = ItemStackHelper.getDisplayName(item).trim();
+                                while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                        player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
-                    }),
-                    Action.of("q", "分享物品", Material.CLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        share(player, ItemStackHelper.getDisplayName(item).trim());
-                    }),
-                    Action.of("right-click", "搜索物品作用", Material.LIGHT, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        String itemName = ItemStackHelper.getDisplayName(item).trim();
-                        while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
-
-                        player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
-                    }),
-                    Action.of("shift-left-click", "打开物品所在物品组", Material.CAULDRON, (guide, player, slot, slimefunItem, item, clickAction, menu, p2) -> {
-                        if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
-                        if (slimefunItem == null) return;
-
-                        final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = slimefunItem.getItemGroup();
-                        AtomicInteger page = new AtomicInteger(1);
-                        if (GuideUtil.isTaggedGroupType(itemGroup)) {
-                            page.set((itemGroup.getItems().indexOf(slimefunItem) / 36) + 1);
-                        }
-                        EventUtil.callEvent(new GuideEvents.GroupLinkButtonClickEvent(player, item, slot, clickAction, menu, guide)).ifSuccess(() -> {
-                            PlayerProfile.get(player, profile -> guide.openItemGroup(profile, itemGroup, page.get()));
-                            return false;
-                        });
-                    }),
-                    Action.of("shift-right-click", "查找相关物品", Material.NAME_TAG, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        String itemName = ItemStackHelper.getDisplayName(item).trim();
-                        while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
-                        player.chat("/sf search " + ChatColor.stripColor(itemName));
-                    }),
-                    OpAction.of("clone-item", "作弊模式 - 复制物品", Material.COMMAND_BLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        ItemStack cursor = player.getItemOnCursor();
-                        if (cursor == null || cursor.getType() == Material.AIR) {
-                            if (slimefunItem instanceof MultiBlockMachine) {
-                                Slimefun.getLocalization().sendMessage(player, "guide.cheat.no-multiblocks");
-                                return;
+                                player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
                             }
+                    ),
+                    Action.of(
+                            "q", "分享物品", Material.CLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu,
+                                                              page) -> {
+                                share(player, ItemStackHelper.getDisplayName(item).trim());
+                            }
+                    ),
+                    Action.of(
+                            "right-click", "搜索物品作用", Material.LIGHT, (guide, player, slot, slimefunItem, item,
+                                                                            clickAction, menu, page) -> {
+                                String itemName = ItemStackHelper.getDisplayName(item).trim();
+                                while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                            ItemStack itemStack = slimefunItem == null ? item : Converter.getItem(slimefunItem.getItem());
-                            player.setItemOnCursor(StackUtils.getAsQuantity(itemStack, itemStack.getMaxStackSize()));
-                        }
-                    }),
-                    OpAction.of("take-item", "作弊模式 - 取出物品", Material.STRUCTURE_BLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        int amount = 1;
-                        if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
+                                player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
+                            }
+                    ),
+                    Action.of(
+                            "shift-left-click", "打开物品所在物品组", Material.CAULDRON, (guide, player, slot, slimefunItem,
+                                                                                          item, clickAction, menu,
+                                                                                          p2) -> {
+                                if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
+                                if (slimefunItem == null) return;
 
-                        ItemStack itemStack = slimefunItem == null ? item : Converter.getItem(slimefunItem.getItem());
-                        player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
-                    }),
-                    Action.of("default", "默认", Material.COMPASS, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
-                        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                        if (profile == null) return;
-                        if (slimefunItem != null) {
-                            guide.displayItem(profile, slimefunItem, true);
-                        } else {
-                            guide.displayItem(profile, item, 0, true);
-                        }
-                    })
+                                final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup =
+                                        slimefunItem.getItemGroup();
+                                AtomicInteger page = new AtomicInteger(1);
+                                if (GuideUtil.isTaggedGroupType(itemGroup)) {
+                                    page.set((itemGroup.getItems().indexOf(slimefunItem) / 36) + 1);
+                                }
+                                EventUtil.callEvent(new GuideEvents.GroupLinkButtonClickEvent(player, item, slot,
+                                                                                              clickAction, menu,
+                                                                                              guide)).ifSuccess(() -> {
+                                    PlayerProfile.get(player, profile -> guide.openItemGroup(profile, itemGroup,
+                                                                                             page.get()));
+                                    return false;
+                                });
+                            }
+                    ),
+                    Action.of(
+                            "shift-right-click", "查找相关物品", Material.NAME_TAG, (guide, player, slot, slimefunItem,
+                                                                                     item, clickAction, menu, page) -> {
+                                String itemName = ItemStackHelper.getDisplayName(item).trim();
+                                while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
+                                player.chat("/sf search " + ChatColor.stripColor(itemName));
+                            }
+                    ),
+                    OpAction.of(
+                            "clone-item", "作弊模式 - 复制物品", Material.COMMAND_BLOCK, (guide, player, slot, slimefunItem,
+                                                                                          item, clickAction, menu,
+                                                                                          page) -> {
+                                ItemStack cursor = player.getItemOnCursor();
+                                if (cursor == null || cursor.getType() == Material.AIR) {
+                                    if (slimefunItem instanceof MultiBlockMachine) {
+                                        Slimefun.getLocalization().sendMessage(player, "guide.cheat.no-multiblocks");
+                                        return;
+                                    }
+
+                                    ItemStack itemStack = slimefunItem == null ? item :
+                                            Converter.getItem(slimefunItem.getItem());
+                                    player.setItemOnCursor(StackUtils.getAsQuantity(itemStack,
+                                                                                    itemStack.getMaxStackSize()));
+                                }
+                            }
+                    ),
+                    OpAction.of(
+                            "take-item", "作弊模式 - 取出物品", Material.STRUCTURE_BLOCK, (guide, player, slot, slimefunItem,
+                                                                                           item, clickAction, menu,
+                                                                                           page) -> {
+                                int amount = 1;
+                                if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
+
+                                ItemStack itemStack = slimefunItem == null ? item :
+                                        Converter.getItem(slimefunItem.getItem());
+                                player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
+                            }
+                    ),
+                    Action.of(
+                            "default", "默认", Material.COMPASS, (guide, player, slot, slimefunItem, item, clickAction,
+                                                                  menu, page) -> {
+                                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                                if (profile == null) return;
+                                if (slimefunItem != null) {
+                                    guide.displayItem(profile, slimefunItem, true);
+                                } else {
+                                    guide.displayItem(profile, item, 0, true);
+                                }
+                            }
+                    )
             );
 
             @Override

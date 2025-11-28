@@ -44,8 +44,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This is the implementation of the "/jeg cache" command.
- * It allows the server administrator to check the validity of the cache for a given character.
+ * This is the implementation of the "/jeg cache" command. It allows the server administrator to check the validity of
+ * the cache for a given character.
  *
  * @author balugaq
  * @since 1.5
@@ -59,7 +59,8 @@ public class CacheCommand implements JEGCommand {
     /**
      * Constructs a new CacheCommand instance.
      *
-     * @param plugin The plugin instance.
+     * @param plugin
+     *         The plugin instance.
      */
     public CacheCommand(Plugin plugin) {
         this.plugin = plugin;
@@ -80,17 +81,17 @@ public class CacheCommand implements JEGCommand {
                 switch (args[1]) {
                     case "1" -> {
                         List<String> result = new ArrayList<>(SearchGroup.CACHE.keySet().stream()
-                                .sorted()
-                                .map(String::valueOf)
-                                .toList());
+                                                                      .sorted()
+                                                                      .map(String::valueOf)
+                                                                      .toList());
                         result.add("clear");
                         return result;
                     }
                     case "2" -> {
                         List<String> result = new ArrayList<>(SearchGroup.CACHE2.keySet().stream()
-                                .sorted()
-                                .map(String::valueOf)
-                                .toList());
+                                                                      .sorted()
+                                                                      .map(String::valueOf)
+                                                                      .toList());
                         result.add("clear");
                         return result;
                     }

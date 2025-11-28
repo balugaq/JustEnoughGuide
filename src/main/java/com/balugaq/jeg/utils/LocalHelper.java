@@ -186,13 +186,16 @@ public class LocalHelper {
         addonLocals.put("SlimefunNukes", "粘液核弹");
         addonLocals.put(
                 "SlimeCustomizer",
-                "自定义粘液附属"); // Avoid conflict with RaySlimefunAddon, RykenSlimefunCustomizer, RykenSlimeCustomizer
+                "自定义粘液附属"
+        ); // Avoid conflict with RaySlimefunAddon, RykenSlimefunCustomizer, RykenSlimeCustomizer
         addonLocals.put(
                 "RykenSlimeCustomizer",
-                "Ryken自定义附属"); // Same as RykenSlimefunCustomizer, avoid conflict with RaySlimefunAddon
+                "Ryken自定义附属"
+        ); // Same as RykenSlimefunCustomizer, avoid conflict with RaySlimefunAddon
         addonLocals.put(
                 "RykenSlimefunCustomizer",
-                "Ryken自定义附属"); // Same as RykenSlimeCustomizer, avoid conflict with RaySlimefunAddon
+                "Ryken自定义附属"
+        ); // Same as RykenSlimeCustomizer, avoid conflict with RaySlimefunAddon
         addonLocals.put("FinalTECH-Changed", "乱序技艺-改版");
         addonLocals.put("BloodAlchemy", "血炼金工艺"); // Same as BloodyAlchemy
         addonLocals.put("Laboratory", "实验室");
@@ -219,7 +222,8 @@ public class LocalHelper {
         addonLocals.put("SlimeHUDPlus", "方块信息显示"); // Same as SlimeHUD
         addonLocals.put(
                 "RaySlimefunAddon",
-                "高级自定义粘液附属"); // Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
+                "高级自定义粘液附属"
+        ); // Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
         addonLocals.put("SCrafter", "SC科技"); // Same as SlimefunZT
         addonLocals.put("CrispyMachines", "酥脆机器");
         addonLocals.put("DimensionTraveler", "维度旅者");

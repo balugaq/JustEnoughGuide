@@ -136,10 +136,14 @@ public class SlimeAEPluginRecipeCompleteVanillaSource implements VanillaSource {
                             completeRecipeWithGuide(
                                     block,
                                     inventory,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
+                                                                         event.getClickedSlot(),
+                                                                         event.getClickAction(), event.getMenu(),
+                                                                         event.getGuide()),
                                     ingredientSlots,
                                     unordered,
-                                    recipeDepth + 1);
+                                    recipeDepth + 1
+                            );
                         } else {
                             sendMissingMaterial(player, itemStack);
                         }
@@ -159,10 +163,14 @@ public class SlimeAEPluginRecipeCompleteVanillaSource implements VanillaSource {
                             completeRecipeWithGuide(
                                     block,
                                     inventory,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack, event.getClickedSlot(), event.getClickAction(), event.getMenu(), event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
+                                                                         event.getClickedSlot(),
+                                                                         event.getClickAction(), event.getMenu(),
+                                                                         event.getGuide()),
                                     ingredientSlots,
                                     unordered,
-                                    recipeDepth + 1);
+                                    recipeDepth + 1
+                            );
                         } else {
                             sendMissingMaterial(player, itemStack);
                         }
@@ -185,7 +193,7 @@ public class SlimeAEPluginRecipeCompleteVanillaSource implements VanillaSource {
 
         // get from networkStorage
         ItemStack[] gotten = networkStorage
-                .takeItem(new ItemRequest(new ItemKey(itemStack), 1L))
+                .takeItem(new ItemRequest(new ItemKey(itemStack), Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize()))))
                 .toItemStacks();
         if (gotten.length != 0) {
             return gotten[0];

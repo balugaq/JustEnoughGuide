@@ -89,7 +89,8 @@ public class CerPatchGuideOption implements SlimefunGuideOption<Boolean> {
                 "&7在搜出的相关机器上显示",
                 "&7使用这个机器制作这个物品的性价比",
                 "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 性价比显示");
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 性价比显示"
+        );
         return Optional.of(item);
     }
 

@@ -54,7 +54,9 @@ public class Models {
                     "&fTips:",
                     "&7 - &e左侧物品为返回键",
                     "&7 - &e中间物品为按键上一页",
-                    "&7 - &e右侧物品为按键下一页")));
+                    "&7 - &e右侧物品为按键下一页"
+            )
+    ));
     public static final ItemStack JEG_GUIDE_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_JEG_GUIDE_GROUP", Converter.getItem(Material.KNOWLEDGE_BOOK, "&bJEG 使用指南")));
     public static final ItemStack HIDDEN_ITEMS_GROUP = Converter.getItem(
@@ -65,7 +67,8 @@ public class Models {
             new SlimefunItemStack("JEG_VANILLA_ITEMS_GROUP", Converter.getItem(Material.CRAFTING_TABLE, "&7原版物品")));
     public static final ItemStack JEG_ITEMS_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, "&bJEG 物品")));
-    public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(Material.YELLOW_STAINED_GLASS_PANE, " ", " ");
+    public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(Material.YELLOW_STAINED_GLASS_PANE, " ",
+                                                                            " ");
     public static final SlimefunItemStack RECIPE_COMPLETE_GUIDE = new SlimefunItemStack(
             "JEG_RECIPE_COMPLETE_BOOK",
             Converter.getItem(
@@ -75,7 +78,9 @@ public class Models {
                     "&f点击进行配方补全",
                     RECIPE_COMPLETE_BOOK_MECHANISM_1,
                     RECIPE_COMPLETE_BOOK_MECHANISM_2,
-                    RECIPE_COMPLETE_BOOK_MECHANISM_3));
+                    RECIPE_COMPLETE_BOOK_MECHANISM_3
+            )
+    );
     public static final SlimefunItemStack USAGE_INFO = new SlimefunItemStack(
             "JEG_RECIPE_COMPLETE_USAGE_INFO",
             Converter.getItem(
@@ -84,7 +89,9 @@ public class Models {
                     "",
                     "&f1. &e将配方补全书放到物品栏里",
                     "&f2. &e打开任意一个适配配方补全的机器（如快捷机器）",
-                    "&f3. &e左键点击配方补全书"));
+                    "&f3. &e左键点击配方补全书"
+            )
+    );
     public static final SlimefunItemStack MECHANISM = new SlimefunItemStack(
             "JEG_RECIPE_COMPLETE_MECHANISM",
             Converter.getItem(
@@ -104,7 +111,9 @@ public class Models {
                     RECIPE_COMPLETE_BOOK_MECHANISM_3,
                     "&9===补全界面点击机制===",
                     RECIPE_COMPLETE_GUI_MECHANISM_1,
-                    RECIPE_COMPLETE_GUI_MECHANISM_2));
+                    RECIPE_COMPLETE_GUI_MECHANISM_2
+            )
+    );
     public static final SlimefunItemStack SUPPORTED_ADDONS_INFO = new SlimefunItemStack(
             "JEG_RECIPE_COMPLETE_SUPPORTED_ADDONS_INFO",
             Converter.getItem(
@@ -139,7 +148,9 @@ public class Models {
                     "&7- &a无尽压缩",
                     "&7- &a魔法",
                     "&7- &a青山科技",
-                    "&7- &a迷狱生机"));
+                    "&7- &a迷狱生机"
+            )
+    );
     public static final ItemStack ITEM_MARK_BACKGROUND = Converter.getItem(
             Material.GREEN_STAINED_GLASS_PANE,
             "&a&l添加收藏物",

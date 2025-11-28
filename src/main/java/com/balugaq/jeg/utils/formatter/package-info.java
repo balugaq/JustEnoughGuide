@@ -28,8 +28,7 @@
 package com.balugaq.jeg.utils.formatter;
 
 /**
- * This package contains the classes that are used to format
- * the Slimefun guide GUI
+ * This package contains the classes that are used to format the Slimefun guide GUI
  *
  * @author balugaq
  * @since 1.5

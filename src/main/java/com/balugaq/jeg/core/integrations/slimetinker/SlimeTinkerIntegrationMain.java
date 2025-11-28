@@ -41,7 +41,7 @@ import java.util.List;
  */
 @NullMarked
 public class SlimeTinkerIntegrationMain implements Integration {
-    public static final int[] TINKERS_WORKBENCH_INPUT_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30};
+    public static final int[] TINKERS_WORKBENCH_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(String id, int[] slots, boolean unordered) {

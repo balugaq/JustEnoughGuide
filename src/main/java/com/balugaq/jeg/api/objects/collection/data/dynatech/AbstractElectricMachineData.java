@@ -55,7 +55,8 @@ public class AbstractElectricMachineData extends MachineData {
                         recipe.getInput(),
                         recipe.getOutput(),
                         recipe.getTicks(),
-                        (long) energyConsumedPerTick * recipe.getTicks()))
+                        (long) energyConsumedPerTick * recipe.getTicks()
+                ))
                 .toList();
     }
 }

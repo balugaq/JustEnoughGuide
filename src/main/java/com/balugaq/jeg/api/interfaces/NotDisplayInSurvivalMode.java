@@ -33,15 +33,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to indicate that a class should not be displayed in the survival mode menu.
- * Priority higher than {@link DisplayInSurvivalMode}
+ * This annotation is used to indicate that a class should not be displayed in the survival mode menu. Priority higher
+ * than {@link DisplayInSurvivalMode}
  * <p>
  * Usage:
  * <p>
- * &#064;NotDisplayInSurvivalMode
- * public class MyGroup extends ItemGroup {
- * //...
- * }
+ * &#064;NotDisplayInSurvivalMode public class MyGroup extends ItemGroup { //... }
  *
  * @author balugaq
  * @since 1.1

@@ -91,18 +91,24 @@ import java.util.List;
 public final class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_BOOK_MARK_BUTTON", Material.NETHER_STAR, "&e&l收藏物列表")));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_BOOK_MARK_BUTTON",
+                                                                               Material.NETHER_STAR, "&e&l收藏物列表")));
     private static final ItemStack ITEM_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_ITEM_MARK_BUTTON", Material.WRITABLE_BOOK, "&e&l收藏物品")));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_ITEM_MARK_BUTTON",
+                                                                               Material.WRITABLE_BOOK, "&e&l收藏物品")));
     private static final ItemStack CER_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_CER_BUTTON", Material.EMERALD, "&e&l性价比界面（仅供参考）")));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_CER_BUTTON", Material.EMERALD,
+                                                                               "&e&l性价比界面（仅供参考）")));
 
     /**
      * Open the main menu of the guide for the given player and mode.
      *
-     * @param player       The player to open the guide for.
-     * @param mode         The mode to open the guide for.
-     * @param selectedPage The page to open the guide to.
+     * @param player
+     *         The player to open the guide for.
+     * @param mode
+     *         The mode to open the guide for.
+     * @param selectedPage
+     *         The page to open the guide to.
      */
     public static void openMainMenuAsync(Player player, SlimefunGuideMode mode, int selectedPage) {
         if (!PlayerProfile.get(
@@ -114,10 +120,14 @@ public final class GuideUtil {
     /**
      * Open the main menu of the guide for the given player and mode.
      *
-     * @param player       The player to open the guide for.
-     * @param profile      The player's profile.
-     * @param mode         The mode to open the guide for.
-     * @param selectedPage The page to open the guide to.
+     * @param player
+     *         The player to open the guide for.
+     * @param profile
+     *         The player's profile.
+     * @param mode
+     *         The mode to open the guide for.
+     * @param selectedPage
+     *         The page to open the guide to.
      */
     public static void openMainMenu(Player player, PlayerProfile profile, SlimefunGuideMode mode, int selectedPage) {
         getGuide(player, mode).openMainMenu(profile, selectedPage);
@@ -126,8 +136,11 @@ public final class GuideUtil {
     /**
      * Get the guide implementation for the given player and mode.
      *
-     * @param player The player to get the guide for.
-     * @param mode   The mode to get the guide for.
+     * @param player
+     *         The player to get the guide for.
+     * @param mode
+     *         The mode to get the guide for.
+     *
      * @return The guide implementation for the given player and mode.
      */
     public static SlimefunGuideImplementation getGuide(Player player, SlimefunGuideMode mode) {
@@ -203,7 +216,8 @@ public final class GuideUtil {
                                                             implementation.openMainMenu(
                                                                     profile,
                                                                     profile.getGuideHistory()
-                                                                            .getMainMenuPage());
+                                                                            .getMainMenuPage()
+                                                            );
                                                         } else {
                                                             history.goBack(implementation);
                                                         }
@@ -219,7 +233,8 @@ public final class GuideUtil {
                                                                             RTSSearchGroup.RTS_PLAYERS.get(pl),
                                                                             oldPage,
                                                                             newPage,
-                                                                            mode);
+                                                                            mode
+                                                                    );
                                                             Bukkit.getPluginManager()
                                                                     .callEvent(event);
                                                             if (!event.isCancelled()) {
@@ -237,14 +252,16 @@ public final class GuideUtil {
                                                                     (rts.slimefunItemList.size() - 1)
                                                                             / RTSListener.FILL_ORDER.length
                                                                             + 1,
-                                                                    oldPage + 1);
+                                                                    oldPage + 1
+                                                            );
                                                             RTSEvents.PageChangeEvent event =
                                                                     new RTSEvents.PageChangeEvent(
                                                                             pl,
                                                                             RTSSearchGroup.RTS_PLAYERS.get(pl),
                                                                             oldPage,
                                                                             newPage,
-                                                                            mode);
+                                                                            mode
+                                                                    );
                                                             Bukkit.getPluginManager()
                                                                     .callEvent(event);
                                                             if (!event.isCancelled()) {
@@ -255,17 +272,19 @@ public final class GuideUtil {
                                                         }
                                                     }
                                                 },
-                                                new int[]{
+                                                new int[] {
                                                         AnvilGUI.Slot.INPUT_LEFT,
                                                         AnvilGUI.Slot.INPUT_RIGHT,
                                                         AnvilGUI.Slot.OUTPUT
                                                 },
-                                                null);
+                                                null
+                                        );
                                     } catch (Exception ignored) {
                                         p.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
                                     }
                                     return false;
-                                }));
+                                })
+                );
             }
         } else {
             for (int ss : format.getChars('R')) {
@@ -294,7 +313,8 @@ public final class GuideUtil {
                                 .ifSuccess(() -> {
                                     implementation.openBookMarkGroup(pl, profile);
                                     return false;
-                                }));
+                                })
+                );
             }
         } else {
             for (int s : format.getChars('C')) {
@@ -322,7 +342,8 @@ public final class GuideUtil {
                                 .ifSuccess(() -> {
                                     implementation.openItemMarkGroup(itemGroup, pl, profile);
                                     return false;
-                                }));
+                                })
+                );
             }
         } else {
             for (int ss : format.getChars('c')) {
@@ -333,12 +354,15 @@ public final class GuideUtil {
 
     @SuppressWarnings({"deprecation"})
     @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)
-    public static void addCerButton(ChestMenu menu, Player p, PlayerProfile profile, SlimefunItem machine, SlimefunGuideImplementation implementation, Format format) {
+    public static void addCerButton(ChestMenu menu, Player p, PlayerProfile profile, SlimefunItem machine,
+                                    SlimefunGuideImplementation implementation, Format format) {
         for (int ss : format.getChars('m')) {
             if (JustEnoughGuide.getConfigManager().isCerPatch()) {
                 if (CERCalculator.cerable(machine)) {
-                    menu.addItem(ss, PatchScope.Cer.patch(p, getCerMenuButton()),
-                            (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode())));
+                    menu.addItem(
+                            ss, PatchScope.Cer.patch(p, getCerMenuButton()),
+                            (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode()))
+                    );
                 }
             }
         }
@@ -369,14 +393,16 @@ public final class GuideUtil {
     }
 
     public static void openKeybindsGui(Player player) {
-        PlayerProfile.get(player, prf ->
-                new KeybindsItemsGroup().open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+        PlayerProfile.get(
+                player, prf ->
+                        new KeybindsItemsGroup().open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
     public static void openSubKeybindsGui(Player player, OnClick keybindsSet) {
-        PlayerProfile.get(player, prf ->
-                new SubKeybindsItemsGroup(keybindsSet).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+        PlayerProfile.get(
+                player, prf ->
+                        new SubKeybindsItemsGroup(keybindsSet).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
@@ -385,14 +411,17 @@ public final class GuideUtil {
     }
 
     public static void openKeybindGui(Player player, OnClick keybind) {
-        PlayerProfile.get(player, prf ->
-                new KeybindItemsGroup(player, keybind).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+        PlayerProfile.get(
+                player, prf ->
+                        new KeybindItemsGroup(player, keybind).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
     public static void openActionSelectGui(Player player, OnClick keybind, BaseAction action) {
-        PlayerProfile.get(player, prf ->
-                new ActionSelectGroup(player, keybind, action).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+        PlayerProfile.get(
+                player, prf ->
+                        new ActionSelectGroup(player, keybind, action).open(player, prf,
+                                                                            SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
@@ -401,6 +430,7 @@ public final class GuideUtil {
     }
 
     public static ItemStack getLeftActionIcon(BaseAction action) {
-        return Converter.getItem(action.material(), ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")"));
+        return Converter.getItem(action.material(),
+                                 ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")"));
     }
 }

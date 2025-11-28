@@ -208,14 +208,15 @@ public class Debug {
             getPlugin()
                     .getLogger()
                     .severe(
-                            "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
+                            "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
+                                    "BUG!");
             if (code != null) {
                 getPlugin().getLogger().severe("Error code: " + code);
             }
             getPlugin()
                     .getLogger()
                     .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
-                            + JustEnoughGuide.getInstance().getBugTrackerURL());
+                                    + JustEnoughGuide.getInstance().getBugTrackerURL());
             if (doing != null) {
                 getPlugin().getLogger().severe("An unexpected error occurred while " + doing);
             } else {
@@ -235,18 +236,19 @@ public class Debug {
             getPlugin()
                     .getLogger()
                     .severe("====================AN FATAL OCCURRED"
-                            + (doing != null ? (" WHEN " + doing.toUpperCase()) : "") + "====================");
+                                    + (doing != null ? (" WHEN " + doing.toUpperCase()) : "") + "====================");
             getPlugin()
                     .getLogger()
                     .severe(
-                            "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
+                            "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
+                                    "BUG!");
             if (code != null) {
                 getPlugin().getLogger().severe("Error code: " + code);
             }
             getPlugin()
                     .getLogger()
                     .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
-                            + JustEnoughGuide.getInstance().getBugTrackerURL());
+                                    + JustEnoughGuide.getInstance().getBugTrackerURL());
             if (doing != null) {
                 getPlugin().getLogger().severe("An unexpected error occurred while " + doing);
             } else {
@@ -281,13 +283,13 @@ public class Debug {
                 stream.println(
                         "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
                 stream.println("If you are sure that this is a JustEnoughGuide bug, please report to "
-                        + JustEnoughGuide.getInstance().getBugTrackerURL());
+                                       + JustEnoughGuide.getInstance().getBugTrackerURL());
                 stream.println("An unexpected error occurred.");
                 stream.println("JustEnoughGuide version: "
-                        + JustEnoughGuide.getInstance().getDescription().getVersion());
+                                       + JustEnoughGuide.getInstance().getDescription().getVersion());
                 stream.println("Java version: " + System.getProperty("java.version"));
                 stream.println("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " "
-                        + System.getProperty("os.arch"));
+                                       + System.getProperty("os.arch"));
                 stream.println("Minecraft version: " + JustEnoughGuide.getMinecraftVersion());
                 stream.println("Slimefun version: " + Slimefun.getVersion());
                 if (code != null) {

@@ -42,7 +42,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class RecipeCompletableRegistry {
     /**
-     * @param slimefunItem the {@link SlimefunItem} to add
+     * @param slimefunItem
+     *         the {@link SlimefunItem} to add
+     *
      * @see RecipeCompletableListener.NotApplicable
      */
     @ApiStatus.Obsolete
@@ -51,7 +53,9 @@ public class RecipeCompletableRegistry {
     }
 
     /**
-     * @param slimefunItem the {@link SlimefunItem} to remove
+     * @param slimefunItem
+     *         the {@link SlimefunItem} to remove
+     *
      * @see RecipeCompletableListener.NotApplicable
      */
     @ApiStatus.Obsolete

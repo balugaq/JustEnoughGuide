@@ -41,8 +41,7 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * Target block has {@link Inventory}
- * ex. {@link Dispenser}
+ * Target block has {@link Inventory} ex. {@link Dispenser}
  *
  * @author balugaq
  * @since 1.9
@@ -87,23 +86,25 @@ public interface VanillaSource extends Source {
         }
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
-        RecipeCompletableListener.addCallback(player.getUniqueId(), ((event, profile) -> {
-            int times = 1;
-            if (event.getClickAction().isRightClicked()) {
-                times = 64;
-            }
+        RecipeCompletableListener.addCallback(
+                player.getUniqueId(), ((event, profile) -> {
+                    int times = 1;
+                    if (event.getClickAction().isRightClicked()) {
+                        times = 64;
+                    }
 
-            // I think it is runnable
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(block, inventory, event, ingredientSlots, unordered, recipeDepth);
-            }
+                    // I think it is runnable
+                    for (int i = 0; i < times; i++) {
+                        completeRecipeWithGuide(block, inventory, event, ingredientSlots, unordered, recipeDepth);
+                    }
 
-            player.updateInventory();
-            player.openInventory(inventory);
-            if (callback != null) {
-                callback.run();
-            }
-        }));
+                    player.updateInventory();
+                    player.openInventory(inventory);
+                    if (callback != null) {
+                        callback.run();
+                    }
+                })
+        );
         RecipeCompletableListener.tagGuideOpen(player);
         return true;
     }

@@ -85,8 +85,10 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         kyoriBossBarSupplier = () -> {
             if (kyoriBossBar == null) {
                 if (PlatformUtil.isPaper() && IS_1_20_1) {
-                    String bossbarColor = SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase();
-                    kyoriBossBar = BossBar.bossBar(Component.text(""), 1.0f, toBossBarColor(bossbarColor), BossBar.Overlay.PROGRESS, new HashSet<>());
+                    String bossbarColor =
+                            SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase();
+                    kyoriBossBar = BossBar.bossBar(Component.text(""), 1.0f, toBossBarColor(bossbarColor),
+                                                   BossBar.Overlay.PROGRESS, new HashSet<>());
                     return (BossBar) kyoriBossBar;
                 } else {
                     return null;
@@ -128,7 +130,8 @@ public class JEGPlayerWAILA extends PlayerWAILA {
                     BossBar.Color.valueOf(color.toUpperCase());
             case "default", "inherit" -> BossBar.Color.WHITE;
             default -> {
-                SlimeHUD.log(Level.WARNING, "[SlimeHUD] Invalid bossbar color: " + color, "[SlimeHUD] Setting color to white...");
+                SlimeHUD.log(Level.WARNING, "[SlimeHUD] Invalid bossbar color: " + color, "[SlimeHUD] Setting color " +
+                        "to white...");
                 yield BossBar.Color.WHITE;
             }
         };
@@ -141,7 +144,8 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         }
 
         if (waila.getClass().getSimpleName().equals("JEGPlayerWAILA")) {
-            Supplier<BossBar> kyoriBossBarSupplier = ReflectionUtil.getValue(waila, "kyoriBossBarSupplier", Supplier.class);
+            Supplier<BossBar> kyoriBossBarSupplier = ReflectionUtil.getValue(waila, "kyoriBossBarSupplier",
+                                                                             Supplier.class);
             for (BossBarViewer bbv : kyoriBossBarSupplier.get().viewers()) {
                 if (bbv instanceof Audience adn) {
                     kyoriBossBarSupplier.get().removeViewer(adn);
@@ -161,7 +165,8 @@ public class JEGPlayerWAILA extends PlayerWAILA {
 
     public static void wrap(Player player) {
         synchronized (getWailaMap()) {
-            getWailaMap().compute(player.getUniqueId(), (k, waila) -> runTaskAsync(JustEnoughGuide.getInstance(), JEGPlayerWAILA.wrap(player, waila)));
+            getWailaMap().compute(player.getUniqueId(), (k, waila) -> runTaskAsync(JustEnoughGuide.getInstance(),
+                                                                                   JEGPlayerWAILA.wrap(player, waila)));
         }
     }
 
@@ -178,7 +183,8 @@ public class JEGPlayerWAILA extends PlayerWAILA {
     public static void onDisable() {
         synchronized (getWailaMap()) {
             for (Map.Entry<UUID, PlayerWAILA> entry : getWailaMap().entrySet()) {
-                getWailaMap().compute(entry.getKey(), (k, waila) -> runTaskAsync(SlimeHUD.getInstance(), JEGPlayerWAILA.unwrap(waila)));
+                getWailaMap().compute(entry.getKey(), (k, waila) -> runTaskAsync(SlimeHUD.getInstance(),
+                                                                                 JEGPlayerWAILA.unwrap(waila)));
             }
         }
     }
@@ -220,7 +226,8 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         HudRequest request = new HudRequest(item, target, getPlayer());
         ReflectionUtil.setValue(this, "facingBlock", SlimeHUD.getTranslationManager().getItemName(getPlayer(), item));
         ReflectionUtil.setValue(this, "facingBlockInfo", SlimeHUD.getHudController().processRequest(request));
-        ReflectionUtil.setValue(this, "facing", ChatColor.translateAlternateColorCodes('&', getFacingBlock() + (getFacingBlockInfo().isEmpty() ? "" : " &7| " + getFacingBlockInfo())));
+        ReflectionUtil.setValue(this, "facing", ChatColor.translateAlternateColorCodes('&',
+                                                                                       getFacingBlock() + (getFacingBlockInfo().isEmpty() ? "" : " &7| " + getFacingBlockInfo())));
     }
 
     @SuppressWarnings({"RedundantLabeledSwitchRuleCodeBlock", "DataFlowIssue"})
@@ -261,7 +268,8 @@ public class JEGPlayerWAILA extends PlayerWAILA {
             setVisible(false);
         } else {
             setVisible(true);
-            setTitle(keepTextColors0() ? LegacyComponentSerializer.legacySection().deserialize(facing) : Component.text(ChatColor.stripColor(facing)));
+            setTitle(keepTextColors0() ? LegacyComponentSerializer.legacySection().deserialize(facing) :
+                             Component.text(ChatColor.stripColor(facing)));
             if (useAutoBossBarColor0()) {
                 setColor(Util.pickBarColorFromName(facing));
             }

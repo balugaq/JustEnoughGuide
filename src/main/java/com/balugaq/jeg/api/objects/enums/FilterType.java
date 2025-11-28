@@ -53,7 +53,8 @@ import java.util.Set;
 @SuppressWarnings({"ConstantValue", "deprecation"})
 @Getter
 public enum FilterType {
-    BY_RECIPE_ITEM_NAME("#", (player, item, lowerFilterValue, pinyin) -> {
+    BY_RECIPE_ITEM_NAME(
+            "#", (player, item, lowerFilterValue, pinyin) -> {
         ItemStack[] recipe = item.getRecipe();
         if (recipe == null) {
             return false;
@@ -66,15 +67,18 @@ public enum FilterType {
         }
 
         return false;
-    }),
-    BY_RECIPE_TYPE_NAME("$", (player, item, lowerFilterValue, pinyin) -> {
+    }
+    ),
+    BY_RECIPE_TYPE_NAME(
+            "$", (player, item, lowerFilterValue, pinyin) -> {
         ItemStack recipeTypeIcon = item.getRecipeType().getItem(player);
         if (recipeTypeIcon == null) {
             return false;
         }
 
         return SearchGroup.isSearchFilterApplicable(recipeTypeIcon, lowerFilterValue, false);
-    }),
+    }
+    ),
     BY_DISPLAY_ITEM_NAME(
             "%",
             (player, item, lowerFilterValue, pinyin) -> {
@@ -130,16 +134,22 @@ public enum FilterType {
                 }
 
                 return false;
-            }),
-    BY_ADDON_NAME("@", (player, item, lowerFilterValue, pinyin) -> {
+            }
+    ),
+    BY_ADDON_NAME(
+            "@", (player, item, lowerFilterValue, pinyin) -> {
         SlimefunAddon addon = item.getAddon();
         String localAddonName = LocalHelper.getAddonName(addon, item.getId()).toLowerCase();
         String originModName = (addon == null ? "Slimefun" : addon.getName()).toLowerCase();
         return localAddonName.contains(lowerFilterValue) || originModName.contains(lowerFilterValue);
-    }),
-    BY_ITEM_NAME("!", (player, item, lowerFilterValue, pinyin) ->
-            SearchGroup.isSearchFilterApplicable(item, lowerFilterValue, pinyin)),
-    BY_ITEM_LORE("^", (player, item, lowerFilterValue, pinyin) -> {
+    }
+    ),
+    BY_ITEM_NAME(
+            "!", (player, item, lowerFilterValue, pinyin) ->
+            SearchGroup.isSearchFilterApplicable(item, lowerFilterValue, pinyin)
+    ),
+    BY_ITEM_LORE(
+            "^", (player, item, lowerFilterValue, pinyin) -> {
         ItemMeta meta = item.getItem().getItemMeta();
         if (meta == null) return false;
         List<String> s = meta.getLore();
@@ -150,8 +160,10 @@ public enum FilterType {
             }
         }
         return false;
-    }),
-    BY_MATERIAL_NAME("~", (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue));
+    }
+    ),
+    BY_MATERIAL_NAME("~",
+                     (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue));
 
     private final String symbol;
     private final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;
@@ -159,8 +171,10 @@ public enum FilterType {
     /**
      * Constructs a new FilterType instance with the specified flag and filter function.
      *
-     * @param symbol The string symbol of the filter type.
-     * @param filter The filter function to determine whether an item matches the filter.
+     * @param symbol
+     *         The string symbol of the filter type.
+     * @param filter
+     *         The filter function to determine whether an item matches the filter.
      */
     FilterType(String symbol, DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
         this.symbol = symbol;

@@ -58,7 +58,8 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack.
      *
-     * @param item the Bukkit ItemStack to create from
+     * @param item
+     *         the Bukkit ItemStack to create from
      */
     public CustomItemStack(ItemStack item) {
         this.delegate = item.clone();
@@ -67,7 +68,8 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Material.
      *
-     * @param material the Material to create from
+     * @param material
+     *         the Material to create from
      */
     public CustomItemStack(Material material) {
         this.delegate = new ItemStack(material);
@@ -76,8 +78,10 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack with custom metadata.
      *
-     * @param itemStack        the Bukkit ItemStack to create from
-     * @param itemMetaConsumer the consumer to modify the item metadata
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param itemMetaConsumer
+     *         the consumer to modify the item metadata
      */
     public CustomItemStack(ItemStack itemStack, Consumer<ItemMeta> itemMetaConsumer) {
         this.delegate = itemStack.clone();
@@ -88,8 +92,10 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Material with custom metadata.
      *
-     * @param material the Material to create from
-     * @param meta     the consumer to modify the item metadata
+     * @param material
+     *         the Material to create from
+     * @param meta
+     *         the consumer to modify the item metadata
      */
     public CustomItemStack(Material material, Consumer<ItemMeta> meta) {
         this(new ItemStack(material), meta);
@@ -98,9 +104,12 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack with a name and lore.
      *
-     * @param itemStack the Bukkit ItemStack to create from
-     * @param name      the name of the item
-     * @param lore      the lore of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
      */
     public CustomItemStack(ItemStack itemStack, @Nullable String name, List<String> lore) {
         this(itemStack, name, lore.toArray(new String[0]));
@@ -109,60 +118,74 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack with a name and lore.
      *
-     * @param itemStack the Bukkit ItemStack to create from
-     * @param name      the name of the item
-     * @param lore      the lore of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
      */
     public CustomItemStack(ItemStack itemStack, @Nullable String name, String... lore) {
-        this(itemStack, itemMeta -> {
-            if (name != null) {
-                itemMeta.setDisplayName(color(name));
-            }
-            if (lore.length > 0) {
-                List<String> lines = new ArrayList<>();
-                for (String line : lore) {
-                    lines.add(color(line));
+        this(
+                itemStack, itemMeta -> {
+                    if (name != null) {
+                        itemMeta.setDisplayName(color(name));
+                    }
+                    if (lore.length > 0) {
+                        List<String> lines = new ArrayList<>();
+                        for (String line : lore) {
+                            lines.add(color(line));
+                        }
+                        itemMeta.setLore(lines);
+                    }
                 }
-                itemMeta.setLore(lines);
-            }
-        });
+        );
     }
 
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack with a color, name, and lore.
      *
-     * @param itemStack the Bukkit ItemStack to create from
-     * @param color     the color of the item
-     * @param name      the name of the item
-     * @param lore      the lore of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param color
+     *         the color of the item
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
      */
     public CustomItemStack(ItemStack itemStack, Color color, @Nullable String name, String... lore) {
-        this(itemStack, itemMeta -> {
-            if (name != null) {
-                itemMeta.setDisplayName(color(name));
-            }
-            if (lore.length > 0) {
-                List<String> lines = new ArrayList<>();
-                for (String line : lore) {
-                    lines.add(color(line));
+        this(
+                itemStack, itemMeta -> {
+                    if (name != null) {
+                        itemMeta.setDisplayName(color(name));
+                    }
+                    if (lore.length > 0) {
+                        List<String> lines = new ArrayList<>();
+                        for (String line : lore) {
+                            lines.add(color(line));
+                        }
+                        itemMeta.setLore(lines);
+                    }
+                    if (itemMeta instanceof LeatherArmorMeta leatherArmorMeta) {
+                        leatherArmorMeta.setColor(color);
+                    }
+                    if (itemMeta instanceof PotionMeta potionMeta) {
+                        potionMeta.setColor(color);
+                    }
                 }
-                itemMeta.setLore(lines);
-            }
-            if (itemMeta instanceof LeatherArmorMeta leatherArmorMeta) {
-                leatherArmorMeta.setColor(color);
-            }
-            if (itemMeta instanceof PotionMeta potionMeta) {
-                potionMeta.setColor(color);
-            }
-        });
+        );
     }
 
     /**
      * Creates a CustomItemStack from a Material with a name and lore.
      *
-     * @param material the Material to create from
-     * @param name     the name of the item
-     * @param lore     the lore of the item
+     * @param material
+     *         the Material to create from
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
      */
     public CustomItemStack(Material material, @Nullable String name, String... lore) {
         this(new ItemStack(material), name, lore);
@@ -171,9 +194,12 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Material with a name and lore.
      *
-     * @param material the Material to create from
-     * @param name     the name of the item
-     * @param lore     the lore of the item
+     * @param material
+     *         the Material to create from
+     * @param name
+     *         the name of the item
+     * @param lore
+     *         the lore of the item
      */
     public CustomItemStack(Material material, @Nullable String name, List<String> lore) {
         this(new ItemStack(material), name, lore.toArray(new String[0]));
@@ -182,8 +208,10 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack with a list of lore.
      *
-     * @param itemStack the Bukkit ItemStack to create from
-     * @param list      the list of lore
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param list
+     *         the list of lore
      */
     public CustomItemStack(ItemStack itemStack, List<String> list) {
         this(itemStack, list.get(0), list.subList(1, list.size()).toArray(new String[0]));
@@ -192,8 +220,10 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Material with a list of lore.
      *
-     * @param material the Material to create from
-     * @param list     the list of lore
+     * @param material
+     *         the Material to create from
+     * @param list
+     *         the list of lore
      */
     public CustomItemStack(Material material, List<String> list) {
         this(new ItemStack(material), list);
@@ -202,8 +232,10 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack with a specified amount.
      *
-     * @param itemStack the Bukkit ItemStack to create from
-     * @param amount    the amount of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param amount
+     *         the amount of the item
      */
     public CustomItemStack(ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
         this.delegate = itemStack.clone();
@@ -213,8 +245,10 @@ public class CustomItemStack implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack with a specified Material.
      *
-     * @param itemStack the Bukkit ItemStack to create from
-     * @param material  the Material of the item
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param material
+     *         the Material of the item
      */
     public CustomItemStack(ItemStack itemStack, Material material) {
         this.delegate = itemStack.clone();
@@ -224,7 +258,9 @@ public class CustomItemStack implements Cloneable {
     /**
      * Translates color codes in a string.
      *
-     * @param raw the string to translate
+     * @param raw
+     *         the string to translate
+     *
      * @return the translated string
      */
     public static String color(String raw) {
@@ -252,7 +288,8 @@ public class CustomItemStack implements Cloneable {
     /**
      * Sets the Material of the item.
      *
-     * @param material the Material to set
+     * @param material
+     *         the Material to set
      */
     public void setType(Material material) {
         delegate.setType(material);
@@ -270,7 +307,8 @@ public class CustomItemStack implements Cloneable {
     /**
      * Sets the amount of the item.
      *
-     * @param amount the amount to set
+     * @param amount
+     *         the amount to set
      */
     public void setAmount(int amount) {
         delegate.setAmount(amount);
@@ -297,7 +335,9 @@ public class CustomItemStack implements Cloneable {
     /**
      * Sets the item metadata.
      *
-     * @param meta the metadata to set
+     * @param meta
+     *         the metadata to set
+     *
      * @return true if the metadata was set successfully, false otherwise
      */
     public boolean setItemMeta(ItemMeta meta) {
@@ -307,7 +347,9 @@ public class CustomItemStack implements Cloneable {
     /**
      * Adds item flags to the item.
      *
-     * @param flags the item flags to add
+     * @param flags
+     *         the item flags to add
+     *
      * @return the CustomItemStack with the added flags
      */
     public CustomItemStack addFlags(ItemFlag... flags) {
@@ -328,7 +370,9 @@ public class CustomItemStack implements Cloneable {
     /**
      * Edits the item metadata.
      *
-     * @param itemMetaConsumer the consumer to modify the item metadata
+     * @param itemMetaConsumer
+     *         the consumer to modify the item metadata
+     *
      * @return the CustomItemStack with the edited metadata
      */
     public CustomItemStack editItemMeta(Consumer<ItemMeta> itemMetaConsumer) {
@@ -345,7 +389,9 @@ public class CustomItemStack implements Cloneable {
     /**
      * Edits the item stack.
      *
-     * @param itemStackConsumer the consumer to modify the item stack
+     * @param itemStackConsumer
+     *         the consumer to modify the item stack
+     *
      * @return the CustomItemStack with the edited stack
      */
     public CustomItemStack editItemStack(Consumer<ItemStack> itemStackConsumer) {
@@ -358,7 +404,9 @@ public class CustomItemStack implements Cloneable {
     /**
      * Sets the custom model data of the item.
      *
-     * @param data the custom model data to set
+     * @param data
+     *         the custom model data to set
+     *
      * @return the CustomItemStack with the set custom model data
      */
     public CustomItemStack setCustomModelData(@Range(from = 0, to = Integer.MAX_VALUE) int data) {

@@ -58,7 +58,8 @@ public class RSCCustomLinkedRecipeMachineData extends MachineData {
                             addAll(List.of(recipe.getLinkedOutput().freeOutput()));
                         }}.toArray(new ItemStack[0]),
                         recipe.getTicks() / speed,
-                        (long) energyConsumption * recipe.getTicks() / speed))
+                        (long) energyConsumption * recipe.getTicks() / speed
+                ))
                 .toList();
     }
 }

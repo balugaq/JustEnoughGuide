@@ -72,7 +72,8 @@ public final class ItemStackUtil {
             "GRASS", "SHORT_GRASS",
             "SHORT_GRASS", "GRASS",
             "SCUTE", "TURTLE_SCUTE",
-            "TURTLE_SCUTE", "SCUTE");
+            "TURTLE_SCUTE", "SCUTE"
+    );
 
     public static ItemStack air() {
         return AIR;
@@ -93,7 +94,9 @@ public final class ItemStackUtil {
     /**
      * This method is used to convert an {@code MyItemStack extends ItemStack} to a pure {@code ItemStack}.
      *
-     * @param item The MyItemStack to be converted.
+     * @param item
+     *         The MyItemStack to be converted.
+     *
      * @return A pure ItemStack.
      */
     public static ItemStack getCleanItem(@Nullable ItemStack item) {
@@ -321,8 +324,11 @@ public final class ItemStackUtil {
     /**
      * Checks if the given Slimefun item is an instance of the specified class.
      *
-     * @param item            The Slimefun item.
-     * @param classSimpleName The simple name of the class to check against.
+     * @param item
+     *         The Slimefun item.
+     * @param classSimpleName
+     *         The simple name of the class to check against.
+     *
      * @return True if the item is an instance of the specified class, false otherwise.
      */
     public static <T extends SlimefunItem> boolean isInstanceSimple(T item, String classSimpleName) {

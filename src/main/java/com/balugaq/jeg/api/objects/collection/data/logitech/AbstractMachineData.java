@@ -27,7 +27,8 @@ public class AbstractMachineData extends MachineData {
                         recipe.getInput(),
                         recipe.getOutput(),
                         recipe.getTicks(),
-                        (long) energyConsumption * recipe.getTicks()))
+                        (long) energyConsumption * recipe.getTicks()
+                ))
                 .toList();
     }
 }

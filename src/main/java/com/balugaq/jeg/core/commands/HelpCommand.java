@@ -38,8 +38,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 
 /**
- * This is the implementation of the "/jeg help" command.
- * It shows the list of available commands and their usage.
+ * This is the implementation of the "/jeg help" command. It shows the list of available commands and their usage.
  * <p>
  * This command is also the default command when no other command is specified.
  *

@@ -92,6 +92,7 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
                 "&7如果遇到一个材料不存在，会尝试补全",
                 "&7这个材料的材料，以此类推，此过程视为一层深度",
                 "&e&l此功能为实验性功能，谨慎使用",
+                "&c&l此功能容易造成错误",
                 "",
                 "&7当前深度: " + value + " (限制范围: 1~" + RECIPE_DEPTH_THRESHOLD + ")",
                 "&7\u21E8 &e点击设置深度"
@@ -103,20 +104,22 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
     public void onClick(Player p, ItemStack guide) {
         p.closeInventory();
         p.sendMessage(ChatColors.color("&a请输入配方补全深度"));
-        ChatInput.waitForPlayer(JustEnoughGuide.getInstance(), p, s -> {
-            try {
-                int value = Integer.parseInt(s);
-                if (value < 1 || value > RECIPE_DEPTH_THRESHOLD) {
-                    p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
-                    return;
-                }
+        ChatInput.waitForPlayer(
+                JustEnoughGuide.getInstance(), p, s -> {
+                    try {
+                        int value = Integer.parseInt(s);
+                        if (value < 1 || value > RECIPE_DEPTH_THRESHOLD) {
+                            p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
+                            return;
+                        }
 
-                setSelectedOption(p, guide, value);
-                JEGGuideSettings.openSettings(p, guide);
-            } catch (NumberFormatException ignored) {
-                p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
-            }
-        });
+                        setSelectedOption(p, guide, value);
+                        JEGGuideSettings.openSettings(p, guide);
+                    } catch (NumberFormatException ignored) {
+                        p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
+                    }
+                }
+        );
     }
 
     @Override

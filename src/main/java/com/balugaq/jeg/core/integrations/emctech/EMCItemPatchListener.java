@@ -56,7 +56,8 @@ public class EMCItemPatchListener implements Listener {
             PatchScope.ItemMarkItem,
             PatchScope.BookMarkItem,
             PatchScope.SearchItem,
-            PatchScope.ItemRecipeIngredient);
+            PatchScope.ItemRecipeIngredient
+    );
     public static final DecimalFormat EMCFormat = new DecimalFormat("#.###");
 
     @EventHandler(priority = EventPriority.HIGHEST)

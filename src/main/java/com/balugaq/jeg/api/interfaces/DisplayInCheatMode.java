@@ -36,15 +36,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to indicate that a class should be displayed in the cheat mode menu.
- * Priority lower than {@link NotDisplayInCheatMode}
+ * This annotation is used to indicate that a class should be displayed in the cheat mode menu. Priority lower than
+ * {@link NotDisplayInCheatMode}
  * <p>
  * Usage:
  * <p>
- * &#064;DisplayInCheatMode
- * public class MyGroup extends ItemGroup {
- * //...
- * }
+ * &#064;DisplayInCheatMode public class MyGroup extends ItemGroup { //... }
  *
  * @author balugaq
  * @since 1.1
@@ -80,7 +77,9 @@ public @interface DisplayInCheatMode {
         /**
          * Check if the {@link ItemGroup} should be put to the last
          *
-         * @param group The {@link ItemGroup} to check
+         * @param group
+         *         The {@link ItemGroup} to check
+         *
          * @return true if the {@link ItemGroup} should be put to the last, false otherwise
          */
         public static boolean isSpecial(ItemGroup group) {

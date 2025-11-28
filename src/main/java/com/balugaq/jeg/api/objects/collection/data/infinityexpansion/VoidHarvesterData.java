@@ -53,8 +53,9 @@ public class VoidHarvesterData extends MachineData {
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
                 null,
-                new ItemStack[]{output},
+                new ItemStack[] {output},
                 TIME / speed,
-                (long) energyPerTick * TIME / speed));
+                (long) energyPerTick * TIME / speed
+        ));
     }
 }

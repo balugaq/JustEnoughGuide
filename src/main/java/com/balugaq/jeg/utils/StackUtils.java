@@ -97,8 +97,11 @@ public class StackUtils {
     /**
      * Checks if items match each other, checks go in order from lightest to heaviest
      *
-     * @param itemStack0 The {@link ItemStack} to compare against
-     * @param itemStack  The {@link ItemStack} being evaluated
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     *
      * @return True if items match
      */
     public static boolean itemsMatch(@Nullable ItemStack itemStack0, @Nullable ItemStack itemStack) {
@@ -108,9 +111,13 @@ public class StackUtils {
     /**
      * Checks if items match each other, checks go in order from lightest to heaviest
      *
-     * @param itemStack0 The {@link ItemStack} to compare against
-     * @param itemStack  The {@link ItemStack} being evaluated
-     * @param checkLore  If lore should be checked
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     * @param checkLore
+     *         If lore should be checked
+     *
      * @return True if items match
      */
     public static boolean itemsMatch(@Nullable ItemStack itemStack0, @Nullable ItemStack itemStack, boolean checkLore) {
@@ -120,10 +127,15 @@ public class StackUtils {
     /**
      * Checks if items match each other, checks go in order from lightest to heaviest
      *
-     * @param itemStack0  The {@link ItemStack} to compare against
-     * @param itemStack   The {@link ItemStack} being evaluated
-     * @param checkLore   If lore should be checked
-     * @param checkAmount If amount should be checked
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     * @param checkLore
+     *         If lore should be checked
+     * @param checkAmount
+     *         If amount should be checked
+     *
      * @return True if items match
      */
     public static boolean itemsMatch(
@@ -134,11 +146,17 @@ public class StackUtils {
     /**
      * Checks if items match each other, checks go in order from lightest to heaviest
      *
-     * @param itemStack0         The {@link ItemStack} to compare against
-     * @param itemStack          The {@link ItemStack} being evaluated
-     * @param checkLore          If lore should be checked
-     * @param checkAmount        If amount should be checked
-     * @param checkCustomModelId If custom model id should be checked
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     * @param checkLore
+     *         If lore should be checked
+     * @param checkAmount
+     *         If amount should be checked
+     * @param checkCustomModelId
+     *         If custom model id should be checked
+     *
      * @return True if items match
      */
     public static boolean itemsMatch(
@@ -153,12 +171,19 @@ public class StackUtils {
     /**
      * Checks if items match each other, checks go in order from lightest to heaviest
      *
-     * @param itemStack0                   The {@link ItemStack} to compare against
-     * @param itemStack                    The {@link ItemStack} being evaluated
-     * @param checkLore                    If lore should be checked
-     * @param checkAmount                  If amount should be checked
-     * @param checkCustomModelId           If custom model id should be checked
-     * @param checkPersistentDataContainer If persistent data container should be checked
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     * @param checkLore
+     *         If lore should be checked
+     * @param checkAmount
+     *         If amount should be checked
+     * @param checkCustomModelId
+     *         If custom model id should be checked
+     * @param checkPersistentDataContainer
+     *         If persistent data container should be checked
+     *
      * @return True if items match
      */
     @SuppressWarnings({"UnstableApiUsage", "OptionalIsPresent"})
@@ -635,7 +660,8 @@ public class StackUtils {
                      * Bad 1.21, pom.xml couldn't use Paper 1.21+, otherwise the builds will boom.
                      *
                      // Shield
-                     if (metaOne instanceof org.bukkit.inventory.meta.ShieldMeta instanceOne && metaTwo instanceof org.bukkit.inventory.meta.ShieldMeta instanceTwo) {
+                     if (metaOne instanceof org.bukkit.inventory.meta.ShieldMeta instanceOne && metaTwo instanceof
+                     * org.bukkit.inventory.meta.ShieldMeta instanceTwo) {
                          return Objects.equals(instanceOne.getBaseColor(), instanceTwo.getBaseColor());
                      }
                      */

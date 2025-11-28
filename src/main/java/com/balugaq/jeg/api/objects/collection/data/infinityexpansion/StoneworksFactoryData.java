@@ -51,6 +51,7 @@ public class StoneworksFactoryData extends MachineData {
 
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
-        return List.of(new CERRecipeGroup.RecipeWrapper(null, materials.stream().map(ItemStack::new).toList().toArray(new ItemStack[0]), 1, energyPerTick));
+        return List.of(new CERRecipeGroup.RecipeWrapper(null,
+                                                        materials.stream().map(ItemStack::new).toList().toArray(new ItemStack[0]), 1, energyPerTick));
     }
 }

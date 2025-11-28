@@ -83,7 +83,8 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Saves the player's inventory backup to a backpack.
      *
-     * @param player the player whose inventory to back up
+     * @param player
+     *         the player whose inventory to back up
      */
     public void saveInventoryBackupFor(Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -138,7 +139,8 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Clears the player's inventory.
      *
-     * @param player the player whose inventory to clear
+     * @param player
+     *         the player whose inventory to clear
      */
     public void clearInventoryFor(Player player) {
         ItemStack[] newContents = new ItemStack[player.getInventory().getStorageContents().length];
@@ -151,7 +153,8 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Restores the player's inventory from a backpack.
      *
-     * @param player the player whose inventory to restore
+     * @param player
+     *         the player whose inventory to restore
      */
     public void restoreInventoryFor(Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -214,10 +217,14 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Sets the identifier item in the inventory.
      *
-     * @param player    the player
-     * @param inventory the inventory
-     * @param slot      the slot to set the identifier item
-     * @param open      whether the identifier item should indicate an open status
+     * @param player
+     *         the player
+     * @param inventory
+     *         the inventory
+     * @param slot
+     *         the slot to set the identifier item
+     * @param open
+     *         whether the identifier item should indicate an open status
      */
     public void setIdentifier(Player player, Inventory inventory, int slot, boolean open) {
         inventory.setItem(slot, getIdentifierItem(player, open));
@@ -226,8 +233,11 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Creates and returns the identifier item.
      *
-     * @param player the player
-     * @param open   whether the identifier item should indicate an open status
+     * @param player
+     *         the player
+     * @param open
+     *         whether the identifier item should indicate an open status
+     *
      * @return the identifier item
      */
     public ItemStack getIdentifierItem(Player player, boolean open) {
@@ -238,31 +248,38 @@ public class RTSBackpackManager extends AbstractManager {
                         "[RTS]",
                         "[RTS]",
                         "[RTS]",
-                        UUID.randomUUID().toString()),
+                        UUID.randomUUID().toString()
+                ),
                 meta -> {
                     meta.getPersistentDataContainer()
                             .set(
                                     OWNER_KEY,
                                     PersistentDataType.STRING,
-                                    player.getUniqueId().toString());
+                                    player.getUniqueId().toString()
+                            );
                     meta.getPersistentDataContainer()
                             .set(
                                     SERVER_KEY,
                                     PersistentDataType.STRING,
-                                    JustEnoughGuide.getServerUUID().toString());
+                                    JustEnoughGuide.getServerUUID().toString()
+                            );
                     if (open) {
                         meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, OPEN_STATUS);
                     } else {
                         meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, CLOSE_STATUS);
                     }
-                });
+                }
+        );
     }
 
     /**
      * Checks if the item is a valid identifier for the player.
      *
-     * @param item   the item to check
-     * @param player the player
+     * @param item
+     *         the item to check
+     * @param player
+     *         the player
+     *
      * @return true if the item is a valid identifier, false otherwise
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -291,7 +308,9 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Checks if the identifier item indicates an open status.
      *
-     * @param item the identifier item to check
+     * @param item
+     *         the identifier item to check
+     *
      * @return true if the identifier item indicates an open status, false otherwise
      */
     public boolean isOpenIdentifier(@Nullable ItemStack item) {

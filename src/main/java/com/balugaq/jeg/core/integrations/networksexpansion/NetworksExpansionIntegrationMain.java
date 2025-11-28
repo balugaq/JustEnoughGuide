@@ -45,10 +45,10 @@ import java.util.List;
 @SuppressWarnings({"DataFlowIssue", "ConstantValue"})
 @NullMarked
 public class NetworksExpansionIntegrationMain implements Integration {
-    public static final int[] ENCODER_RECIPE_SLOTS = new int[]{12, 13, 14, 21, 22, 23, 30, 31, 32};
-    public static final int[] CRAFTING_GRID_NEW_STYLE_RECIPE_SLOTS = new int[]{6, 7, 8, 15, 16, 17, 24, 25, 26};
-    public static final int[] EXPANSION_WORKBENCH_RECIPE_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30};
-    public static final int[] EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS = new int[]{
+    public static final int[] ENCODER_RECIPE_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 30, 31, 32};
+    public static final int[] CRAFTING_GRID_NEW_STYLE_RECIPE_SLOTS = new int[] {6, 7, 8, 15, 16, 17, 24, 25, 26};
+    public static final int[] EXPANSION_WORKBENCH_RECIPE_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
+    public static final int[] EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS = new int[] {
             0, 1, 2, 3, 4, 5,
             9, 10, 11, 12, 13, 14,
             18, 19, 20, 21, 22, 23,
@@ -56,12 +56,12 @@ public class NetworksExpansionIntegrationMain implements Integration {
             36, 37, 38, 39, 40, 41,
             45, 46, 47, 48, 49, 50
     };
-    public static final int[] STORAGE_UPGRADE_TABLE_RECIPE_SLOTS = new int[]{
+    public static final int[] STORAGE_UPGRADE_TABLE_RECIPE_SLOTS = new int[] {
             2, 3, 4,
             11, 12, 13,
             20, 21, 22
     };
-    public static final int[] NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS = new int[]{
+    public static final int[] NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS = new int[] {
             0, 1, 2,
             9, 10, 11,
             18, 19, 20
@@ -114,7 +114,8 @@ public class NetworksExpansionIntegrationMain implements Integration {
         rrc("NTW_EXPANSION_WORKBENCH", EXPANSION_WORKBENCH_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_WORKBENCH_6X6", EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_STORAGE_UPGRADE_TABLE", STORAGE_UPGRADE_TABLE_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE", NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS, false);
+        rrc("NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE",
+            NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS, false);
     }
 
     @Override

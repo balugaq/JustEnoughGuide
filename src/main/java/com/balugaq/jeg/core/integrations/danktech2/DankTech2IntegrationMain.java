@@ -41,7 +41,7 @@ import java.util.List;
  */
 @NullMarked
 public class DankTech2IntegrationMain implements Integration {
-    public static final int[] CRAFTER_INPUT_SLOTS = new int[]{
+    public static final int[] CRAFTER_INPUT_SLOTS = new int[] {
             10, 11, 12,
             19, 20, 21,
             28, 29, 30

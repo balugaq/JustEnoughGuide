@@ -41,22 +41,22 @@ import java.util.List;
  */
 @NullMarked
 public class ClayTechIntegrationMain implements Integration {
-    public static final int[] CLAYTECH_FUSION_MACHINE_INPUT_SLOTS = new int[]{
+    public static final int[] CLAYTECH_FUSION_MACHINE_INPUT_SLOTS = new int[] {
             19, 20, 21,
             28, 29, 30,
             37, 38, 39
     };
-    public static final int[] CLAYTECH_ROCKET_ASSEMBLING_MACHINE_INPUT_SLOTS = new int[]{
+    public static final int[] CLAYTECH_ROCKET_ASSEMBLING_MACHINE_INPUT_SLOTS = new int[] {
             19, 20, 21,
             28, 29, 30,
             37, 38, 39
     };
-    public static final int[] CLAYTECH_ROCKET_FUEL_GENERATOR_INPUT_SLOTS = new int[]{
+    public static final int[] CLAYTECH_ROCKET_FUEL_GENERATOR_INPUT_SLOTS = new int[] {
             19, 20, 21,
             28, 29, 30,
             37, 38, 39
     };
-    public static final int[] CLAYTECH_FOOD_CAULDRON_INPUT_SLOTS = new int[]{
+    public static final int[] CLAYTECH_FOOD_CAULDRON_INPUT_SLOTS = new int[] {
             19, 20, 21,
             28, 29, 30,
             37, 38, 39

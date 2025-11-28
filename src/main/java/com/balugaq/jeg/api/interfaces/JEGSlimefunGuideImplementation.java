@@ -89,7 +89,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                     ? String.format(
                     "&f需要在 %s 中解锁",
                     (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                            + LocalHelper.getDisplayName(itemGroup, p))
+                            + LocalHelper.getDisplayName(itemGroup, p)
+            )
                     : "&f无权限";
             Research research = slimefunItem.getResearch();
             if (research == null) {
@@ -104,12 +105,15 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                                                 + Slimefun.getLocalization()
                                                 .getMessage(p, "guide.locked"),
                                         "",
-                                        lore),
+                                        lore
+                                ),
                                 meta -> meta.getPersistentDataContainer()
                                         .set(
                                                 UNLOCK_ITEM_KEY,
                                                 PersistentDataType.STRING,
-                                                slimefunItem.getId())));
+                                                slimefunItem.getId()
+                                        )
+                        ));
             } else {
                 String cost = VaultIntegration.isEnabled()
                         ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
@@ -130,12 +134,15 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                                         "&a单击解锁",
                                         "",
                                         "&7需要",
-                                        "&b" + cost),
+                                        "&b" + cost
+                                ),
                                 meta -> meta.getPersistentDataContainer()
                                         .set(
                                                 UNLOCK_ITEM_KEY,
                                                 PersistentDataType.STRING,
-                                                slimefunItem.getId())));
+                                                slimefunItem.getId()
+                                        )
+                        ));
             }
         } else {
             return item;
@@ -158,8 +165,10 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     /**
      * Opens the bookmark group for the player.
      *
-     * @param player  The player.
-     * @param profile The player profile.
+     * @param player
+     *         The player.
+     * @param profile
+     *         The player profile.
      */
     default void openBookMarkGroup(Player player, PlayerProfile profile) {
         List<Bookmark> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
@@ -173,9 +182,12 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     /**
      * Opens the item mark group for the player.
      *
-     * @param itemGroup The item group.
-     * @param player    The player.
-     * @param profile   The player profile.
+     * @param itemGroup
+     *         The item group.
+     * @param player
+     *         The player.
+     * @param profile
+     *         The player profile.
      */
     default void openItemMarkGroup(ItemGroup itemGroup, Player player, PlayerProfile profile) {
         new ItemMarkGroup(this, itemGroup, player).open(player, profile, getMode());
@@ -211,7 +223,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                 item,
                 addToHistory,
                 maybeSpecial,
-                item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe);
+                item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe
+        );
     }
 
     void displayItem(

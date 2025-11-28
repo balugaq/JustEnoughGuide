@@ -32,7 +32,8 @@ import lombok.Getter;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * This class represents a Minecraft version. It contains a major and minor version number, and provides methods to compare
+ * This class represents a Minecraft version. It contains a major and minor version number, and provides methods to
+ * compare
  *
  * @author balugaq
  * @since 1.2

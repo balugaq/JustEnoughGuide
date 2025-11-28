@@ -58,6 +58,7 @@ public class QuarryData extends MachineData {
                 null,
                 outputs == null ? null : Arrays.stream(outputs).map(ItemStack::new).toList().toArray(new ItemStack[0]),
                 INTERVAL / speed,
-                (long) energyPerTick * INTERVAL / speed));
+                (long) energyPerTick * INTERVAL / speed
+        ));
     }
 }

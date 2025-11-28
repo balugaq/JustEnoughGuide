@@ -99,12 +99,9 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 /**
- * This is JEG's implementation of the Survival Guide.
- * It extends {@link SurvivalSlimefunGuide} to compatibly
- * with the Slimefun API and other plugins.
- * It also implements the {@link JEGSlimefunGuideImplementation}
- * to provide a common interface for both
- * {@link SurvivalGuideImplementation} and {@link CheatGuideImplementation}.
+ * This is JEG's implementation of the Survival Guide. It extends {@link SurvivalSlimefunGuide} to compatibly with the
+ * Slimefun API and other plugins. It also implements the {@link JEGSlimefunGuideImplementation} to provide a common
+ * interface for both {@link SurvivalGuideImplementation} and {@link CheatGuideImplementation}.
  *
  * @author TheBusyBiscuit
  * @author balugaq
@@ -176,8 +173,11 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     /**
      * Returns a {@link List} of visible {@link ItemGroup} instances that the {@link SlimefunGuide} would display.
      *
-     * @param p       The {@link Player} who opened his {@link SlimefunGuide}
-     * @param profile The {@link PlayerProfile} of the {@link Player}
+     * @param p
+     *         The {@link Player} who opened his {@link SlimefunGuide}
+     * @param profile
+     *         The {@link PlayerProfile} of the {@link Player}
+     *
      * @return a {@link List} of visible {@link ItemGroup} instances
      */
     @Override
@@ -259,29 +259,40 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         for (int s : Formats.main.getChars('P')) {
             menu.addItem(s, PatchScope.PreviousPage.patch(profile, ChestMenuUtils.getPreviousButton(p, page, pages)));
             int finalPage1 = page;
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                int previous = finalPage1 - 1;
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl,
+                                                                                                                item,
+                                                                                                                slot,
+                                                                                                                action, menu, this)).ifSuccess(() -> {
+                        int previous = finalPage1 - 1;
 
-                if (previous > 0) {
-                    openMainMenu(profile, previous);
-                }
+                        if (previous > 0) {
+                            openMainMenu(profile, previous);
+                        }
 
-                return false;
-            }));
+                        return false;
+                    })
+            );
         }
 
         for (int s : Formats.main.getChars('N')) {
             menu.addItem(s, PatchScope.NextPage.patch(profile, ChestMenuUtils.getNextButton(p, page, pages)));
             int finalPage = page;
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                int next = finalPage + 1;
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, item,
+                                                                                                            slot,
+                                                                                                            action,
+                                                                                                            menu,
+                                                                                                            this)).ifSuccess(() -> {
+                        int next = finalPage + 1;
 
-                if (next <= pages) {
-                    openMainMenu(profile, next);
-                }
+                        if (next <= pages) {
+                            openMainMenu(profile, next);
+                        }
 
-                return false;
-            }));
+                        return false;
+                    })
+            );
         }
 
         GuideListener.guideModeMap.put(p, getMode());
@@ -329,28 +340,39 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
         for (int s : Formats.sub.getChars('P')) {
             menu.addItem(s, PatchScope.PreviousPage.patch(profile, ChestMenuUtils.getPreviousButton(p, page, pages)));
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                int previous = page - 1;
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl,
+                                                                                                                item,
+                                                                                                                slot,
+                                                                                                                action, menu, this)).ifSuccess(() -> {
+                        int previous = page - 1;
 
-                if (previous > 0) {
-                    openItemGroup(profile, itemGroup, previous);
-                }
+                        if (previous > 0) {
+                            openItemGroup(profile, itemGroup, previous);
+                        }
 
-                return false;
-            }));
+                        return false;
+                    })
+            );
         }
 
         for (int s : Formats.sub.getChars('N')) {
             menu.addItem(s, PatchScope.NextPage.patch(profile, ChestMenuUtils.getNextButton(p, page, pages)));
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                int next = page + 1;
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, item,
+                                                                                                            slot,
+                                                                                                            action,
+                                                                                                            menu,
+                                                                                                            this)).ifSuccess(() -> {
+                        int next = page + 1;
 
-                if (next <= pages) {
-                    openItemGroup(profile, itemGroup, next);
-                }
+                        if (next <= pages) {
+                            openItemGroup(profile, itemGroup, next);
+                        }
 
-                return false;
-            }));
+                        return false;
+                    })
+            );
         }
 
         List<Integer> indexes = Formats.sub.getChars('i');
@@ -418,10 +440,13 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                 SubItemGroup subGroup = subGroups.get(target);
                 if (subGroup.isVisibleInNested(p)) {
                     menu.addItem(ss.get(t), PatchScope.ItemGroup.patch(p, subGroup.getItem(p)));
-                    menu.addMenuClickHandler(ss.get(t), (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                        SlimefunGuide.openItemGroup(profile, subGroup, getMode(), 1);
-                        return false;
-                    }));
+                    menu.addMenuClickHandler(
+                            ss.get(t),
+                            (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
+                                SlimefunGuide.openItemGroup(profile, subGroup, getMode(), 1);
+                                return false;
+                            })
+                    );
                     t += 1;
                 }
             }
@@ -429,26 +454,36 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             int pages = target == subGroups.size() - 1 ? page : (subGroups.size() - 1) / groupsPerPage + 1;
             for (int s : Formats.nested.getChars('P')) {
                 menu.addItem(s, PatchScope.PreviousPage.patch(p, ChestMenuUtils.getPreviousButton(p, page, pages)));
-                menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                    int next = page - 1;
-                    if (next > 0) {
-                        this.openNestedItemGroup(p, profile, nested, next);
-                    }
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl,
+                                                                                                                 item
+                                , slot, action, menu, this)).ifSuccess(() -> {
+                            int next = page - 1;
+                            if (next > 0) {
+                                this.openNestedItemGroup(p, profile, nested, next);
+                            }
 
-                    return false;
-                }));
+                            return false;
+                        })
+                );
             }
 
             for (int s : Formats.nested.getChars('N')) {
                 menu.addItem(s, PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, page, pages)));
-                menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                    int next = page + 1;
-                    if (next <= pages) {
-                        this.openNestedItemGroup(p, profile, nested, next);
-                    }
+                menu.addMenuClickHandler(
+                        s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl,
+                                                                                                                item,
+                                                                                                                slot,
+                                                                                                                action, menu, this)).ifSuccess(() -> {
+                            int next = page + 1;
+                            if (next <= pages) {
+                                this.openNestedItemGroup(p, profile, nested, next);
+                            }
 
-                    return false;
-                }));
+                            return false;
+                        })
+                );
             }
 
             menu.open(p);
@@ -542,7 +577,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             recipeType = new RecipeType(optional.get());
             result = recipe.getResult();
         } else {
-            recipeItems = new ItemStack[]{
+            recipeItems = new ItemStack[] {
                     null,
                     null,
                     null,
@@ -568,7 +603,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                 menu.addItem(
                         s,
                         PatchScope.Background.patch(p, ChestMenuUtils.getBackground()),
-                        ChestMenuUtils.getEmptyClickHandler());
+                        ChestMenuUtils.getEmptyClickHandler()
+                );
             }
 
             for (int s : Formats.recipe_vanilla.getChars('P')) {
@@ -576,24 +612,32 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                         s,
                         PatchScope.PreviousPage.patch(
                                 p, ChestMenuUtils.getPreviousButton(p, index + 1, recipes.length)),
-                        (pl, slot, stack, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl, stack, slot, action, menu, this)).ifSuccess(() -> {
+                        (pl, slot, stack, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl,
+                                                                                                                  stack, slot, action, menu, this)).ifSuccess(() -> {
                             if (index > 0) {
                                 showMinecraftRecipe0(recipes, index - 1, item, profile, p, true);
                             }
                             return false;
-                        }));
+                        })
+                );
             }
 
             for (int s : Formats.recipe_vanilla.getChars('N')) {
                 menu.addItem(
                         s,
                         PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, index + 1, recipes.length)),
-                        (pl, slot, stack, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, stack, slot, action, menu, this)).ifSuccess(() -> {
+                        (pl, slot, stack, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl,
+                                                                                                              stack,
+                                                                                                              slot,
+                                                                                                              action,
+                                                                                                              menu,
+                                                                                                              this)).ifSuccess(() -> {
                             if (index < recipes.length - 1) {
                                 showMinecraftRecipe0(recipes, index + 1, item, profile, p, true);
                             }
                             return false;
-                        }));
+                        })
+                );
             }
         }
 
@@ -643,7 +687,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                 item,
                 addToHistory,
                 true,
-                item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe);
+                item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe
+        );
     }
 
     @Override
@@ -665,16 +710,27 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
         if (wiki.isPresent()) {
             for (int s : format.getChars('w')) {
-                menu.addItem(s, PatchScope.ItemWiki.patch(p, Converter.getItem(
-                        Material.KNOWLEDGE_BOOK,
-                        ChatColors.color("&f" + Slimefun.getLocalization().getMessage(p, "guide.tooltips.wiki")),
-                        "",
-                        ChatColors.color("&7\u21E8 &a" + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")))));
-                menu.addMenuClickHandler(s, (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.WikiButtonClickEvent(pl, itemstack, slot, action, menu, this)).ifSuccess(() -> {
-                    pl.closeInventory();
-                    ChatUtils.sendURL(pl, wiki.get());
-                    return false;
-                }));
+                menu.addItem(
+                        s, PatchScope.ItemWiki.patch(
+                                p, Converter.getItem(
+                                        Material.KNOWLEDGE_BOOK,
+                                        ChatColors.color("&f" + Slimefun.getLocalization().getMessage(p, "guide" +
+                                                ".tooltips.wiki")),
+                                        "",
+                                        ChatColors.color("&7\u21E8 &a" + Slimefun.getLocalization().getMessage(p,
+                                                                                                               "guide.tooltips.open-itemgroup"))
+                                )
+                        )
+                );
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.WikiButtonClickEvent(pl,
+                                                                                                                  itemstack, slot, action, menu, this)).ifSuccess(() -> {
+                            pl.closeInventory();
+                            ChatUtils.sendURL(pl, wiki.get());
+                            return false;
+                        })
+                );
             }
         }
 
@@ -708,7 +764,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                                 Debug.trace(e);
                             }
                             return false;
-                        }));
+                        })
+                );
             }
         }
 
@@ -774,8 +831,10 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             menu.addItem(
                     s,
                     PatchScope.ItemRecipeType.patch(profile, recipeType.getItem(p)),
-                    (pl, slot, itemStack, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(pl, itemStack, slot, action, menu, this)).ifSuccess(false));
-            OnDisplay.RecipeType.display(p, recipeType, PatchScope.ItemRecipeType.patch(profile, recipeType.getItem(p)), this)
+                    (pl, slot, itemStack, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(pl, itemStack, slot, action, menu, this)).ifSuccess(false)
+            );
+            OnDisplay.RecipeType.display(p, recipeType, PatchScope.ItemRecipeType.patch(profile,
+                                                                                        recipeType.getItem(p)), this)
                     .at(menu, s, 1);
         }
         for (int s : format.getChars('i')) {
@@ -796,7 +855,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             menu.addItem(
                     s,
                     PatchScope.Background.patch(p, ChestMenuUtils.getBackground()),
-                    ChestMenuUtils.getEmptyClickHandler());
+                    ChestMenuUtils.getEmptyClickHandler()
+            );
         }
 
         for (int s : format.getChars('b')) {
@@ -806,24 +866,36 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         // Settings Panel
         for (int s : format.getChars('T')) {
             menu.addItem(s, PatchScope.Settings.patch(profile, ChestMenuUtils.getMenuButton(p)));
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
-                return false;
-            }));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl,
+                                                                                                                item,
+                                                                                                                slot,
+                                                                                                                action, menu, this)).ifSuccess(() -> {
+                        JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
+                        return false;
+                    })
+            );
         }
 
         // Search feature!
         for (int s : format.getChars('S')) {
             menu.addItem(s, PatchScope.Search.patch(profile, ChestMenuUtils.getSearchButton(p)));
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                pl.closeInventory();
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(pl,
+                                                                                                              item,
+                                                                                                              slot,
+                                                                                                              action,
+                                                                                                              menu,
+                                                                                                              this)).ifSuccess(() -> {
+                        pl.closeInventory();
 
-                Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                ChatInput.waitForPlayer(
-                        JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, isSurvivalMode()));
+                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                        ChatInput.waitForPlayer(
+                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, isSurvivalMode()));
 
-                return false;
-            }));
+                        return false;
+                    })
+            );
         }
 
         GuideUtil.addRTSButton(menu, p, profile, format, getMode(), this);
@@ -840,30 +912,43 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             menu.addItem(
                     s,
                     PatchScope.Background.patch(p, ChestMenuUtils.getBackground()),
-                    ChestMenuUtils.getEmptyClickHandler());
+                    ChestMenuUtils.getEmptyClickHandler()
+            );
         }
 
         // Settings Panel
         for (int s : Formats.main.getChars('T')) {
             menu.addItem(s, PatchScope.Settings.patch(profile, ChestMenuUtils.getMenuButton(p)));
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
-                return false;
-            }));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl,
+                                                                                                                item,
+                                                                                                                slot,
+                                                                                                                action, menu, this)).ifSuccess(() -> {
+                        JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
+                        return false;
+                    })
+            );
         }
 
         // Search feature!
         for (int s : Formats.main.getChars('S')) {
             menu.addItem(s, PatchScope.Search.patch(profile, ChestMenuUtils.getSearchButton(p)));
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                pl.closeInventory();
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(pl,
+                                                                                                              item,
+                                                                                                              slot,
+                                                                                                              action,
+                                                                                                              menu,
+                                                                                                              this)).ifSuccess(() -> {
+                        pl.closeInventory();
 
-                Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                ChatInput.waitForPlayer(
-                        JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, isSurvivalMode()));
+                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                        ChatInput.waitForPlayer(
+                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, isSurvivalMode()));
 
-                return false;
-            }));
+                        return false;
+                    })
+            );
         }
 
         GuideUtil.addRTSButton(menu, p, profile, Formats.main, getMode(), this);
@@ -879,26 +964,40 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             menu.addItem(
                     slot,
                     PatchScope.Back.patch(
-                            p, ChestMenuUtils.getBackButton(p, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单")));
+                            p, ChestMenuUtils.getBackButton(p, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单"))
+            );
 
-            menu.addMenuClickHandler(slot, (pl, s, is, action) -> EventUtil.callEvent(new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, this)).ifSuccess(() -> {
-                if (action.isShiftClicked()) {
-                    openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
-                } else {
-                    history.goBack(this);
-                }
-                return false;
-            }));
+            menu.addMenuClickHandler(
+                    slot, (pl, s, is, action) -> EventUtil.callEvent(new GuideEvents.BackButtonClickEvent(pl, is, s,
+                                                                                                          action,
+                                                                                                          menu, this)).ifSuccess(() -> {
+                        if (action.isShiftClicked()) {
+                            openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
+                        } else {
+                            history.goBack(this);
+                        }
+                        return false;
+                    })
+            );
 
         } else {
-            menu.addItem(slot, PatchScope.Back.patch(p, ChestMenuUtils.getBackButton(
-                    p,
-                    "",
-                    ChatColor.GRAY + Slimefun.getLocalization().getMessage(p, "guide.back.guide"))));
-            menu.addMenuClickHandler(slot, (pl, s, is, action) -> EventUtil.callEvent(new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, this)).ifSuccess(() -> {
-                openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
-                return false;
-            }));
+            menu.addItem(
+                    slot, PatchScope.Back.patch(
+                            p, ChestMenuUtils.getBackButton(
+                                    p,
+                                    "",
+                                    ChatColor.GRAY + Slimefun.getLocalization().getMessage(p, "guide.back.guide")
+                            )
+                    )
+            );
+            menu.addMenuClickHandler(
+                    slot, (pl, s, is, action) -> EventUtil.callEvent(new GuideEvents.BackButtonClickEvent(pl, is, s,
+                                                                                                          action,
+                                                                                                          menu, this)).ifSuccess(() -> {
+                        openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
+                        return false;
+                    })
+            );
         }
     }
 
@@ -917,7 +1016,9 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                             PatchScope.RecipeDisplay.patch(
                                     p,
                                     Converter.getItem(
-                                            ChestMenuUtils.getBackground(), sfItem.getRecipeSectionLabel(p))));
+                                            ChestMenuUtils.getBackground(), sfItem.getRecipeSectionLabel(p))
+                            )
+                    );
                     menu.addMenuClickHandler(s, ChestMenuUtils.getEmptyClickHandler());
                 }
             }
@@ -929,27 +1030,34 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             for (int s : Formats.recipe_display.getChars('P')) {
                 menu.replaceExistingItem(
                         s, PatchScope.PreviousPage.patch(p, ChestMenuUtils.getPreviousButton(p, page + 1, pages)));
-                menu.addMenuClickHandler(s, (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl, itemstack, slot, action, menu, this)).ifSuccess(() -> {
-                    if (page > 0) {
-                        displayRecipes0(pl, profile, menu, sfItem, page - 1);
-                        Sounds.playFor(pl, Sounds.GUIDE_BUTTON_CLICK_SOUND);
-                    }
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl, itemstack, slot, action, menu, this)).ifSuccess(() -> {
+                            if (page > 0) {
+                                displayRecipes0(pl, profile, menu, sfItem, page - 1);
+                                Sounds.playFor(pl, Sounds.GUIDE_BUTTON_CLICK_SOUND);
+                            }
 
-                    return false;
-                }));
+                            return false;
+                        })
+                );
             }
 
             for (int s : Formats.recipe_display.getChars('N')) {
                 menu.replaceExistingItem(
                         s, PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, page + 1, pages)));
-                menu.addMenuClickHandler(s, (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, itemstack, slot, action, menu, this)).ifSuccess(() -> {
-                    if (recipes.size() > (l * (page + 1))) {
-                        displayRecipes0(pl, profile, menu, sfItem, page + 1);
-                        Sounds.playFor(pl, Sounds.GUIDE_BUTTON_CLICK_SOUND);
-                    }
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl,
+                                                                                                                  itemstack, slot, action, menu, this)).ifSuccess(() -> {
+                            if (recipes.size() > (l * (page + 1))) {
+                                displayRecipes0(pl, profile, menu, sfItem, page + 1);
+                                Sounds.playFor(pl, Sounds.GUIDE_BUTTON_CLICK_SOUND);
+                            }
 
-                    return false;
-                }));
+                            return false;
+                        })
+                );
             }
 
             List<Integer> fds = RecipeDisplayFormat.fenceShuffle(ds);
@@ -980,7 +1088,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                 displayItem = PatchScope.RecipeDisplay.patch(profile, Converter.getItem(displayItem).clone());
             }
 
-            OnDisplay.Item.display(profile.getPlayer(), ItemStackUtil.getCleanItem(displayItem), OnDisplay.Item.Normal, this)
+            OnDisplay.Item.display(profile.getPlayer(), ItemStackUtil.getCleanItem(displayItem),
+                                   OnDisplay.Item.Normal, this)
                     .at(menu, slot, page);
         } else {
             menu.replaceExistingItem(slot, PatchScope.RecipeDisplay.patch(profile, ItemStackUtil.getCleanItem(null)));
@@ -1003,8 +1112,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     @Override
     public void printErrorMessage0(Player p, SlimefunItem item, Throwable x) {
         p.sendMessage(ChatColor.DARK_RED
-                + "An internal server error has occurred. Please inform an admin, check the console for"
-                + " further info.");
+                              + "An internal server error has occurred. Please inform an admin, check the console for"
+                              + " further info.");
         item.error(
                 "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
         JustEnoughGuide.getInstance()

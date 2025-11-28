@@ -53,9 +53,10 @@ public class MachineBlockData extends MachineData {
         return recipes.stream()
                 .map(recipe -> new CERRecipeGroup.RecipeWrapper(
                         recipe.getInputs(),
-                        new ItemStack[]{recipe.getOutput()},
+                        new ItemStack[] {recipe.getOutput()},
                         ticksPerOutput,
-                        (long) ticksPerOutput * energyPerTick))
+                        (long) ticksPerOutput * energyPerTick
+                ))
                 .toList();
     }
 }

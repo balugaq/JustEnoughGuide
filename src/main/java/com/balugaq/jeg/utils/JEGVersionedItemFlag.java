@@ -35,8 +35,8 @@ import org.jspecify.annotations.NullMarked;
 import java.lang.reflect.Field;
 
 /**
- * This class provides a way to access the ItemFlag constants that were added in different versions of Minecraft.
- * Used to fix compatibility issues with different versions of Minecraft.
+ * This class provides a way to access the ItemFlag constants that were added in different versions of Minecraft. Used
+ * to fix compatibility issues with different versions of Minecraft.
  *
  * @author balugaq
  * @since 1.2

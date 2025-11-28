@@ -41,8 +41,8 @@ import java.util.List;
  */
 @NullMarked
 public class GastronomiconIntegrationMain implements Integration {
-    public static final int[] BASIC_MACHINE_INPUT_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30};
-    public static final int[] ELECTRIC_KITCHEN_INPUT_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30, 37, 38, 39};
+    public static final int[] BASIC_MACHINE_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
+    public static final int[] ELECTRIC_KITCHEN_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30, 37, 38, 39};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(String id, int[] slots, boolean unordered) {

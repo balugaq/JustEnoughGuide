@@ -155,10 +155,12 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledElementManipulation = pm.isPluginEnabled("ElementManipulation");
                             this.enabledEMCTech = pm.isPluginEnabled("EMCTech");
                             this.enabledFastMachines = pm.isPluginEnabled("FastMachines");
-                            this.enabledFinalTech = pm.isPluginEnabled("FinalTech") && classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
+                            this.enabledFinalTech = pm.isPluginEnabled("FinalTech") && classExists("io.taraxacum" +
+                                                                                                           ".finaltech.api.factory.ItemValueTable");
                             this.enabledFinalTECH_Changed = pm.isPluginEnabled("FinalTECH-Changed");
                             this.enabledFinalTECH = enabledFinalTECH_Changed
-                                    || (pm.isPluginEnabled("FinalTECH") && classExists("io.taraxacum.libs.slimefun.dto.ItemValueTable"));
+                                    || (pm.isPluginEnabled("FinalTECH") && classExists("io.taraxacum.libs.slimefun" +
+                                                                                               ".dto.ItemValueTable"));
                             this.enabledFluffyMachines = pm.isPluginEnabled("FluffyMachines");
                             this.enabledGalactifun = pm.isPluginEnabled("Galactifun");
                             this.enabledGastronomicon = pm.isPluginEnabled("Gastronomicon");
@@ -183,7 +185,8 @@ public class IntegrationManager extends AbstractManager {
                             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
                             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
                             this.enabledTsingshanTechnology_Fixed = pm.isPluginEnabled("TsingshanTechnology-Fixed");
-                            this.enabledTsingshanTechnology = enabledTsingshanTechnology_Fixed || pm.isPluginEnabled("TsingshanTechnology");
+                            this.enabledTsingshanTechnology = enabledTsingshanTechnology_Fixed || pm.isPluginEnabled(
+                                    "TsingshanTechnology");
                             this.enabledWilderNether = pm.isPluginEnabled("WilderNether");
 
                             addIntegration(enabledAlchimiaVitae, AlchimiaVitaeIntegrationMain::new);
@@ -222,7 +225,8 @@ public class IntegrationManager extends AbstractManager {
                             RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteSlimefunSource());
                             RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteVanillaSource());
                         },
-                        1L);
+                        1L
+                );
     }
 
     public static boolean classExists(String className) {

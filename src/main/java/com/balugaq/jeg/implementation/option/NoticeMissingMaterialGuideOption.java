@@ -91,7 +91,8 @@ public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boo
                 "&e&l此功能为实验性功能，谨慎使用",
                 "&c&l此功能容易误报",
                 "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 告知缺失的材料");
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 告知缺失的材料"
+        );
         return Optional.of(item);
     }
 

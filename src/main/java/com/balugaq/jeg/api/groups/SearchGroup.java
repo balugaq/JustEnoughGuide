@@ -92,8 +92,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * This group is used to display the search results of the search feature.
- * Supports Pinyin search and page turning.
+ * This group is used to display the search results of the search feature. Supports Pinyin search and page turning.
  *
  * @author balugaq
  * @since 1.0
@@ -234,7 +233,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         LOADED = true;
         Debug.debug("Initializing Search Group...");
         Timer.start();
-        JustEnoughGuide.runLaterAsync(() -> {
+        JustEnoughGuide.runLaterAsync(
+                () -> {
                     // Initialize asynchronously
                     int i = 0;
                     for (SlimefunItem item : Slimefun.getRegistry().getEnabledSlimefunItems()) {
@@ -272,9 +272,11 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                                     if (OOUTPUTS == null) {
                                                         Object Ooutput = ReflectionUtil.getValue(item, "output");
                                                         if (Ooutput == null) {
-                                                            Object Ogeneration = ReflectionUtil.getValue(item, "generation");
+                                                            Object Ogeneration = ReflectionUtil.getValue(item,
+                                                                                                         "generation");
                                                             if (Ogeneration == null) {
-                                                                Object Otemplates = ReflectionUtil.getValue(item, "templates");
+                                                                Object Otemplates = ReflectionUtil.getValue(item,
+                                                                                                            "templates");
                                                                 if (Otemplates == null) {
                                                                     continue;
                                                                 }
@@ -283,9 +285,12 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                                                 // CustomTemplateMachine
                                                                 else if (Otemplates instanceof List<?> templates) {
                                                                     for (Object template : templates) {
-                                                                        Object _Orecipes = ReflectionUtil.getValue(template, "recipes");
+                                                                        Object _Orecipes =
+                                                                                ReflectionUtil.getValue(template,
+                                                                                                        "recipes");
                                                                         if (_Orecipes == null) {
-                                                                            Method method = ReflectionUtil.getMethod(template.getClass(), "recipes");
+                                                                            Method method =
+                                                                                    ReflectionUtil.getMethod(template.getClass(), "recipes");
                                                                             if (method != null) {
                                                                                 try {
                                                                                     method.setAccessible(true);
@@ -298,9 +303,11 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                                                         if (_Orecipes instanceof List<?> _recipes) {
                                                                             for (Object _recipe : _recipes) {
                                                                                 if (_recipe instanceof MachineRecipe machineRecipe) {
-                                                                                    ItemStack[] _output = machineRecipe.getOutput();
+                                                                                    ItemStack[] _output =
+                                                                                            machineRecipe.getOutput();
                                                                                     for (ItemStack __output : _output) {
-                                                                                        String s = ItemStackHelper.getDisplayName(__output);
+                                                                                        String s =
+                                                                                                ItemStackHelper.getDisplayName(__output);
                                                                                         if (!inBanlist(s)) {
                                                                                             cache.add(s);
                                                                                         }
@@ -315,7 +322,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                                             else if (Ogeneration instanceof List<?> generation) {
                                                                 for (Object g : generation) {
                                                                     if (g instanceof ItemStack itemStack) {
-                                                                        String s = ItemStackHelper.getDisplayName(itemStack);
+                                                                        String s =
+                                                                                ItemStackHelper.getDisplayName(itemStack);
                                                                         if (!inBanlist(s)) {
                                                                             cache.add(s);
                                                                         }
@@ -391,7 +399,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                             if (!ItemStackUtil.isInstanceSimple(item, "MaterialGenerator")) {
                                                 continue;
                                             }
-                                            String s = ItemStackHelper.getDisplayName(new ItemStack((Material) Omaterial));
+                                            String s =
+                                                    ItemStackHelper.getDisplayName(new ItemStack((Material) Omaterial));
                                             if (!inBanlist(s)) {
                                                 cache.add(s);
                                             }
@@ -717,7 +726,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                             SlimefunItems.GOLD_18K,
                             SlimefunItems.GOLD_20K,
                             SlimefunItems.GOLD_22K,
-                            SlimefunItems.GOLD_24K));
+                            SlimefunItems.GOLD_24K
+                    ));
                     Set<String> items = new HashSet<>();
                     for (SlimefunItemStack slimefunItemStack : ACCEPTED_ITEMS) {
                         SlimefunItem slimefunItem = slimefunItemStack.getItem();
@@ -752,7 +762,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                     if (set != null) {
                                         set.addAll(sharedItems);
                                         Debug.debug("Shared cache added to CACHE char \"" + c + "\" ("
-                                                + sharedItems.size() + " items)");
+                                                            + sharedItems.size() + " items)");
                                     }
                                 }
                             }
@@ -778,7 +788,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                     if (set != null) {
                                         set.addAll(sharedItems2);
                                         Debug.debug("Shared cache added to CACHE2 char \"" + c + "\" ("
-                                                + sharedItems2.size() + " items)");
+                                                            + sharedItems2.size() + " items)");
                                     }
                                 }
                             }
@@ -793,13 +803,14 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     Debug.debug("Available items: " + AVAILABLE_ITEMS.size());
                     Debug.debug("Machine blocks cache: " + SPECIAL_CACHE.size());
                     Debug.debug("Shared cache: "
-                            + JustEnoughGuide.getConfigManager()
+                                        + JustEnoughGuide.getConfigManager()
                             .getSharedChars()
                             .size());
                     Debug.debug("Cache 1 (Keywords): " + CACHE.size());
                     Debug.debug("Cache 2 (Display Recipes): " + CACHE2.size());
                 },
-                1L);
+                1L
+        );
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -875,8 +886,11 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     /**
      * Calculates the name fit score between two strings.
      *
-     * @param name       The name to calculate the name fit score for.
-     * @param searchTerm The search term
+     * @param name
+     *         The name to calculate the name fit score for.
+     * @param searchTerm
+     *         The search term
+     *
      * @return The name fit score. Non-negative integer.
      */
     public static int nameFit(String name, String searchTerm) {
@@ -897,8 +911,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             Set<SlimefunItem> origin, String searchTerm) {
         return origin.stream()
                 .sorted(Comparator.comparingInt(item ->
-                        /* Intentionally negative */
-                        -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
+                                                        /* Intentionally negative */
+                                                        -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
                 .toList();
     }
 
@@ -906,8 +920,9 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             Set<SlimefunItem> origin, String searchTerm) {
         return origin.stream()
                 .sorted(Comparator.comparingInt(item ->
-                        /* Intentionally negative */
-                        -nameFit(getPinyin(ChatColor.stripColor(item.getItemName())), searchTerm)))
+                                                        /* Intentionally negative */
+                                                        -nameFit(getPinyin(ChatColor.stripColor(item.getItemName())),
+                                                                 searchTerm)))
                 .toList();
     }
 
@@ -934,39 +949,48 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     ss,
                     PatchScope.Back.patch(
                             player,
-                            ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单")));
-            chestMenu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(
-                            new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                    playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            guideHistory.goBack(implementation);
-                        }
-                        return false;
-                    }));
+                            ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单")
+                    )
+            );
+            chestMenu.addMenuClickHandler(
+                    ss, (pl, s, is, action) -> EventUtil.callEvent(
+                                    new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
+                            .ifSuccess(() -> {
+                                GuideHistory guideHistory = playerProfile.getGuideHistory();
+                                if (action.isShiftClicked()) {
+                                    SlimefunGuide.openMainMenu(
+                                            playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                                } else {
+                                    guideHistory.goBack(implementation);
+                                }
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('S')) {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
-            chestMenu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        pl.closeInventory();
+            chestMenu.addMenuClickHandler(
+                    ss, (pl, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
+                                                                           implementation))
+                            .ifSuccess(() -> {
+                                pl.closeInventory();
 
-                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                        ChatInput.waitForPlayer(
-                                JAVA_PLUGIN,
-                                pl,
-                                msg -> implementation.openSearch(
-                                        playerProfile,
-                                        msg,
-                                        implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE));
+                                Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                                ChatInput.waitForPlayer(
+                                        JAVA_PLUGIN,
+                                        pl,
+                                        msg -> implementation.openSearch(
+                                                playerProfile,
+                                                msg,
+                                                implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
+                                        )
+                                );
 
-                        return false;
-                    }));
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('P')) {
@@ -979,15 +1003,21 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                     this.page,
                                     (this.slimefunItemList.size() - 1)
                                             / Formats.sub.getChars('i').size()
-                                            + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        SearchGroup searchGroup = this.getByPage(Math.max(this.page - 1, 1));
-                        searchGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    }));
+                                            + 1
+                            )
+                    )
+            );
+            chestMenu.addMenuClickHandler(
+                    ss, (p, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
+                                                                             implementation))
+                            .ifSuccess(() -> {
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                SearchGroup searchGroup = this.getByPage(Math.max(this.page - 1, 1));
+                                searchGroup.open(player, playerProfile, slimefunGuideMode);
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('N')) {
@@ -1000,19 +1030,26 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                     this.page,
                                     (this.slimefunItemList.size() - 1)
                                             / Formats.sub.getChars('i').size()
-                                            + 1)));
-            chestMenu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(
-                            new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        SearchGroup searchGroup = this.getByPage(Math.min(
-                                this.page + 1,
-                                (this.slimefunItemList.size() - 1)
-                                        / Formats.sub.getChars('i').size()
-                                        + 1));
-                        searchGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    }));
+                                            + 1
+                            )
+                    )
+            );
+            chestMenu.addMenuClickHandler(
+                    ss, (p, slot, item, action) -> EventUtil.callEvent(
+                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
+                                                                         implementation))
+                            .ifSuccess(() -> {
+                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                SearchGroup searchGroup = this.getByPage(Math.min(
+                                        this.page + 1,
+                                        (this.slimefunItemList.size() - 1)
+                                                / Formats.sub.getChars('i').size()
+                                                + 1
+                                ));
+                                searchGroup.open(player, playerProfile, slimefunGuideMode);
+                                return false;
+                            })
+            );
         }
 
         for (int ss : Formats.sub.getChars('B')) {
@@ -1077,8 +1114,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         Set<SlimefunItem> merge = new HashSet<>(36 * 4);
         // The unfiltered items
         Set<SlimefunItem> items = new HashSet<>(AVAILABLE_ITEMS.stream()
-                .filter(item -> item.getItemGroup().isAccessible(player))
-                .toList());
+                                                        .filter(item -> item.getItemGroup().isAccessible(player))
+                                                        .toList());
 
         if (!actualSearchTerm.isBlank()) {
             Set<SlimefunItem> nameMatched = new HashSet<>();
