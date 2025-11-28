@@ -387,6 +387,8 @@ public class LocalHelper {
         addonLocals.put("ZeroSequenceTechnique", "零序技艺");
         addonLocals.put("OriginTech", "起源工艺");
         addonLocals.put("SimpleTech", "简单科技");
+        addonLocals.put("Komutech", "口木科技");
+        addonLocals.put("SlimefunInfiniteBlocks", "粘液无尽方块");
     }
 
     public static String getOfficialAddonName(ItemGroup itemGroup, String itemId) {

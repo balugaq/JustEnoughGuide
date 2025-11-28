@@ -28,7 +28,9 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
+import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.utils.Debug;
+import com.github.houbb.opencc4j.support.data.impl.OpenccDatas;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is responsible for managing the configuration of the plugin. Includes the following features'
@@ -131,15 +134,15 @@ public class ConfigManager extends AbstractManager {
         List<String> rawSharedChars = cfg.getStringList("shared-chars");
         if (rawSharedChars == null || rawSharedChars.isEmpty()) {
             this.SHARED_CHARS = new ArrayList<>();
-            this.SHARED_CHARS.add("粘黏");
-            this.SHARED_CHARS.add("荧萤");
-            this.SHARED_CHARS.add("机器级");
-            this.SHARED_CHARS.add("灵零");
-            this.SHARED_CHARS.add("动力");
-            this.SHARED_CHARS.add("拆反");
-            this.SHARED_CHARS.add("解向");
         } else {
             this.SHARED_CHARS = rawSharedChars;
+        }
+
+        try {
+            processSharedChars(OpenccDatas.stChar().data().getDataMap().entrySet());
+            processSharedChars(OpenccDatas.twStChar().data().getDataMap().entrySet());
+        } catch (Exception e) {
+            Debug.warn(e);
         }
 
         List<String> rawMainFormat = cfg.getStringList("custom-format.main");
@@ -520,5 +523,17 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isAllowActionRedirect() {
         return ALLOW_ACTION_REDIRECT;
+    }
+
+    private void processSharedChars(Set<Map.Entry<String, List<String>>> data) {
+        for (Pair<String, String> p : data.stream().map(e -> new Pair<>(e.getKey(), e.getValue().get(0))).toList()) {
+            if (p.first().length() != p.second().length()) {
+                continue;
+            }
+
+            for (int i = 0; i < p.first().length(); i++) {
+                this.SHARED_CHARS.add(" " + p.first.charAt(i) + p.second.charAt(i));
+            }
+        }
     }
 }

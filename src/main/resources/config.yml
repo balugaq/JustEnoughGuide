@@ -580,6 +580,8 @@ local-translate:
   ZeroSequenceTechnique: "零序技艺"
   OriginTech: "起源工艺"
   SimpleTech: "简单科技"
+  Komutech: "口木科技"
+  SlimefunInfiniteBlocks: "粘液无尽方块"
 
 # Do not change this value unless you know what you are doing.
 config-version: 2.0
