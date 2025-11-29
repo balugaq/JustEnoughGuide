@@ -133,8 +133,10 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
-                                                                           implementation))
+                                    new GuideEvents.SearchButtonClickEvent(
+                                            pl, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 pl.closeInventory();
 
@@ -172,8 +174,10 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                             implementation))
+                                    new GuideEvents.PreviousButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 ItemMarkGroup itemMarkGroup = this.getByPage(Math.max(this.page - 1, 1));
@@ -201,8 +205,10 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                         implementation))
+                                    new GuideEvents.NextButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 ItemMarkGroup itemMarkGroup = this.getByPage(Math.min(

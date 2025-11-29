@@ -51,6 +51,16 @@ public class GalactifunIntegrationMain implements Integration {
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
+    @Override
+    public String getHookPlugin() {
+        return "Galactifun";
+    }
+
+    @Override
+    public void onEnable() {
+        rrc("ASSEMBLY_TABLE", ASSEMBLY_TABLE_INPUT_SLOTS, false);
+    }
+
     public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
         if (slimefunItem != null) {
@@ -61,16 +71,6 @@ public class GalactifunIntegrationMain implements Integration {
     public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
-    @Override
-    public String getHookPlugin() {
-        return "Galactifun";
-    }
-
-    @Override
-    public void onEnable() {
-        rrc("ASSEMBLY_TABLE", ASSEMBLY_TABLE_INPUT_SLOTS, false);
     }
 
     @Override

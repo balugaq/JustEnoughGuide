@@ -421,6 +421,113 @@ public class SpecialMenuProvider {
                 || isObsidianForgeItem(slimefunItem);
     }
 
+    public static boolean isFinalTECHItem(SlimefunItem slimefunItem) {
+        if (!ENABLED_FinalTECH) {
+            return false;
+        }
+
+        String addonName = slimefunItem.getAddon().getName();
+        if ("FinalTECH".equals(addonName) || "FinalTECH-Changed".equals(addonName)) {
+            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
+        }
+        return false;
+    }
+
+    public static boolean isNexcavateItem(SlimefunItem slimefunItem) {
+        if (!ENABLED_Nexcavate) {
+            return false;
+        }
+
+        String addonName = slimefunItem.getAddon().getName();
+        if ("Nexcavate".equals(addonName)) {
+            for (ItemStack itemStack : slimefunItem.getRecipe()) {
+                if (itemStack != null) {
+                    // Go to fallback
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isLogiTechItem(SlimefunItem slimefunItem) {
+        if (!ENABLED_LogiTech) {
+            return false;
+        }
+
+        String addonName = slimefunItem.getAddon().getName();
+        if ("LogiTech".equals(addonName)) {
+            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
+        }
+        return false;
+    }
+
+    public static boolean isInfinityItem(SlimefunItem slimefunItem) {
+        if (!ENABLED_InfinityExpansion) {
+            return false;
+        }
+
+        String addonName = slimefunItem.getAddon().getName();
+        if ("InfinityExpansion".equals(addonName)) {
+            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
+        }
+        return false;
+    }
+
+    public static boolean isObsidianForgeItem(SlimefunItem slimefunItem) {
+        if (!ENABLED_ObsidianExpansion) {
+            return false;
+        }
+
+        String addonName = slimefunItem.getAddon().getName();
+        if ("ObsidianExpansion".equals(addonName)) {
+            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
+        }
+        return false;
+    }
+
+    public static boolean open(
+            Player player,
+            PlayerProfile playerProfile,
+            SlimefunGuideMode slimefunGuideMode,
+            SlimefunItem slimefunItem)
+            throws InvocationTargetException, IllegalAccessException, InstantiationException {
+        if (player == null) {
+            return false;
+        }
+        if (isFinalTECHItem(slimefunItem)) {
+            FlexItemGroup flexItemGroup =
+                    getFinalTECHRecipeItemGroup(player, playerProfile, slimefunGuideMode, slimefunItem);
+            if (flexItemGroup != null) {
+                flexItemGroup.open(player, playerProfile, slimefunGuideMode);
+                Debug.debug("Opened FinalTECH special menu");
+                return true;
+            }
+        } else if (isNexcavateItem(slimefunItem)) {
+            openNexcavateGuide(player, slimefunItem);
+            Debug.debug("Opened Nexcavate special menu");
+            return true;
+        } else if (isLogiTechItem(slimefunItem)) {
+            openLogiTechMenu(player, playerProfile, slimefunItem);
+            Debug.debug("Opened LogiTech special menu");
+            return true;
+        } else if (isInfinityExpansionSingularityItem(slimefunItem)) {
+            openInfinityExpansionSingularityMenu(player, playerProfile, slimefunItem);
+            Debug.debug("Opened InfinityExpansion Singularity special menu");
+            return true;
+        } else if (isInfinityItem(slimefunItem)) {
+            openInfinityMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
+            Debug.debug("Opened InfinityExpansion special menu");
+            return true;
+        } else if (isObsidianForgeItem(slimefunItem)) {
+            openObsidianForgeMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
+            Debug.debug("Opened ObsidianExpansion special menu");
+            return true;
+        }
+        return false;
+    }
+
     @Nullable
     public static FlexItemGroup getFinalTECHRecipeItemGroup(
             Player player,
@@ -438,18 +545,6 @@ public class SpecialMenuProvider {
         methodRecipeItemGroup_getBySlimefunItem.setAccessible(true);
         return (FlexItemGroup) methodRecipeItemGroup_getBySlimefunItem.invoke(
                 null, player, playerProfile, slimefunGuideMode, slimefunItem, 1);
-    }
-
-    public static boolean isFinalTECHItem(SlimefunItem slimefunItem) {
-        if (!ENABLED_FinalTECH) {
-            return false;
-        }
-
-        String addonName = slimefunItem.getAddon().getName();
-        if ("FinalTECH".equals(addonName) || "FinalTECH-Changed".equals(addonName)) {
-            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
-        }
-        return false;
     }
 
     public static void openNexcavateGuide(Player player, SlimefunItem slimefunItem)
@@ -498,48 +593,6 @@ public class SpecialMenuProvider {
         }
     }
 
-    public static boolean isPlayerResearchedNexcavate(Player player, Object research)
-            throws InvocationTargetException, IllegalAccessException {
-        if (!ENABLED_Nexcavate) {
-            return false;
-        }
-
-        if (methodPlayerProgress_get == null) {
-            return false;
-        }
-        methodPlayerProgress_get.setAccessible(true);
-        Object playerProgress = methodPlayerProgress_get.invoke(null, player);
-        if (playerProgress == null) {
-            return false;
-        }
-
-        Method method = ReflectionUtil.getMethod(playerProgress.getClass(), "isResearched", NamespacedKey.class);
-        if (method == null) {
-            return false;
-        }
-        method.setAccessible(true);
-        NamespacedKey key = (NamespacedKey) ReflectionUtil.getValue(research, "key");
-        return (boolean) method.invoke(playerProgress, key);
-    }
-
-    public static boolean isNexcavateItem(SlimefunItem slimefunItem) {
-        if (!ENABLED_Nexcavate) {
-            return false;
-        }
-
-        String addonName = slimefunItem.getAddon().getName();
-        if ("Nexcavate".equals(addonName)) {
-            for (ItemStack itemStack : slimefunItem.getRecipe()) {
-                if (itemStack != null) {
-                    // Go to fallback
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
     public static void openLogiTechMenu(
             Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
             throws InvocationTargetException, IllegalAccessException {
@@ -581,16 +634,21 @@ public class SpecialMenuProvider {
         insertUselessHistory(playerProfile);
     }
 
-    public static boolean isLogiTechItem(SlimefunItem slimefunItem) {
-        if (!ENABLED_LogiTech) {
-            return false;
+    public static boolean isInfinityExpansionSingularityItem(SlimefunItem slimefunItem) {
+        return classInfinityExpansion_Singularity != null
+                && slimefunItem.getClass() == classInfinityExpansion_Singularity;
+    }
+
+    public static void openInfinityExpansionSingularityMenu(
+            Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
+            throws InvocationTargetException, IllegalAccessException {
+        if (!ENABLED_InfinityExpansion || !ENABLED_LogiTech) {
+            return;
         }
 
-        String addonName = slimefunItem.getAddon().getName();
-        if ("LogiTech".equals(addonName)) {
-            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
+        if (isInfinityExpansionSingularityItem(slimefunItem)) {
+            openLogiTechMenu(player, playerProfile, slimefunItem);
         }
-        return false;
     }
 
     public static void openInfinityMenu(
@@ -627,36 +685,6 @@ public class SpecialMenuProvider {
         }
     }
 
-    public static boolean isPlayerResearchedInfinity(
-            Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem) {
-        if (!ENABLED_InfinityExpansion) {
-            return false;
-        }
-
-        if (isInfinityItem(slimefunItem)) {
-            Research research = slimefunItem.getResearch();
-            if (research == null) {
-                return true;
-            }
-
-            return playerProfile.hasUnlocked(research);
-        }
-
-        return false;
-    }
-
-    public static boolean isInfinityItem(SlimefunItem slimefunItem) {
-        if (!ENABLED_InfinityExpansion) {
-            return false;
-        }
-
-        String addonName = slimefunItem.getAddon().getName();
-        if ("InfinityExpansion".equals(addonName)) {
-            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
-        }
-        return false;
-    }
-
     public static void openObsidianForgeMenu(
             Player player,
             PlayerProfile playerProfile,
@@ -677,87 +705,28 @@ public class SpecialMenuProvider {
         }
     }
 
-    public static boolean isObsidianForgeItem(SlimefunItem slimefunItem) {
-        if (!ENABLED_ObsidianExpansion) {
-            return false;
-        }
-
-        String addonName = slimefunItem.getAddon().getName();
-        if ("ObsidianExpansion".equals(addonName)) {
-            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
-        }
-        return false;
-    }
-
-    public static boolean isInfinityExpansionSingularityItem(SlimefunItem slimefunItem) {
-        return classInfinityExpansion_Singularity != null
-                && slimefunItem.getClass() == classInfinityExpansion_Singularity;
-    }
-
-    public static void openInfinityExpansionSingularityMenu(
-            Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
+    public static boolean isPlayerResearchedNexcavate(Player player, Object research)
             throws InvocationTargetException, IllegalAccessException {
-        if (!ENABLED_InfinityExpansion || !ENABLED_LogiTech) {
-            return;
-        }
-
-        if (isInfinityExpansionSingularityItem(slimefunItem)) {
-            openLogiTechMenu(player, playerProfile, slimefunItem);
-        }
-    }
-
-    public static boolean open(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode,
-            SlimefunItem slimefunItem)
-            throws InvocationTargetException, IllegalAccessException, InstantiationException {
-        if (player == null) {
+        if (!ENABLED_Nexcavate) {
             return false;
         }
-        if (isFinalTECHItem(slimefunItem)) {
-            FlexItemGroup flexItemGroup =
-                    getFinalTECHRecipeItemGroup(player, playerProfile, slimefunGuideMode, slimefunItem);
-            if (flexItemGroup != null) {
-                flexItemGroup.open(player, playerProfile, slimefunGuideMode);
-                Debug.debug("Opened FinalTECH special menu");
-                return true;
-            }
-        } else if (isNexcavateItem(slimefunItem)) {
-            openNexcavateGuide(player, slimefunItem);
-            Debug.debug("Opened Nexcavate special menu");
-            return true;
-        } else if (isLogiTechItem(slimefunItem)) {
-            openLogiTechMenu(player, playerProfile, slimefunItem);
-            Debug.debug("Opened LogiTech special menu");
-            return true;
-        } else if (isInfinityExpansionSingularityItem(slimefunItem)) {
-            openInfinityExpansionSingularityMenu(player, playerProfile, slimefunItem);
-            Debug.debug("Opened InfinityExpansion Singularity special menu");
-            return true;
-        } else if (isInfinityItem(slimefunItem)) {
-            openInfinityMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
-            Debug.debug("Opened InfinityExpansion special menu");
-            return true;
-        } else if (isObsidianForgeItem(slimefunItem)) {
-            openObsidianForgeMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
-            Debug.debug("Opened ObsidianExpansion special menu");
-            return true;
-        }
-        return false;
-    }
 
-    public static void fallbackOpen(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode,
-            SlimefunItem slimefunItem) {
-        SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode);
-        if (implementation instanceof JEGSlimefunGuideImplementation jeg) {
-            jeg.displayItem(playerProfile, slimefunItem, true, false);
-        } else {
-            implementation.displayItem(playerProfile, slimefunItem, true);
+        if (methodPlayerProgress_get == null) {
+            return false;
         }
+        methodPlayerProgress_get.setAccessible(true);
+        Object playerProgress = methodPlayerProgress_get.invoke(null, player);
+        if (playerProgress == null) {
+            return false;
+        }
+
+        Method method = ReflectionUtil.getMethod(playerProgress.getClass(), "isResearched", NamespacedKey.class);
+        if (method == null) {
+            return false;
+        }
+        method.setAccessible(true);
+        NamespacedKey key = (NamespacedKey) ReflectionUtil.getValue(research, "key");
+        return (boolean) method.invoke(playerProgress, key);
     }
 
     /**
@@ -773,6 +742,37 @@ public class SpecialMenuProvider {
      */
     public static void insertUselessHistory(PlayerProfile playerProfile) {
         playerProfile.getGuideHistory().add(PLACEHOLDER_SEARCH_TERM);
+    }
+
+    public static boolean isPlayerResearchedInfinity(
+            Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem) {
+        if (!ENABLED_InfinityExpansion) {
+            return false;
+        }
+
+        if (isInfinityItem(slimefunItem)) {
+            Research research = slimefunItem.getResearch();
+            if (research == null) {
+                return true;
+            }
+
+            return playerProfile.hasUnlocked(research);
+        }
+
+        return false;
+    }
+
+    public static void fallbackOpen(
+            Player player,
+            PlayerProfile playerProfile,
+            SlimefunGuideMode slimefunGuideMode,
+            SlimefunItem slimefunItem) {
+        SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode);
+        if (implementation instanceof JEGSlimefunGuideImplementation jeg) {
+            jeg.displayItem(playerProfile, slimefunItem, true, false);
+        } else {
+            implementation.displayItem(playerProfile, slimefunItem, true);
+        }
     }
 
     /**

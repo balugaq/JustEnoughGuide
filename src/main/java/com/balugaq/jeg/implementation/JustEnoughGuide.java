@@ -165,40 +165,44 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getInstance().bookmarkManager;
     }
 
+    public static JustEnoughGuide getInstance() {
+        return JustEnoughGuide.instance;
+    }
+
     public static CommandManager getCommandManager() {
         return getInstance().commandManager;
-    }
-
-    public static ConfigManager getConfigManager() {
+    }    public static ConfigManager getConfigManager() {
         return getInstance().configManager;
-    }
-
-    public static IntegrationManager getIntegrationManager() {
-        return getInstance().integrationManager;
     }
 
     public static ListenerManager getListenerManager() {
         return getInstance().listenerManager;
+    }    public static IntegrationManager getIntegrationManager() {
+        return getInstance().integrationManager;
     }
 
     public static MinecraftVersion getMinecraftVersion() {
         return getInstance().minecraftVersion;
     }
 
-    public static TaskScheduler getScheduler() {
-        return getInstance().scheduler;
-    }
-
-    public static JustEnoughGuide getInstance() {
-        return JustEnoughGuide.instance;
-    }
-
     public static void postServerStartup(Runnable runnable) {
         JustEnoughGuide.runNextTick(runnable);
     }
 
+    public static void runNextTick(Runnable runnable) {
+        getScheduler().runNextTick(runnable);
+    }
+
+    public static TaskScheduler getScheduler() {
+        return getInstance().scheduler;
+    }
+
     public static void postServerStartupAsynchronously(Runnable runnable) {
         JustEnoughGuide.runLaterAsync(runnable, 1L);
+    }
+
+    public static void runLaterAsync(Runnable runnable, long delay) {
+        getScheduler().runLaterAsync(runnable, delay);
     }
 
     public static boolean disableAutomaticallyLoadItems() {
@@ -211,16 +215,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         Slimefun.getConfigManager().setAutoLoadingMode(value);
     }
 
-    public static void runNextTick(Runnable runnable) {
-        getScheduler().runNextTick(runnable);
-    }
-
     public static void runLater(Runnable runnable, long delay) {
         getScheduler().runLater(runnable, delay);
-    }
-
-    public static void runLaterAsync(Runnable runnable, long delay) {
-        getScheduler().runLaterAsync(runnable, delay);
     }
 
     public static void runTimer(Runnable runnable, long delay, long period) {
@@ -232,6 +228,37 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     }
 
     /**
+     * Returns the JavaPlugin instance.
+     *
+     * @return the JavaPlugin instance
+     */
+    @Override
+    public JavaPlugin getJavaPlugin() {
+        return this;
+    }
+
+    /**
+     * Returns the bug tracker URL for the plugin.
+     *
+     * @return the bug tracker URL
+     */
+    @Nullable
+    @Override
+    public String getBugTrackerURL() {
+        return MessageFormat.format("https://github.com/{0}/{1}/issues/", this.username, this.repo);
+    }
+
+    /**
+     * Logs a debug message if debugging is enabled.
+     *
+     * @param message
+     *         the debug message to log
+     */
+    public void debug(String message) {
+        if (getConfigManager().isDebug()) {
+            getLogger().warning("[DEBUG] " + message);
+        }
+    }    /**
      * Initializes the plugin and sets up all necessary components.
      */
     @SuppressWarnings("DuplicateExpressions")
@@ -359,7 +386,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getLogger().info("成功启用此附属");
     }
 
-    /**
+    public String getVersion() {
+        return getDescription().getVersion();
+    }    /**
      * Cleans up resources and shuts down the plugin.
      */
     @Override
@@ -444,41 +473,19 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     }
 
     /**
-     * Returns the JavaPlugin instance.
+     * Checks if debugging is enabled.
      *
-     * @return the JavaPlugin instance
+     * @return true if debugging is enabled, false otherwise
      */
-    @Override
-    public JavaPlugin getJavaPlugin() {
-        return this;
+    public boolean isDebug() {
+        return getConfigManager().isDebug();
     }
 
-    /**
-     * Returns the bug tracker URL for the plugin.
-     *
-     * @return the bug tracker URL
-     */
-    @Nullable
-    @Override
-    public String getBugTrackerURL() {
-        return MessageFormat.format("https://github.com/{0}/{1}/issues/", this.username, this.repo);
-    }
 
-    /**
-     * Logs a debug message if debugging is enabled.
-     *
-     * @param message
-     *         the debug message to log
-     */
-    public void debug(String message) {
-        if (getConfigManager().isDebug()) {
-            getLogger().warning("[DEBUG] " + message);
-        }
-    }
 
-    public String getVersion() {
-        return getDescription().getVersion();
-    }
+
+
+
 
     /**
      * Checks the environment compatibility for the plugin.
@@ -514,14 +521,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return true;
     }
 
-    /**
-     * Checks if debugging is enabled.
-     *
-     * @return true if debugging is enabled, false otherwise
-     */
-    public boolean isDebug() {
-        return getConfigManager().isDebug();
-    }
+
 
     /**
      * Attempts to update the plugin if auto-update is enabled.

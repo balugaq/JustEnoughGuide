@@ -77,18 +77,6 @@ public class NetworksExpansionIntegrationMain implements Integration {
         return plugin;
     }
 
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
     @Override
     public String getHookPlugin() {
         return "NetworksExpansion";
@@ -114,8 +102,22 @@ public class NetworksExpansionIntegrationMain implements Integration {
         rrc("NTW_EXPANSION_WORKBENCH", EXPANSION_WORKBENCH_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_WORKBENCH_6X6", EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_STORAGE_UPGRADE_TABLE", STORAGE_UPGRADE_TABLE_RECIPE_SLOTS, false);
-        rrc("NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE",
-            NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS, false);
+        rrc(
+                "NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE",
+                NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS, false
+        );
+    }
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

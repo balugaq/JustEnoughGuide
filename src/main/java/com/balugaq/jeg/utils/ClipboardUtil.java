@@ -53,11 +53,6 @@ public class ClipboardUtil {
     }
 
     @Deprecated
-    public static void send(Player player, TextComponent component) {
-        player.spigot().sendMessage(component);
-    }
-
-    @Deprecated
     public static TextComponent makeComponent(String display, String hover, String text) {
         return makeComponent(display, hover, text, null);
     }
@@ -73,5 +68,10 @@ public class ClipboardUtil {
         }
 
         return msg;
+    }
+
+    @Deprecated
+    public static void send(Player player, TextComponent component) {
+        player.spigot().sendMessage(component);
     }
 }

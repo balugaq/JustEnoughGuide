@@ -238,17 +238,15 @@ public class IntegrationManager extends AbstractManager {
         }
     }
 
-    public static void scheduleRun(Runnable runnable) {
-        JustEnoughGuide.runLater(runnable, 2L);
-    }
-
-    public static void scheduleRunAsync(Runnable runnable) {
-        JustEnoughGuide.runLaterAsync(runnable, 2L);
-    }
-
-    @Deprecated
-    public boolean hasRecipeCompletableWithGuide() {
-        return hasRecipeCompletableWithGuide;
+    @SuppressWarnings("UnusedReturnValue")
+    public Run addIntegration(boolean enabled, Supplier<Integration> supplier) {
+        if (enabled) {
+            Integration integration = supplier.get();
+            integrations.add(integration);
+            return Run.success();
+        } else {
+            return Run.failure();
+        }
     }
 
     private void startupIntegrations() {
@@ -260,6 +258,19 @@ public class IntegrationManager extends AbstractManager {
                 Debug.trace(e);
             }
         }
+    }
+
+    public static void scheduleRun(Runnable runnable) {
+        JustEnoughGuide.runLater(runnable, 2L);
+    }
+
+    public static void scheduleRunAsync(Runnable runnable) {
+        JustEnoughGuide.runLaterAsync(runnable, 2L);
+    }
+
+    @Deprecated
+    public boolean hasRecipeCompletableWithGuide() {
+        return hasRecipeCompletableWithGuide;
     }
 
     public void shutdownIntegrations() {
@@ -285,17 +296,6 @@ public class IntegrationManager extends AbstractManager {
         return enabledFinalTECH_Changed;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public Run addIntegration(boolean enabled, Supplier<Integration> supplier) {
-        if (enabled) {
-            Integration integration = supplier.get();
-            integrations.add(integration);
-            return Run.success();
-        } else {
-            return Run.failure();
-        }
-    }
-
     @Data
     @RequiredArgsConstructor
     public static class Run implements Cloneable {
@@ -307,6 +307,15 @@ public class IntegrationManager extends AbstractManager {
             return SUCCESS.clone();
         }
 
+        @Override
+        public Run clone() {
+            try {
+                return (Run) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new AssertionError();
+            }
+        }
+
         public static Run failure() {
             return FAILURE.clone();
         }
@@ -316,15 +325,6 @@ public class IntegrationManager extends AbstractManager {
                 return callable.get();
             } else {
                 return this;
-            }
-        }
-
-        @Override
-        public Run clone() {
-            try {
-                return (Run) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new AssertionError();
             }
         }
     }

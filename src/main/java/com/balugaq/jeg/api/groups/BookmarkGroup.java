@@ -114,8 +114,10 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
             chestMenu.addItem(ss, PatchScope.Search.patch(playerProfile, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
-                                                                           implementation))
+                                    new GuideEvents.SearchButtonClickEvent(
+                                            pl, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 pl.closeInventory();
 
@@ -151,8 +153,10 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                             implementation))
+                                    new GuideEvents.PreviousButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 BookmarkGroup bookMarkGroup = this.getByPage(Math.max(this.page - 1, 1));
@@ -178,8 +182,10 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                         implementation))
+                                    new GuideEvents.NextButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 BookmarkGroup bookMarkGroup = this.getByPage(Math.min(
@@ -206,8 +212,10 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
                 Bookmark bookmark = bookmarks.get(index);
                 if (bookmark instanceof Bookmark.Item bi) {
                     SlimefunItem slimefunItem = bi.getSlimefunItem();
-                    OnDisplay.Item.display(player, Converter.getItem(slimefunItem.getItem()), OnDisplay.Item.Bookmark
-                                    , implementation)
+                    OnDisplay.Item.display(
+                                    player, Converter.getItem(slimefunItem.getItem()), OnDisplay.Item.Bookmark
+                                    , implementation
+                            )
                             .at(chestMenu, contentSlots.get(i), page);
                 }
                 if (bookmark instanceof Bookmark.ItemGroup big) {

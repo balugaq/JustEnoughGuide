@@ -162,15 +162,6 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
-    public static boolean isSearchFilterApplicable(ItemStack itemStack, String searchTerm, boolean pinyin) {
-        if (itemStack == null) {
-            return false;
-        }
-        String itemName =
-                ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack)).toLowerCase(Locale.ROOT);
-        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
-    }
-
     public static boolean isSearchFilterApplicable(String itemName, String searchTerm, boolean pinyin) {
         if (itemName.isEmpty()) {
             return false;
@@ -196,6 +187,15 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
 
     public static String getPinyin(String string, PinyinStyleEnum style) {
         return PinyinHelper.toPinyin(string, style, "");
+    }
+
+    public static boolean isSearchFilterApplicable(ItemStack itemStack, String searchTerm, boolean pinyin) {
+        if (itemStack == null) {
+            return false;
+        }
+        String itemName =
+                ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack)).toLowerCase(Locale.ROOT);
+        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
     public static List<SlimefunItem> filterItems(
@@ -272,11 +272,15 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                                     if (OOUTPUTS == null) {
                                                         Object Ooutput = ReflectionUtil.getValue(item, "output");
                                                         if (Ooutput == null) {
-                                                            Object Ogeneration = ReflectionUtil.getValue(item,
-                                                                                                         "generation");
+                                                            Object Ogeneration = ReflectionUtil.getValue(
+                                                                    item,
+                                                                    "generation"
+                                                            );
                                                             if (Ogeneration == null) {
-                                                                Object Otemplates = ReflectionUtil.getValue(item,
-                                                                                                            "templates");
+                                                                Object Otemplates = ReflectionUtil.getValue(
+                                                                        item,
+                                                                        "templates"
+                                                                );
                                                                 if (Otemplates == null) {
                                                                     continue;
                                                                 }
@@ -286,8 +290,10 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                                                 else if (Otemplates instanceof List<?> templates) {
                                                                     for (Object template : templates) {
                                                                         Object _Orecipes =
-                                                                                ReflectionUtil.getValue(template,
-                                                                                                        "recipes");
+                                                                                ReflectionUtil.getValue(
+                                                                                        template,
+                                                                                        "recipes"
+                                                                                );
                                                                         if (_Orecipes == null) {
                                                                             Method method =
                                                                                     ReflectionUtil.getMethod(template.getClass(), "recipes");
@@ -921,8 +927,10 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         return origin.stream()
                 .sorted(Comparator.comparingInt(item ->
                                                         /* Intentionally negative */
-                                                        -nameFit(getPinyin(ChatColor.stripColor(item.getItemName())),
-                                                                 searchTerm)))
+                                                        -nameFit(
+                                                                getPinyin(ChatColor.stripColor(item.getItemName())),
+                                                                searchTerm
+                                                        )))
                 .toList();
     }
 
@@ -972,8 +980,10 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
-                                                                           implementation))
+                                    new GuideEvents.SearchButtonClickEvent(
+                                            pl, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 pl.closeInventory();
 
@@ -1009,8 +1019,10 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                             implementation))
+                                    new GuideEvents.PreviousButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 SearchGroup searchGroup = this.getByPage(Math.max(this.page - 1, 1));
@@ -1036,8 +1048,10 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                         implementation))
+                                    new GuideEvents.NextButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 SearchGroup searchGroup = this.getByPage(Math.min(

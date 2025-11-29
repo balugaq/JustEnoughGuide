@@ -112,6 +112,75 @@ public class GroupResorter {
                 );
     }
 
+    public static boolean hasCfg() {
+        return config != null;
+    }
+
+    public static @Nullable Integer getTierCfg(final String key) {
+        return getOrCreateConfig().getObject(key + ".tier", Integer.class, null);
+    }
+
+    public static String getKey(final ItemGroup itemGroup) {
+        if (itemGroup instanceof NestedItemGroup n) {
+            return n.getKey().getNamespace() + "-" + n.getKey().getKey() + ".nested";
+        } else if (itemGroup instanceof SubItemGroup s) {
+            NestedItemGroup n = s.getParent();
+            return n.getKey().getNamespace() + "-" + n.getKey().getKey() + ".sub."
+                    + s.getKey().getNamespace() + "-" + n.getKey().getKey();
+        } else if (itemGroup.getClass() == ItemGroup.class) {
+            return itemGroup.getKey().getNamespace() + "-" + itemGroup.getKey().getKey();
+        } else {
+            return itemGroup.getKey().getNamespace() + "-" + itemGroup.getKey().getKey();
+        }
+    }
+
+    public static void setTier(
+            final ItemGroup itemGroup, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
+        jegGroupTier.put(itemGroup, tier);
+        setTierCfg(getKey(itemGroup), tier);
+    }
+
+    public static int getTier(final ItemGroup itemGroup) {
+        return jegGroupTier.getOrDefault(itemGroup, itemGroup.getTier());
+    }
+
+    public static void setNameCfg(final String key, final String name) {
+        getOrCreateConfig().set(key + ".name", name);
+    }
+
+    public static String getDisplayName(final ItemGroup itemGroup) {
+        return itemGroup.getUnlocalizedName();
+    }
+
+    public static FileConfiguration getOrCreateConfig() {
+        if (config != null) {
+            return config;
+        }
+
+        if (!tiersFile.exists()) {
+            try {
+                // read from jar input stream
+                JustEnoughGuide.getInstance().saveResource("tiers.yml", false);
+            } catch (Exception e) {
+                Debug.trace(e);
+            }
+        }
+
+        return config = YamlConfiguration.loadConfiguration(tiersFile);
+    }
+
+    public static void setTierCfg(
+            final String key, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
+        getOrCreateConfig().set(key + ".tier", tier);
+        saveCfg();
+    }
+
+    @SneakyThrows
+    public static void saveCfg() {
+        if (config == null) return;
+        config.save(tiersFile);
+    }
+
     public static boolean isSelecting(final Player player) {
         return selectingPlayers.contains(player);
     }
@@ -138,18 +207,13 @@ public class GroupResorter {
         selectingPlayers.add(player);
     }
 
-    public static String getDisplayName(final ItemGroup itemGroup) {
-        return itemGroup.getUnlocalizedName();
-    }
-
-    public static int getTier(final ItemGroup itemGroup) {
-        return jegGroupTier.getOrDefault(itemGroup, itemGroup.getTier());
-    }
-
-    public static void setTier(
-            final ItemGroup itemGroup, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
-        jegGroupTier.put(itemGroup, tier);
-        setTierCfg(getKey(itemGroup), tier);
+    public static void swap(final ItemGroup itemGroup1, final ItemGroup itemGroup2) {
+        int tier1 = getTier(itemGroup1);
+        int tier2 = getTier(itemGroup2);
+        itemGroup1.setTier(tier2);
+        setTier(itemGroup2, tier1);
+        setTier(itemGroup1, tier2);
+        resort();
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
@@ -162,73 +226,9 @@ public class GroupResorter {
         Slimefun.getRegistry().getAllItemGroups().sort(Comparator.comparingInt(ItemGroup::getTier));
     }
 
-    public static void swap(final ItemGroup itemGroup1, final ItemGroup itemGroup2) {
-        int tier1 = getTier(itemGroup1);
-        int tier2 = getTier(itemGroup2);
-        itemGroup1.setTier(tier2);
-        setTier(itemGroup2, tier1);
-        setTier(itemGroup1, tier2);
-        resort();
-    }
-
-    public static FileConfiguration getOrCreateConfig() {
-        if (config != null) {
-            return config;
-        }
-
-        if (!tiersFile.exists()) {
-            try {
-                // read from jar input stream
-                JustEnoughGuide.getInstance().saveResource("tiers.yml", false);
-            } catch (Exception e) {
-                Debug.trace(e);
-            }
-        }
-
-        return config = YamlConfiguration.loadConfiguration(tiersFile);
-    }
-
-    public static void setTierCfg(
-            final String key, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
-        getOrCreateConfig().set(key + ".tier", tier);
-        saveCfg();
-    }
-
-    public static @Nullable Integer getTierCfg(final String key) {
-        return getOrCreateConfig().getObject(key + ".tier", Integer.class, null);
-    }
-
-    public static void setNameCfg(final String key, final String name) {
-        getOrCreateConfig().set(key + ".name", name);
-    }
-
     @SuppressWarnings("unused")
     public static @Nullable String getNameCfg(final String key) {
         return getOrCreateConfig().getString(key + ".name");
-    }
-
-    public static String getKey(final ItemGroup itemGroup) {
-        if (itemGroup instanceof NestedItemGroup n) {
-            return n.getKey().getNamespace() + "-" + n.getKey().getKey() + ".nested";
-        } else if (itemGroup instanceof SubItemGroup s) {
-            NestedItemGroup n = s.getParent();
-            return n.getKey().getNamespace() + "-" + n.getKey().getKey() + ".sub."
-                    + s.getKey().getNamespace() + "-" + n.getKey().getKey();
-        } else if (itemGroup.getClass() == ItemGroup.class) {
-            return itemGroup.getKey().getNamespace() + "-" + itemGroup.getKey().getKey();
-        } else {
-            return itemGroup.getKey().getNamespace() + "-" + itemGroup.getKey().getKey();
-        }
-    }
-
-    public static boolean hasCfg() {
-        return config != null;
-    }
-
-    @SneakyThrows
-    public static void saveCfg() {
-        if (config == null) return;
-        config.save(tiersFile);
     }
 
     public static void rollback() {

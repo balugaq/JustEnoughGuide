@@ -44,18 +44,6 @@ public class FluffyMachinesIntegrationMain implements Integration {
     public static final int[] BASIC_MACHINE_INPUT_SLOTS = new int[] {19, 20, 21, 28, 29, 30, 37, 38, 39};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
     @Override
     public String getHookPlugin() {
         return "FluffyMachines";
@@ -68,6 +56,18 @@ public class FluffyMachinesIntegrationMain implements Integration {
         rrc("AUTO_ENHANCED_CRAFTING_TABLE", BASIC_MACHINE_INPUT_SLOTS, false);
         rrc("AUTO_MAGIC_WORKBENCH", BASIC_MACHINE_INPUT_SLOTS, false);
         rrc("AUTO_ARMOR_FORGE", BASIC_MACHINE_INPUT_SLOTS, false);
+    }
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

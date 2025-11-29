@@ -76,6 +76,18 @@ public class CustomItemStack implements Cloneable {
     }
 
     /**
+     * Creates a CustomItemStack from a Material with custom metadata.
+     *
+     * @param material
+     *         the Material to create from
+     * @param meta
+     *         the consumer to modify the item metadata
+     */
+    public CustomItemStack(Material material, Consumer<ItemMeta> meta) {
+        this(new ItemStack(material), meta);
+    }
+
+    /**
      * Creates a CustomItemStack from a Bukkit ItemStack with custom metadata.
      *
      * @param itemStack
@@ -90,15 +102,22 @@ public class CustomItemStack implements Cloneable {
     }
 
     /**
-     * Creates a CustomItemStack from a Material with custom metadata.
+     * Edits the item metadata.
      *
-     * @param material
-     *         the Material to create from
-     * @param meta
+     * @param itemMetaConsumer
      *         the consumer to modify the item metadata
+     *
+     * @return the CustomItemStack with the edited metadata
      */
-    public CustomItemStack(Material material, Consumer<ItemMeta> meta) {
-        this(new ItemStack(material), meta);
+    public CustomItemStack editItemMeta(Consumer<ItemMeta> itemMetaConsumer) {
+        Preconditions.checkNotNull(itemMetaConsumer, "ItemMeta consumer cannot be null");
+
+        ItemMeta meta = delegate.getItemMeta();
+        if (meta != null) {
+            itemMetaConsumer.accept(meta);
+            delegate.setItemMeta(meta);
+        }
+        return this;
     }
 
     /**
@@ -140,6 +159,18 @@ public class CustomItemStack implements Cloneable {
                     }
                 }
         );
+    }
+
+    /**
+     * Translates color codes in a string.
+     *
+     * @param raw
+     *         the string to translate
+     *
+     * @return the translated string
+     */
+    public static String color(String raw) {
+        return ChatColors.color(Preconditions.checkNotNull(raw, "raw cannot be null"));
     }
 
     /**
@@ -206,18 +237,6 @@ public class CustomItemStack implements Cloneable {
     }
 
     /**
-     * Creates a CustomItemStack from a Bukkit ItemStack with a list of lore.
-     *
-     * @param itemStack
-     *         the Bukkit ItemStack to create from
-     * @param list
-     *         the list of lore
-     */
-    public CustomItemStack(ItemStack itemStack, List<String> list) {
-        this(itemStack, list.get(0), list.subList(1, list.size()).toArray(new String[0]));
-    }
-
-    /**
      * Creates a CustomItemStack from a Material with a list of lore.
      *
      * @param material
@@ -227,6 +246,18 @@ public class CustomItemStack implements Cloneable {
      */
     public CustomItemStack(Material material, List<String> list) {
         this(new ItemStack(material), list);
+    }
+
+    /**
+     * Creates a CustomItemStack from a Bukkit ItemStack with a list of lore.
+     *
+     * @param itemStack
+     *         the Bukkit ItemStack to create from
+     * @param list
+     *         the list of lore
+     */
+    public CustomItemStack(ItemStack itemStack, List<String> list) {
+        this(itemStack, list.get(0), list.subList(1, list.size()).toArray(new String[0]));
     }
 
     /**
@@ -253,27 +284,6 @@ public class CustomItemStack implements Cloneable {
     public CustomItemStack(ItemStack itemStack, Material material) {
         this.delegate = itemStack.clone();
         this.delegate.setType(material);
-    }
-
-    /**
-     * Translates color codes in a string.
-     *
-     * @param raw
-     *         the string to translate
-     *
-     * @return the translated string
-     */
-    public static String color(String raw) {
-        return ChatColors.color(Preconditions.checkNotNull(raw, "raw cannot be null"));
-    }
-
-    /**
-     * Returns the delegate Bukkit ItemStack.
-     *
-     * @return the delegate Bukkit ItemStack
-     */
-    public ItemStack getDelegate() {
-        return delegate.clone();
     }
 
     /**
@@ -368,25 +378,6 @@ public class CustomItemStack implements Cloneable {
     }
 
     /**
-     * Edits the item metadata.
-     *
-     * @param itemMetaConsumer
-     *         the consumer to modify the item metadata
-     *
-     * @return the CustomItemStack with the edited metadata
-     */
-    public CustomItemStack editItemMeta(Consumer<ItemMeta> itemMetaConsumer) {
-        Preconditions.checkNotNull(itemMetaConsumer, "ItemMeta consumer cannot be null");
-
-        ItemMeta meta = delegate.getItemMeta();
-        if (meta != null) {
-            itemMetaConsumer.accept(meta);
-            delegate.setItemMeta(meta);
-        }
-        return this;
-    }
-
-    /**
      * Edits the item stack.
      *
      * @param itemStackConsumer
@@ -421,5 +412,14 @@ public class CustomItemStack implements Cloneable {
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public CustomItemStack clone() {
         return new CustomItemStack(getDelegate());
+    }
+
+    /**
+     * Returns the delegate Bukkit ItemStack.
+     *
+     * @return the delegate Bukkit ItemStack
+     */
+    public ItemStack getDelegate() {
+        return delegate.clone();
     }
 }

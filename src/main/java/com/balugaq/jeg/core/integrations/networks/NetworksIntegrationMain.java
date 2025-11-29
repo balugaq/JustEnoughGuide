@@ -73,18 +73,6 @@ public class NetworksIntegrationMain implements Integration {
         return plugin;
     }
 
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
     @Nullable
     public static NetworkRoot findNearbyNetworkRoot(Location location) {
         NetworkRoot root = null;
@@ -124,6 +112,18 @@ public class NetworksIntegrationMain implements Integration {
         rrc("NTW_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_CRAFTING_GRID", CRAFTING_GRID_RECIPE_SLOTS, false);
         rrc("NTW_QUANTUM_WORKBENCH", QUANTUM_WORKBENCH_RECIPE_SLOTS, false);
+    }
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

@@ -61,26 +61,30 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
         return JustEnoughGuide.getInstance();
     }
 
-    public NamespacedKey getKey() {
-        return new NamespacedKey(Slimefun.instance(), "research_learning_animation");
-    }
-
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         SlimefunConfigManager cfgManager = Slimefun.getConfigManager();
         if (cfgManager.isResearchingEnabled() && !cfgManager.isLearningAnimationDisabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
             String optionState = enabled ? "enabled" : "disabled";
-            List<String> lore = Slimefun.getLocalization().getMessages(p,
-                                                                       "guide.options.learning-animation." + optionState + ".text");
+            List<String> lore = Slimefun.getLocalization().getMessages(
+                    p,
+                    "guide.options.learning-animation." + optionState + ".text"
+            );
             lore.add("");
-            String var10001 = Slimefun.getLocalization().getMessage(p,
-                                                                    "guide.options.learning-animation." + optionState + ".click");
+            String var10001 = Slimefun.getLocalization().getMessage(
+                    p,
+                    "guide.options.learning-animation." + optionState + ".click"
+            );
             lore.add("&7⇨ " + var10001);
             ItemStack item = new CustomItemStack(enabled ? Material.MAP : Material.PAPER, lore);
             return Optional.of(item);
         } else {
             return Optional.empty();
         }
+    }
+
+    public NamespacedKey getKey() {
+        return new NamespacedKey(Slimefun.instance(), "research_learning_animation");
     }
 
     public void onClick(Player p, ItemStack guide) {

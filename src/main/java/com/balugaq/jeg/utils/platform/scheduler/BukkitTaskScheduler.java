@@ -38,12 +38,12 @@ import org.jspecify.annotations.NullMarked;
 @Getter
 @NullMarked
 public class BukkitTaskScheduler implements TaskScheduler {
-    public BukkitScheduler getBukkitScheduler() {
-        return TaskScheduler.getServer().getScheduler();
-    }
-
     public void runNextTick(Runnable runnable) {
         getBukkitScheduler().runTask(getPlugin(), runnable);
+    }
+
+    public BukkitScheduler getBukkitScheduler() {
+        return TaskScheduler.getServer().getScheduler();
     }
 
     public void runLater(Runnable runnable, long delay) {

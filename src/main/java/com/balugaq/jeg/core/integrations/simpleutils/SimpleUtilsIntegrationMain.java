@@ -44,6 +44,16 @@ public class SimpleUtilsIntegrationMain implements Integration {
     public static final int[] SIMPLE_WORKBENCH_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
+    @Override
+    public String getHookPlugin() {
+        return "SimpleUtils";
+    }
+
+    @Override
+    public void onEnable() {
+        rrc("SIMPLE_WORKBENCH", SIMPLE_WORKBENCH_INPUT_SLOTS, false);
+    }
+
     public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
         if (slimefunItem != null) {
@@ -54,16 +64,6 @@ public class SimpleUtilsIntegrationMain implements Integration {
     public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
-    @Override
-    public String getHookPlugin() {
-        return "SimpleUtils";
-    }
-
-    @Override
-    public void onEnable() {
-        rrc("SIMPLE_WORKBENCH", SIMPLE_WORKBENCH_INPUT_SLOTS, false);
     }
 
     @Override

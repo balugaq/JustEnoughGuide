@@ -215,6 +215,12 @@ public enum MinecraftVersion {
         this.minor = minor;
     }
 
+    public static MinecraftVersion getCurrentVersion() {
+        int major = PaperLib.getMinecraftVersion();
+        int minor = PaperLib.getMinecraftPatchVersion();
+        return of(major, minor);
+    }
+
     public static MinecraftVersion of(int major, int minor) {
         for (MinecraftVersion version : values()) {
             if (version.major == major && version.minor == minor) {
@@ -222,12 +228,6 @@ public enum MinecraftVersion {
             }
         }
         return UNKNOWN;
-    }
-
-    public static MinecraftVersion getCurrentVersion() {
-        int major = PaperLib.getMinecraftVersion();
-        int minor = PaperLib.getMinecraftPatchVersion();
-        return of(major, minor);
     }
 
     public boolean isAtLeast(MinecraftVersion version) {

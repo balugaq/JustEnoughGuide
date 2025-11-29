@@ -59,22 +59,9 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
         return instance;
     }
 
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("recursive_recipe_filling");
-    }
-
-    public static int getDepth(Player p) {
-        return PersistentDataAPI.getInt(p, key0(), 1);
-    }
-
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
-    }
-
-    @Override
-    public NamespacedKey getKey() {
-        return key0();
     }
 
     @Override
@@ -100,6 +87,14 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
         return Optional.of(item);
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("recursive_recipe_filling");
+    }
+
+    public static int getDepth(Player p) {
+        return PersistentDataAPI.getInt(p, key0(), 1);
+    }
+
     @Override
     public void onClick(Player p, ItemStack guide) {
         p.closeInventory();
@@ -120,6 +115,11 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
                     }
                 }
         );
+    }
+
+    @Override
+    public NamespacedKey getKey() {
+        return key0();
     }
 
     @Override

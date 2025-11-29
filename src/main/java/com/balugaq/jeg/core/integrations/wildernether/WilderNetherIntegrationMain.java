@@ -44,6 +44,16 @@ public class WilderNetherIntegrationMain implements Integration {
     public static final int[] BLACKSTONE_STOVE_INPUT_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 25, 19};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
+    @Override
+    public String getHookPlugin() {
+        return "WilderNether";
+    }
+
+    @Override
+    public void onEnable() {
+        rrc("BLACKSTONE_STOVE", BLACKSTONE_STOVE_INPUT_SLOTS, false);
+    }
+
     public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
         if (slimefunItem != null) {
@@ -54,16 +64,6 @@ public class WilderNetherIntegrationMain implements Integration {
     public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
-    @Override
-    public String getHookPlugin() {
-        return "WilderNether";
-    }
-
-    @Override
-    public void onEnable() {
-        rrc("BLACKSTONE_STOVE", BLACKSTONE_STOVE_INPUT_SLOTS, false);
     }
 
     @Override

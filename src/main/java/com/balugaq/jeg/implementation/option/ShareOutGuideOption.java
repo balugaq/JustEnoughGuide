@@ -55,10 +55,6 @@ public class ShareOutGuideOption implements SlimefunGuideOption<Boolean> {
         return instance;
     }
 
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("share_out");
-    }
-
     public static boolean isEnabled(Player p) {
         return getSelectedOption(p);
     }
@@ -67,14 +63,13 @@ public class ShareOutGuideOption implements SlimefunGuideOption<Boolean> {
         return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
     }
 
-    @Override
-    public SlimefunAddon getAddon() {
-        return JustEnoughGuide.getInstance();
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("share_out");
     }
 
     @Override
-    public NamespacedKey getKey() {
-        return key0();
+    public SlimefunAddon getAddon() {
+        return JustEnoughGuide.getInstance();
     }
 
     @Override
@@ -91,6 +86,11 @@ public class ShareOutGuideOption implements SlimefunGuideOption<Boolean> {
                 "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 向他人分享物品"
         );
         return Optional.of(item);
+    }
+
+    @Override
+    public NamespacedKey getKey() {
+        return key0();
     }
 
     @Override

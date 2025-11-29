@@ -70,26 +70,32 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
         return JustEnoughGuide.getInstance();
     }
 
-    public NamespacedKey getKey() {
-        return Slimefun.getLocalization().getKey();
-    }
-
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (Slimefun.getLocalization().isEnabled()) {
             Language language = Slimefun.getLocalization().getLanguage(p);
-            String languageName = language.isDefault() ? Slimefun.getLocalization().getMessage(p,
-                                                                                               "languages.default") + ChatColor.DARK_GRAY + " (" + language.getName(p) + ")" : Slimefun.getLocalization().getMessage(p, "languages." + language.getId());
+            String languageName = language.isDefault() ? Slimefun.getLocalization().getMessage(
+                    p,
+                    "languages.default"
+            ) + ChatColor.DARK_GRAY + " (" + language.getName(p) + ")" : Slimefun.getLocalization().getMessage(p, "languages." + language.getId());
             List<String> lore = new ArrayList<>();
             lore.add("");
             lore.add("&e&o" + Slimefun.getLocalization().getMessage(p, "guide.work-in-progress"));
             lore.add("");
-            lore.addAll(Slimefun.getLocalization().getMessages(p, "guide.languages.description",
-                                                               (msg) -> msg.replace("%contributors%",
-                                                                                    String.valueOf(Slimefun.getGitHubService().getContributors().size()))));
+            lore.addAll(Slimefun.getLocalization().getMessages(
+                    p, "guide.languages.description",
+                    (msg) -> msg.replace(
+                            "%contributors%",
+                            String.valueOf(Slimefun.getGitHubService().getContributors().size())
+                    )
+            ));
             lore.add("");
             lore.add("&7⇨ &e" + Slimefun.getLocalization().getMessage(p, "guide.languages.change"));
-            ItemStack item = new CustomItemStack(language.getItem(), "&7" + Slimefun.getLocalization().getMessage(p,
-                                                                                                                  "guide.languages.selected-language") + " &a" + languageName, lore.toArray(new String[0]));
+            ItemStack item = new CustomItemStack(
+                    language.getItem(), "&7" + Slimefun.getLocalization().getMessage(
+                    p,
+                    "guide.languages.selected-language"
+            ) + " &a" + languageName, lore.toArray(new String[0])
+            );
             return Optional.of(item);
         } else {
             return Optional.empty();
@@ -123,18 +129,26 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
         for (int i = 0; i < 9; ++i) {
             if (i == 1) {
                 menu.addItem(
-                        1, ChestMenuUtils.getBackButton(p, "", "&7" + Slimefun.getLocalization().getMessage(p, "guide" +
-                                ".back.settings")), (pl, slotx, item, action) -> {
+                        1, ChestMenuUtils.getBackButton(
+                                p, "", "&7" + Slimefun.getLocalization().getMessage(
+                                        p, "guide" +
+                                                ".back.settings"
+                                )
+                        ), (pl, slotx, item, action) -> {
                             JEGGuideSettings.openSettings(pl, guide);
                             return false;
                         }
                 );
             } else if (i == 7) {
                 menu.addItem(
-                        7, new CustomItemStack(SlimefunUtils.getCustomHead(HeadTexture.ADD_NEW_LANGUAGE.getTexture())
+                        7, new CustomItemStack(
+                                SlimefunUtils.getCustomHead(HeadTexture.ADD_NEW_LANGUAGE.getTexture())
                                 , Slimefun.getLocalization().getMessage(p, "guide.languages.translations.name"), "",
-                                               "&7⇨ &e" + Slimefun.getLocalization().getMessage(p, "guide.languages" +
-                                                       ".translations.lore")), (pl, slotx, item, action) -> {
+                                "&7⇨ &e" + Slimefun.getLocalization().getMessage(
+                                        p, "guide.languages" +
+                                                ".translations.lore"
+                                )
+                        ), (pl, slotx, item, action) -> {
                             ChatUtils.sendURL(pl, "https://slimefun-wiki.guizhanss.cn/Translating-Slimefun");
                             pl.closeInventory();
                             return false;
@@ -148,10 +162,14 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
         Language defaultLanguage = Slimefun.getLocalization().getDefaultLanguage();
         String defaultLanguageString = Slimefun.getLocalization().getMessage(p, "languages.default");
         menu.addItem(
-                9, new CustomItemStack(defaultLanguage.getItem(),
-                                       ChatColor.GRAY + defaultLanguageString + ChatColor.DARK_GRAY + " (" + defaultLanguage.getName(p) + ")", "", "&7⇨ &e" + Slimefun.getLocalization().getMessage(p, "guide.languages.select-default")), (pl, ix, item, action) -> {
-                    Slimefun.instance().getServer().getPluginManager().callEvent(new PlayerLanguageChangeEvent(pl,
-                                                                                                               Slimefun.getLocalization().getLanguage(pl), defaultLanguage));
+                9, new CustomItemStack(
+                        defaultLanguage.getItem(),
+                        ChatColor.GRAY + defaultLanguageString + ChatColor.DARK_GRAY + " (" + defaultLanguage.getName(p) + ")", "", "&7⇨ &e" + Slimefun.getLocalization().getMessage(p, "guide.languages.select-default")
+                ), (pl, ix, item, action) -> {
+                    Slimefun.instance().getServer().getPluginManager().callEvent(new PlayerLanguageChangeEvent(
+                            pl,
+                            Slimefun.getLocalization().getLanguage(pl), defaultLanguage
+                    ));
                     this.setSelectedOption(pl, guide, null);
                     Slimefun.getLocalization().sendMessage(pl, "guide.languages.updated", (msg) -> msg.replace("%lang%", defaultLanguageString));
                     JEGGuideSettings.openSettings(pl, guide);
@@ -162,16 +180,24 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
 
         for (Language language : Slimefun.getLocalization().getLanguages()) {
             menu.addItem(
-                    slot, new CustomItemStack(language.getItem(), ChatColor.GREEN + language.getName(p),
-                                              "&b" + language.getTranslationProgress() + "%", "",
-                                              "&7⇨ &e" + Slimefun.getLocalization().getMessage(p, "guide.languages" +
-                                                      ".select")), (pl, ix, item, action) -> {
-                        Slimefun.instance().getServer().getPluginManager().callEvent(new PlayerLanguageChangeEvent(pl
-                                , Slimefun.getLocalization().getLanguage(pl), language));
+                    slot, new CustomItemStack(
+                            language.getItem(), ChatColor.GREEN + language.getName(p),
+                            "&b" + language.getTranslationProgress() + "%", "",
+                            "&7⇨ &e" + Slimefun.getLocalization().getMessage(
+                                    p, "guide.languages" +
+                                            ".select"
+                            )
+                    ), (pl, ix, item, action) -> {
+                        Slimefun.instance().getServer().getPluginManager().callEvent(new PlayerLanguageChangeEvent(
+                                pl
+                                , Slimefun.getLocalization().getLanguage(pl), language
+                        ));
                         this.setSelectedOption(pl, guide, language.getId());
                         String name = language.getName(pl);
-                        Slimefun.getLocalization().sendMessage(pl, "guide.languages.updated", (msg) -> msg.replace(
-                                "%lang%", name));
+                        Slimefun.getLocalization().sendMessage(
+                                pl, "guide.languages.updated", (msg) -> msg.replace(
+                                        "%lang%", name)
+                        );
                         JEGGuideSettings.openSettings(pl, guide);
                         return false;
                     }
@@ -180,5 +206,9 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
         }
 
         menu.open(p);
+    }
+
+    public NamespacedKey getKey() {
+        return Slimefun.getLocalization().getKey();
     }
 }

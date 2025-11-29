@@ -56,18 +56,6 @@ public class InfinityCompressIntegrationMain implements Integration {
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
     @Override
     public String getHookPlugin() {
         return "InfinityCompress";
@@ -85,6 +73,18 @@ public class InfinityCompressIntegrationMain implements Integration {
         rrc("INFCP_FN_AUTO_GEM_ALTAR", AUTO_INPUT_SLOTS, false);
         rrc("INFCP_FN_AUTO_MAGIC_ALTAR", AUTO_INPUT_SLOTS, false);
         rrc("INFCP_FN_AUTO_STICK_ALTAR", AUTO_INPUT_SLOTS, false);
+    }
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

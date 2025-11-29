@@ -60,11 +60,6 @@ public class KeybindsSettingsGuideOption implements SlimefunGuideOption<Boolean>
     }
 
     @Override
-    public NamespacedKey getKey() {
-        return KeyUtil.newKey("keybinds_settings");
-    }
-
-    @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
                 Material.COMPASS,
@@ -85,5 +80,10 @@ public class KeybindsSettingsGuideOption implements SlimefunGuideOption<Boolean>
 
     @Override
     public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
+    }
+
+    @Override
+    public NamespacedKey getKey() {
+        return KeyUtil.newKey("keybinds_settings");
     }
 }

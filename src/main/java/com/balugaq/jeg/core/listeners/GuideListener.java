@@ -76,23 +76,6 @@ public class GuideListener implements Listener {
         this.giveOnFirstJoin = Slimefun.getConfigManager().getPluginConfig().getBoolean("guide.receive-on-first-join");
     }
 
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide" +
-            "(Player, PlayerRightClickEvent, SlimefunGuideMode)")
-    @Internal
-    public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
-        ItemStack item = e.getItem();
-        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
-            if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
-                Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true);
-                return Event.Result.DENY;
-            } else {
-                return Event.Result.ALLOW;
-            }
-        } else {
-            return Event.Result.DEFAULT;
-        }
-    }
-
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onGuideOpen(SlimefunGuideOpenEvent e) {
         e.setCancelled(true);
@@ -193,8 +176,10 @@ public class GuideListener implements Listener {
             if (p.isSneaking()) {
                 JEGGuideSettings.openSettings(p, e.getItem());
             } else {
-                SlimefunGuideOpenEvent event = new SlimefunGuideOpenEvent(p, e.getItem(),
-                                                                          SlimefunGuideMode.SURVIVAL_MODE);
+                SlimefunGuideOpenEvent event = new SlimefunGuideOpenEvent(
+                        p, e.getItem(),
+                        SlimefunGuideMode.SURVIVAL_MODE
+                );
                 Bukkit.getPluginManager().callEvent(event);
             }
         } else if (tryOpenGuide(p, e, SlimefunGuideMode.CHEAT_MODE) == Event.Result.ALLOW) {
@@ -208,6 +193,23 @@ public class GuideListener implements Listener {
             } else {
                 p.chat("/sf cheat");
             }
+        }
+    }
+
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide" +
+            "(Player, PlayerRightClickEvent, SlimefunGuideMode)")
+    @Internal
+    public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
+        ItemStack item = e.getItem();
+        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
+            if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
+                Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true);
+                return Event.Result.DENY;
+            } else {
+                return Event.Result.ALLOW;
+            }
+        } else {
+            return Event.Result.DEFAULT;
         }
     }
 

@@ -83,14 +83,6 @@ public final class ItemStackUtil {
         return BARRIER;
     }
 
-    @Author("lijinhong11")
-    public static ItemStack doGlow(ItemStack item) {
-        item.addUnsafeEnchantment(Enchantment.INFINITY, 1);
-        item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-        return item;
-    }
-
     /**
      * This method is used to convert an {@code MyItemStack extends ItemStack} to a pure {@code ItemStack}.
      *
@@ -319,6 +311,14 @@ public final class ItemStackUtil {
         }
 
         return glow ? doGlow(itemStack) : itemStack;
+    }
+
+    @Author("lijinhong11")
+    public static ItemStack doGlow(ItemStack item) {
+        item.addUnsafeEnchantment(Enchantment.INFINITY, 1);
+        item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        return item;
     }
 
     /**

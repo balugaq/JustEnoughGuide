@@ -41,8 +41,10 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface BaseAction extends Keyed {
     static void redirect(Player player, ActionKey type, BaseAction from, BaseAction to) {
-        player.getPersistentDataContainer().set(KeyUtil.newKey(type.asPrefix() + from.getKey().getKey()),
-                                                PersistentDataType.STRING, to.getKey().getKey());
+        player.getPersistentDataContainer().set(
+                KeyUtil.newKey(type.asPrefix() + from.getKey().getKey()),
+                PersistentDataType.STRING, to.getKey().getKey()
+        );
     }
 
     static BaseAction remap(Player player, OnClick keybind, BaseAction action) {

@@ -55,24 +55,19 @@ public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HU
         return instance;
     }
 
-    public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "hud_machine_info_location");
-    }
-
     public static HUDLocation getSelectedOption(Player p) {
         return PersistentDataAPI.hasByte(p, key0())
                 ? HUDLocation.values()[PersistentDataAPI.getByte(p, key0())]
                 : HUDLocation.DEFAULT;
     }
 
-    @Override
-    public SlimefunAddon getAddon() {
-        return JustEnoughGuide.getInstance();
+    public static NamespacedKey key0() {
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "hud_machine_info_location");
     }
 
     @Override
-    public NamespacedKey getKey() {
-        return key0();
+    public SlimefunAddon getAddon() {
+        return JustEnoughGuide.getInstance();
     }
 
     @Override
@@ -91,6 +86,11 @@ public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HU
                 "&7\u21E8 &e点击切换为使用 " + (bossbar ? "动作栏" : actionbar ? "默认设置" : "Boss栏") + " 显示机器信息"
         );
         return Optional.of(item);
+    }
+
+    @Override
+    public NamespacedKey getKey() {
+        return key0();
     }
 
     @Override

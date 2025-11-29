@@ -79,7 +79,9 @@ public interface SlimefunSource extends Source {
             boolean unordered,
             int recipeDepth,
             @Nullable Runnable callback) {
-        GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(player.getUniqueId());
+        var p = GuideUtil.updatePlayer(player);
+        if (p == null) return false;
+        GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p);
         if (clickAction.isRightClicked() && lastEvent != null) {
             int times = 1;
             if (clickAction.isShiftClicked()) {

@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.objects.SimpleRecipeChoice;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -154,7 +155,9 @@ public interface Source {
 
     default void sendMissingMaterial(Player player, ItemStack itemStack) {
         if (NoticeMissingMaterialGuideOption.isEnabled(player)) {
-            var k = player.getUniqueId();
+            var k = GuideUtil.updatePlayer(player);
+            if (k == null) return;
+
             if (!RecipeCompletableListener.missingMaterials.containsKey(k)) {
                 RecipeCompletableListener.missingMaterials.put(k, new ArrayList<>());
             }

@@ -154,24 +154,6 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
         this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
     }
 
-    /**
-     * Reopens the menu for the player.
-     *
-     * @param player
-     *         The player who opened the group.
-     * @param playerProfile
-     *         The player's profile.
-     * @param slimefunGuideMode
-     *         The Slimefun guide mode.
-     */
-    public void refresh(
-            final Player player,
-            final PlayerProfile playerProfile,
-            final SlimefunGuideMode slimefunGuideMode) {
-        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-        this.open(player, playerProfile, slimefunGuideMode);
-    }
-
     @Override
     public ChestMenu generateMenu(
             final Player player,
@@ -204,8 +186,10 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
-                                                                           implementation))
+                                    new GuideEvents.SearchButtonClickEvent(
+                                            pl, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 pl.closeInventory();
 
@@ -241,8 +225,10 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                             implementation))
+                                    new GuideEvents.PreviousButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 VanillaItemsGroup hiddenItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
@@ -268,8 +254,10 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                         implementation))
+                                    new GuideEvents.NextButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 VanillaItemsGroup hiddenItemsGroup = this.getByPage(Math.min(
@@ -307,6 +295,24 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
 
         Formats.sub.renderCustom(chestMenu);
         return chestMenu;
+    }
+
+    /**
+     * Reopens the menu for the player.
+     *
+     * @param player
+     *         The player who opened the group.
+     * @param playerProfile
+     *         The player's profile.
+     * @param slimefunGuideMode
+     *         The Slimefun guide mode.
+     */
+    public void refresh(
+            final Player player,
+            final PlayerProfile playerProfile,
+            final SlimefunGuideMode slimefunGuideMode) {
+        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+        this.open(player, playerProfile, slimefunGuideMode);
     }
 
     @Override

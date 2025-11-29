@@ -55,16 +55,6 @@ public class WatchdogHandler implements Listener {
         }
     }
 
-    public static void disableWatchdog() {
-        ReflectionUtil.setValue(instance, "timeoutTime", Long.MAX_VALUE / 2);
-        ReflectionUtil.setValue(instance, "stopping", true);
-    }
-
-    public static void enableWatchdog() {
-        ReflectionUtil.setValue(instance, "timeoutTime", timeoutTime);
-        ReflectionUtil.setValue(instance, "stopping", false);
-    }
-
     @EventHandler
     public void controlWatchdog(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -90,5 +80,15 @@ public class WatchdogHandler implements Listener {
                 p.sendMessage("Enabled WatchdogThread by " + player.getName());
             }
         }
+    }
+
+    public static void disableWatchdog() {
+        ReflectionUtil.setValue(instance, "timeoutTime", Long.MAX_VALUE / 2);
+        ReflectionUtil.setValue(instance, "stopping", true);
+    }
+
+    public static void enableWatchdog() {
+        ReflectionUtil.setValue(instance, "timeoutTime", timeoutTime);
+        ReflectionUtil.setValue(instance, "stopping", false);
     }
 }

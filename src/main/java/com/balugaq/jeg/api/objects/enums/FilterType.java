@@ -162,8 +162,10 @@ public enum FilterType {
         return false;
     }
     ),
-    BY_MATERIAL_NAME("~",
-                     (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue));
+    BY_MATERIAL_NAME(
+            "~",
+            (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue)
+    );
 
     private final String symbol;
     private final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;

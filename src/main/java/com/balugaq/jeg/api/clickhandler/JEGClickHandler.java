@@ -78,26 +78,12 @@ public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, Gui
         };
     }
 
-    default ChestMenu.MenuClickHandler getOrigin() {
-        return ChestMenuUtils.getEmptyClickHandler();
-    }
-
-    SlimefunGuideImplementation getGuide();
-
-    ChestMenu getMenu();
-
-    Map<Class<? extends Processor>, Processor> getProcessors();
-
     default JEGClickHandler addProcessor(final Processor processor) {
         getProcessors().put(processor.getClass(), processor);
         return this;
     }
 
-    default Collection<Processor> getProcessor(final Processor.Strategy strategy) {
-        return getProcessors().values().stream()
-                .filter(processor -> processor.getStrategy() == strategy)
-                .toList();
-    }
+    Map<Class<? extends Processor>, Processor> getProcessors();
 
     // Our implement
     @Override
@@ -127,6 +113,20 @@ public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, Gui
         }
 
         return result;
+    }
+
+    ChestMenu getMenu();
+
+    default Collection<Processor> getProcessor(final Processor.Strategy strategy) {
+        return getProcessors().values().stream()
+                .filter(processor -> processor.getStrategy() == strategy)
+                .toList();
+    }
+
+    SlimefunGuideImplementation getGuide();
+
+    default ChestMenu.MenuClickHandler getOrigin() {
+        return ChestMenuUtils.getEmptyClickHandler();
     }
 
     // Fallback

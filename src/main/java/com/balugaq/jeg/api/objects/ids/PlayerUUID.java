@@ -39,11 +39,11 @@ public class PlayerUUID extends CustomID {
         super(uuid);
     }
 
-    public static PlayerUUID warp(UUID uuid) {
-        return new PlayerUUID(uuid);
-    }
-
     public static PlayerUUID warp(Player player) {
         return warp(player.getUniqueId());
+    }
+
+    public static PlayerUUID warp(UUID uuid) {
+        return new PlayerUUID(uuid);
     }
 }

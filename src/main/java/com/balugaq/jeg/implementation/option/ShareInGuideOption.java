@@ -56,10 +56,6 @@ public class ShareInGuideOption implements SlimefunGuideOption<Boolean> {
         return instance;
     }
 
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("share_in");
-    }
-
     public static boolean isEnabled(Player p) {
         return getSelectedOption(p);
     }
@@ -68,22 +64,23 @@ public class ShareInGuideOption implements SlimefunGuideOption<Boolean> {
         return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("share_in");
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
     @Override
-    public NamespacedKey getKey() {
-        return key0();
-    }
-
-    @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
-                Converter.getItem(Material.WRITTEN_BOOK,
-                                  meta -> meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP)),
+                Converter.getItem(
+                        Material.WRITTEN_BOOK,
+                        meta -> meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP)
+                ),
                 "&b接收分享的物品: &" + (enabled ? "a启用" : "4禁用"),
                 "",
                 "&7你现在可以选择",
@@ -93,6 +90,11 @@ public class ShareInGuideOption implements SlimefunGuideOption<Boolean> {
                 "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 接收分享的物品"
         );
         return Optional.of(item);
+    }
+
+    @Override
+    public NamespacedKey getKey() {
+        return key0();
     }
 
     @Override

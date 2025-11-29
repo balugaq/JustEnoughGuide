@@ -111,8 +111,10 @@ public abstract class MachineData {
                     List<Integer> chances = ReflectionUtil.getValue(recipe, "chances", List.class);
                     IntList noConsume = ReflectionUtil.getValue(recipe, "noConsume", IntList.class);
 
-                    r.add(new RSCCustomMachineRecipe(recipe.getTicks() / 2, recipe.getInput(), recipe.getOutput(),
-                                                     chances, chooseOneIfHas, forDisplay, hide, noConsume));
+                    r.add(new RSCCustomMachineRecipe(
+                            recipe.getTicks() / 2, recipe.getInput(), recipe.getOutput(),
+                            chances, chooseOneIfHas, forDisplay, hide, noConsume
+                    ));
                 }
                 return new RSCCustomRecipeMachineData(r, ac.getEnergyConsumption(), ac.getSpeed());
             } else if (className.equals("org.lins.mmmjjkx.rykenslimefuncustomizer.objects.customs.machine.CustomLinkedRecipeMachine")) {
@@ -150,8 +152,10 @@ public abstract class MachineData {
                             (int[]) ReflectionUtil.invokeMethod(linkedOutputr, "freeChances"),
                             (Map<Integer, Integer>) ReflectionUtil.invokeMethod(linkedOutputr, "linkedChances")
                     );
-                    r.add(new RSCCustomLinkedMachineRecipe(recipe.getTicks(), noConsumes, linkedInput, linkedOutput,
-                                                           forDisplay, chooseOneIfHas, hide));
+                    r.add(new RSCCustomLinkedMachineRecipe(
+                            recipe.getTicks(), noConsumes, linkedInput, linkedOutput,
+                            forDisplay, chooseOneIfHas, hide
+                    ));
                 }
             } else {
                 return new AContainerData(ac.getMachineRecipes(), ac.getEnergyConsumption(), ac.getSpeed());
@@ -185,8 +189,10 @@ public abstract class MachineData {
                     boolean hide = ReflectionUtil.getValue(recipe, "hide", boolean.class);
                     List<Integer> chances = ReflectionUtil.getValue(recipe, "chances", List.class);
                     IntList noConsume = ReflectionUtil.getValue(recipe, "noConsume", IntList.class);
-                    r.add(new RSCCustomMachineRecipe(recipe.getTicks() / 2, recipe.getInput(), recipe.getOutput(),
-                                                     chances, chooseOneIfHas, forDisplay, hide, noConsume));
+                    r.add(new RSCCustomMachineRecipe(
+                            recipe.getTicks() / 2, recipe.getInput(), recipe.getOutput(),
+                            chances, chooseOneIfHas, forDisplay, hide, noConsume
+                    ));
                 }
 
                 ts.add(new RSCMachineTemplate(t, r));
@@ -217,8 +223,10 @@ public abstract class MachineData {
         }
 
         if (className.equals("io.github.mooy1.infinityexpansion.items.blocks.StrainerBase")) {
-            return new StrainerBaseData(ReflectionUtil.getStaticValue(sf.getClass(), "POTATO", ItemStack.class),
-                                        ReflectionUtil.getStaticValue(sf.getClass(), "OUTPUTS", ItemStack[].class));
+            return new StrainerBaseData(
+                    ReflectionUtil.getStaticValue(sf.getClass(), "POTATO", ItemStack.class),
+                    ReflectionUtil.getStaticValue(sf.getClass(), "OUTPUTS", ItemStack[].class)
+            );
         }
 
         if (className.equals("io.github.mooy1.infinityexpansion.items.quarries.Quarry")) {
@@ -267,8 +275,10 @@ public abstract class MachineData {
         }
 
         if (className.equals("io.github.mooy1.infinityexpansion.items.machines.GrowingMachine")) {
-            EnumMap/*<Material, ItemStack[]>*/<Material, ItemStack[]> recipes = ReflectionUtil.getValue(sf, "recipes"
-                    , EnumMap.class);
+            EnumMap/*<Material, ItemStack[]>*/<Material, ItemStack[]> recipes = ReflectionUtil.getValue(
+                    sf, "recipes"
+                    , EnumMap.class
+            );
             int ticksPerOutput = ReflectionUtil.getValue(sf, "ticksPerOutput", int.class);
             int energyPerTick = ReflectionUtil.getValue(sf, "energyPerTick", int.class);
 
@@ -348,8 +358,10 @@ public abstract class MachineData {
 
         if (sf.getAddon().getName().equals("Logitech") && ItemStackUtil.isInstanceSimple(sf, "AbstractMachine")) {
             List<MachineRecipe> machineRecipes = ReflectionUtil.getValue(sf, "machineRecipes", List.class);
-            Supplier<@Nullable List<MachineRecipe>> machineRecipeSupplier = ReflectionUtil.getValue(sf,
-                                                                                                    "machineRecipeSupplier", Supplier.class);
+            Supplier<@Nullable List<MachineRecipe>> machineRecipeSupplier = ReflectionUtil.getValue(
+                    sf,
+                    "machineRecipeSupplier", Supplier.class
+            );
             List<MachineRecipe> clone = new ArrayList<>();
             if (machineRecipes != null) {
                 clone.addAll(machineRecipes);

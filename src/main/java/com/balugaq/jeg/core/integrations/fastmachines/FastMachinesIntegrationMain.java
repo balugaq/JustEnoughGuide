@@ -50,18 +50,6 @@ public class FastMachinesIntegrationMain implements Integration {
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
-    public static void rrc(String id) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, MANUAL_CRAFTER_INPUT_SLOTS);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, true);
-    }
-
     @Override
     public String getHookPlugin() {
         return "FastMachines";
@@ -96,6 +84,18 @@ public class FastMachinesIntegrationMain implements Integration {
             rrc("FM_FAST_INFINITY_WORKBENCH_2");
             rrc("FM_FAST_MOB_DATA_INFUSER_2");
         }
+    }
+
+    public static void rrc(String id) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, MANUAL_CRAFTER_INPUT_SLOTS);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, true);
     }
 
     @Override

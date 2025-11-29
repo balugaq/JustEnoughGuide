@@ -113,13 +113,21 @@ public class SubKeybindsItemsGroup extends BaseGroup<SubKeybindsItemsGroup> {
         }
 
         for (int s : Formats.keybinds.getChars('P')) {
-            menu.addItem(s, PatchScope.PreviousPage.patch(player, ChestMenuUtils.getPreviousButton(player, page,
-                                                                                                   pages)));
+            menu.addItem(
+                    s, PatchScope.PreviousPage.patch(
+                            player, ChestMenuUtils.getPreviousButton(
+                                    player, page,
+                                    pages
+                            )
+                    )
+            );
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl,
-                                                                                                                item,
-                                                                                                                slot,
-                                                                                                                action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE))).ifSuccess(() -> {
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                    )).ifSuccess(() -> {
                         if (page - 1 > 0) {
                             getByPage(page - 1).open(pl, playerProfile, slimefunGuideMode);
                         }
@@ -132,11 +140,13 @@ public class SubKeybindsItemsGroup extends BaseGroup<SubKeybindsItemsGroup> {
         for (int s : Formats.keybinds.getChars('N')) {
             menu.addItem(s, PatchScope.NextPage.patch(player, ChestMenuUtils.getNextButton(player, page, pages)));
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, item,
-                                                                                                            slot,
-                                                                                                            action,
-                                                                                                            menu,
-                                                                                                            GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE))).ifSuccess(() -> {
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                            pl, item,
+                            slot,
+                            action,
+                            menu,
+                            GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                    )).ifSuccess(() -> {
                         int next = page + 1;
 
                         if (page + 1 <= pages) {

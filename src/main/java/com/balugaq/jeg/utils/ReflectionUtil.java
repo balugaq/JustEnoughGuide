@@ -66,6 +66,18 @@ public class ReflectionUtil {
         return true;
     }
 
+    public static @Nullable Field getField(Class<?> clazz, String fieldName) {
+        while (clazz != Object.class) {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (field.getName().equals(fieldName)) {
+                    return field;
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return null;
+    }
+
     public static <T> boolean setStaticValue(Class<T> clazz, String field, @Nullable Object value) {
         try {
             Field declaredField = getField(clazz, field);
@@ -128,67 +140,6 @@ public class ReflectionUtil {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName)) {
                     return method;
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return null;
-    }
-
-    public static @Nullable Method getMethod(
-            Class<?> clazz,
-            String methodName,
-            @Range(from = 0, to = Short.MAX_VALUE) int parameterCount) {
-        while (clazz != Object.class) {
-            for (Method method : clazz.getDeclaredMethods()) {
-                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount) {
-                    return method;
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return null;
-    }
-
-    public static @Nullable Method getMethod(
-            Class<?> clazz, String methodName, Class<?>... parameterTypes) {
-        while (clazz != Object.class) {
-            for (Method method : clazz.getDeclaredMethods()) {
-                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterTypes.length) {
-                    boolean match = true;
-                    // exact match
-                    for (int i = 0; i < parameterTypes.length; i++) {
-                        if (method.getParameterTypes()[i] != parameterTypes[i]) {
-                            match = false;
-                            break;
-                        }
-                    }
-                    // normal match, find an adaptable method, which args are adaptable
-                    if (!match) {
-                        match = true;
-                        for (int i = 0; i < parameterTypes.length; i++) {
-                            if (!method.getParameterTypes()[i].isAssignableFrom(parameterTypes[i])) {
-                                match = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (match) {
-                        return method;
-                    }
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return null;
-    }
-
-    public static @Nullable Field getField(Class<?> clazz, String fieldName) {
-        while (clazz != Object.class) {
-            for (Field field : clazz.getDeclaredFields()) {
-                if (field.getName().equals(fieldName)) {
-                    return field;
                 }
             }
             clazz = clazz.getSuperclass();
@@ -312,6 +263,55 @@ public class ReflectionUtil {
             }
         } catch (InvocationTargetException | IllegalAccessException e) {
             Debug.trace(e);
+        }
+        return null;
+    }
+
+    public static @Nullable Method getMethod(
+            Class<?> clazz,
+            String methodName,
+            @Range(from = 0, to = Short.MAX_VALUE) int parameterCount) {
+        while (clazz != Object.class) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount) {
+                    return method;
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return null;
+    }
+
+    public static @Nullable Method getMethod(
+            Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+        while (clazz != Object.class) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterTypes.length) {
+                    boolean match = true;
+                    // exact match
+                    for (int i = 0; i < parameterTypes.length; i++) {
+                        if (method.getParameterTypes()[i] != parameterTypes[i]) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    // normal match, find an adaptable method, which args are adaptable
+                    if (!match) {
+                        match = true;
+                        for (int i = 0; i < parameterTypes.length; i++) {
+                            if (!method.getParameterTypes()[i].isAssignableFrom(parameterTypes[i])) {
+                                match = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (match) {
+                        return method;
+                    }
+                }
+            }
+            clazz = clazz.getSuperclass();
         }
         return null;
     }

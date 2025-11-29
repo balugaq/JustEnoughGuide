@@ -123,8 +123,10 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
-                                                                           implementation))
+                                    new GuideEvents.SearchButtonClickEvent(
+                                            pl, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 pl.closeInventory();
 
@@ -160,8 +162,10 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                             implementation))
+                                    new GuideEvents.PreviousButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 HiddenItemsGroup hiddenItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
@@ -187,8 +191,10 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                         implementation))
+                                    new GuideEvents.NextButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 HiddenItemsGroup hiddenItemsGroup = this.getByPage(Math.min(
@@ -229,12 +235,12 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
     }
 
     @Override
-    public boolean isCrossAddonItemGroup() {
-        return true;
+    public int getTier() {
+        return Integer.MAX_VALUE;
     }
 
     @Override
-    public int getTier() {
-        return Integer.MAX_VALUE;
+    public boolean isCrossAddonItemGroup() {
+        return true;
     }
 }

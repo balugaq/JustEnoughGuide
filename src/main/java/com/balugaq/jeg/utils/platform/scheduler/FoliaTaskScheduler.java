@@ -46,12 +46,12 @@ public class FoliaTaskScheduler extends PaperTaskScheduler {
         foliaLib = new FoliaLib(JustEnoughGuide.getInstance());
     }
 
-    public PlatformScheduler getPlatformScheduler() {
-        return foliaLib.getScheduler();
-    }
-
     public void runNextTick(Runnable runnable) {
         getPlatformScheduler().runNextTick(tsk -> runnable.run());
+    }
+
+    public PlatformScheduler getPlatformScheduler() {
+        return foliaLib.getScheduler();
     }
 
     public void runLater(Runnable runnable, long delay) {

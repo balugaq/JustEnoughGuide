@@ -110,21 +110,6 @@ public interface OnClick {
         menu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
     }
 
-    static boolean checkShareCooldown(Player player) {
-        FrequencyWatcher.Result result = SHARING_WATCHER.checkCooldown(player.getUniqueId());
-        if (result == FrequencyWatcher.Result.TOO_FREQUENT) {
-            player.sendMessage(ChatColor.RED + "你的使用频率过高，请稍后使用!");
-            return false;
-        }
-
-        if (result == FrequencyWatcher.Result.CANCEL) {
-            player.sendMessage(ChatColor.RED + "这个功能正在冷却中...");
-            return false;
-        }
-
-        return true;
-    }
-
     static void share(Player player, String itemName) {
         if (!checkShareCooldown(player)) return;
         if (!ShareOutGuideOption.isEnabled(player)) return;
@@ -167,6 +152,21 @@ public interface OnClick {
                 }
             });
         }
+    }
+
+    static boolean checkShareCooldown(Player player) {
+        FrequencyWatcher.Result result = SHARING_WATCHER.checkCooldown(player.getUniqueId());
+        if (result == FrequencyWatcher.Result.TOO_FREQUENT) {
+            player.sendMessage(ChatColor.RED + "你的使用频率过高，请稍后使用!");
+            return false;
+        }
+
+        if (result == FrequencyWatcher.Result.CANCEL) {
+            player.sendMessage(ChatColor.RED + "这个功能正在冷却中...");
+            return false;
+        }
+
+        return true;
     }
 
     @SuppressWarnings("SameReturnValue")
@@ -228,14 +228,6 @@ public interface OnClick {
             return "物品组";
         }
 
-        default ObjectImmutableList<? extends OnClick> subKeybinds() {
-            return subKeybinds;
-        }
-
-        default ObjectImmutableList<Action> listActions() {
-            return ObjectImmutableList.of();
-        }
-
         default Action findAction(Player player, String key) {
             for (Action action : listActions()) {
                 String k = action.getKey().getKey();
@@ -273,6 +265,14 @@ public interface OnClick {
             };
         }
 
+        default ObjectImmutableList<? extends OnClick> subKeybinds() {
+            return subKeybinds;
+        }
+
+        default ObjectImmutableList<Action> listActions() {
+            return ObjectImmutableList.of();
+        }
+
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
                                     io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
             return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
@@ -289,18 +289,24 @@ public interface OnClick {
 
                 ClickType clickType = event.getClick();
                 if (clickType == ClickType.RIGHT) {
-                    return findAction(player, "right-click").click(guide, event, player, slot, itemGroup, action,
-                                                                   menu, 1);
+                    return findAction(player, "right-click").click(
+                            guide, event, player, slot, itemGroup, action,
+                            menu, 1
+                    );
                 }
 
                 if (clickType == ClickType.SHIFT_LEFT) {
-                    return findAction(player, "shift-left-click").click(guide, event, player, slot, itemGroup, action
-                            , menu, 1);
+                    return findAction(player, "shift-left-click").click(
+                            guide, event, player, slot, itemGroup, action
+                            , menu, 1
+                    );
                 }
 
                 if (clickType == ClickType.SHIFT_RIGHT) {
-                    return findAction(player, "shift-right-click").click(guide, event, player, slot, itemGroup,
-                                                                         action, menu, 1);
+                    return findAction(player, "shift-right-click").click(
+                            guide, event, player, slot, itemGroup,
+                            action, menu, 1
+                    );
                 }
 
                 return findAction(player, "default").click(guide, event, player, slot, itemGroup, action, menu, 1);
@@ -334,13 +340,13 @@ public interface OnClick {
                     }
 
                     @Override
-                    public NamespacedKey getKey() {
-                        return KeyUtil.newKey(key);
+                    public String name() {
+                        return name;
                     }
 
                     @Override
-                    public String name() {
-                        return name;
+                    public NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
                     }
 
                     @Override
@@ -375,13 +381,13 @@ public interface OnClick {
                     }
 
                     @Override
-                    public NamespacedKey getKey() {
-                        return KeyUtil.newKey(key);
+                    public String name() {
+                        return name;
                     }
 
                     @Override
-                    public String name() {
-                        return name;
+                    public NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
                     }
 
                     @Override
@@ -577,8 +583,10 @@ public interface OnClick {
                     ClickType clickType = event.getClick();
                     // 注入右键
                     if (clickType == ClickType.RIGHT) {
-                        return findAction(player, "right-click").click(guide, event, player, slot, itemGroup, action,
-                                                                       menu, 1);
+                        return findAction(player, "right-click").click(
+                                guide, event, player, slot, itemGroup, action,
+                                menu, 1
+                        );
                     }
 
                     return super.create(guide, menu, itemGroup).onClick(event, player, slot, cursor, action);
@@ -604,14 +612,6 @@ public interface OnClick {
         @Override
         default String name() {
             return "配方类型";
-        }
-
-        default ObjectImmutableList<? extends OnClick> subKeybinds() {
-            return subKeybinds;
-        }
-
-        default ObjectImmutableList<Action> listActions() {
-            return ObjectImmutableList.of();
         }
 
         default Action findAction(Player player, String key) {
@@ -649,6 +649,14 @@ public interface OnClick {
                     return KeyUtil.newKey(key);
                 }
             };
+        }
+
+        default ObjectImmutableList<? extends OnClick> subKeybinds() {
+            return subKeybinds;
+        }
+
+        default ObjectImmutableList<Action> listActions() {
+            return ObjectImmutableList.of();
         }
 
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
@@ -704,13 +712,13 @@ public interface OnClick {
                     }
 
                     @Override
-                    public NamespacedKey getKey() {
-                        return KeyUtil.newKey(key);
+                    public String name() {
+                        return name;
                     }
 
                     @Override
-                    public String name() {
-                        return name;
+                    public NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
                     }
 
                     @Override
@@ -821,66 +829,6 @@ public interface OnClick {
             return "物品";
         }
 
-        default ObjectImmutableList<? extends OnClick> subKeybinds() {
-            return subKeybinds;
-        }
-
-        default ObjectImmutableList<Action> listActions() {
-            return ObjectImmutableList.of();
-        }
-
-        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
-            return create(guide, menu, page, null);
-        }
-
-        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
-                                    @Nullable SlimefunItem sf) {
-            return (event, player, slot, s, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
-                ItemStack item = event.getCurrentItem();
-                if (item == null) return false;
-                SlimefunItem slimefunItem = sf == null ? SlimefunItem.getByItem(item) : sf;
-                ClickType clickType = event.getClick();
-                if (clickType == ClickType.DOUBLE_CLICK) return false;
-                // F键
-                if (clickType == ClickType.SWAP_OFFHAND) {
-                    return findAction(player, "f").click(guide, player, slot, slimefunItem, item, action, menu, page);
-                }
-                // Q键
-                if (clickType == ClickType.DROP || clickType == ClickType.CONTROL_DROP) {
-                    return findAction(player, "q").click(guide, player, slot, slimefunItem, item, action, menu, page);
-                }
-                // 右键
-                if (clickType == ClickType.RIGHT) {
-                    return findAction(player, "right-click").click(guide, player, slot, slimefunItem, item, action,
-                                                                   menu, page);
-                }
-                // Shift+左键
-                if (clickType == ClickType.SHIFT_LEFT) {
-                    return findAction(player, "shift-left-click").click(guide, player, slot, slimefunItem, item,
-                                                                        action, menu, page);
-                }
-                // Shift+右键
-                if (clickType == ClickType.SHIFT_RIGHT) {
-                    return findAction(player, "shift-right-click").click(guide, player, slot, slimefunItem, item,
-                                                                         action, menu, page);
-                }
-                // 有cheat权限
-                if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
-                    ItemStack cursor = event.getCursor();
-                    if (event.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR)) {
-                        return findAction(player, "clone-item").click(guide, player, slot, slimefunItem, item, action
-                                , menu, page);
-                    }
-                    if (guide.getMode() == SlimefunGuideMode.CHEAT_MODE || (cursor != null && cursor.getType() != Material.AIR)) {
-                        return findAction(player, "take-item").click(guide, player, slot, slimefunItem, item, action,
-                                                                     menu, page);
-                    }
-                }
-
-                return findAction(player, "default").click(guide, player, slot, slimefunItem, item, action, menu, page);
-            });
-        }
-
         default Action findAction(Player player, String key) {
             if (JustEnoughGuide.getConfigManager().isAllowActionRedirect()) {
                 String remap = ACTION_KEY.get(player, key);
@@ -917,6 +865,76 @@ public interface OnClick {
             };
         }
 
+        default ObjectImmutableList<? extends OnClick> subKeybinds() {
+            return subKeybinds;
+        }
+
+        default ObjectImmutableList<Action> listActions() {
+            return ObjectImmutableList.of();
+        }
+
+        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page) {
+            return create(guide, menu, page, null);
+        }
+
+        default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
+                                    @Nullable SlimefunItem sf) {
+            return (event, player, slot, s, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+                ItemStack item = event.getCurrentItem();
+                if (item == null) return false;
+                SlimefunItem slimefunItem = sf == null ? SlimefunItem.getByItem(item) : sf;
+                ClickType clickType = event.getClick();
+                if (clickType == ClickType.DOUBLE_CLICK) return false;
+                // F键
+                if (clickType == ClickType.SWAP_OFFHAND) {
+                    return findAction(player, "f").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                }
+                // Q键
+                if (clickType == ClickType.DROP || clickType == ClickType.CONTROL_DROP) {
+                    return findAction(player, "q").click(guide, player, slot, slimefunItem, item, action, menu, page);
+                }
+                // 右键
+                if (clickType == ClickType.RIGHT) {
+                    return findAction(player, "right-click").click(
+                            guide, player, slot, slimefunItem, item, action,
+                            menu, page
+                    );
+                }
+                // Shift+左键
+                if (clickType == ClickType.SHIFT_LEFT) {
+                    return findAction(player, "shift-left-click").click(
+                            guide, player, slot, slimefunItem, item,
+                            action, menu, page
+                    );
+                }
+                // Shift+右键
+                if (clickType == ClickType.SHIFT_RIGHT) {
+                    return findAction(player, "shift-right-click").click(
+                            guide, player, slot, slimefunItem, item,
+                            action, menu, page
+                    );
+                }
+                // 有cheat权限
+                if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
+                    ItemStack cursor = event.getCursor();
+                    if (event.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR)) {
+                        return findAction(player, "clone-item").click(
+                                guide, player, slot, slimefunItem, item, action
+                                , menu, page
+                        );
+                    }
+                    if (guide.getMode() == SlimefunGuideMode.CHEAT_MODE || (cursor != null && cursor.getType() != Material.AIR)) {
+                        return findAction(player, "take-item").click(
+                                guide, player, slot, slimefunItem, item, action,
+                                menu, page
+                        );
+                    }
+                }
+
+                return findAction(player, "default").click(guide, player, slot, slimefunItem, item, action, menu, page);
+            });
+        }
+
         /**
          * @author balugaq
          * @since 2.0
@@ -943,13 +961,13 @@ public interface OnClick {
                     }
 
                     @Override
-                    public NamespacedKey getKey() {
-                        return KeyUtil.newKey(key);
+                    public String name() {
+                        return name;
                     }
 
                     @Override
-                    public String name() {
-                        return name;
+                    public NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
                     }
 
                     @Override
@@ -983,13 +1001,13 @@ public interface OnClick {
                     }
 
                     @Override
-                    public NamespacedKey getKey() {
-                        return KeyUtil.newKey(key);
+                    public String name() {
+                        return name;
                     }
 
                     @Override
-                    public String name() {
-                        return name;
+                    public NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
                     }
 
                     @Override
@@ -1053,6 +1071,11 @@ public interface OnClick {
             }
 
             @Override
+            public ObjectImmutableList<Action> listActions() {
+                return merge(super.listActions(), listActions);
+            }
+
+            @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
                                        @Nullable SlimefunItem slimefunItem) {
                 return (event, player, slot, s, action) -> {
@@ -1062,17 +1085,14 @@ public interface OnClick {
                     if (clickType == ClickType.DOUBLE_CLICK) return false;
                     // 注入右键
                     if (clickType == ClickType.RIGHT) {
-                        return findAction(player, "right-click").click(guide, player, slot, slimefunItem, item,
-                                                                       action, menu, page);
+                        return findAction(player, "right-click").click(
+                                guide, player, slot, slimefunItem, item,
+                                action, menu, page
+                        );
                     }
 
                     return super.create(guide, menu, page, slimefunItem).onClick(event, player, slot, item, action);
                 };
-            }
-
-            @Override
-            public ObjectImmutableList<Action> listActions() {
-                return merge(super.listActions(), listActions);
             }
         }
 
@@ -1089,8 +1109,10 @@ public interface OnClick {
                                 if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
                                 if (slimefunItem == null) return;
                                 SlimefunItem finalSlimefunItem = slimefunItem;
-                                EventUtil.callEvent(new GuideEvents.CollectItemEvent(player, item, slot, action, menu
-                                        , guide)).ifSuccess(() -> {
+                                EventUtil.callEvent(new GuideEvents.CollectItemEvent(
+                                        player, item, slot, action, menu
+                                        , guide
+                                )).ifSuccess(() -> {
                                     JustEnoughGuide.getBookmarkManager().addBookmark(player, finalSlimefunItem);
                                     player.sendMessage(ChatColor.GREEN + "已添加到收藏列表!");
                                     player.playSound(player.getLocation(), Sounds.COLLECTED_ITEM, 1f, 1f);
@@ -1112,6 +1134,11 @@ public interface OnClick {
             }
 
             @Override
+            public ObjectImmutableList<Action> listActions() {
+                return merge(super.listActions(), listActions);
+            }
+
+            @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
                                        @Nullable SlimefunItem slimefunItem) {
                 return (event, player, slot, cursor, action) -> {
@@ -1121,17 +1148,14 @@ public interface OnClick {
                     if (clickType == ClickType.DOUBLE_CLICK) return false;
                     // 注入左键
                     if (clickType == ClickType.LEFT) {
-                        return findAction(player, "left-click").click(guide, player, slot, slimefunItem, item, action
-                                , menu, page);
+                        return findAction(player, "left-click").click(
+                                guide, player, slot, slimefunItem, item, action
+                                , menu, page
+                        );
                     }
 
                     return Normal.create(guide, menu, page, slimefunItem).onClick(event, player, slot, item, action);
                 };
-            }
-
-            @Override
-            public ObjectImmutableList<Action> listActions() {
-                return merge(super.listActions(), listActions);
             }
         }
 
@@ -1179,20 +1203,22 @@ public interface OnClick {
             }
 
             @Override
+            public ObjectImmutableList<Action> listActions() {
+                return listActions;
+            }
+
+            @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
                                        @Nullable SlimefunItem slimefunItem) {
                 return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
                     if (event.getClick() == ClickType.DOUBLE_CLICK) return false;
-                    return findAction(player, "default").click(guide, player, slot, slimefunItem, item, action, menu,
-                                                               page);
+                    return findAction(player, "default").click(
+                            guide, player, slot, slimefunItem, item, action, menu,
+                            page
+                    );
                 });
-            }
-
-            @Override
-            public ObjectImmutableList<Action> listActions() {
-                return listActions;
             }
         }
 
@@ -1241,11 +1267,17 @@ public interface OnClick {
                                 if (GuideUtil.isTaggedGroupType(itemGroup)) {
                                     page.set((itemGroup.getItems().indexOf(slimefunItem) / 36) + 1);
                                 }
-                                EventUtil.callEvent(new GuideEvents.GroupLinkButtonClickEvent(player, item, slot,
-                                                                                              clickAction, menu,
-                                                                                              guide)).ifSuccess(() -> {
-                                    PlayerProfile.get(player, profile -> guide.openItemGroup(profile, itemGroup,
-                                                                                             page.get()));
+                                EventUtil.callEvent(new GuideEvents.GroupLinkButtonClickEvent(
+                                        player, item, slot,
+                                        clickAction, menu,
+                                        guide
+                                )).ifSuccess(() -> {
+                                    PlayerProfile.get(
+                                            player, profile -> guide.openItemGroup(
+                                                    profile, itemGroup,
+                                                    page.get()
+                                            )
+                                    );
                                     return false;
                                 });
                             }
@@ -1271,8 +1303,10 @@ public interface OnClick {
 
                                     ItemStack itemStack = slimefunItem == null ? item :
                                             Converter.getItem(slimefunItem.getItem());
-                                    player.setItemOnCursor(StackUtils.getAsQuantity(itemStack,
-                                                                                    itemStack.getMaxStackSize()));
+                                    player.setItemOnCursor(StackUtils.getAsQuantity(
+                                            itemStack,
+                                            itemStack.getMaxStackSize()
+                                    ));
                                 }
                             }
                     ),

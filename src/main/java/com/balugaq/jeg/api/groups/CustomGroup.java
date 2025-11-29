@@ -177,8 +177,10 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
-                                                                           implementation))
+                                    new GuideEvents.SearchButtonClickEvent(
+                                            pl, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 pl.closeInventory();
 
@@ -214,8 +216,10 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                             implementation))
+                                    new GuideEvents.PreviousButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 CustomGroup customGroup = this.getByPage(Math.max(this.page - 1, 1));
@@ -241,8 +245,10 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                         implementation))
+                                    new GuideEvents.NextButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 CustomGroup customGroup = this.getByPage(Math.min(
@@ -271,8 +277,12 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
                     OnDisplay.Item.display(player, item, OnDisplay.Item.Normal, implementation)
                             .at(chestMenu, contentSlots.get(i), page);
                 } else if (o instanceof ItemGroup itemGroup) {
-                    if (GuideUtil.getGuide(player, GuideListener.guideModeMap.getOrDefault(player,
-                                                                                           SlimefunGuideMode.SURVIVAL_MODE)) instanceof JEGSlimefunGuideImplementation guide) {
+                    if (GuideUtil.getGuide(
+                            player, GuideListener.guideModeMap.getOrDefault(
+                                    player,
+                                    SlimefunGuideMode.SURVIVAL_MODE
+                            )
+                    ) instanceof JEGSlimefunGuideImplementation guide) {
                         guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));
                     }
                 }

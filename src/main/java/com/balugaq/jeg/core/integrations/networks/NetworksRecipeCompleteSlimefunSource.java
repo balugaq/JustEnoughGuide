@@ -125,10 +125,12 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
                         if (depthInRange(player, recipeDepth + 1)) {
                             completeRecipeWithGuide(
                                     blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
-                                                                         event.getClickedSlot(),
-                                                                         event.getClickAction(), event.getMenu(),
-                                                                         event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(
+                                            event.getPlayer(), itemStack,
+                                            event.getClickedSlot(),
+                                            event.getClickAction(), event.getMenu(),
+                                            event.getGuide()
+                                    ),
                                     ingredientSlots,
                                     unordered,
                                     recipeDepth + 1
@@ -151,10 +153,12 @@ public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource {
                         if (depthInRange(player, recipeDepth + 1)) {
                             completeRecipeWithGuide(
                                     blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
-                                                                         event.getClickedSlot(),
-                                                                         event.getClickAction(), event.getMenu(),
-                                                                         event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(
+                                            event.getPlayer(), itemStack,
+                                            event.getClickedSlot(),
+                                            event.getClickAction(), event.getMenu(),
+                                            event.getGuide()
+                                    ),
                                     ingredientSlots,
                                     unordered,
                                     recipeDepth + 1

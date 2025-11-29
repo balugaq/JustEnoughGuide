@@ -28,6 +28,7 @@
 package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.utils.compatibility.Converter;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import lombok.experimental.UtilityClass;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
@@ -49,6 +50,49 @@ import java.util.Map;
 @UtilityClass
 @NullMarked
 public class BlockMenuUtil {
+    @SuppressWarnings("ConstantValue")
+    public static Map<ItemStack, Integer> pushItem(
+            final BlockMenu blockMenu,
+            final @Nullable ItemStack[] items,
+            @Range(from = 0, to = 53) final int... slots) {
+        if (items == null || items.length == 0) {
+            return new HashMap<>();
+            // throw new IllegalArgumentException("Cannot push null or empty array");
+        }
+
+        final List<ItemStack> listItems = new ArrayList<>();
+        for (final ItemStack item : items) {
+            if (item != null && item.getType() != Material.AIR) {
+                listItems.add(item);
+            }
+        }
+
+        return pushItem(blockMenu, listItems, slots);
+    }
+
+    public static Map<ItemStack, Integer> pushItem(
+            final BlockMenu blockMenu,
+            final @Nullable List<ItemStack> items,
+            @Range(from = 0, to = 53) final int... slots) {
+        if (items == null || items.isEmpty()) {
+            return new HashMap<>();
+            // throw new IllegalArgumentException("Cannot push null or empty list");
+        }
+
+        final Map<ItemStack, Integer> itemMap = new HashMap<>();
+        for (final ItemStack item : items) {
+            if (item != null && item.getType() != Material.AIR) {
+                final ItemStack leftOver = pushItem(blockMenu, item, slots);
+                if (leftOver != null) {
+                    itemMap.put(leftOver, itemMap.getOrDefault(leftOver, 0) + leftOver.getAmount());
+                }
+            }
+        }
+
+        return itemMap;
+    }
+
+    @CanIgnoreReturnValue
     @Nullable
     public static ItemStack pushItem(
             final BlockMenu blockMenu,
@@ -95,48 +139,6 @@ public class BlockMenuUtil {
         } else {
             return null;
         }
-    }
-
-    @SuppressWarnings("ConstantValue")
-    public static Map<ItemStack, Integer> pushItem(
-            final BlockMenu blockMenu,
-            final @Nullable ItemStack[] items,
-            @Range(from = 0, to = 53) final int... slots) {
-        if (items == null || items.length == 0) {
-            return new HashMap<>();
-            // throw new IllegalArgumentException("Cannot push null or empty array");
-        }
-
-        final List<ItemStack> listItems = new ArrayList<>();
-        for (final ItemStack item : items) {
-            if (item != null && item.getType() != Material.AIR) {
-                listItems.add(item);
-            }
-        }
-
-        return pushItem(blockMenu, listItems, slots);
-    }
-
-    public static Map<ItemStack, Integer> pushItem(
-            final BlockMenu blockMenu,
-            final @Nullable List<ItemStack> items,
-            @Range(from = 0, to = 53) final int... slots) {
-        if (items == null || items.isEmpty()) {
-            return new HashMap<>();
-            // throw new IllegalArgumentException("Cannot push null or empty list");
-        }
-
-        final Map<ItemStack, Integer> itemMap = new HashMap<>();
-        for (final ItemStack item : items) {
-            if (item != null && item.getType() != Material.AIR) {
-                final ItemStack leftOver = pushItem(blockMenu, item, slots);
-                if (leftOver != null) {
-                    itemMap.put(leftOver, itemMap.getOrDefault(leftOver, 0) + leftOver.getAmount());
-                }
-            }
-        }
-
-        return itemMap;
     }
 
     public static boolean fits(
@@ -252,13 +254,6 @@ public class BlockMenuUtil {
     public static void consumeItem(
             final BlockMenu blockMenu,
             @Range(from = 0, to = 53) final int slot,
-            final boolean replaceConsumables) {
-        consumeItem(blockMenu, slot, 1, replaceConsumables);
-    }
-
-    public static void consumeItem(
-            final BlockMenu blockMenu,
-            @Range(from = 0, to = 53) final int slot,
             @Range(from = 0, to = 64) final int amount) {
         consumeItem(blockMenu, slot, amount, false);
     }
@@ -302,5 +297,12 @@ public class BlockMenuUtil {
                 }
             }
         }
+    }
+
+    public static void consumeItem(
+            final BlockMenu blockMenu,
+            @Range(from = 0, to = 53) final int slot,
+            final boolean replaceConsumables) {
+        consumeItem(blockMenu, slot, 1, replaceConsumables);
     }
 }

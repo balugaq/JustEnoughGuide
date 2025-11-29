@@ -143,8 +143,10 @@ public class RTSSearchGroup extends FlexItemGroup {
                                         if (anvilViewClass != null) {
                                             try {
                                                 if (anvilViewClass.isInstance(view)) {
-                                                    newSearchTerm = (String) ReflectionUtil.invokeMethod(view,
-                                                                                                         "getRenameText");
+                                                    newSearchTerm = (String) ReflectionUtil.invokeMethod(
+                                                            view,
+                                                            "getRenameText"
+                                                    );
                                                 }
                                             } catch (Exception e) {
                                                 // AnvilView method failed, will use fallback
@@ -155,8 +157,10 @@ public class RTSSearchGroup extends FlexItemGroup {
                                         if (newSearchTerm == null) {
                                             try {
                                                 // Use ReflectionUtil to avoid compile-time dependency
-                                                newSearchTerm = (String) ReflectionUtil.invokeMethod(anvilInventory,
-                                                                                                     "getRenameText");
+                                                newSearchTerm = (String) ReflectionUtil.invokeMethod(
+                                                        anvilInventory,
+                                                        "getRenameText"
+                                                );
                                             } catch (Exception e) {
                                                 Debug.debug("Both AnvilView and AnvilInventory getRenameText() " +
                                                                     "methods are unavailable");

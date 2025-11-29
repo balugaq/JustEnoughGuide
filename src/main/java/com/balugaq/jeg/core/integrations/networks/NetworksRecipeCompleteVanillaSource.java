@@ -136,10 +136,12 @@ public class NetworksRecipeCompleteVanillaSource implements VanillaSource {
                             completeRecipeWithGuide(
                                     block,
                                     inventory,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
-                                                                         event.getClickedSlot(),
-                                                                         event.getClickAction(), event.getMenu(),
-                                                                         event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(
+                                            event.getPlayer(), itemStack,
+                                            event.getClickedSlot(),
+                                            event.getClickAction(), event.getMenu(),
+                                            event.getGuide()
+                                    ),
                                     ingredientSlots,
                                     unordered,
                                     recipeDepth + 1
@@ -163,10 +165,12 @@ public class NetworksRecipeCompleteVanillaSource implements VanillaSource {
                             completeRecipeWithGuide(
                                     block,
                                     inventory,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
-                                                                         event.getClickedSlot(),
-                                                                         event.getClickAction(), event.getMenu(),
-                                                                         event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(
+                                            event.getPlayer(), itemStack,
+                                            event.getClickedSlot(),
+                                            event.getClickAction(), event.getMenu(),
+                                            event.getGuide()
+                                    ),
                                     ingredientSlots,
                                     unordered,
                                     recipeDepth + 1

@@ -358,16 +358,6 @@ public class JEGGuideSettings {
         }
     }
 
-    @SuppressWarnings({"unchecked", "DataFlowIssue"})
-    public static List<SlimefunGuideOption<?>> getOptions() {
-        return (List<SlimefunGuideOption<?>>)
-                ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
-    }
-
-    public static void addOption(SlimefunGuideOption<?> option) {
-        SlimefunGuideSettings.addOption(option);
-    }
-
     public static void patchSlimefun() {
         for (var option : getOptions()) {
             if (option.getAddon() instanceof Slimefun) {
@@ -390,6 +380,16 @@ public class JEGGuideSettings {
         addOption(new PlayerLanguageOption());
     }
 
+    @SuppressWarnings({"unchecked", "DataFlowIssue"})
+    public static List<SlimefunGuideOption<?>> getOptions() {
+        return (List<SlimefunGuideOption<?>>)
+                ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
+    }
+
+    public static void addOption(SlimefunGuideOption<?> option) {
+        SlimefunGuideSettings.addOption(option);
+    }
+
     public static void unpatchSlimefun() {
         for (var po : patched) {
             getOptions().add(po);
@@ -399,11 +399,6 @@ public class JEGGuideSettings {
     @SuppressWarnings("unused")
     public static boolean hasFireworksEnabled(Player p) {
         return getOptionValue(p, FireworksOption.class, true);
-    }
-
-    @SuppressWarnings("unused")
-    public static boolean hasLearningAnimationEnabled(Player p) {
-        return getOptionValue(p, LearningAnimationOption.class, true);
     }
 
     public static <T extends SlimefunGuideOption<V>, V> V getOptionValue(Player p, Class<T> optionsClass,
@@ -417,5 +412,10 @@ public class JEGGuideSettings {
         }
 
         return defaultValue;
+    }
+
+    @SuppressWarnings("unused")
+    public static boolean hasLearningAnimationEnabled(Player p) {
+        return getOptionValue(p, LearningAnimationOption.class, true);
     }
 }

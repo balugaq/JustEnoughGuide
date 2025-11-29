@@ -64,10 +64,6 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
         return JustEnoughGuide.getInstance();
     }
 
-    public NamespacedKey getKey() {
-        return new NamespacedKey(Slimefun.instance(), "guide_mode");
-    }
-
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (!p.hasPermission("slimefun.cheat.items")) {
             return Optional.empty();
@@ -127,5 +123,9 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
 
     public void setSelectedOption(Player p, ItemStack guide, SlimefunGuideMode value) {
         guide.setItemMeta(SlimefunGuide.getItem(value).getItemMeta());
+    }
+
+    public NamespacedKey getKey() {
+        return new NamespacedKey(Slimefun.instance(), "guide_mode");
     }
 }

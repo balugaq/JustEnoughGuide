@@ -53,6 +53,11 @@ public class Sounds {
         return ReflectionUtil.getStaticValue(Sound.class, name, Sound.class);
     }
 
+    public static Sound byKeyOrDefault(String key, @UnknownNullability Sound def) {
+        Sound sound = byKey(key);
+        return sound == null ? def : sound;
+    }
+
     public static @Nullable Sound byKey(String key) {
         Registry<Sound> registry = Bukkit.getRegistry(Sound.class);
         if (registry == null) {
@@ -60,11 +65,6 @@ public class Sounds {
         }
 
         return registry.get(NamespacedKey.minecraft(key));
-    }
-
-    public static Sound byKeyOrDefault(String key, @UnknownNullability Sound def) {
-        Sound sound = byKey(key);
-        return sound == null ? def : sound;
     }
 
     public static void playFor(Player player, @Nullable Sound sound) {

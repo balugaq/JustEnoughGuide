@@ -49,6 +49,48 @@ import java.util.Map;
 @UtilityClass
 @NullMarked
 public class InventoryUtil {
+    @SuppressWarnings("ConstantValue")
+    public static Map<ItemStack, Integer> pushItem(
+            final Inventory inventory,
+            final @Nullable ItemStack[] items,
+            @Range(from = 0, to = 53) final int... slots) {
+        if (items == null || items.length == 0) {
+            return new HashMap<>();
+            // throw new IllegalArgumentException("Cannot push null or empty array");
+        }
+
+        final List<ItemStack> listItems = new ArrayList<>();
+        for (final ItemStack item : items) {
+            if (item != null && item.getType() != Material.AIR) {
+                listItems.add(item);
+            }
+        }
+
+        return pushItem(inventory, listItems, slots);
+    }
+
+    public static Map<ItemStack, Integer> pushItem(
+            final Inventory inventory,
+            final @Nullable List<ItemStack> items,
+            @Range(from = 0, to = 53) final int... slots) {
+        if (items == null || items.isEmpty()) {
+            return new HashMap<>();
+            // throw new IllegalArgumentException("Cannot push null or empty list");
+        }
+
+        final Map<ItemStack, Integer> itemMap = new HashMap<>();
+        for (final ItemStack item : items) {
+            if (item != null && item.getType() != Material.AIR) {
+                final ItemStack leftOver = pushItem(inventory, item, slots);
+                if (leftOver != null) {
+                    itemMap.put(leftOver, itemMap.getOrDefault(leftOver, 0) + leftOver.getAmount());
+                }
+            }
+        }
+
+        return itemMap;
+    }
+
     @Nullable
     public static ItemStack pushItem(
             final Inventory inventory,
@@ -95,48 +137,6 @@ public class InventoryUtil {
         } else {
             return null;
         }
-    }
-
-    @SuppressWarnings("ConstantValue")
-    public static Map<ItemStack, Integer> pushItem(
-            final Inventory inventory,
-            final @Nullable ItemStack[] items,
-            @Range(from = 0, to = 53) final int... slots) {
-        if (items == null || items.length == 0) {
-            return new HashMap<>();
-            // throw new IllegalArgumentException("Cannot push null or empty array");
-        }
-
-        final List<ItemStack> listItems = new ArrayList<>();
-        for (final ItemStack item : items) {
-            if (item != null && item.getType() != Material.AIR) {
-                listItems.add(item);
-            }
-        }
-
-        return pushItem(inventory, listItems, slots);
-    }
-
-    public static Map<ItemStack, Integer> pushItem(
-            final Inventory inventory,
-            final @Nullable List<ItemStack> items,
-            @Range(from = 0, to = 53) final int... slots) {
-        if (items == null || items.isEmpty()) {
-            return new HashMap<>();
-            // throw new IllegalArgumentException("Cannot push null or empty list");
-        }
-
-        final Map<ItemStack, Integer> itemMap = new HashMap<>();
-        for (final ItemStack item : items) {
-            if (item != null && item.getType() != Material.AIR) {
-                final ItemStack leftOver = pushItem(inventory, item, slots);
-                if (leftOver != null) {
-                    itemMap.put(leftOver, itemMap.getOrDefault(leftOver, 0) + leftOver.getAmount());
-                }
-            }
-        }
-
-        return itemMap;
     }
 
     public static boolean fits(
@@ -252,13 +252,6 @@ public class InventoryUtil {
     public static void consumeItem(
             final Inventory inventory,
             @Range(from = 0, to = 53) final int slot,
-            final boolean replaceConsumables) {
-        consumeItem(inventory, slot, 1, replaceConsumables);
-    }
-
-    public static void consumeItem(
-            final Inventory inventory,
-            @Range(from = 0, to = 53) final int slot,
             @Range(from = 0, to = 64) final int amount) {
         consumeItem(inventory, slot, amount, false);
     }
@@ -302,5 +295,12 @@ public class InventoryUtil {
                 }
             }
         }
+    }
+
+    public static void consumeItem(
+            final Inventory inventory,
+            @Range(from = 0, to = 53) final int slot,
+            final boolean replaceConsumables) {
+        consumeItem(inventory, slot, 1, replaceConsumables);
     }
 }

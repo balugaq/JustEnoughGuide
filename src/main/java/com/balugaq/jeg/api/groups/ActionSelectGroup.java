@@ -115,8 +115,10 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
                 BaseAction act = actions.get(k);
                 menu.addItem(s, PatchScope.Action.patch(player, GuideUtil.getActionIcon(act)));
                 menu.addMenuClickHandler(
-                        s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ActionButtonClickEvent(pl,
-                                                                                                                  item, slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE))).ifSuccess(() -> {
+                        s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ActionButtonClickEvent(
+                                pl,
+                                item, slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                        )).ifSuccess(() -> {
                             BaseAction.redirect(pl, act.parent(), keybind, act);
                             pl.closeInventory();
                             pl.sendMessage(ChatColors.color("&a已设置 " + keybind.name() + " -> " + act.name()));
@@ -132,13 +134,21 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
         }
 
         for (int s : Formats.actionSelect.getChars('P')) {
-            menu.addItem(s, PatchScope.PreviousPage.patch(player, ChestMenuUtils.getPreviousButton(player, page,
-                                                                                                   pages)));
+            menu.addItem(
+                    s, PatchScope.PreviousPage.patch(
+                            player, ChestMenuUtils.getPreviousButton(
+                                    player, page,
+                                    pages
+                            )
+                    )
+            );
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl,
-                                                                                                                item,
-                                                                                                                slot,
-                                                                                                                action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE))).ifSuccess(() -> {
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                    )).ifSuccess(() -> {
                         if (page - 1 > 0) {
                             getByPage(page - 1).open(player, playerProfile, slimefunGuideMode);
                         }
@@ -151,11 +161,13 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
         for (int s : Formats.actionSelect.getChars('N')) {
             menu.addItem(s, PatchScope.NextPage.patch(player, ChestMenuUtils.getNextButton(player, page, pages)));
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(pl, item,
-                                                                                                            slot,
-                                                                                                            action,
-                                                                                                            menu,
-                                                                                                            GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE))).ifSuccess(() -> {
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                            pl, item,
+                            slot,
+                            action,
+                            menu,
+                            GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                    )).ifSuccess(() -> {
                         int next = page + 1;
 
                         if (page + 1 <= pages) {

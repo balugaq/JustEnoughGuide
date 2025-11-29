@@ -55,16 +55,16 @@ public class MenuMatrix {
     }
 
     @CanIgnoreReturnValue
-    public MenuMatrix addLine(String label) {
-        labels.add(label);
-        return this;
-    }
-
-    @CanIgnoreReturnValue
     public MenuMatrix addLine(String... labels) {
         for (String label : labels) {
             addLine(label);
         }
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    public MenuMatrix addLine(String label) {
+        labels.add(label);
         return this;
     }
 
@@ -77,19 +77,13 @@ public class MenuMatrix {
     }
 
     @CanIgnoreReturnValue
-    public MenuMatrix addItem(Character label, ItemStack item, ChestMenu.MenuClickHandler handler) {
-        this.itemStackMap.put(label, item);
-        this.handlerMap.put(label, handler);
-        return this;
-    }
-
-    @CanIgnoreReturnValue
     public MenuMatrix addItem(Character label, ItemStack item) {
         return addItem(label, item, (p, s, i, a) -> false);
     }
 
     @CanIgnoreReturnValue
-    public MenuMatrix addHandler(Character label, ChestMenu.MenuClickHandler handler) {
+    public MenuMatrix addItem(Character label, ItemStack item, ChestMenu.MenuClickHandler handler) {
+        this.itemStackMap.put(label, item);
         this.handlerMap.put(label, handler);
         return this;
     }
@@ -109,6 +103,12 @@ public class MenuMatrix {
         return addHandler(label.charAt(0), handler);
     }
 
+    @CanIgnoreReturnValue
+    public MenuMatrix addHandler(Character label, ChestMenu.MenuClickHandler handler) {
+        this.handlerMap.put(label, handler);
+        return this;
+    }
+
     public void build(BlockMenuPreset preset) {
         int index = 0;
         for (String label : labels) {
@@ -125,6 +125,10 @@ public class MenuMatrix {
         }
     }
 
+    public int getChar(String label) {
+        return getChar(label.charAt(0));
+    }
+
     public int getChar(char label) {
         for (int i = 0; i < labels.size(); i++) {
             String line = labels.get(i);
@@ -138,8 +142,8 @@ public class MenuMatrix {
         return -1;
     }
 
-    public int getChar(String label) {
-        return getChar(label.charAt(0));
+    public int[] getChars(String label) {
+        return getChars(label.charAt(0));
     }
 
     public int[] getChars(char label) {
@@ -159,9 +163,5 @@ public class MenuMatrix {
         }
 
         return array;
-    }
-
-    public int[] getChars(String label) {
-        return getChars(label.charAt(0));
     }
 }

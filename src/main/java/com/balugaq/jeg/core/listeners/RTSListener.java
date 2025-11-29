@@ -113,97 +113,6 @@ public class RTSListener implements Listener {
     };
 
     /**
-     * Checks if a player is currently in the RTS (Real-Time Search) mode.
-     *
-     * @param player
-     *         the player to check
-     *
-     * @return true if the player is in RTS mode, false otherwise
-     */
-    public static boolean isRTSPlayer(Player player) {
-        return openingPlayers.containsKey(player);
-    }
-
-    /**
-     * Checks if an ItemStack is a fake item used in the RTS system.
-     *
-     * @param itemStack
-     *         the ItemStack to check
-     *
-     * @return true if the itemStack is a fake item, false otherwise
-     */
-    public static boolean isFakeItem(@Nullable ItemStack itemStack) {
-        if (itemStack != null && itemStack.getType() != Material.AIR) {
-            return itemStack.getItemMeta().getPersistentDataContainer().get(FAKE_ITEM_KEY, PersistentDataType.STRING)
-                    != null;
-        }
-        return false;
-    }
-
-    /**
-     * Quits the RTS mode for a player and restores their inventory.
-     *
-     * @param player
-     *         the player to quit RTS mode
-     */
-    public static void quitRTS(Player player) {
-        if (isRTSPlayer(player)) {
-            synchronized (openingPlayers) {
-                openingPlayers.remove(player);
-            }
-            synchronized (RTSSearchGroup.RTS_PLAYERS) {
-                RTSSearchGroup.RTS_PLAYERS.remove(player);
-            }
-            synchronized (RTSSearchGroup.RTS_SEARCH_TERMS) {
-                RTSSearchGroup.RTS_SEARCH_TERMS.remove(player);
-            }
-            synchronized (RTSSearchGroup.RTS_SEARCH_GROUPS) {
-                RTSSearchGroup.RTS_SEARCH_GROUPS.remove(player);
-            }
-            synchronized (RTSSearchGroup.RTS_PAGES) {
-                RTSSearchGroup.RTS_PAGES.remove(player);
-            }
-            JustEnoughGuide.getInstance().getRtsBackpackManager().restoreInventoryFor(player);
-            if (cheatItems.containsKey(player)) {
-                if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
-                    List<ItemStack> items = cheatItems.get(player);
-                    for (ItemStack item : items) {
-                        player.getInventory().addItem(item);
-                    }
-                    cheatItems.remove(player);
-                } else {
-                    cheatItems.remove(player);
-                }
-            }
-        }
-    }
-
-    /**
-     * Generates a unique hash for a player head ItemStack.
-     *
-     * @param item
-     *         the ItemStack to generate a hash for
-     *
-     * @return the hash of the player head, or null if the item is not a player head
-     */
-    @SuppressWarnings("DataFlowIssue")
-    public static String getHash(@Nullable ItemStack item) {
-        if (item != null && (item.getType() == Material.PLAYER_HEAD || item.getType() == Material.PLAYER_WALL_HEAD)) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta instanceof SkullMeta) {
-                try {
-                    URL t = ((SkullMeta) meta).getOwnerProfile().getTextures().getSkin();
-                    String path = t.getPath();
-                    String[] parts = path.split("/");
-                    return parts[parts.length - 1];
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Handles the event when an RTS is opened for a player.
      *
      * @param event
@@ -306,6 +215,107 @@ public class RTSListener implements Listener {
     }
 
     /**
+     * Checks if a player is currently in the RTS (Real-Time Search) mode.
+     *
+     * @param player
+     *         the player to check
+     *
+     * @return true if the player is in RTS mode, false otherwise
+     */
+    public static boolean isRTSPlayer(Player player) {
+        return openingPlayers.containsKey(player);
+    }
+
+    /**
+     * Creates a fake ItemStack for a SlimefunItem to display in the RTS inventory.
+     *
+     * @param slimefunItem
+     *         the SlimefunItem to create a fake item for
+     * @param player
+     *         the player for whom the fake item is created
+     *
+     * @return the fake ItemStack, or null if the SlimefunItem or player is null
+     */
+    @Contract("null, _ -> null; _, null -> null; !null, !null -> !null")
+    @UnknownNullability
+    public ItemStack getFakeItem(@Nullable SlimefunItem slimefunItem, @Nullable Player player) {
+        if (slimefunItem == null || player == null) {
+            return null;
+        }
+
+        ItemStack legacy = slimefunItem.getItem();
+        Material material = legacy.getType();
+        ItemStack itemStack;
+        if (material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD) {
+            String hash = getHash(legacy);
+            if (hash != null) {
+                itemStack = PlayerHead.getItemStack(PlayerSkin.fromHashCode(hash));
+            } else {
+                itemStack = new ItemStack(material);
+            }
+        } else {
+            itemStack = new ItemStack(material);
+        }
+        itemStack.setAmount(legacy.getAmount());
+
+        ItemMeta legacyMeta = legacy.getItemMeta();
+        ItemMeta meta = itemStack.getItemMeta();
+
+        ItemGroup itemGroup = slimefunItem.getItemGroup();
+        List<String> additionLore = List.of(
+                "",
+                ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
+                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
+                        + LocalHelper.getDisplayName(itemGroup, player)
+        );
+        if (legacyMeta.hasLore() && legacyMeta.getLore() != null) {
+            List<String> lore = legacyMeta.getLore();
+            lore.addAll(additionLore);
+            meta.setLore(lore);
+        } else {
+            meta.setLore(additionLore);
+        }
+
+        meta.addItemFlags(
+                ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+
+        meta.getPersistentDataContainer().set(FAKE_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId());
+
+        if (legacyMeta.hasDisplayName()) {
+            String name = legacyMeta.getDisplayName();
+            meta.setDisplayName(" " + name + " ");
+        }
+
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    /**
+     * Generates a unique hash for a player head ItemStack.
+     *
+     * @param item
+     *         the ItemStack to generate a hash for
+     *
+     * @return the hash of the player head, or null if the item is not a player head
+     */
+    @SuppressWarnings("DataFlowIssue")
+    public static String getHash(@Nullable ItemStack item) {
+        if (item != null && (item.getType() == Material.PLAYER_HEAD || item.getType() == Material.PLAYER_WALL_HEAD)) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta instanceof SkullMeta) {
+                try {
+                    URL t = ((SkullMeta) meta).getOwnerProfile().getTextures().getSkin();
+                    String path = t.getPath();
+                    String[] parts = path.split("/");
+                    return parts[parts.length - 1];
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Handles the event when the page changes in the RTS system.
      *
      * @param event
@@ -356,6 +366,44 @@ public class RTSListener implements Listener {
     }
 
     /**
+     * Quits the RTS mode for a player and restores their inventory.
+     *
+     * @param player
+     *         the player to quit RTS mode
+     */
+    public static void quitRTS(Player player) {
+        if (isRTSPlayer(player)) {
+            synchronized (openingPlayers) {
+                openingPlayers.remove(player);
+            }
+            synchronized (RTSSearchGroup.RTS_PLAYERS) {
+                RTSSearchGroup.RTS_PLAYERS.remove(player);
+            }
+            synchronized (RTSSearchGroup.RTS_SEARCH_TERMS) {
+                RTSSearchGroup.RTS_SEARCH_TERMS.remove(player);
+            }
+            synchronized (RTSSearchGroup.RTS_SEARCH_GROUPS) {
+                RTSSearchGroup.RTS_SEARCH_GROUPS.remove(player);
+            }
+            synchronized (RTSSearchGroup.RTS_PAGES) {
+                RTSSearchGroup.RTS_PAGES.remove(player);
+            }
+            JustEnoughGuide.getInstance().getRtsBackpackManager().restoreInventoryFor(player);
+            if (cheatItems.containsKey(player)) {
+                if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
+                    List<ItemStack> items = cheatItems.get(player);
+                    for (ItemStack item : items) {
+                        player.getInventory().addItem(item);
+                    }
+                    cheatItems.remove(player);
+                } else {
+                    cheatItems.remove(player);
+                }
+            }
+        }
+    }
+
+    /**
      * Restores the player's inventory when they join the server.
      *
      * @param event
@@ -373,6 +421,22 @@ public class RTSListener implements Listener {
             }
         }
         player.getInventory().setContents(itemStacks);
+    }
+
+    /**
+     * Checks if an ItemStack is a fake item used in the RTS system.
+     *
+     * @param itemStack
+     *         the ItemStack to check
+     *
+     * @return true if the itemStack is a fake item, false otherwise
+     */
+    public static boolean isFakeItem(@Nullable ItemStack itemStack) {
+        if (itemStack != null && itemStack.getType() != Material.AIR) {
+            return itemStack.getItemMeta().getPersistentDataContainer().get(FAKE_ITEM_KEY, PersistentDataType.STRING)
+                    != null;
+        }
+        return false;
     }
 
     /**
@@ -462,8 +526,10 @@ public class RTSListener implements Listener {
                     SlimefunItem slimefunItem = SlimefunItem.getById(itemStack
                                                                              .getItemMeta()
                                                                              .getPersistentDataContainer()
-                                                                             .get(FAKE_ITEM_KEY,
-                                                                                  PersistentDataType.STRING));
+                                                                             .get(
+                                                                                     FAKE_ITEM_KEY,
+                                                                                     PersistentDataType.STRING
+                                                                             ));
                     if (slimefunItem == null) {
                         event.setCancelled(true);
                         return;
@@ -741,69 +807,5 @@ public class RTSListener implements Listener {
                 event.setCancelled(true);
             }
         }
-    }
-
-    /**
-     * Creates a fake ItemStack for a SlimefunItem to display in the RTS inventory.
-     *
-     * @param slimefunItem
-     *         the SlimefunItem to create a fake item for
-     * @param player
-     *         the player for whom the fake item is created
-     *
-     * @return the fake ItemStack, or null if the SlimefunItem or player is null
-     */
-    @Contract("null, _ -> null; _, null -> null; !null, !null -> !null")
-    @UnknownNullability
-    public ItemStack getFakeItem(@Nullable SlimefunItem slimefunItem, @Nullable Player player) {
-        if (slimefunItem == null || player == null) {
-            return null;
-        }
-
-        ItemStack legacy = slimefunItem.getItem();
-        Material material = legacy.getType();
-        ItemStack itemStack;
-        if (material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD) {
-            String hash = getHash(legacy);
-            if (hash != null) {
-                itemStack = PlayerHead.getItemStack(PlayerSkin.fromHashCode(hash));
-            } else {
-                itemStack = new ItemStack(material);
-            }
-        } else {
-            itemStack = new ItemStack(material);
-        }
-        itemStack.setAmount(legacy.getAmount());
-
-        ItemMeta legacyMeta = legacy.getItemMeta();
-        ItemMeta meta = itemStack.getItemMeta();
-
-        ItemGroup itemGroup = slimefunItem.getItemGroup();
-        List<String> additionLore = List.of(
-                "",
-                ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                        + LocalHelper.getDisplayName(itemGroup, player)
-        );
-        if (legacyMeta.hasLore() && legacyMeta.getLore() != null) {
-            List<String> lore = legacyMeta.getLore();
-            lore.addAll(additionLore);
-            meta.setLore(lore);
-        } else {
-            meta.setLore(additionLore);
-        }
-
-        meta.addItemFlags(
-                ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-
-        meta.getPersistentDataContainer().set(FAKE_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId());
-
-        if (legacyMeta.hasDisplayName()) {
-            String name = legacyMeta.getDisplayName();
-            meta.setDisplayName(" " + name + " ");
-        }
-
-        itemStack.setItemMeta(meta);
-        return itemStack;
     }
 }

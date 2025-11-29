@@ -60,14 +60,14 @@ public interface ActionKey {
     @SuppressWarnings("unused")
     Supplier<OnClick> belong();
 
-    String name();
+    @Nullable
+    default String get(Player player, String key) {
+        return player.getPersistentDataContainer().get(KeyUtil.newKey(asPrefix() + key), PersistentDataType.STRING);
+    }
 
     default String asPrefix() {
         return "keybind-" + name() + "-";
     }
 
-    @Nullable
-    default String get(Player player, String key) {
-        return player.getPersistentDataContainer().get(KeyUtil.newKey(asPrefix() + key), PersistentDataType.STRING);
-    }
+    String name();
 }

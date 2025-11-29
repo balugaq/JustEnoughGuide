@@ -45,6 +45,17 @@ public class CultivationIntegrationMain implements Integration {
     public static final int[] CLT_COUNTER_OVEN_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
+    @Override
+    public String getHookPlugin() {
+        return "Cultivation";
+    }
+
+    @Override
+    public void onEnable() {
+        rrc("CLT_COUNTER_FINISHING", CLT_COUNTER_FINISHING_INPUT_SLOTS, false);
+        rrc("CLT_COUNTER_OVEN", CLT_COUNTER_OVEN_INPUT_SLOTS, false);
+    }
+
     public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
         if (slimefunItem != null) {
@@ -55,17 +66,6 @@ public class CultivationIntegrationMain implements Integration {
     public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
-    @Override
-    public String getHookPlugin() {
-        return "Cultivation";
-    }
-
-    @Override
-    public void onEnable() {
-        rrc("CLT_COUNTER_FINISHING", CLT_COUNTER_FINISHING_INPUT_SLOTS, false);
-        rrc("CLT_COUNTER_OVEN", CLT_COUNTER_OVEN_INPUT_SLOTS, false);
     }
 
     @Override

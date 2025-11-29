@@ -117,66 +117,6 @@ public class StackUtils {
      *         The {@link ItemStack} being evaluated
      * @param checkLore
      *         If lore should be checked
-     *
-     * @return True if items match
-     */
-    public static boolean itemsMatch(@Nullable ItemStack itemStack0, @Nullable ItemStack itemStack, boolean checkLore) {
-        return itemsMatch(itemStack0, itemStack, checkLore, false, true, true);
-    }
-
-    /**
-     * Checks if items match each other, checks go in order from lightest to heaviest
-     *
-     * @param itemStack0
-     *         The {@link ItemStack} to compare against
-     * @param itemStack
-     *         The {@link ItemStack} being evaluated
-     * @param checkLore
-     *         If lore should be checked
-     * @param checkAmount
-     *         If amount should be checked
-     *
-     * @return True if items match
-     */
-    public static boolean itemsMatch(
-            @Nullable ItemStack itemStack0, @Nullable ItemStack itemStack, boolean checkLore, boolean checkAmount) {
-        return itemsMatch(itemStack0, itemStack, checkLore, checkAmount, true, true);
-    }
-
-    /**
-     * Checks if items match each other, checks go in order from lightest to heaviest
-     *
-     * @param itemStack0
-     *         The {@link ItemStack} to compare against
-     * @param itemStack
-     *         The {@link ItemStack} being evaluated
-     * @param checkLore
-     *         If lore should be checked
-     * @param checkAmount
-     *         If amount should be checked
-     * @param checkCustomModelId
-     *         If custom model id should be checked
-     *
-     * @return True if items match
-     */
-    public static boolean itemsMatch(
-            @Nullable ItemStack itemStack0,
-            @Nullable ItemStack itemStack,
-            boolean checkLore,
-            boolean checkAmount,
-            boolean checkCustomModelId) {
-        return itemsMatch(itemStack0, itemStack, checkLore, checkAmount, checkCustomModelId, true);
-    }
-
-    /**
-     * Checks if items match each other, checks go in order from lightest to heaviest
-     *
-     * @param itemStack0
-     *         The {@link ItemStack} to compare against
-     * @param itemStack
-     *         The {@link ItemStack} being evaluated
-     * @param checkLore
-     *         If lore should be checked
      * @param checkAmount
      *         If amount should be checked
      * @param checkCustomModelId
@@ -671,5 +611,65 @@ public class StackUtils {
 
         // Cannot escape via any meta extension check
         return false;
+    }
+
+    /**
+     * Checks if items match each other, checks go in order from lightest to heaviest
+     *
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     * @param checkLore
+     *         If lore should be checked
+     *
+     * @return True if items match
+     */
+    public static boolean itemsMatch(@Nullable ItemStack itemStack0, @Nullable ItemStack itemStack, boolean checkLore) {
+        return itemsMatch(itemStack0, itemStack, checkLore, false, true, true);
+    }
+
+    /**
+     * Checks if items match each other, checks go in order from lightest to heaviest
+     *
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     * @param checkLore
+     *         If lore should be checked
+     * @param checkAmount
+     *         If amount should be checked
+     *
+     * @return True if items match
+     */
+    public static boolean itemsMatch(
+            @Nullable ItemStack itemStack0, @Nullable ItemStack itemStack, boolean checkLore, boolean checkAmount) {
+        return itemsMatch(itemStack0, itemStack, checkLore, checkAmount, true, true);
+    }
+
+    /**
+     * Checks if items match each other, checks go in order from lightest to heaviest
+     *
+     * @param itemStack0
+     *         The {@link ItemStack} to compare against
+     * @param itemStack
+     *         The {@link ItemStack} being evaluated
+     * @param checkLore
+     *         If lore should be checked
+     * @param checkAmount
+     *         If amount should be checked
+     * @param checkCustomModelId
+     *         If custom model id should be checked
+     *
+     * @return True if items match
+     */
+    public static boolean itemsMatch(
+            @Nullable ItemStack itemStack0,
+            @Nullable ItemStack itemStack,
+            boolean checkLore,
+            boolean checkAmount,
+            boolean checkCustomModelId) {
+        return itemsMatch(itemStack0, itemStack, checkLore, checkAmount, checkCustomModelId, true);
     }
 }

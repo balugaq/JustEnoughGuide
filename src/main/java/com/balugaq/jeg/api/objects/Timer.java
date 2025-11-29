@@ -62,19 +62,19 @@ public class Timer {
     }
 
     /**
+     * Logs the time elapsed since the last start.
+     */
+    public static void log() {
+        Debug.debug("[Static] Time elapsed: " + stop() / 1_000_000.0F + "ms");
+    }
+
+    /**
      * Stops the timer.
      *
      * @return The time elapsed in nanoseconds.
      */
     public static long stop() {
         return System.nanoTime() - start;
-    }
-
-    /**
-     * Logs the time elapsed since the last start.
-     */
-    public static void log() {
-        Debug.debug("[Static] Time elapsed: " + stop() / 1_000_000.0F + "ms");
     }
 
     /**
@@ -85,18 +85,18 @@ public class Timer {
     }
 
     /**
+     * Logs the time elapsed since the last start.
+     */
+    public void logs() {
+        Debug.debug("[" + this.name + "] Time elapsed: " + stops() / 1_000_000.0F + "ms");
+    }
+
+    /**
      * Stops the timer.
      *
      * @return The time elapsed in nanoseconds.
      */
     public long stops() {
         return System.nanoTime() - this.starts;
-    }
-
-    /**
-     * Logs the time elapsed since the last start.
-     */
-    public void logs() {
-        Debug.debug("[" + this.name + "] Time elapsed: " + stops() / 1_000_000.0F + "ms");
     }
 }

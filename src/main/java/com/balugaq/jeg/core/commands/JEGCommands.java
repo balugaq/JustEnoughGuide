@@ -93,18 +93,6 @@ public class JEGCommands implements TabExecutor {
         return true;
     }
 
-    public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
-        List<String> result = new ArrayList<>();
-        for (JEGCommand jegCommand : this.commands) {
-            List<String> partial = jegCommand.onTabCompleteRaw(sender, args);
-            if (partial != null) {
-                result.addAll(partial);
-            }
-        }
-
-        return result;
-    }
-
     @Override
     public @Nullable List<String> onTabComplete(
             final CommandSender sender,
@@ -117,5 +105,17 @@ public class JEGCommands implements TabExecutor {
         } else {
             return List.of();
         }
+    }
+
+    public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
+        List<String> result = new ArrayList<>();
+        for (JEGCommand jegCommand : this.commands) {
+            List<String> partial = jegCommand.onTabCompleteRaw(sender, args);
+            if (partial != null) {
+                result.addAll(partial);
+            }
+        }
+
+        return result;
     }
 }

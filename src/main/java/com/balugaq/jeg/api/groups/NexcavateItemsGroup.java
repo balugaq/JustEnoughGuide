@@ -124,8 +124,10 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, chestMenu,
-                                                                           implementation))
+                                    new GuideEvents.SearchButtonClickEvent(
+                                            pl, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 pl.closeInventory();
 
@@ -161,8 +163,10 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                             implementation))
+                                    new GuideEvents.PreviousButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
@@ -188,8 +192,10 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
             );
             chestMenu.addMenuClickHandler(
                     ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(p, item, slot, action, chestMenu,
-                                                                         implementation))
+                                    new GuideEvents.NextButtonClickEvent(
+                                            p, item, slot, action, chestMenu,
+                                            implementation
+                                    ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
                                 NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(Math.min(
@@ -230,12 +236,12 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
     }
 
     @Override
-    public boolean isCrossAddonItemGroup() {
-        return true;
+    public int getTier() {
+        return Integer.MAX_VALUE;
     }
 
     @Override
-    public int getTier() {
-        return Integer.MAX_VALUE;
+    public boolean isCrossAddonItemGroup() {
+        return true;
     }
 }

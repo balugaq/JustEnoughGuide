@@ -78,6 +78,11 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
         this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
     }
 
+    protected abstract ChestMenu generateMenu(
+            final Player player,
+            final PlayerProfile playerProfile,
+            final SlimefunGuideMode slimefunGuideMode);
+
     protected T getByPage(int page) {
         if (this.pageMap.containsKey(page)) {
             return this.pageMap.get(page);
@@ -94,11 +99,6 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
             }
         }
     }
-
-    protected abstract ChestMenu generateMenu(
-            final Player player,
-            final PlayerProfile playerProfile,
-            final SlimefunGuideMode slimefunGuideMode);
 
     @SuppressWarnings("unchecked")
     @Override

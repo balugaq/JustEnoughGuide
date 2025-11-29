@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionIntegrationMain;
 import com.balugaq.jeg.utils.BlockMenuUtil;
+import com.balugaq.jeg.utils.GuideUtil;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Material;
@@ -69,7 +70,10 @@ public class DefaultPlayerInventoryRecipeCompleteSlimefunSource implements Slime
             int[] ingredientSlots,
             boolean unordered,
             int recipeDepth) {
-        Player player = event.getPlayer();
+        Player player = GuideUtil.updatePlayer(event.getPlayer());
+        if (player == null) {
+            return false;
+        }
 
         ItemStack clickedItem = event.getClickedItem();
         if (clickedItem == null) {
@@ -120,10 +124,12 @@ public class DefaultPlayerInventoryRecipeCompleteSlimefunSource implements Slime
                         if (depthInRange(player, recipeDepth + 1)) {
                             completeRecipeWithGuide(
                                     blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
-                                                                         event.getClickedSlot(),
-                                                                         event.getClickAction(), event.getMenu(),
-                                                                         event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(
+                                            event.getPlayer(), itemStack,
+                                            event.getClickedSlot(),
+                                            event.getClickAction(), event.getMenu(),
+                                            event.getGuide()
+                                    ),
                                     ingredientSlots,
                                     unordered,
                                     recipeDepth + 1
@@ -146,10 +152,12 @@ public class DefaultPlayerInventoryRecipeCompleteSlimefunSource implements Slime
                         if (depthInRange(player, recipeDepth + 1)) {
                             completeRecipeWithGuide(
                                     blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(event.getPlayer(), itemStack,
-                                                                         event.getClickedSlot(),
-                                                                         event.getClickAction(), event.getMenu(),
-                                                                         event.getGuide()),
+                                    new GuideEvents.ItemButtonClickEvent(
+                                            event.getPlayer(), itemStack,
+                                            event.getClickedSlot(),
+                                            event.getClickAction(), event.getMenu(),
+                                            event.getGuide()
+                                    ),
                                     ingredientSlots,
                                     unordered,
                                     recipeDepth + 1

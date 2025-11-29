@@ -81,16 +81,8 @@ public abstract class GuideGroup extends FlexItemGroup {
         super(key, icon, tier);
     }
 
-    public GuideGroup addGuide(
-            @Range(from = 1, to = Byte.MAX_VALUE) int page,
-            @Range(from = 0, to = 53) int slot,
-            final ItemStack itemStack,
-            final ChestMenu.MenuClickHandler handler) {
-
-        slots.computeIfAbsent(page, k -> new HashSet<>()).add(slot);
-        contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, itemStack);
-        clickHandlers.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, handler);
-        return this;
+    public GuideGroup addGuide(@Range(from = 0, to = 53) int slot, final ChestMenu.MenuClickHandler handler) {
+        return addGuide(1, slot, handler);
     }
 
     public GuideGroup addGuide(
@@ -102,10 +94,6 @@ public abstract class GuideGroup extends FlexItemGroup {
         contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, item);
         clickHandlers.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, handler);
         return this;
-    }
-
-    public GuideGroup addGuide(@Range(from = 0, to = 53) int slot, final ChestMenu.MenuClickHandler handler) {
-        return addGuide(1, slot, handler);
     }
 
     @Nullable
@@ -121,6 +109,10 @@ public abstract class GuideGroup extends FlexItemGroup {
                 .get(slot);
     }
 
+    public GuideGroup addGuide(@Range(from = 0, to = 53) int slot, ItemStack itemStack) {
+        return addGuide(slot, itemStack, ChestMenuUtils.getEmptyClickHandler());
+    }
+
     public GuideGroup addGuide(
             @Range(from = 0, to = 53) int slot,
             final ItemStack itemStack,
@@ -128,8 +120,20 @@ public abstract class GuideGroup extends FlexItemGroup {
         return addGuide(1, slot, itemStack, handler);
     }
 
-    public GuideGroup addGuide(@Range(from = 0, to = 53) int slot, ItemStack itemStack) {
-        return addGuide(slot, itemStack, ChestMenuUtils.getEmptyClickHandler());
+    public GuideGroup addGuide(
+            @Range(from = 1, to = Byte.MAX_VALUE) int page,
+            @Range(from = 0, to = 53) int slot,
+            final ItemStack itemStack,
+            final ChestMenu.MenuClickHandler handler) {
+
+        slots.computeIfAbsent(page, k -> new HashSet<>()).add(slot);
+        contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, itemStack);
+        clickHandlers.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, handler);
+        return this;
+    }
+
+    public GuideGroup addGuide(ItemStack itemStack, @Range(from = 1, to = Byte.MAX_VALUE) int page) {
+        return addGuide(itemStack, ChestMenuUtils.getEmptyClickHandler(), page);
     }
 
     public GuideGroup addGuide(
@@ -139,8 +143,13 @@ public abstract class GuideGroup extends FlexItemGroup {
         return addGuide(findFirstEmptySlot(page), itemStack, handler);
     }
 
-    public GuideGroup addGuide(ItemStack itemStack, @Range(from = 1, to = Byte.MAX_VALUE) int page) {
-        return addGuide(itemStack, ChestMenuUtils.getEmptyClickHandler(), page);
+    private int findFirstEmptySlot(int page) {
+        for (int i = 0; i < 54; i++) {
+            if (!slots.getOrDefault(page, new HashSet<>()).contains(i)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public GuideGroup replaceICon(@Range(from = 0, to = 53) int slot, ItemStack icon) {
@@ -154,15 +163,6 @@ public abstract class GuideGroup extends FlexItemGroup {
         slots.computeIfAbsent(page, k -> new HashSet<>()).add(slot);
         contents.computeIfAbsent(page, k -> new LinkedHashMap<>()).put(slot, itemStack);
         return this;
-    }
-
-    private int findFirstEmptySlot(int page) {
-        for (int i = 0; i < 54; i++) {
-            if (!slots.getOrDefault(page, new HashSet<>()).contains(i)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     @Override
@@ -273,8 +273,12 @@ public abstract class GuideGroup extends FlexItemGroup {
                                     return false;
                                 }
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                                open(player, playerProfile, slimefunGuideMode, Math.min(this.contents.size(),
-                                                                                        page + 1));
+                                open(
+                                        player, playerProfile, slimefunGuideMode, Math.min(
+                                                this.contents.size(),
+                                                page + 1
+                                        )
+                                );
                                 return false;
                             })
             );

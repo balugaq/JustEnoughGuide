@@ -124,10 +124,6 @@ public class CustomGroupConfiguration implements IParsable {
         return this.groups;
     }
 
-    public String[] formats() {
-        return this.formats;
-    }
-
     public Format format() {
         if (this.format != null) return format;
         this.format = new Format() {
@@ -139,6 +135,10 @@ public class CustomGroupConfiguration implements IParsable {
         Formats.addCustomFormat(this.id, this.format);
 
         return this.format;
+    }
+
+    public String[] formats() {
+        return this.formats;
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
@@ -226,21 +226,6 @@ public class CustomGroupConfiguration implements IParsable {
             return itemStack = Converter.getItem(material, this.name);
         }
 
-        public boolean isHashcodeLike(String value) {
-            return value.matches("^[a-fA-F0-9]{32,}$");
-        }
-
-        public boolean isBase64Like(String value) {
-            return value.length() > 32
-                    && value.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
-        }
-
-        public boolean isURLLike(String value) {
-            return value.matches(
-                    "^https?://(?:[-\\w]+\\.)?[-\\w]+(?:\\.[a-zA-Z]{2,5}|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})" +
-                            "(?::\\d{1,5})?(/[-\\w./]*)*(\\?[-\\w.&=]*)?(#[-\\w]*)?$");
-        }
-
         @Nullable
         private ItemStack getHashLike(String material) {
             if (!isHashcodeLike(material)) {
@@ -281,6 +266,21 @@ public class CustomGroupConfiguration implements IParsable {
             }
 
             return null;
+        }
+
+        public boolean isHashcodeLike(String value) {
+            return value.matches("^[a-fA-F0-9]{32,}$");
+        }
+
+        public boolean isBase64Like(String value) {
+            return value.length() > 32
+                    && value.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
+        }
+
+        public boolean isURLLike(String value) {
+            return value.matches(
+                    "^https?://(?:[-\\w]+\\.)?[-\\w]+(?:\\.[a-zA-Z]{2,5}|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})" +
+                            "(?::\\d{1,5})?(/[-\\w./]*)*(\\?[-\\w.&=]*)?(#[-\\w]*)?$");
         }
     }
 }

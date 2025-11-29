@@ -77,6 +77,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class contains utility methods for the guide system.
@@ -91,14 +92,20 @@ import java.util.List;
 public final class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_BOOK_MARK_BUTTON",
-                                                                               Material.NETHER_STAR, "&e&l收藏物列表")));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack(
+                    "JEG_BOOK_MARK_BUTTON",
+                    Material.NETHER_STAR, "&e&l收藏物列表"
+            )));
     private static final ItemStack ITEM_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_ITEM_MARK_BUTTON",
-                                                                               Material.WRITABLE_BOOK, "&e&l收藏物品")));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack(
+                    "JEG_ITEM_MARK_BUTTON",
+                    Material.WRITABLE_BOOK, "&e&l收藏物品"
+            )));
     private static final ItemStack CER_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack("JEG_CER_BUTTON", Material.EMERALD,
-                                                                               "&e&l性价比界面（仅供参考）")));
+            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack(
+                    "JEG_CER_BUTTON", Material.EMERALD,
+                    "&e&l性价比界面（仅供参考）"
+            )));
 
     /**
      * Open the main menu of the guide for the given player and mode.
@@ -165,27 +172,6 @@ public final class GuideUtil {
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             Debug.trace(e);
         }
-    }
-
-    public static ItemStack getBookMarkMenuButton() {
-        return BOOK_MARK_MENU_BUTTON;
-    }
-
-    public static ItemStack getItemMarkMenuButton() {
-        return ITEM_MARK_MENU_BUTTON;
-    }
-
-    public static boolean isTaggedGroupType(ItemGroup itemGroup) {
-        Class<?> clazz = itemGroup.getClass();
-        return !(itemGroup instanceof FlexItemGroup)
-                && (clazz == ItemGroup.class
-                || clazz == SubItemGroup.class
-                || clazz == LockedItemGroup.class
-                || clazz == SeasonalItemGroup.class
-                || itemGroup instanceof BookmarkRelocation
-                || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
-                || clazz.getName().endsWith("DummyItemGroup")
-                || clazz.getName().endsWith("SubGroup"));
     }
 
     @SuppressWarnings("deprecation")
@@ -323,6 +309,10 @@ public final class GuideUtil {
         }
     }
 
+    public static ItemStack getBookMarkMenuButton() {
+        return BOOK_MARK_MENU_BUTTON;
+    }
+
     @SuppressWarnings("deprecation")
     public static void addItemMarkButton(
             ChestMenu menu,
@@ -350,6 +340,23 @@ public final class GuideUtil {
                 menu.addItem(ss, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
             }
         }
+    }
+
+    public static boolean isTaggedGroupType(ItemGroup itemGroup) {
+        Class<?> clazz = itemGroup.getClass();
+        return !(itemGroup instanceof FlexItemGroup)
+                && (clazz == ItemGroup.class
+                || clazz == SubItemGroup.class
+                || clazz == LockedItemGroup.class
+                || clazz == SeasonalItemGroup.class
+                || itemGroup instanceof BookmarkRelocation
+                || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
+                || clazz.getName().endsWith("DummyItemGroup")
+                || clazz.getName().endsWith("SubGroup"));
+    }
+
+    public static ItemStack getItemMarkMenuButton() {
+        return ITEM_MARK_MENU_BUTTON;
     }
 
     @SuppressWarnings({"deprecation"})
@@ -419,9 +426,8 @@ public final class GuideUtil {
 
     public static void openActionSelectGui(Player player, OnClick keybind, BaseAction action) {
         PlayerProfile.get(
-                player, prf ->
-                        new ActionSelectGroup(player, keybind, action).open(player, prf,
-                                                                            SlimefunGuideMode.SURVIVAL_MODE)
+                player, prf -> new ActionSelectGroup(player, keybind, action)
+                        .open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
@@ -430,7 +436,17 @@ public final class GuideUtil {
     }
 
     public static ItemStack getLeftActionIcon(BaseAction action) {
-        return Converter.getItem(action.material(),
-                                 ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")"));
+        return Converter.getItem(
+                action.material(),
+                ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")")
+        );
+    }
+
+    public static @Nullable Player updatePlayer(Player player) {
+        return Bukkit.getPlayer(player.getUniqueId());
+    }
+
+    public static @Nullable Player updatePlayer(UUID uuid) {
+        return Bukkit.getPlayer(uuid);
     }
 }

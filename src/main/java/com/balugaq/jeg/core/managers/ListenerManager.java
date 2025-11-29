@@ -95,18 +95,6 @@ public class ListenerManager extends AbstractManager {
         Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
     }
 
-    private void registerListeners() {
-        for (Listener listener : listeners) {
-            Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
-        }
-    }
-
-    private void unregisterListeners() {
-        for (Listener listener : listeners) {
-            HandlerList.unregisterAll(listener);
-        }
-    }
-
     @Override
     public void load() {
         registerListeners();
@@ -121,9 +109,21 @@ public class ListenerManager extends AbstractManager {
         }
     }
 
+    private void registerListeners() {
+        for (Listener listener : listeners) {
+            Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
+        }
+    }
+
     @Override
     public void unload() {
         unregisterListeners();
         PlayerRightClickEvent.getHandlerList().register(slimefunGuideListener);
+    }
+
+    private void unregisterListeners() {
+        for (Listener listener : listeners) {
+            HandlerList.unregisterAll(listener);
+        }
     }
 }

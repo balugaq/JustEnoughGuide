@@ -54,26 +54,9 @@ public class FinalTechValueDisplayOption implements SlimefunGuideOption<Boolean>
         return instance;
     }
 
-    public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "finaltechv1_emc_item");
-    }
-
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
-    }
-
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
-
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
-    }
-
-    @Override
-    public NamespacedKey getKey() {
-        return key0();
     }
 
     @Override
@@ -93,6 +76,23 @@ public class FinalTechValueDisplayOption implements SlimefunGuideOption<Boolean>
                 "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 旧乱序EMC值显示"
         );
         return Optional.of(item);
+    }
+
+    public static boolean isEnabled(Player p) {
+        return getSelectedOption(p);
+    }
+
+    @Override
+    public NamespacedKey getKey() {
+        return key0();
+    }
+
+    public static boolean getSelectedOption(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
+    }
+
+    public static NamespacedKey key0() {
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "finaltechv1_emc_item");
     }
 
     @Override

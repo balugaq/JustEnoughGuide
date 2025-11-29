@@ -44,18 +44,6 @@ public class TsingshanTechnologyIntegrationMain implements Integration {
     public static final int[] QS_INPUT_SLOTS = new int[] {19, 20, 21, 28, 29, 30, 37, 38, 39};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
     @Override
     public String getHookPlugin() {
         return "TsingshanTechnology";
@@ -67,6 +55,18 @@ public class TsingshanTechnologyIntegrationMain implements Integration {
         rrc("QS_MO_FA_GONG_ZUO_TAI", QS_INPUT_SLOTS, false);
         rrc("QS_KUI_JIA_DUAN_ZAO_TAI", QS_INPUT_SLOTS, false);
         rrc("QS_YUAN_GU_JI_TAN", QS_INPUT_SLOTS, false);
+    }
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

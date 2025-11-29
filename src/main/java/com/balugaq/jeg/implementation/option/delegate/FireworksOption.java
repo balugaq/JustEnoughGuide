@@ -60,21 +60,23 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
         return JustEnoughGuide.getInstance();
     }
 
-    public NamespacedKey getKey() {
-        return new NamespacedKey(Slimefun.instance(), "research_fireworks");
-    }
-
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         SlimefunConfigManager cfgManager = Slimefun.getConfigManager();
         if (cfgManager.isResearchingEnabled() && cfgManager.isResearchFireworkEnabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
-            ItemStack item = new CustomItemStack(Material.FIREWORK_ROCKET, "&b烟花特效: &" + (enabled ? "a启用" : "4禁用"),
-                                                 "", "&7你现在可以选择是否", "&7在解锁一个新物品的时候", "&7展示烟花特效.", "",
-                                                 "&7⇨ &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效");
+            ItemStack item = new CustomItemStack(
+                    Material.FIREWORK_ROCKET, "&b烟花特效: &" + (enabled ? "a启用" : "4禁用"),
+                    "", "&7你现在可以选择是否", "&7在解锁一个新物品的时候", "&7展示烟花特效.", "",
+                    "&7⇨ &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效"
+            );
             return Optional.of(item);
         } else {
             return Optional.empty();
         }
+    }
+
+    public NamespacedKey getKey() {
+        return new NamespacedKey(Slimefun.instance(), "research_fireworks");
     }
 
     public void onClick(Player p, ItemStack guide) {

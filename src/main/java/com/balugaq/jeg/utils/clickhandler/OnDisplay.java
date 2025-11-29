@@ -165,8 +165,10 @@ public interface OnDisplay {
 
             @Override
             public void at(ChestMenu menu, int slot, int page) {
-                menu.addItem(slot, PatchScope.ItemGroup.patch(player, itemGroup.getItem(player)),
-                             OnClick.ItemGroup.Normal.create(guide, menu, itemGroup));
+                menu.addItem(
+                        slot, PatchScope.ItemGroup.patch(player, itemGroup.getItem(player)),
+                        OnClick.ItemGroup.Normal.create(guide, menu, itemGroup)
+                );
             }
         }
 
@@ -188,8 +190,10 @@ public interface OnDisplay {
                         "",
                         (itemGroup instanceof FlexItemGroup || itemGroup.getItems().isEmpty())
                                 ? ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon()))
-                                : ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon(),
-                                                                                            itemGroup.getItems().get(0).getId())),
+                                : ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(
+                                itemGroup.getAddon(),
+                                itemGroup.getItems().get(0).getId()
+                        )),
                         ChatColors.color("&e右键以取消收藏物品组")
                 );
 
@@ -207,9 +211,13 @@ public interface OnDisplay {
                     );
                 });
 
-                menu.addItem(slot, PatchScope.ItemGroup.patch(player, icon), OnClick.ItemGroup.Bookmark.create(guide,
-                                                                                                               menu,
-                                                                                                               itemGroup));
+                menu.addItem(
+                        slot, PatchScope.ItemGroup.patch(player, icon), OnClick.ItemGroup.Bookmark.create(
+                                guide,
+                                menu,
+                                itemGroup
+                        )
+                );
             }
         }
 
@@ -477,12 +485,18 @@ public interface OnDisplay {
                 );
 
                 ItemMeta meta = icon.getItemMeta();
-                meta.getPersistentDataContainer().set(JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY,
-                                                      PersistentDataType.STRING, item.getId());
+                meta.getPersistentDataContainer().set(
+                        JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY,
+                        PersistentDataType.STRING, item.getId()
+                );
                 icon.setItemMeta(meta);
 
-                menu.addItem(slot, PatchScope.Research.patch(player, icon), OnClick.Item.Research.create(guide, menu,
-                                                                                                         page));
+                menu.addItem(
+                        slot, PatchScope.Research.patch(player, icon), OnClick.Item.Research.create(
+                                guide, menu,
+                                page
+                        )
+                );
             }
         }
 
@@ -503,9 +517,13 @@ public interface OnDisplay {
                 io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
                         "",
-                        ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup,
-                                                                                                        item.getId())
-                                , LocalHelper.getDisplayName(itemGroup, player)))
+                        ChatColors.color(String.format(
+                                "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
+                                        itemGroup,
+                                        item.getId()
+                                )
+                                , LocalHelper.getDisplayName(itemGroup, player)
+                        ))
                 );
 
                 ItemStack icon = ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ?
@@ -549,9 +567,13 @@ public interface OnDisplay {
                 io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
                         "",
-                        ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup,
-                                                                                                        item.getId())
-                                , LocalHelper.getDisplayName(itemGroup, player))),
+                        ChatColors.color(String.format(
+                                "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
+                                        itemGroup,
+                                        item.getId()
+                                )
+                                , LocalHelper.getDisplayName(itemGroup, player)
+                        )),
                         ChatColors.color("&e右键以取消收藏物品")
                 );
 
@@ -598,9 +620,13 @@ public interface OnDisplay {
                 io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
                         "",
-                        ChatColors.color(String.format("&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(itemGroup,
-                                                                                                        item.getId())
-                                , LocalHelper.getDisplayName(itemGroup, player))),
+                        ChatColors.color(String.format(
+                                "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
+                                        itemGroup,
+                                        item.getId()
+                                )
+                                , LocalHelper.getDisplayName(itemGroup, player)
+                        )),
                         ChatColors.color("&e左键点击以收藏物品")
                 );
 
@@ -646,8 +672,10 @@ public interface OnDisplay {
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
                         slot,
-                        PatchScope.SlimefunItem.patch(player,
-                                                      ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack))),
+                        PatchScope.SlimefunItem.patch(
+                                player,
+                                ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack))
+                        ),
                         OnClick.Item.Normal.create(guide, menu, page, item)
                 );
             }
