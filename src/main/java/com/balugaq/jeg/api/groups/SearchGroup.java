@@ -154,6 +154,31 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         this.pageMap.put(1, this);
     }
 
+    public static boolean isFullNameApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
+        if (slimefunItem == null) {
+            return false;
+        }
+
+        String itemName = ChatColor.stripColor(slimefunItem.getItemName()).toLowerCase(Locale.ROOT);
+
+        if (itemName.isEmpty()) {
+            return false;
+        }
+
+        // Quick escape for common cases
+        boolean result = itemName.equalsIgnoreCase(searchTerm.toLowerCase());
+        if (result) {
+            return true;
+        }
+
+        if (pinyin) {
+            final String pinyinFirstLetter = getPinyin(itemName);
+            return pinyinFirstLetter.equalsIgnoreCase(searchTerm.toLowerCase());
+        }
+
+        return false;
+    }
+
     public static boolean isSearchFilterApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
         if (slimefunItem == null) {
             return false;
@@ -1104,13 +1129,19 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         Map<FilterType, String> filters = new HashMap<>();
         for (String s : split) {
             boolean isFilter = false;
-            for (FilterType filterType : FilterType.values()) {
-                if (s.startsWith(filterType.getSymbol())
-                        && s.length() > filterType.getSymbol().length()) {
-                    isFilter = true;
-                    String filterValue = s.substring(filterType.getSymbol().length());
-                    filters.put(filterType, filterValue);
-                    break;
+            for (FilterType filterType : FilterType.lengthSortedValues()) {
+                if (s.length() > filterType.getSymbol().length()) {
+                    if (s.startsWith(filterType.getSymbol())) {
+                        isFilter = true;
+                        String filterValue = s.substring(filterType.getSymbol().length());
+                        filters.put(filterType, filterValue);
+                        break;
+                    } else if (s.endsWith(filterType.getSymbol())) {
+                        isFilter = true;
+                        String filterValue = s.substring(0, s.length() - filterType.getSymbol().length());
+                        filters.put(filterType, filterValue);
+                        break;
+                    }
                 }
             }
 

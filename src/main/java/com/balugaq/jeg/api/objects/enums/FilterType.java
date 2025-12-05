@@ -41,8 +41,11 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.lang.ref.Reference;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +56,10 @@ import java.util.Set;
 @SuppressWarnings({"ConstantValue", "deprecation"})
 @Getter
 public enum FilterType {
+    BY_FULL_NAME(
+            "!!",
+            (player, item, lowerFilterValue, pinyin) -> SearchGroup.isFullNameApplicable(item, lowerFilterValue, pinyin)
+    ),
     BY_RECIPE_ITEM_NAME(
             "#", (player, item, lowerFilterValue, pinyin) -> {
         ItemStack[] recipe = item.getRecipe();
@@ -191,5 +198,17 @@ public enum FilterType {
 
     public interface DiFunction<A, B, C, D, R> {
         R apply(A a, B b, C c, D d);
+    }
+
+    @Unmodifiable
+    private static final List<FilterType> lengthSortedValues;
+
+    static {
+        lengthSortedValues = Arrays.stream(values()).sorted(Comparator.comparingInt(e -> -e.symbol.length())).toList();
+    }
+
+    @Unmodifiable
+    public static List<FilterType> lengthSortedValues() {
+        return lengthSortedValues;
     }
 }
