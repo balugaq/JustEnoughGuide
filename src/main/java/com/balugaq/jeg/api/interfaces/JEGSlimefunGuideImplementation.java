@@ -31,6 +31,7 @@ import city.norain.slimefun4.VaultIntegration;
 import com.balugaq.jeg.api.groups.BookmarkGroup;
 import com.balugaq.jeg.api.groups.ItemMarkGroup;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
+import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.LocalHelper;
@@ -83,7 +84,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             ItemGroup itemGroup = slimefunItem.getItemGroup();
             if (slimefunItem.isDisabledIn(p.getWorld())) {
                 return ItemStackUtil.getCleanItem(
-                        Converter.getItem(Material.BARRIER, ItemUtils.getItemName(item), "&4&l 该 Slimefun 物品已被禁用"));
+                        Converter.getItem(Material.BARRIER, SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem), "&4&l 该 Slimefun 物品已被禁用"));
             }
             String lore = hasPermission0(p, slimefunItem)
                     ? String.format(
@@ -100,7 +101,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                                 : Converter.getItem(
                                 Converter.getItem(
                                         Material.BARRIER,
-                                        ItemUtils.getItemName(item),
+                                        SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem),
                                         "&4&l"
                                                 + Slimefun.getLocalization()
                                                 .getMessage(p, "guide.locked"),
@@ -124,7 +125,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                                 : Converter.getItem(
                                 Converter.getItem(
                                         Material.BARRIER,
-                                        ItemUtils.getItemName(item),
+                                        SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem),
                                         "&4&l"
                                                 + Slimefun.getLocalization()
                                                 .getMessage(p, "guide.locked"),
