@@ -34,7 +34,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>Insider-167</version>
+    <version>Insider-168</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -370,6 +370,14 @@
             <artifactId>FoliaLib</artifactId>
             <version>0.5.1</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- Slimefun Translation -->
+        <dependency>
+            <groupId>net.guizhanss</groupId>
+            <artifactId>SlimefunTranslation</artifactId>
+            <version>e6da231617</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -58,6 +58,7 @@ import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionInte
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimehud.SlimeHUDIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.core.integrations.tsingshantechnology.TsingshanTechnologyIntegrationMain;
@@ -125,6 +126,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledSimpleUtils;
     private boolean enabledSlimeAEPlugin;
     private boolean enabledSlimeFrame;
+    private boolean enabledSlimefunTranslation;
     private boolean enabledSlimeHUD;
     private boolean enabledSlimeHUDPlus;
     private boolean enabledSlimeTinker;
@@ -134,99 +136,95 @@ public class IntegrationManager extends AbstractManager {
 
     public IntegrationManager(JavaPlugin plugin) {
         this.plugin = plugin;
-        JustEnoughGuide
-                .runLater(
-                        () -> {
-                            PluginManager pm = Bukkit.getPluginManager();
-                            try {
-                                Class.forName("com.ytdd9527.networksexpansion.implementation.ExpansionItems");
-                                enabledNetworksExpansion = true;
-                            } catch (ClassNotFoundException e) {
-                                enabledNetworksExpansion = false;
-                            }
+        JustEnoughGuide.runLater(() -> {
+            PluginManager pm = Bukkit.getPluginManager();
+            try {
+                Class.forName("com.ytdd9527.networksexpansion.implementation.ExpansionItems");
+                enabledNetworksExpansion = true;
+            } catch (ClassNotFoundException e) {
+                enabledNetworksExpansion = false;
+            }
 
-                            this.enabledAlchimiaVitae = pm.isPluginEnabled("AlchimiaVitae");
-                            this.enabledBedrockTechnology = pm.isPluginEnabled("BedrockTechnology");
-                            this.enabledClayTechFixed = pm.isPluginEnabled("ClayTech-Fixed");
-                            this.enabledClayTech = enabledClayTechFixed || pm.isPluginEnabled("ClayTech");
-                            this.enabledCMILib = pm.isPluginEnabled("CMILib");
-                            this.enabledCultivation = pm.isPluginEnabled("Cultivation");
-                            this.enabledDankTech2 = pm.isPluginEnabled("DankTech2");
-                            this.enabledElementManipulation = pm.isPluginEnabled("ElementManipulation");
-                            this.enabledEMCTech = pm.isPluginEnabled("EMCTech");
-                            this.enabledFastMachines = pm.isPluginEnabled("FastMachines");
-                            this.enabledFinalTech = pm.isPluginEnabled("FinalTech") && classExists("io.taraxacum" +
-                                                                                                           ".finaltech.api.factory.ItemValueTable");
-                            this.enabledFinalTECH_Changed = pm.isPluginEnabled("FinalTECH-Changed");
-                            this.enabledFinalTECH = enabledFinalTECH_Changed
-                                    || (pm.isPluginEnabled("FinalTECH") && classExists("io.taraxacum.libs.slimefun" +
-                                                                                               ".dto.ItemValueTable"));
-                            this.enabledFluffyMachines = pm.isPluginEnabled("FluffyMachines");
-                            this.enabledGalactifun = pm.isPluginEnabled("Galactifun");
-                            this.enabledGastronomicon = pm.isPluginEnabled("Gastronomicon");
-                            this.enabledGuguSlimefunLib = pm.isPluginEnabled("GuguSlimefunLib");
-                            this.enabledInfinityCompress = pm.isPluginEnabled("InfinityCompress");
-                            this.enabledInfinityExpansion_Changed = pm.isPluginEnabled("InfinityExpansion-Changed");
-                            this.enabledInfinityExpansion =
-                                    enabledInfinityExpansion_Changed || pm.isPluginEnabled("InfinityExpansion");
-                            this.enabledInfinityExpansion2 = pm.isPluginEnabled("InfinityExpansion2");
-                            this.enabledLogiTech = pm.isPluginEnabled("LogiTech");
-                            this.enabledMagicExpansion = pm.isPluginEnabled("magicexpansion");
-                            this.enabledNetworks = enabledNetworksExpansion || pm.isPluginEnabled("Networks");
-                            this.enabledNexcavate = pm.isPluginEnabled("Nexcavate");
-                            this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
-                            this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
-                            this.enabledRSCEditor = pm.isPluginEnabled("RSCEditor");
-                            this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
-                            this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
-                            this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
-                            this.enabledSlimeHUDPlus = pm.isPluginEnabled("SlimeHUDPlus");
-                            this.enabledSlimeHUD = enabledSlimeHUD || pm.isPluginEnabled("SlimeHUD");
-                            this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
-                            this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
-                            this.enabledTsingshanTechnology_Fixed = pm.isPluginEnabled("TsingshanTechnology-Fixed");
-                            this.enabledTsingshanTechnology = enabledTsingshanTechnology_Fixed || pm.isPluginEnabled(
-                                    "TsingshanTechnology");
-                            this.enabledWilderNether = pm.isPluginEnabled("WilderNether");
+            this.enabledAlchimiaVitae = pm.isPluginEnabled("AlchimiaVitae");
+            this.enabledBedrockTechnology = pm.isPluginEnabled("BedrockTechnology");
+            this.enabledClayTechFixed = pm.isPluginEnabled("ClayTech-Fixed");
+            this.enabledClayTech = enabledClayTechFixed || pm.isPluginEnabled("ClayTech");
+            this.enabledCMILib = pm.isPluginEnabled("CMILib");
+            this.enabledCultivation = pm.isPluginEnabled("Cultivation");
+            this.enabledDankTech2 = pm.isPluginEnabled("DankTech2");
+            this.enabledElementManipulation = pm.isPluginEnabled("ElementManipulation");
+            this.enabledEMCTech = pm.isPluginEnabled("EMCTech");
+            this.enabledFastMachines = pm.isPluginEnabled("FastMachines");
+            this.enabledFinalTech = pm.isPluginEnabled("FinalTech") && classExists("io.taraxacum.finaltech.api.factory.ItemValueTable");
+            this.enabledFinalTECH_Changed = pm.isPluginEnabled("FinalTECH-Changed");
+            this.enabledFinalTECH = enabledFinalTECH_Changed
+                    || (pm.isPluginEnabled("FinalTECH") && classExists("io.taraxacum.libs.slimefun.dto.ItemValueTable"));
+            this.enabledFluffyMachines = pm.isPluginEnabled("FluffyMachines");
+            this.enabledGalactifun = pm.isPluginEnabled("Galactifun");
+            this.enabledGastronomicon = pm.isPluginEnabled("Gastronomicon");
+            this.enabledGuguSlimefunLib = pm.isPluginEnabled("GuguSlimefunLib");
+            this.enabledInfinityCompress = pm.isPluginEnabled("InfinityCompress");
+            this.enabledInfinityExpansion_Changed = pm.isPluginEnabled("InfinityExpansion-Changed");
+            this.enabledInfinityExpansion =
+                    enabledInfinityExpansion_Changed || pm.isPluginEnabled("InfinityExpansion");
+            this.enabledInfinityExpansion2 = pm.isPluginEnabled("InfinityExpansion2");
+            this.enabledLogiTech = pm.isPluginEnabled("LogiTech");
+            this.enabledMagicExpansion = pm.isPluginEnabled("magicexpansion");
+            this.enabledNetworks = enabledNetworksExpansion || pm.isPluginEnabled("Networks");
+            this.enabledNexcavate = pm.isPluginEnabled("Nexcavate");
+            this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
+            this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
+            this.enabledRSCEditor = pm.isPluginEnabled("RSCEditor");
+            this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
+            this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
+            this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
+            this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
+            this.enabledSlimefunTranslation = pm.isPluginEnabled("SlimefunTranslation");
+            this.enabledSlimeHUDPlus = pm.isPluginEnabled("SlimeHUDPlus");
+            this.enabledSlimeHUD = enabledSlimeHUD || pm.isPluginEnabled("SlimeHUD");
+            this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
+            this.enabledTsingshanTechnology_Fixed = pm.isPluginEnabled("TsingshanTechnology-Fixed");
+            this.enabledTsingshanTechnology = enabledTsingshanTechnology_Fixed || pm.isPluginEnabled(
+                    "TsingshanTechnology");
+            this.enabledWilderNether = pm.isPluginEnabled("WilderNether");
 
-                            addIntegration(enabledAlchimiaVitae, AlchimiaVitaeIntegrationMain::new);
-                            addIntegration(enabledBedrockTechnology, BedrockTechnologyIntegrationMain::new);
-                            addIntegration(enabledClayTech, ClayTechIntegrationMain::new);
-                            addIntegration(enabledCultivation, CultivationIntegrationMain::new);
-                            addIntegration(enabledDankTech2, DankTech2IntegrationMain::new);
-                            addIntegration(enabledElementManipulation, ElementManipulationIntegrationMain::new);
-                            addIntegration(enabledEMCTech, EMCTechIntegrationMain::new);
-                            addIntegration(enabledFastMachines, FastMachinesIntegrationMain::new);
-                            addIntegration(enabledFinalTech, FinalTechIntegrationMain::new);
-                            addIntegration(enabledFinalTECH, FinalTECHIntegrationMain::new);
-                            addIntegration(enabledFinalTECH_Changed, FinalTECHChangedIntegrationMain::new);
-                            addIntegration(enabledFluffyMachines, FluffyMachinesIntegrationMain::new);
-                            addIntegration(enabledGalactifun, GalactifunIntegrationMain::new);
-                            addIntegration(enabledGastronomicon, GastronomiconIntegrationMain::new);
-                            addIntegration(enabledInfinityCompress, InfinityCompressIntegrationMain::new);
-                            addIntegration(enabledInfinityExpansion, InfinityExpansionIntegrationMain::new);
-                            addIntegration(enabledInfinityExpansion2, InfinityExpansion2IntegrationMain::new);
-                            addIntegration(enabledLogiTech, LogitechIntegrationMain::new);
-                            addIntegration(enabledMagicExpansion, MagicExpansionIntegrationMain::new);
-                            addIntegration(enabledNexcavate, NexcavateIntegrationMain::new);
-                            addIntegration(enabledNetworks, NetworksIntegrationMain::new);
-                            addIntegration(enabledNetworksExpansion, NetworksExpansionIntegrationMain::new);
-                            addIntegration(enabledObsidianExpansion, ObsidianExpansionIntegrationMain::new);
-                            addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
-                            addIntegration(enabledSimpleUtils, SimpleUtilsIntegrationMain::new);
-                            addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
-                            addIntegration(enabledSlimeHUD, SlimeHUDIntegrationMain::new);
-                            addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
-                            addIntegration(enabledTsingshanTechnology, TsingshanTechnologyIntegrationMain::new);
-                            addIntegration(enabledWilderNether, WilderNetherIntegrationMain::new);
+            addIntegration(enabledAlchimiaVitae, AlchimiaVitaeIntegrationMain::new);
+            addIntegration(enabledBedrockTechnology, BedrockTechnologyIntegrationMain::new);
+            addIntegration(enabledClayTech, ClayTechIntegrationMain::new);
+            addIntegration(enabledCultivation, CultivationIntegrationMain::new);
+            addIntegration(enabledDankTech2, DankTech2IntegrationMain::new);
+            addIntegration(enabledElementManipulation, ElementManipulationIntegrationMain::new);
+            addIntegration(enabledEMCTech, EMCTechIntegrationMain::new);
+            addIntegration(enabledFastMachines, FastMachinesIntegrationMain::new);
+            addIntegration(enabledFinalTech, FinalTechIntegrationMain::new);
+            addIntegration(enabledFinalTECH, FinalTECHIntegrationMain::new);
+            addIntegration(enabledFinalTECH_Changed, FinalTECHChangedIntegrationMain::new);
+            addIntegration(enabledFluffyMachines, FluffyMachinesIntegrationMain::new);
+            addIntegration(enabledGalactifun, GalactifunIntegrationMain::new);
+            addIntegration(enabledGastronomicon, GastronomiconIntegrationMain::new);
+            addIntegration(enabledInfinityCompress, InfinityCompressIntegrationMain::new);
+            addIntegration(enabledInfinityExpansion, InfinityExpansionIntegrationMain::new);
+            addIntegration(enabledInfinityExpansion2, InfinityExpansion2IntegrationMain::new);
+            addIntegration(enabledLogiTech, LogitechIntegrationMain::new);
+            addIntegration(enabledMagicExpansion, MagicExpansionIntegrationMain::new);
+            addIntegration(enabledNexcavate, NexcavateIntegrationMain::new);
+            addIntegration(enabledNetworks, NetworksIntegrationMain::new);
+            addIntegration(enabledNetworksExpansion, NetworksExpansionIntegrationMain::new);
+            addIntegration(enabledObsidianExpansion, ObsidianExpansionIntegrationMain::new);
+            addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
+            addIntegration(enabledSimpleUtils, SimpleUtilsIntegrationMain::new);
+            addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
+            addIntegration(enabledSlimefunTranslation, SlimefunTranslationIntegrationMain::new);
+            addIntegration(enabledSlimeHUD, SlimeHUDIntegrationMain::new);
+            addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
+            addIntegration(enabledTsingshanTechnology, TsingshanTechnologyIntegrationMain::new);
+            addIntegration(enabledWilderNether, WilderNetherIntegrationMain::new);
 
-                            startupIntegrations();
+            startupIntegrations();
 
-                            RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteSlimefunSource());
-                            RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteVanillaSource());
-                        },
-                        1L
-                );
+            RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteSlimefunSource());
+            RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteVanillaSource());
+        }, 1L);
     }
 
     public static boolean classExists(String className) {
