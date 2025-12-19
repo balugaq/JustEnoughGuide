@@ -57,7 +57,7 @@ import java.util.Set;
 public enum FilterType {
     BY_FULL_NAME(
             "!!",
-            (player, item, lowerFilterValue, pinyin) -> SearchGroup.isFullNameApplicable(item, lowerFilterValue, pinyin)
+            SearchGroup::isFullNameApplicable
     ),
     BY_RECIPE_ITEM_NAME(
             "#", (player, item, lowerFilterValue, pinyin) -> {
@@ -151,8 +151,7 @@ public enum FilterType {
     }
     ),
     BY_ITEM_NAME(
-            "!", (player, item, lowerFilterValue, pinyin) ->
-            SearchGroup.isSearchFilterApplicable(item, lowerFilterValue, pinyin)
+            "!", SearchGroup::isSearchFilterApplicable
     ),
     BY_ITEM_LORE(
             "^", (player, item, lowerFilterValue, pinyin) -> {

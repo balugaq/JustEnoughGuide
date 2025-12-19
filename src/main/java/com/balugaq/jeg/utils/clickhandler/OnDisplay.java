@@ -32,6 +32,7 @@ import com.balugaq.jeg.api.interfaces.CustomIconDisplay;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.VanillaItemShade;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
@@ -369,7 +370,7 @@ public interface OnDisplay {
 
         static Item display(Player player, SlimefunItem item, DisplayType type, SlimefunGuideImplementation guide) {
             if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, item, type, jeg);
-            return display(player, item.getItem(), type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
+            return display(player, SlimefunTranslationIntegrationMain.translateItem(player, item.getItem()), type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
         static Item display(Player player, SlimefunItem item, DisplayType type, JEGSlimefunGuideImplementation guide) {
