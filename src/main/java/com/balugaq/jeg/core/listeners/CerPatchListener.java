@@ -27,7 +27,7 @@
 
 package com.balugaq.jeg.core.listeners;
 
-import com.balugaq.jeg.api.cost.CERCalculator;
+import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
