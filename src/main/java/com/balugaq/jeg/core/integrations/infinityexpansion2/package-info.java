@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 balugaq
+ * Copyright (c) 2024-2026 balugaq
  *
  * This file is part of JustEnoughGuide, available under MIT license.
  *
