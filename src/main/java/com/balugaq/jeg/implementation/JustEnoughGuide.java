@@ -100,8 +100,10 @@ import java.util.logging.Level;
 @Getter
 @NullMarked
 public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
-    public static final int RECOMMENDED_JAVA_VERSION = 17;
-    public static final MinecraftVersion RECOMMENDED_MC_VERSION = MinecraftVersion.MINECRAFT_1_16;
+    public static final int RECOMMENDED_JAVA_VERSION = 21;
+    public static final int LEAST_JAVA_VERSION = 17;
+    public static final MinecraftVersion RECOMMENDED_MC_VERSION = MinecraftVersion.V1_20_1;
+    public static final MinecraftVersion LEAST_MC_VERSION = MinecraftVersion.V1_16;
 
     @Getter
     @UnknownNullability
@@ -493,7 +495,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      * @return true if the environment is compatible, false otherwise
      */
     private boolean environmentCheck() {
-        this.minecraftVersion = MinecraftVersion.getCurrentVersion();
+        this.minecraftVersion = MinecraftVersion.current();
         this.javaVersion = NumberUtils.getJavaVersion();
         if (minecraftVersion == null) {
             getLogger().warning("无法获取到 Minecraft 版本!");
@@ -502,13 +504,13 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         if (minecraftVersion == MinecraftVersion.UNKNOWN) {
             getLogger().warning("无法识别当前的 Minecraft 版本! (" + javaVersion + ")");
-        } else if (!minecraftVersion.isAtLeast(RECOMMENDED_MC_VERSION)) {
+        } else if (!minecraftVersion.isAtLeast(LEAST_MC_VERSION)) {
             getLogger()
                     .warning("当前 Minecraft 版本过低(" + minecraftVersion.humanize() + "), 请使用 Minecraft "
                                      + RECOMMENDED_MC_VERSION.humanize() + " 或以上版本!");
         }
 
-        if (javaVersion < RECOMMENDED_JAVA_VERSION) {
+        if (javaVersion < LEAST_JAVA_VERSION) {
             getLogger().warning("Java 版本过低，请使用 Java " + RECOMMENDED_JAVA_VERSION + " 或以上版本!");
         }
 
@@ -516,6 +518,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().log(Level.SEVERE, "本插件需要 鬼斩前置库插件(GuizhanLibPlugin) 才能运行!");
             getLogger().log(Level.SEVERE, "从此处下载: https://50l.cc/gzlib");
             getLogger().log(Level.SEVERE, "当出现该报错时, 作者对一切后续的报错不负责");
+            return false;
         }
 
         return true;

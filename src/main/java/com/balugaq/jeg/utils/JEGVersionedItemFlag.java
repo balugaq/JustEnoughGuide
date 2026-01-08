@@ -48,7 +48,7 @@ public class JEGVersionedItemFlag {
 
     static {
         MinecraftVersion version = JustEnoughGuide.getMinecraftVersion();
-        HIDE_ADDITIONAL_TOOLTIP = version.isAtLeast(MinecraftVersion.MINECRAFT_1_20_5)
+        HIDE_ADDITIONAL_TOOLTIP = version.isAtLeast(MinecraftVersion.V1_20_5)
                 ? getKey("HIDE_ADDITIONAL_TOOLTIP")
                 : getKey("HIDE_POTION_EFFECTS");
     }

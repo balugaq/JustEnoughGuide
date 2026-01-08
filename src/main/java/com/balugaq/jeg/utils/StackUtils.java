@@ -75,15 +75,15 @@ import java.util.Optional;
 @NullMarked
 public class StackUtils {
     public static final boolean IS_1_17_1 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17_1);
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_17_1);
     public static final boolean IS_1_19_4 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_19_4);
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_19_4);
     public static final boolean IS_1_20 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_20);
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_20);
     public static final boolean IS_1_20_5 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_20_5);
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_20_5);
     public static final boolean IS_1_21 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_21);
+            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_21);
 
     public static ItemStack getAsQuantity(@Nullable ItemStack itemStack, int amount) {
         if (itemStack == null) {
