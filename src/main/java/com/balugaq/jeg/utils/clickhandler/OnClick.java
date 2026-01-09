@@ -108,6 +108,14 @@ public interface OnClick {
                                                     p.isOp() || p.hasPermission("slimefun.cheat.items")
         );
         menu.addMenuOpeningHandler(pl -> pl.playSound(pl.getLocation(), Sounds.GUIDE_BUTTON_CLICK_SOUND, 1, 1));
+        menu.addMenuClickHandler(-999, (p, s, i, a) -> {
+            // it called when the player clicks outside the inventory
+            if (p.isOp() || p.hasPermission("slimefun.cheat.items")) {
+                // op or permissible players are allowed to drop item
+                return true;
+            }
+            return false;
+        });
     }
 
     static void share(Player player, String itemName) {
@@ -231,12 +239,19 @@ public interface OnClick {
         default Action findAction(Player player, String key) {
             for (Action action : listActions()) {
                 String k = action.getKey().getKey();
-                if (JustEnoughGuide.getConfigManager().isAllowActionRedirect()) {
-                    String remap = ACTION_KEY.get(player, k);
-                    if (remap != null) k = remap;
+                if (k.equals(key)) {
+                    if (JustEnoughGuide.getConfigManager().isAllowActionRedirect()) {
+                        String remap = ACTION_KEY.get(player, k);
+                        if (remap != null) {
+                            for (Action act : listActions()) {
+                                 if (act.getKey().getKey().equals(remap)) {
+                                     return act;
+                                 }
+                            }
+                        }
+                    }
+                    return action;
                 }
-
-                if (k.equals(key)) return action;
             }
 
             return new Action() {
@@ -637,12 +652,19 @@ public interface OnClick {
         default Action findAction(Player player, String key) {
             for (Action action : listActions()) {
                 String k = action.getKey().getKey();
-                if (JustEnoughGuide.getConfigManager().isAllowActionRedirect()) {
-                    String remap = ACTION_KEY.get(player, k);
-                    if (remap != null) k = remap;
+                if (k.equals(key)) {
+                    if (JustEnoughGuide.getConfigManager().isAllowActionRedirect()) {
+                        String remap = ACTION_KEY.get(player, k);
+                        if (remap != null) {
+                            for (Action act : listActions()) {
+                                if (act.getKey().getKey().equals(remap)) {
+                                    return act;
+                                }
+                            }
+                        }
+                    }
+                    return action;
                 }
-
-                if (k.equals(key)) return action;
             }
 
             return new Action() {
@@ -850,16 +872,23 @@ public interface OnClick {
         }
 
         default Action findAction(Player player, String key) {
-            if (JustEnoughGuide.getConfigManager().isAllowActionRedirect()) {
-                String remap = ACTION_KEY.get(player, key);
-                if (remap != null) key = remap;
-            }
-
             for (Action action : listActions()) {
-                if (action.getKey().getKey().equals(key)) return action;
+                String k = action.getKey().getKey();
+                if (k.equals(key)) {
+                    if (JustEnoughGuide.getConfigManager().isAllowActionRedirect()) {
+                        String remap = ACTION_KEY.get(player, k);
+                        if (remap != null) {
+                            for (Action act : listActions()) {
+                                if (act.getKey().getKey().equals(remap)) {
+                                    return act;
+                                }
+                            }
+                        }
+                    }
+                    return action;
+                }
             }
 
-            String finalKey = key;
             return new Action() {
                 @Override
                 public Material material() {
@@ -880,7 +909,7 @@ public interface OnClick {
 
                 @Override
                 public NamespacedKey getKey() {
-                    return KeyUtil.newKey(finalKey);
+                    return KeyUtil.newKey(key);
                 }
             };
         }
