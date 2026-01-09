@@ -47,6 +47,7 @@ import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
+import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.clickhandler.BaseAction;
@@ -80,6 +81,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -211,11 +213,10 @@ public final class GuideUtil {
                                                         if (action.isShiftClicked()) {
                                                             implementation.openMainMenu(
                                                                     profile,
-                                                                    profile.getGuideHistory()
-                                                                            .getMainMenuPage()
+                                                                    history.getMainMenuPage()
                                                             );
                                                         } else {
-                                                            history.goBack(implementation);
+                                                            GuideUtil.goBack(history);
                                                         }
                                                     } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
                                                         // previous page button clicked
@@ -461,8 +462,8 @@ public final class GuideUtil {
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile) {
-        List<ItemGroup> groups = new LinkedList<>();
+    public static List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile) {
+        List<ItemGroup> groups = new ArrayList<>();
 
         for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
             try {
@@ -480,7 +481,7 @@ public final class GuideUtil {
                     if (flexItemGroup.isVisible(p, profile, SlimefunGuideMode.SURVIVAL_MODE)) {
                         groups.add(group);
                     }
-                } else if (!group.isHidden(p)) {
+                } else if (!group.isHidden(p) && group.isVisible(p) && group.isAccessible(p)) {
                     groups.add(group);
                 }
             } catch (Exception | LinkageError x) {
@@ -501,10 +502,10 @@ public final class GuideUtil {
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public List<ItemGroup> getVisibleItemGroupsCheat(Player p, PlayerProfile profile, boolean guideTierMode) {
-        List<ItemGroup> groups = new LinkedList<>();
-        List<ItemGroup> specialGroups = new LinkedList<>();
-        var survivalDisplays = getVisibleItemGroupsSurvival(p, profile);
+    public static List<ItemGroup> getVisibleItemGroupsCheat(Player p, PlayerProfile profile, boolean guideTierMode) {
+        List<ItemGroup> groups = new ArrayList<>();
+        List<ItemGroup> specialGroups = new ArrayList<>();
+        List<ItemGroup> survival = getVisibleItemGroupsSurvival(p, profile);
         for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
             try {
                 if (group.getClass().isAnnotationPresent(NotDisplayInCheatMode.class)) {
@@ -534,10 +535,8 @@ public final class GuideUtil {
                 if (group instanceof SeasonalItemGroup) {
                     specialGroups.add(group);
                 } else {
-                    if (!group.isHidden(p)) {
-                        if (survivalDisplays.contains(group)) {
-                            groups.add(group);
-                        }
+                    if (survival.contains(group) || (group.isVisible(p) && !group.isHidden(p))) {
+                        groups.add(group);
                     } else {
                         var sm = group.getClass().getSimpleName();
                         if ("AdvancementsItemGroup".equals(sm)) {
@@ -563,9 +562,60 @@ public final class GuideUtil {
             }
         }
 
+        groups = new ArrayList<>(groups.stream().distinct().toList());
         GroupResorter.sort(groups);
         groups.addAll(specialGroups);
 
         return groups;
+    }
+
+    public SlimefunGuideImplementation getLastGuide(Player player) {
+        var mode = GuideListener.guideModeMap.get(player);
+        return GuideUtil.getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
+    }
+
+    public static void goBack(GuideHistory history) {
+        goBack(ReflectionUtil.getValue(history, "profile", PlayerProfile.class));
+    }
+
+    public static void goBack(PlayerProfile profile) {
+        var p = profile.getPlayer();
+        if (p == null) return;
+
+        GuideHistory history = profile.getGuideHistory();
+        var entry = ReflectionUtil.invokeMethod(history, "getLastEntry", true);
+        var guide = getLastGuide(p);
+
+        if (entry == null) {
+            guide.openMainMenu(profile, history.getMainMenuPage());
+            return;
+        }
+        var content = ReflectionUtil.invokeMethod(entry, "getIndexedObject");
+        int page = (int) ReflectionUtil.invokeMethod(entry, "getPage");
+        if (content instanceof final ItemGroup group) {
+            guide.openItemGroup(profile, group, page);
+            return;
+        }
+
+        if (content instanceof final SlimefunItem item) {
+            guide.displayItem(profile, item, false);
+            return;
+        }
+
+        if (content instanceof final ItemStack stack) {
+            guide.displayItem(profile, stack, page, false);
+            return;
+        }
+
+        if (content instanceof final String query) {
+            guide.openSearch(profile, query, false);
+            return;
+        }
+
+        throw new IllegalStateException("Unknown GuideHistory entry: " + content);
+    }
+
+    public static void goBack(Player player) {
+        PlayerProfile.get(player, GuideUtil::goBack);
     }
 }

@@ -88,7 +88,7 @@ public class SubKeybindsItemsGroup extends BaseGroup<SubKeybindsItemsGroup> {
                                     SlimefunGuide.openMainMenu(
                                             playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
                                 } else {
-                                    guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                                    GuideUtil.goBack(guideHistory);
                                 }
                                 return false;
                             })

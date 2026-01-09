@@ -304,8 +304,7 @@ public class RTSSearchGroup extends FlexItemGroup {
                             return;
                         }
                         // back button clicked
-                        GuideHistory history = profile.getGuideHistory();
-                        history.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                        GuideUtil.goBack(profile.getGuideHistory());
                     } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
                         // previous page button clicked
                         SearchGroup rts = RTS_SEARCH_GROUPS.get(player);

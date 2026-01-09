@@ -214,7 +214,7 @@ public abstract class GuideGroup extends FlexItemGroup {
                                     SlimefunGuide.openMainMenu(
                                             playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
                                 } else {
-                                    guideHistory.goBack(Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode));
+                                    GuideUtil.goBack(guideHistory);
                                 }
                                 return false;
                             })

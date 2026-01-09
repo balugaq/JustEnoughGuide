@@ -34,7 +34,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>Insider-172</version>
+    <version>Insider-173</version>
 
     <pluginRepositories>
         <pluginRepository>

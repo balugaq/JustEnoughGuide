@@ -111,7 +111,7 @@ public class ListenerManager extends AbstractManager {
     }
 
     private void registerListeners() {
-        for (Listener listener : listeners) {
+        for (Listener listener : new ArrayList<>(listeners)) {
             Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
         }
     }

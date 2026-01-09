@@ -266,7 +266,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             return;
         }
 
-        if (itemGroup instanceof NestedItemGroup nested && itemGroup.getClass() == NestedItemGroup.class) {
+        if (itemGroup instanceof NestedItemGroup nested && (itemGroup.getClass() == NestedItemGroup.class || (itemGroup.getClass().getSuperclass() == NestedItemGroup.class && itemGroup.getClass().isAnonymousClass()))) {
             openNestedItemGroup(p, profile, nested, page);
             return;
         }
@@ -276,9 +276,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             return;
         }
 
-        if (isSurvivalMode()) {
-            profile.getGuideHistory().add(itemGroup, page);
-        }
+        profile.getGuideHistory().add(itemGroup, page);
 
         ChestMenu menu = create0(p);
         createHeader(p, profile, menu, Formats.sub);
@@ -460,7 +458,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                     menu.addMenuClickHandler(
                             ss.get(t),
                             (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
-                                SlimefunGuide.openItemGroup(profile, subGroup, getMode(), 1);
+                                this.openItemGroup(profile, subGroup, 1);
                                 return false;
                             })
                     );
@@ -886,7 +884,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
                         Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
                         ChatInput.waitForPlayer(
-                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, isSurvivalMode()));
+                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, true));
 
                         return false;
                     })
@@ -943,7 +941,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
                         Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
                         ChatInput.waitForPlayer(
-                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, isSurvivalMode()));
+                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, true));
 
                         return false;
                     })
@@ -959,7 +957,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     public void addBackButton0(ChestMenu menu, int slot, Player p, PlayerProfile profile) {
         GuideHistory history = profile.getGuideHistory();
 
-        if (isSurvivalMode() && history.size() > 1) {
+        if (history.size() > 1) {
             menu.addItem(
                     slot,
                     PatchScope.Back.patch(
@@ -975,7 +973,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
                         if (action.isShiftClicked()) {
                             openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
                         } else {
-                            history.goBack(this);
+                            GuideUtil.goBack(history);
                         }
                         return false;
                     })

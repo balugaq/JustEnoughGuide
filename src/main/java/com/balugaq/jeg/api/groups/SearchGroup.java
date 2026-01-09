@@ -996,7 +996,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                     SlimefunGuide.openMainMenu(
                                             playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
                                 } else {
-                                    guideHistory.goBack(implementation);
+                                    GuideUtil.goBack(guideHistory);
                                 }
                                 return false;
                             })
@@ -1021,7 +1021,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                         msg -> implementation.openSearch(
                                                 playerProfile,
                                                 msg,
-                                                implementation.getMode() == SlimefunGuideMode.SURVIVAL_MODE
+                                                true
                                         )
                                 );
 

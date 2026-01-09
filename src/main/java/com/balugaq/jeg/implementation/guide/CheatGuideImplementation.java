@@ -205,20 +205,6 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         return Slimefun.getPermissionsService().hasPermission(p, item);
     }
 
-    public static boolean isTaggedGroupType(ItemGroup itemGroup) {
-        Class<?> clazz = itemGroup.getClass();
-        return clazz == ItemGroup.class
-                || clazz == SubItemGroup.class
-                || clazz == NestedItemGroup.class
-                || clazz == LockedItemGroup.class
-                || clazz == SeasonalItemGroup.class
-                || clazz == SearchGroup.class
-                || itemGroup instanceof BookmarkRelocation
-                || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
-                || clazz.getName().endsWith("DummyItemGroup")
-                || clazz.getName().endsWith("SubGroup");
-    }
-
     /**
      * Returns a {@link List} of visible {@link ItemGroup} instances that the {@link SlimefunGuide} would display.
      *
@@ -357,7 +343,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
             return;
         }
 
-        if (itemGroup instanceof NestedItemGroup nested && itemGroup.getClass() == NestedItemGroup.class) {
+        if (itemGroup instanceof NestedItemGroup nested && (itemGroup.getClass() == NestedItemGroup.class || (itemGroup.getClass().getSuperclass() == NestedItemGroup.class && itemGroup.getClass().isAnonymousClass()))) {
             openNestedItemGroup(p, profile, nested, page);
             return;
         }
@@ -367,9 +353,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
             return;
         }
 
-        if (isSurvivalMode()) {
-            profile.getGuideHistory().add(itemGroup, page);
-        }
+        profile.getGuideHistory().add(itemGroup, page);
 
         ChestMenu menu = create0(p);
         createHeader(p, profile, menu, Formats.sub);
@@ -979,7 +963,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                                 ChatInput.waitForPlayer(
                                         JustEnoughGuide.getInstance(), pl, msg -> openSearch(
                                                 profile, msg,
-                                                isSurvivalMode()
+                                                true
                                         )
                                 );
 
@@ -1031,7 +1015,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                                 ChatInput.waitForPlayer(
                                         JustEnoughGuide.getInstance(), pl, msg -> openSearch(
                                                 profile, msg,
-                                                isSurvivalMode()
+                                                true
                                         )
                                 );
 
@@ -1049,7 +1033,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     public void addBackButton0(ChestMenu menu, int slot, Player p, PlayerProfile profile) {
         GuideHistory history = profile.getGuideHistory();
 
-        if (isSurvivalMode() && history.size() > 1) {
+        if (history.size() > 1) {
             menu.addItem(
                     slot,
                     PatchScope.Back.patch(
@@ -1063,12 +1047,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
                                 if (action.isShiftClicked()) {
                                     openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
                                 } else {
-                                    history.goBack(this);
+                                    GuideUtil.goBack(history);
                                 }
                                 return false;
                             })
             );
-
         } else {
             menu.addItem(
                     slot,

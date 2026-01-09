@@ -226,6 +226,5 @@ public class GuideListener implements Listener {
             SlimefunGuideMode type = SlimefunGuide.getDefaultMode();
             p.getInventory().addItem(SlimefunGuide.getItem(type).clone());
         }
-
     }
 }
