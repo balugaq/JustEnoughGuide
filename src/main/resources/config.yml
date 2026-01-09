@@ -20,6 +20,7 @@ improvements:
   cer-patch: false
   allow-action-redirect: true
   logitech-machine-stackable-display: true
+  slimefun-id-display: true
 
 # 是否禁止在粘液容器中交互收纳袋
 disable-bundle-interaction: true

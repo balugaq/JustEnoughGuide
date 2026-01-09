@@ -58,7 +58,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -213,9 +212,25 @@ public interface OnClick {
     ObjectImmutableList<? extends BaseAction> listActions();
 
     /**
-     * 点击物品组时: 如果是在 4 月 1 日，有 114 / 514 的几率打开Never gonna give you up页面（在聊天栏弹出链接，当天只会弹出一次） 在书签中: 右键: 取消书签 在标记书签中: 左键:
-     * 标记书签 在交换物品组时: 点击的是特殊物品组: (FlexItemGroup) 左键: 打开 右键: 选择 点击的是普通物品组: (!FlexItemGroup) 左键: 选择 左键: 打开 右键: 收藏物品组 OP时:
-     * Shift+左键: 复制物品组的key (namespace:key) 若安装了 RSCE，Shift+右键: 获取对应的物品组占位符
+     * 点击物品组时:
+     *   - (彩蛋) 如果是在 4 月 1 日，有 114 / 514 的几率打开Never gonna give you up页面（在聊天栏弹出链接，当天只会弹出一次）
+     *   - 在书签中:
+     *     - 左键: 打开物品组
+     *     - 右键: 取消书签
+     *   - 在标记书签中:
+     *     - 左键: 标记书签
+     *   - 在交换物品组时:
+     *     - 点击的是特殊物品组: (FlexItemGroup)
+     *       - 左键: 打开物品组
+     *       - 右键: 选择物品组
+     *     - 点击的是普通物品组: (!FlexItemGroup)
+     *       - 左键: 选择物品组
+     *   - OP时:
+     *     - Shift+左键: 复制物品组的key (namespace:key)
+     *     - 若安装了 RSCE:
+     *       - Shift+右键: 获取对应的物品组占位符
+     *   - 左键: 打开物品组
+     *   - 右键: 收藏物品组
      *
      * @author balugaq
      * @since 2.0
@@ -435,7 +450,7 @@ public interface OnClick {
         class Normal implements ItemGroup {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     OpAction.of(
-                            "shift-right-click", "OP: 获取对应的物品组占位符", Material.DECORATED_POT, (guide, event, player,
+                            "shift-right-click", "作弊模式 - 获取对应的物品组占位符", Material.DECORATED_POT, (guide, event, player,
                                                                                                         slot,
                                                                                                         itemGroup,
                                                                                                         action, menu,
@@ -460,44 +475,26 @@ public interface OnClick {
                             }
                     ),
                     OpAction.of(
-                            "shift-left-click", "OP: 复制物品组的key", Material.TRIPWIRE_HOOK, (guide, event, player, slot,
-                                                                                                itemGroup, action,
-                                                                                                menu, page) -> {
+                            "shift-left-click", "作弊模式 - 复制物品组的key", Material.TRIPWIRE_HOOK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
                                 if (!player.isOp()) {
                                     return;
                                 }
 
                                 NamespacedKey key = itemGroup.getKey();
                                 String s = key.toString();
-                                if (PlatformUtil.isPaper()) {
-                                    Component base =
-                                            Component.text("点击复制物品组的key: ", TextColor.color(0x00FF00)).append(Component.text(s, TextColor.color(0xFFFF00))).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("点击复制", TextColor.color(0xFFFF00))));
-                                    Component clickToCopy =
-                                            base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, s));
-                                    player.sendMessage(clickToCopy);
-                                } else {
-                                    ClipboardUtil.send(player, ClipboardUtil.makeComponent("&e点击复制物品组的key", s, s));
-                                }
+                                ClipboardUtil.send(player, "&e点击复制物品组的key", s, s);
                             }
                     ),
                     OpAction.of(
-                            "copy-full-class", "OP: 复制物品组的class", Material.COMMAND_BLOCK, (guide, event, player, slot,
+                            "copy-full-class", "作弊模式 - 复制物品组的class", Material.COMMAND_BLOCK, (guide, event, player, slot,
                                                                                                 itemGroup, action,
                                                                                                 menu, page) -> {
                                 if (!player.isOp()) {
                                     return;
                                 }
 
-                                String s = itemGroup.getClass().toString();
-                                if (PlatformUtil.isPaper()) {
-                                    Component base =
-                                            Component.text("点击复制物品组的class: ", TextColor.color(0x00FF00)).append(Component.text(s, TextColor.color(0xFFFF00))).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("点击复制", TextColor.color(0xFFFF00))));
-                                    Component clickToCopy =
-                                            base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, s));
-                                    player.sendMessage(clickToCopy);
-                                } else {
-                                    ClipboardUtil.send(player, ClipboardUtil.makeComponent("&e点击复制物品组的class", s, s));
-                                }
+                                String s = itemGroup.getClass().getName();
+                                ClipboardUtil.send(player, "&e点击复制物品组的class", s, s);
                             }
                     ),
                     Action.of(
@@ -631,7 +628,11 @@ public interface OnClick {
     }
 
     /**
-     * 点击配方类型时: Q建: 分享配方类型 右键: 查找使用此配方类型的物品: 搜索: $名字 Shift左键: 打开配方类型所在物品组（若有） Shift右键: 查找相关物品/机器: 搜索: 名字
+     * 点击配方类型时:
+     *   - Q建: 分享配方类型
+     *   - 右键: 查找使用此配方类型的物品: 搜索: $名字
+     *   - Shift左键: 打开配方类型所在物品组（若有）
+     *   - Shift右键: 查找相关物品/机器: 搜索: 名字
      *
      * @author balugaq
      * @since 2.0
@@ -848,9 +849,24 @@ public interface OnClick {
     }
 
     /**
-     * 点击物品时: 物品未解锁时: 解锁物品 F键: 搜索配方展示物品的名字涉及此物品的名字的物品: 搜索: %名字 Q键: 分享物品 在书签中: 作弊书: 左键: 给予物品 生存书: 左键: 显示配方界面 右键: 取消书签
-     * 在标记书签中: 左键: 标记书签 右键: 查找物品用途: 搜索: #名字 Shift左键: 打开物品所在物品组 Shift右键: 查找相关物品/机器: 搜索: 名字 有cheat权限: (光标空 && 中键) 放光标上
-     * (作弊书 || 光标有物品) 放背包里 显示配方界面
+     * 点击物品时:
+     *   - 物品未解锁时: 解锁物品
+     *   - F键: 搜索配方展示物品的名字涉及此物品的名字的物品: 搜索: %名字
+     *   - Q键: 分享物品
+     *   - 在书签中:
+     *     左键:
+     *     - 在作弊书: 给予物品
+     *     - 在生存书: 显示配方界面
+     *     右键: 取消书签
+     *   - 在标记书签中:
+     *     - 左键: 标记书签
+     *     - 右键: 查找物品用途: 搜索: #名字
+     *     - Shift左键: 打开物品所在物品组
+     *     - Shift右键: 查找相关物品/机器: 搜索: 名字
+     *     - 有作弊权限:
+     *       - 点击中键并且光标为空: 放光标上
+     *       - 正在打开作弊书或光标有物品: 放背包里
+     *   - 显示配方界面
      *
      * @author balugaq
      * @since 2.0
@@ -1379,6 +1395,15 @@ public interface OnClick {
                                 ItemStack itemStack = slimefunItem == null ? item :
                                         Converter.getItem(slimefunItem.getItem());
                                 player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
+                            }
+                    ),
+                    OpAction.of(
+                            "copy-sf-id", "作弊模式 - 复制粘液物品ID", Material.MAGENTA_GLAZED_TERRACOTTA, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                                if (slimefunItem == null) {
+                                    return;
+                                }
+                                String s = slimefunItem.getId();
+                                ClipboardUtil.send(player, "&e点击复制粘液物品的ID", s, s);
                             }
                     ),
                     Action.of(

@@ -25,11 +25,12 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.logitech;
+package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
+import com.balugaq.jeg.implementation.option.SlimefunIdDisplayOption;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.entity.Player;
@@ -38,7 +39,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -48,17 +48,17 @@ import java.util.List;
  * @author balugaq
  * @since 2.0
  */
-@NullMarked
-public class LogitechItemPatchListener implements ItemPatchListener {
+public class SlimefunIdPatchListener implements ItemPatchListener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
             PatchScope.SlimefunItem,
             PatchScope.ItemMarkItem,
             PatchScope.BookMarkItem,
-            PatchScope.SearchItem
+            PatchScope.SearchItem,
+            PatchScope.ItemRecipeIngredient
     );
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void patchItem(PatchEvent event) {
+    public void onSearch(PatchEvent event) {
         PatchScope scope = event.getPatchScope();
         if (notValid(scope)) {
             return;
@@ -82,7 +82,7 @@ public class LogitechItemPatchListener implements ItemPatchListener {
     }
 
     public boolean disabledOption(Player player) {
-        return !MachineStackableDisplayOption.isEnabled(player);
+        return !SlimefunIdDisplayOption.isEnabled(player);
     }
 
     @SuppressWarnings("deprecation")
@@ -96,13 +96,6 @@ public class LogitechItemPatchListener implements ItemPatchListener {
             return;
         }
 
-        boolean isMachineStackable = LogitechIntegrationMain.isMachineStackable(sf);
-        boolean isGeneratorStackable = LogitechIntegrationMain.isGeneratorStackable(sf);
-        boolean isMaterialGeneratorStackable = LogitechIntegrationMain.isMaterialGeneratorStackable(sf);
-        if (!isMachineStackable && !isGeneratorStackable && !isMaterialGeneratorStackable) {
-            return;
-        }
-
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) {
             return;
@@ -112,9 +105,7 @@ public class LogitechItemPatchListener implements ItemPatchListener {
         if (lore == null) {
             lore = new ArrayList<>();
         }
-        if (isMachineStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-堆叠配方机器堆叠"));
-        if (isGeneratorStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-量子发电机超频装置堆叠"));
-        if (isMaterialGeneratorStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-堆叠生成器堆叠"));
+        lore.add(ChatColors.color("&8slimefun:" + sf.getId().toLowerCase()));
 
         meta.setLore(lore);
         tagMeta(meta);

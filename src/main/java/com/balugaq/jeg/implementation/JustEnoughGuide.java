@@ -52,6 +52,7 @@ import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
+import com.balugaq.jeg.implementation.option.SlimefunIdDisplayOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
@@ -66,14 +67,19 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -369,6 +375,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             if (getConfigManager().isBeginnerOption()) {
                 getLogger().info("正在加载指南选项...");
                 JEGGuideSettings.patchSlimefun();
+                if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
+                    JEGGuideSettings.addOption(SlimefunIdDisplayOption.instance());
+                }
                 JEGGuideSettings.addOption(KeybindsSettingsGuideOption.instance());
                 JEGGuideSettings.addOption(BeginnersGuideOption.instance());
                 JEGGuideSettings.addOption(CerPatchGuideOption.instance());
@@ -412,6 +421,21 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         SpecialMenuProvider.loadConfiguration();
         ThirdPartyWarnings.check();
+
+        runNextTick(() -> {
+            try {
+                ItemStack easterEgg = new CustomItemStack(
+                        Material.GLOWSTONE_DUST,
+                        "&6&l彩蛋",
+                        "&6&l爱来自 JustEnoughGuide"
+                );
+                if (SlimefunItems.ELECTRIC_INGOT_FACTORY_2.getItem() instanceof AContainer ac) {
+                    ac.registerRecipe(114514, easterEgg, easterEgg);
+                }
+                ;
+            } catch (Exception ignored) {
+            }
+        });
 
         getLogger().info("成功启用此附属");
     }

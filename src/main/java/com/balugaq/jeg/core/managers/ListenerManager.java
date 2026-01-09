@@ -37,6 +37,7 @@ import com.balugaq.jeg.core.listeners.MenuListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SearchReloadListener;
+import com.balugaq.jeg.core.listeners.SlimefunIdPatchListener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.WatchdogHandler;
@@ -75,21 +76,22 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new GroupTierEditorListener());
         listeners.add(new GuideGUIFixListener());
         listeners.add(new MenuListener());
+        listeners.add(new SearchReloadListener());
+        if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
+            listeners.add(new SlimefunIdPatchListener());
+        }
         if (JustEnoughGuide.getConfigManager().isCerPatch()) {
             listeners.add(new CerPatchListener());
         }
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
             listeners.add(new RecipeCompletableListener());
         }
-
         if (JustEnoughGuide.getConfigManager().isDebug()) {
             listeners.add(new WatchdogHandler());
         }
         if (JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()) {
             listeners.add(new BundleListener());
         }
-
-        listeners.add(new SearchReloadListener());
     }
 
     public void registerListener(Listener listener) {

@@ -25,7 +25,7 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.logitech;
+package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -47,10 +47,10 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class MachineStackableDisplayOption implements SlimefunGuideOption<Boolean> {
-    public static final MachineStackableDisplayOption instance = new MachineStackableDisplayOption();
+public class SlimefunIdDisplayOption implements SlimefunGuideOption<Boolean> {
+    public static final SlimefunIdDisplayOption instance = new SlimefunIdDisplayOption();
 
-    public static MachineStackableDisplayOption instance() {
+    public static SlimefunIdDisplayOption instance() {
         return instance;
     }
 
@@ -63,14 +63,14 @@ public class MachineStackableDisplayOption implements SlimefunGuideOption<Boolea
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.BLAST_FURNACE : Material.FURNACE,
-                "&b逻辑工艺-堆叠显示: &" + (enabled ? "a启用" : "4禁用"),
+                isEnabled(p) ? Material.GLOWSTONE : Material.REDSTONE_LAMP,
+                "&b粘液物品ID显示: &" + (enabled ? "a启用" : "4禁用"),
                 "",
                 "&7你现在可以选择是否",
                 "&7在查阅一个物品的时候",
-                "&7显示它是否能被逻辑工艺的堆叠机器堆叠",
+                "&7显示它的粘液ID",
                 "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 逻辑工艺-堆叠显示"
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 粘液物品ID显示"
         );
         return Optional.of(item);
     }
@@ -89,7 +89,7 @@ public class MachineStackableDisplayOption implements SlimefunGuideOption<Boolea
     }
 
     public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "logitech_machine_stackable");
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "slimefun_id_display");
     }
 
     @Override
