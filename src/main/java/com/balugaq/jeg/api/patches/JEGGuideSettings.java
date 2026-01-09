@@ -348,7 +348,7 @@ public class JEGGuideSettings {
             menu.addItem(ss, ChestMenuUtils.getNextButton(p, page, maxPage));
             menu.addMenuClickHandler(
                     ss, (pl, slot, item, action) -> {
-                        if (page + 1 < maxPage) {
+                        if (page + 1 <= maxPage) {
                             openSettings(pl, guide, page + 1);
                         }
 
