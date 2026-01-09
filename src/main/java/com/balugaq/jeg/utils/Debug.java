@@ -30,6 +30,7 @@ package com.balugaq.jeg.utils;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,6 +56,7 @@ public class Debug {
     public static final File errorsFolder =
             new File(JustEnoughGuide.getInstance().getDataFolder(), "error-reports");
     private static final String debugPrefix = "[Debug] ";
+    @Setter
     private static @Nullable JavaPlugin plugin = null;
 
     static {

@@ -25,67 +25,44 @@
  *
  */
 
-package com.balugaq.jeg.core.commands;
+package com.balugaq.jeg.core.listeners;
 
-import com.balugaq.jeg.api.interfaces.JEGCommand;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import lombok.Getter;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
-import org.jspecify.annotations.NullMarked;
-
-import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 
 /**
- * This is the implementation of the "/jeg reload" command. It reloads the JEG plugin configuration.
- *
  * @author balugaq
- * @since 1.1
  */
-@SuppressWarnings({"ClassCanBeRecord", "deprecation", "SwitchStatementWithTooFewBranches", "ConstantValue"})
 @Getter
-@NullMarked
-public class ReloadCommand implements JEGCommand {
-    private final Plugin plugin;
+public class SearchReloadListener implements Listener {
+    private boolean scheduleReload = false;
 
-    public ReloadCommand(Plugin plugin) {
-        this.plugin = plugin;
+    public SearchReloadListener() {
+        JustEnoughGuide.runTimerAsync(() -> {
+            if (scheduleReload) {
+                JustEnoughGuide.reload(JustEnoughGuide.getInstance(), Bukkit.getConsoleSender());
+                scheduleReload = false;
+            }
+        }, 5000, 20 * 60 * 5);
     }
 
-    @Override
-    public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
-        switch (args.length) {
-            case 1 -> {
-                return List.of("reload");
-            }
-
-            default -> {
-                return List.of();
-            }
+    @EventHandler
+    public void onSlimefunAddonEnable(PluginEnableEvent event) {
+        if (event.getPlugin() instanceof SlimefunAddon) {
+            scheduleReload = true;
         }
     }
 
-    @Override
-    public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
-        if (sender.isOp()) {
-            if (args.length == 1) {
-                return "reload".equalsIgnoreCase(args[0]);
-            }
+    @EventHandler
+    public void onSlimefunAddonDisable(PluginDisableEvent event) {
+        if (event.getPlugin() instanceof SlimefunAddon && !"JustEnoughGuide".equals(event.getPlugin().getName())) {
+            scheduleReload = true;
         }
-        return false;
-    }
-
-    @Override
-    public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
-        JustEnoughGuide.reload(plugin, sender);
     }
 }

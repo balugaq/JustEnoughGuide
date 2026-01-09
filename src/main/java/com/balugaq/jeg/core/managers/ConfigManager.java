@@ -99,6 +99,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean ITEM_SHAREABLE;
     private final boolean CER_PATCH;
     private final boolean ALLOW_ACTION_REDIRECT;
+    private final boolean LOGITECH_MACHINE_STACKABLE_DISPLAY;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -343,6 +344,7 @@ public class ConfigManager extends AbstractManager {
         this.ITEM_SHAREABLE = cfg.getBoolean("improvements.item-shareable", true);
         this.CER_PATCH = cfg.getBoolean("improvements.cer-patch", true);
         this.ALLOW_ACTION_REDIRECT = cfg.getBoolean("improvements.allow-action-redirect", true);
+        this.LOGITECH_MACHINE_STACKABLE_DISPLAY = cfg.getBoolean("improvements.logitech-machine-stackable-display", true);
     }
 
     private void setupDefaultConfig() {
@@ -523,6 +525,10 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isAllowActionRedirect() {
         return ALLOW_ACTION_REDIRECT;
+    }
+
+    public boolean isLogitechMachineStackableDisplay() {
+        return LOGITECH_MACHINE_STACKABLE_DISPLAY;
     }
 
     private void processSharedChars(Set<Map.Entry<String, List<String>>> data) {

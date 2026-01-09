@@ -77,6 +77,7 @@ import org.jspecify.annotations.NullMarked;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -271,7 +272,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         JustEnoughGuide.runLaterAsync(() -> {
             // Initialize asynchronously
             int i = 0;
-            for (SlimefunItem item : Slimefun.getRegistry().getEnabledSlimefunItems()) {
+            for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
                 try {
                     ENABLED_ITEMS.put(item, i);
                     i += 1;
@@ -665,8 +666,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     } else if (slimefunItem instanceof MultiBlockMachine mb) {
                         try {
                             displayRecipes = mb.getDisplayRecipes();
-                        } catch (Exception e) {
-                            Debug.trace(e, "init searching");
+                        } catch (Exception ignored) {
                         }
                     } else if (SpecialMenuProvider.ENABLED_LogiTech
                             && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null
@@ -675,8 +675,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                             && slimefunItem instanceof RecipeDisplayItem rdi) {
                         try {
                             displayRecipes = rdi.getDisplayRecipes();
-                        } catch (Exception e) {
-                            Debug.trace(e, "init searching");
+                        } catch (Exception ignored) {
                         }
                     }
                     if (displayRecipes != null) {
@@ -801,8 +800,6 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                             Set<SlimefunItem> set = ref.get();
                             if (set != null) {
                                 set.addAll(sharedItems);
-                                Debug.debug("Shared cache added to CACHE char \"" + c + "\" ("
-                                                    + sharedItems.size() + " items)");
                             }
                         }
                     }
@@ -827,8 +824,6 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                             Set<SlimefunItem> set = ref.get();
                             if (set != null) {
                                 set.addAll(sharedItems2);
-                                Debug.debug("Shared cache added to CACHE2 char \"" + c + "\" ("
-                                                    + sharedItems2.size() + " items)");
                             }
                         }
                     }

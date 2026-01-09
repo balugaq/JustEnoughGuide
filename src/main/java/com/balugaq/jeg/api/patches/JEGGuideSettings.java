@@ -374,10 +374,12 @@ public class JEGGuideSettings {
             getOptions().remove(po);
         }
 
-        addOption(new GuideModeOption());
-        addOption(new FireworksOption());
-        addOption(new LearningAnimationOption());
-        addOption(new PlayerLanguageOption());
+        var ss = patched.stream().map(s -> s.getClass().getSimpleName()).toList();
+
+        if (ss.contains("GuideModeOption")) addOption(new GuideModeOption());
+        if (ss.contains("FireworksOption")) addOption(new FireworksOption());
+        if (ss.contains("LearningAnimationOption")) addOption(new LearningAnimationOption());
+        if (ss.contains("PlayerLanguageOption")) addOption(new PlayerLanguageOption());
     }
 
     @SuppressWarnings({"unchecked", "DataFlowIssue"})

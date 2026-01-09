@@ -72,6 +72,9 @@ import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import lombok.Getter;
 import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -173,13 +176,17 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
     public static CommandManager getCommandManager() {
         return getInstance().commandManager;
-    }    public static ConfigManager getConfigManager() {
+    }
+
+    public static ConfigManager getConfigManager() {
         return getInstance().configManager;
     }
 
     public static ListenerManager getListenerManager() {
         return getInstance().listenerManager;
-    }    public static IntegrationManager getIntegrationManager() {
+    }
+
+    public static IntegrationManager getIntegrationManager() {
         return getInstance().integrationManager;
     }
 
@@ -229,6 +236,27 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getScheduler().runTimerAsync(runnable, delay, period);
     }
 
+    public static void reload(@Nullable Plugin plugin, CommandSender sender) {
+        sender.sendMessage(ChatColor.GREEN + "Reloading plugin...");
+        try {
+            if (plugin == null) {
+                sender.sendMessage(ChatColor.RED + "Failed to reload plugin.");
+                return;
+            }
+
+            plugin.onDisable();
+            plugin.onEnable();
+            plugin.reloadConfig(); // 1st reload
+            SearchGroup.LOADED = false;
+            SearchGroup.init();
+            plugin.reloadConfig(); // 2nd reload
+            sender.sendMessage(ChatColor.GREEN + "plugin has been reloaded.");
+        } catch (Exception e) {
+            sender.sendMessage(ChatColor.RED + "Failed to reload plugin.");
+            Debug.trace(e);
+        }
+    }
+
     /**
      * Returns the JavaPlugin instance.
      *
@@ -257,10 +285,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      *         the debug message to log
      */
     public void debug(String message) {
-        if (getConfigManager().isDebug()) {
-            getLogger().warning("[DEBUG] " + message);
-        }
-    }    /**
+        Debug.debug(message);
+    }
+
+    /**
      * Initializes the plugin and sets up all necessary components.
      */
     @SuppressWarnings("DuplicateExpressions")
@@ -390,7 +418,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
     public String getVersion() {
         return getDescription().getVersion();
-    }    /**
+    }
+
+    /**
      * Cleans up resources and shuts down the plugin.
      */
     @Override
@@ -464,6 +494,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.commandManager = null;
         this.listenerManager = null;
         this.configManager = null;
+        Debug.setPlugin(null);
 
         // Other fields
         this.minecraftVersion = null;
@@ -482,12 +513,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public boolean isDebug() {
         return getConfigManager().isDebug();
     }
-
-
-
-
-
-
 
     /**
      * Checks the environment compatibility for the plugin.
@@ -523,8 +548,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         return true;
     }
-
-
 
     /**
      * Attempts to update the plugin if auto-update is enabled.

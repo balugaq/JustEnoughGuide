@@ -36,6 +36,7 @@ import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.MenuListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.core.listeners.SearchReloadListener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.WatchdogHandler;
@@ -84,10 +85,11 @@ public class ListenerManager extends AbstractManager {
         if (JustEnoughGuide.getConfigManager().isDebug()) {
             listeners.add(new WatchdogHandler());
         }
-
         if (JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()) {
             listeners.add(new BundleListener());
         }
+
+        listeners.add(new SearchReloadListener());
     }
 
     public void registerListener(Listener listener) {
@@ -99,8 +101,7 @@ public class ListenerManager extends AbstractManager {
     public void load() {
         registerListeners();
         for (RegisteredListener rl : PlayerRightClickEvent.getHandlerList().getRegisteredListeners()) {
-            if (rl.getListener().getClass().getName().equals("io.github.thebusybiscuit.slimefun4.implementation" +
-                                                                     ".listeners.SlimefunGuideListener")) {
+            if (rl.getListener().getClass().getName().equals("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener")) {
                 slimefunGuideListener = rl;
                 PlayerRightClickEvent.getHandlerList().unregister(rl);
                 PlayerRightClickEvent.getHandlerList().bake();

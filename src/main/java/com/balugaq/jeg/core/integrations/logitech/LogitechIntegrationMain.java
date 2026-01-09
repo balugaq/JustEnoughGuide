@@ -34,11 +34,16 @@ package com.balugaq.jeg.core.integrations.logitech;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.ItemStackUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author balugaq
@@ -60,6 +65,9 @@ public class LogitechIntegrationMain implements Integration {
             45, 46, 47, 48, 49, 50
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
+
+    public static final Set<SlimefunItem> stackableMachines = new HashSet<>();
+    public static final Set<SlimefunItem> stackableMaterialGenerators = new HashSet<>();
 
     @Override
     public String getHookPlugin() {
@@ -91,17 +99,17 @@ public class LogitechIntegrationMain implements Integration {
             if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
                 try {
                     rrc(me.matl114.logitech.core.Registries.AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                } catch (Throwable ignored) {
+                } catch (Exception ignored) {
                 }
                 try {
                     rrc(me.matl114.logitech.core.Registries.AddDepends.INFINITY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                } catch (Throwable ignored) {
+                } catch (Exception ignored) {
                 }
             }
             if (JustEnoughGuide.getIntegrationManager().isEnabledNetworks()) {
                 try {
                     rrc(me.matl114.logitech.core.Registries.AddDepends.NTWWORKBENCH_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                } catch (Throwable ignored) {
+                } catch (Exception ignored) {
                 }
             }
         } catch (ClassNotFoundException ignored) {
@@ -137,11 +145,11 @@ public class LogitechIntegrationMain implements Integration {
                 if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
                     try {
                         rrc(me.matl114.logitech.SlimefunItem.AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                    } catch (Throwable ignored2) {
+                    } catch (Exception ignored2) {
                     }
                     try {
                         rrc(me.matl114.logitech.SlimefunItem.AddDepends.INFINITY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                    } catch (Throwable ignored2) {
+                    } catch (Exception ignored2) {
                     }
                 }
                 if (JustEnoughGuide.getIntegrationManager().isEnabledNetworks()) {
@@ -150,7 +158,7 @@ public class LogitechIntegrationMain implements Integration {
                                 me.matl114.logitech.SlimefunItem.AddDepends.NTWWORKBENCH_MANUAL,
                                 MANUAL_CRAFTER_INPUT_SLOTS
                         );
-                    } catch (Throwable ignored2) {
+                    } catch (Exception ignored2) {
                     }
                 }
             } catch (ClassNotFoundException ignored2) {
@@ -158,6 +166,24 @@ public class LogitechIntegrationMain implements Integration {
         }
 
         rrc("LOGITECH_BUG_CRAFTER", BUG_CRAFTER_INPUT_SLOTS, false);
+
+        try {
+            // LogiTech v1.0.4
+            stackableMachines.addAll(me.matl114.logitech.core.Registries.RecipeSupporter.STACKMACHINE_LIST.keySet());
+            stackableMaterialGenerators.addAll(me.matl114.logitech.core.Registries.RecipeSupporter.STACKMGENERATOR_LIST.keySet());
+        } catch (Exception ignored) {
+            // LogiTech v1.0.3
+            try {
+                stackableMachines.addAll(me.matl114.logitech.Utils.RecipeSupporter.STACKMACHINE_LIST.keySet());
+                stackableMaterialGenerators.addAll(me.matl114.logitech.Utils.RecipeSupporter.STACKMGENERATOR_LIST.keySet());
+            } catch (Exception ignored2) {
+            }
+        }
+
+        if (JustEnoughGuide.getConfigManager().isLogitechMachineStackableDisplay()) {
+            SlimefunGuideSettings.addOption(MachineStackableDisplayOption.instance());
+            JustEnoughGuide.getListenerManager().registerListener(new LogitechItemPatchListener());
+        }
     }
 
     public static void rrc(SlimefunItem slimefunItem, int[] slots) {
@@ -182,5 +208,22 @@ public class LogitechIntegrationMain implements Integration {
         for (SlimefunItem slimefunItem : handledSlimefunItems) {
             RecipeCompletableRegistry.unregisterRecipeCompletable(slimefunItem);
         }
+    }
+
+    public static boolean isMachineStackable(SlimefunItem sf) {
+        return stackableMachines.contains(sf);
+    }
+
+    public static boolean isGeneratorStackable(SlimefunItem sf) {
+        var className = sf.getClass().getName();
+        return sf instanceof EnergyNetProvider
+                && !"me.matl114.logitech.core.Machines.Electrics.EnergyAmplifier".equals(className)
+                && !"me.matl114.logitech.SlimefunItem.Machines.Electrics.EnergyAmplifier".equals(className)
+                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.SlimefunItem.Machines.Electrics.AbstractEnergyMachine")
+                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.core.Machines.Abstracts.AbstractEnergyMachine");
+    }
+
+    public static boolean isMaterialGeneratorStackable(SlimefunItem sf) {
+        return stackableMaterialGenerators.contains(sf);
     }
 }

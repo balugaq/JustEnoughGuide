@@ -102,7 +102,7 @@ public class GroupResorter {
                             } else {
                                 int i = 0;
                                 for (ItemGroup itemGroup :
-                                        Slimefun.getRegistry().getAllItemGroups()) {
+                                        new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                                     setTier(itemGroup, i++);
                                     setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
                                 }

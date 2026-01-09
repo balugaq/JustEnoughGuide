@@ -254,7 +254,7 @@ public interface OnClick {
                 public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player,
                                      int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
                                      ClickAction clickAction, ChestMenu menu, int page) {
-                    player.sendMessage("&c未找到按键: " + key);
+                    player.sendMessage(ChatColors.color("&c未找到按键: " + key));
                     return false;
                 }
 
@@ -465,6 +465,26 @@ public interface OnClick {
                                 }
                             }
                     ),
+                    OpAction.of(
+                            "copy-full-class", "OP: 复制物品组的class", Material.COMMAND_BLOCK, (guide, event, player, slot,
+                                                                                                itemGroup, action,
+                                                                                                menu, page) -> {
+                                if (!player.isOp()) {
+                                    return;
+                                }
+
+                                String s = itemGroup.getClass().toString();
+                                if (PlatformUtil.isPaper()) {
+                                    Component base =
+                                            Component.text("点击复制物品组的class: ", TextColor.color(0x00FF00)).append(Component.text(s, TextColor.color(0xFFFF00))).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("点击复制", TextColor.color(0xFFFF00))));
+                                    Component clickToCopy =
+                                            base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, s));
+                                    player.sendMessage(clickToCopy);
+                                } else {
+                                    ClipboardUtil.send(player, ClipboardUtil.makeComponent("&e点击复制物品组的class", s, s));
+                                }
+                            }
+                    ),
                     Action.of(
                             "right-click", "收藏物品组/选择待交换的物品组", Material.KNOWLEDGE_BOOK, (guide, event, player, slot,
                                                                                                       itemGroup,
@@ -640,7 +660,7 @@ public interface OnClick {
                 public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot,
                                      io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
                                      ClickAction clickAction, ChestMenu menu, int page) {
-                    player.sendMessage("&c未找到按键: " + key);
+                    player.sendMessage(ChatColors.color("&c未找到按键: " + key));
                     return false;
                 }
 
@@ -1255,11 +1275,21 @@ public interface OnClick {
                             }
                     ),
                     Action.of(
-                            "shift-left-click", "打开物品所在物品组", Material.CAULDRON, (guide, player, slot, slimefunItem,
+                            "shift-left-click", "打开物品所在物品组/OP: 取下物品", Material.CAULDRON, (guide, player, slot, slimefunItem,
                                                                                           item, clickAction, menu,
                                                                                           p2) -> {
                                 if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
                                 if (slimefunItem == null) return;
+
+                                if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
+                                    int amount = 1;
+                                    if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
+
+                                    ItemStack itemStack = slimefunItem == null ? item :
+                                            Converter.getItem(slimefunItem.getItem());
+                                    player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
+                                    return;
+                                }
 
                                 final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup =
                                         slimefunItem.getItemGroup();

@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
+import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
@@ -52,7 +53,7 @@ import java.util.List;
  * @since 1.9
  */
 @NullMarked
-public class FinalTECHItemPatchListener implements Listener {
+public class FinalTECHItemPatchListener implements ItemPatchListener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
             PatchScope.SlimefunItem,
             PatchScope.ItemMarkItem,
@@ -77,7 +78,12 @@ public class FinalTECHItemPatchListener implements Listener {
             return;
         }
 
-        patchItem(event.getItemStack(), scope);
+        ItemStack stack = event.getItemStack();
+        if (isTagged(stack)) {
+            return;
+        }
+
+        patchItem(stack, scope);
     }
 
     public boolean notValid(PatchScope patchScope) {
@@ -116,6 +122,7 @@ public class FinalTECHItemPatchListener implements Listener {
         lore.add(ChatColors.color("&7新乱序输入EMC: &6" + inputEmc));
         lore.add(ChatColors.color("&7新乱序输出EMC: &6" + outputEmc));
         meta.setLore(lore);
+        tagMeta(meta);
         itemStack.setItemMeta(meta);
     }
 

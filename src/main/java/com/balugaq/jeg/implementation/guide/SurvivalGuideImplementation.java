@@ -172,42 +172,7 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
     @Override
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     public List<ItemGroup> getVisibleItemGroups(Player p, PlayerProfile profile) {
-        List<ItemGroup> groups = new LinkedList<>();
-
-        for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
-            try {
-                if (group.getClass().isAnnotationPresent(NotDisplayInSurvivalMode.class)) {
-                    continue;
-                }
-                if (group.getClass().isAnnotationPresent(DisplayInSurvivalMode.class)) {
-                    groups.add(group);
-                    continue;
-                }
-                if (GuideUtil.isForceHidden(group)) {
-                    continue;
-                }
-                if (group instanceof FlexItemGroup flexItemGroup) {
-                    if (flexItemGroup.isVisible(p, profile, getMode())) {
-                        groups.add(group);
-                    }
-                } else if (!group.isHidden(p)) {
-                    groups.add(group);
-                }
-            } catch (Exception | LinkageError x) {
-                SlimefunAddon addon = group.getAddon();
-
-                if (addon != null) {
-                    addon.getLogger().log(Level.SEVERE, x, () -> "Could not display item group: " + group);
-                } else {
-                    JustEnoughGuide.getInstance()
-                            .getLogger()
-                            .log(Level.SEVERE, x, () -> "Could not display item group: " + group);
-                }
-            }
-        }
-        GroupResorter.sort(groups);
-
-        return groups;
+        return GuideUtil.getVisibleItemGroupsSurvival(p, profile);
     }
 
     @Override

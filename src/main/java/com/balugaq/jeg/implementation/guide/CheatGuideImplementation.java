@@ -264,56 +264,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     public List<ItemGroup> getVisibleItemGroups(
             Player p, PlayerProfile profile, boolean guideTierMode) {
-        List<ItemGroup> groups = new LinkedList<>();
-        List<ItemGroup> specialGroups = new LinkedList<>();
-        for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
-            try {
-                if (group.getClass().isAnnotationPresent(NotDisplayInCheatMode.class)) {
-                    continue;
-                }
-                if (group.getClass().isAnnotationPresent(DisplayInCheatMode.class)) {
-                    groups.add(group);
-                    continue;
-                }
-
-                if (!guideTierMode && GuideUtil.isForceHidden(group)) {
-                    continue;
-                }
-
-                if (DisplayInCheatMode.Checker.contains(group)) {
-                    if (DisplayInCheatMode.Checker.isSpecial(group)) {
-                        specialGroups.add(group);
-                        continue;
-                    } else {
-                        groups.add(group);
-                        continue;
-                    }
-                } else if (NotDisplayInCheatMode.Checker.contains(group)) {
-                    continue;
-                }
-
-                if (group instanceof SeasonalItemGroup) {
-                    specialGroups.add(group);
-                } else {
-                    if (!group.isHidden(p)) {
-                        groups.add(group);
-                    } else {
-                        specialGroups.add(group);
-                    }
-                }
-            } catch (Exception | LinkageError x) {
-                SlimefunAddon addon = group.getAddon();
-                Logger logger = addon != null
-                        ? addon.getLogger()
-                        : JustEnoughGuide.getInstance().getLogger();
-                logger.log(Level.SEVERE, x, () -> "Could not display item group: " + group);
-            }
-        }
-
-        GroupResorter.sort(groups);
-        groups.addAll(specialGroups);
-
-        return groups;
+        return GuideUtil.getVisibleItemGroupsCheat(p, profile, guideTierMode);
     }
 
     /**

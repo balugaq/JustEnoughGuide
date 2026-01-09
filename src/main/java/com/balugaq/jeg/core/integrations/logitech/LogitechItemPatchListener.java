@@ -25,23 +25,20 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.finaltechs.finaltechv1;
+package com.balugaq.jeg.core.integrations.logitech;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
-import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.ReflectionUtil;
-import com.balugaq.jeg.utils.StackUtils;
+import com.balugaq.jeg.core.integrations.emctech.EMCValueDisplayOption;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -50,21 +47,16 @@ import java.util.List;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.0
  */
 @NullMarked
-public class FinalTechItemPatchListener implements ItemPatchListener {
+public class LogitechItemPatchListener implements ItemPatchListener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
             PatchScope.SlimefunItem,
             PatchScope.ItemMarkItem,
             PatchScope.BookMarkItem,
-            PatchScope.SearchItem,
-            PatchScope.ItemRecipeIngredient
+            PatchScope.SearchItem
     );
-    public static final String DEFAULT_INPUT_VALUE = "0";
-    public static final String DEFAULT_OUTPUT_VALUE = "INFINITY";
-    public static @UnknownNullability Class<?> class_ItemValueTable = null;
-    public static @UnknownNullability Object ItemValueTableInstance = null;
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void patchItem(PatchEvent event) {
@@ -91,7 +83,7 @@ public class FinalTechItemPatchListener implements ItemPatchListener {
     }
 
     public boolean disabledOption(Player player) {
-        return !FinalTechValueDisplayOption.isEnabled(player);
+        return !EMCValueDisplayOption.isEnabled(player);
     }
 
     @SuppressWarnings("deprecation")
@@ -100,9 +92,15 @@ public class FinalTechItemPatchListener implements ItemPatchListener {
             return;
         }
 
-        if (scope == PatchScope.ItemRecipeIngredient
-                && StackUtils.itemsMatch(itemStack, new ItemStack(itemStack.getType()))) {
-            // Do not process vanilla item
+        SlimefunItem sf = SlimefunItem.getByItem(itemStack);
+        if (sf == null) {
+            return;
+        }
+
+        boolean isMachineStackable = LogitechIntegrationMain.isMachineStackable(sf);
+        boolean isGeneratorStackable = LogitechIntegrationMain.isGeneratorStackable(sf);
+        boolean isMaterialGeneratorStackable = LogitechIntegrationMain.isMaterialGeneratorStackable(sf);
+        if (!isMachineStackable && !isGeneratorStackable && !isMaterialGeneratorStackable) {
             return;
         }
 
@@ -111,62 +109,16 @@ public class FinalTechItemPatchListener implements ItemPatchListener {
             return;
         }
 
-        String inputEmc = getOrCalItemInputValue(itemStack);
-        String outputEmc = getOrCalItemOutputValue(itemStack);
-
         List<String> lore = meta.getLore();
         if (lore == null) {
             lore = new ArrayList<>();
         }
+        if (isMachineStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-堆叠配方机器堆叠"));
+        if (isGeneratorStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-量子发电机超频装置堆叠"));
+        if (isMaterialGeneratorStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-堆叠生成器堆叠"));
 
-        lore.add(ChatColors.color("&7旧乱序输入EMC: &6" + inputEmc));
-        lore.add(ChatColors.color("&7旧乱序输出EMC: &6" + outputEmc));
         meta.setLore(lore);
         tagMeta(meta);
         itemStack.setItemMeta(meta);
-    }
-
-    @UnknownNullability
-    public static String getOrCalItemInputValue(@Nullable ItemStack itemStack) {
-        if (!initValueTable()) {
-            return DEFAULT_INPUT_VALUE;
-        }
-
-        if (itemStack == null) {
-            return DEFAULT_INPUT_VALUE;
-        }
-
-        return (String) ReflectionUtil.invokeMethod(ItemValueTableInstance, "getOrCalItemInputValue", itemStack);
-    }
-
-    @UnknownNullability
-    public static String getOrCalItemOutputValue(@Nullable ItemStack itemStack) {
-        if (!initValueTable()) {
-            return DEFAULT_OUTPUT_VALUE;
-        }
-
-        if (itemStack == null) {
-            return DEFAULT_OUTPUT_VALUE;
-        }
-
-        return (String) ReflectionUtil.invokeMethod(ItemValueTableInstance, "getOrCalItemOutputValue", itemStack);
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean initValueTable() {
-        if (class_ItemValueTable == null) {
-            try {
-                class_ItemValueTable = Class.forName("io.taraxacum.finaltech.api.factory.ItemValueTable");
-            } catch (ClassNotFoundException e) {
-                Debug.trace(e);
-                return false;
-            }
-        }
-
-        if (ItemValueTableInstance == null) {
-            ItemValueTableInstance = ReflectionUtil.invokeStaticMethod(class_ItemValueTable, "getInstance");
-        }
-
-        return ItemValueTableInstance != null;
     }
 }

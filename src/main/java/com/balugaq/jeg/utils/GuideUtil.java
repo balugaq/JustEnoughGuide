@@ -28,6 +28,7 @@
 package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
+import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.ActionSelectGroup;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.groups.KeybindItemsGroup;
@@ -36,7 +37,11 @@ import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.groups.SubKeybindsItemsGroup;
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
+import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
+import com.balugaq.jeg.api.interfaces.DisplayInSurvivalMode;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
+import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
+import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
@@ -48,6 +53,7 @@ import com.balugaq.jeg.utils.clickhandler.BaseAction;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Format;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -68,6 +74,7 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -76,8 +83,11 @@ import org.jspecify.annotations.NullMarked;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class contains utility methods for the guide system.
@@ -448,5 +458,114 @@ public final class GuideUtil {
 
     public static @Nullable Player updatePlayer(UUID uuid) {
         return Bukkit.getPlayer(uuid);
+    }
+
+    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
+    public List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile) {
+        List<ItemGroup> groups = new LinkedList<>();
+
+        for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+            try {
+                if (group.getClass().isAnnotationPresent(NotDisplayInSurvivalMode.class)) {
+                    continue;
+                }
+                if (group.getClass().isAnnotationPresent(DisplayInSurvivalMode.class)) {
+                    groups.add(group);
+                    continue;
+                }
+                if (GuideUtil.isForceHidden(group)) {
+                    continue;
+                }
+                if (group instanceof FlexItemGroup flexItemGroup) {
+                    if (flexItemGroup.isVisible(p, profile, SlimefunGuideMode.SURVIVAL_MODE)) {
+                        groups.add(group);
+                    }
+                } else if (!group.isHidden(p)) {
+                    groups.add(group);
+                }
+            } catch (Exception | LinkageError x) {
+                SlimefunAddon addon = group.getAddon();
+
+                if (addon != null) {
+                    addon.getLogger().log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+                } else {
+                    JustEnoughGuide.getInstance()
+                            .getLogger()
+                            .log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+                }
+            }
+        }
+        GroupResorter.sort(groups);
+
+        return groups;
+    }
+
+    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
+    public List<ItemGroup> getVisibleItemGroupsCheat(Player p, PlayerProfile profile, boolean guideTierMode) {
+        List<ItemGroup> groups = new LinkedList<>();
+        List<ItemGroup> specialGroups = new LinkedList<>();
+        var survivalDisplays = getVisibleItemGroupsSurvival(p, profile);
+        for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+            try {
+                if (group.getClass().isAnnotationPresent(NotDisplayInCheatMode.class)) {
+                    continue;
+                }
+                if (group.getClass().isAnnotationPresent(DisplayInCheatMode.class)) {
+                    groups.add(group);
+                    continue;
+                }
+
+                if (!guideTierMode && GuideUtil.isForceHidden(group)) {
+                    continue;
+                }
+
+                if (DisplayInCheatMode.Checker.contains(group)) {
+                    if (DisplayInCheatMode.Checker.isSpecial(group)) {
+                        specialGroups.add(group);
+                        continue;
+                    } else {
+                        groups.add(group);
+                        continue;
+                    }
+                } else if (NotDisplayInCheatMode.Checker.contains(group)) {
+                    continue;
+                }
+
+                if (group instanceof SeasonalItemGroup) {
+                    specialGroups.add(group);
+                } else {
+                    if (!group.isHidden(p)) {
+                        if (survivalDisplays.contains(group)) {
+                            groups.add(group);
+                        }
+                    } else {
+                        var sm = group.getClass().getSimpleName();
+                        if ("AdvancementsItemGroup".equals(sm)) {
+                            continue;
+                        }
+                        if (!(group instanceof SubItemGroup) && !sm.equals("DummyItemGroup")) {
+                            if (sm.equals("SubGroup")) {
+                                String key = group.getKey().getKey();
+                                if (!key.equals("infinity_cheat") && !key.equals("omc_forge_cheat")) {
+                                    continue;
+                                }
+                            }
+                            specialGroups.add(group);
+                        }
+                    }
+                }
+            } catch (Exception | LinkageError x) {
+                SlimefunAddon addon = group.getAddon();
+                Logger logger = addon != null
+                        ? addon.getLogger()
+                        : JustEnoughGuide.getInstance().getLogger();
+                logger.log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+            }
+        }
+
+        GroupResorter.sort(groups);
+        groups.addAll(specialGroups);
+
+        return groups;
     }
 }

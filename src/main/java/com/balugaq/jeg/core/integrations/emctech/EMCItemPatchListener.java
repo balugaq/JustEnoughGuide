@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.integrations.emctech;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
+import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ import java.util.List;
  * @since 1.9
  */
 @NullMarked
-public class EMCItemPatchListener implements Listener {
+public class EMCItemPatchListener implements ItemPatchListener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
             PatchScope.SlimefunItem,
             PatchScope.ItemMarkItem,
@@ -72,7 +73,12 @@ public class EMCItemPatchListener implements Listener {
             return;
         }
 
-        patchItem(event.getItemStack(), scope);
+        ItemStack stack = event.getItemStack();
+        if (isTagged(stack)) {
+            return;
+        }
+
+        patchItem(stack, scope);
     }
 
     public boolean notValid(PatchScope patchScope) {
@@ -118,6 +124,7 @@ public class EMCItemPatchListener implements Listener {
             lore.add(ChatColors.color("&7输出EMC: &6" + EMCFormat.format(outputEmc)));
         }
         meta.setLore(lore);
+        tagMeta(meta);
         itemStack.setItemMeta(meta);
     }
 }

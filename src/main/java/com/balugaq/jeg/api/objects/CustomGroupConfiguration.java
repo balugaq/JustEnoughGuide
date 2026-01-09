@@ -145,17 +145,18 @@ public class CustomGroupConfiguration implements IParsable {
     public List<Object> objects() {
         if (this.objects != null) return this.objects;
 
-        List<Object> objects = new ArrayList<>(Arrays.stream(groups)
-                                                       .map(s -> {
-                                                           for (ItemGroup itemGroup :
-                                                                   Slimefun.getRegistry().getAllItemGroups())
-                                                               if (itemGroup.getKey().toString().equals(s))
-                                                                   return itemGroup;
-                                                           return null;
-                                                       })
-                                                       .filter(Objects::nonNull)
-                                                       .map(s -> (Object) s)
-                                                       .toList());
+        List<Object> objects = new ArrayList<>(
+                Arrays.stream(groups)
+                        .map(s -> {
+                            for (ItemGroup itemGroup :
+                                    new ArrayList<>(Slimefun.getRegistry().getAllItemGroups()))
+                                if (itemGroup.getKey().toString().equals(s))
+                                    return itemGroup;
+                            return null;
+                        })
+                        .filter(Objects::nonNull)
+                        .map(s -> (Object) s)
+                        .toList());
         objects.addAll(Arrays.stream(items)
                                .map(s -> SlimefunItem.getById(s.toUpperCase()))
                                .filter(Objects::nonNull)
