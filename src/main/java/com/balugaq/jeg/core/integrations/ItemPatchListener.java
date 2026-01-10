@@ -27,7 +27,7 @@
 
 package com.balugaq.jeg.core.integrations;
 
-import io.github.sefiraat.networks.utils.Keys;
+import com.balugaq.jeg.utils.KeyUtil;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Listener;
@@ -58,6 +58,6 @@ public interface ItemPatchListener extends Listener, Keyed {
     }
 
     default NamespacedKey getKey() {
-        return Keys.newKey(getClass().getSimpleName().toLowerCase());
+        return KeyUtil.newKey(getClass().getSimpleName().toLowerCase());
     }
 }
