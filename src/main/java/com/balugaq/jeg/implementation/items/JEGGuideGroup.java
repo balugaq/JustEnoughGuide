@@ -52,6 +52,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -156,7 +157,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                                 }
 
                                 for (ItemGroup itemGroup :
-                                        Slimefun.getRegistry().getAllItemGroups()) {
+                                        new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                                     if (itemGroup
                                             .getKey()
                                             .equals(new NamespacedKey(Slimefun.instance(), "basic_machines"))) {

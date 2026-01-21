@@ -73,7 +73,7 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
         super(key, icon);
         this.page = 1;
         List<SlimefunItem> slimefunItemList = new ArrayList<>();
-        for (SlimefunItem item : Slimefun.getRegistry().getAllSlimefunItems()) {
+        for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
             if (!item.isDisabled() && item.isHidden()) {
                 slimefunItemList.add(item);
             }
