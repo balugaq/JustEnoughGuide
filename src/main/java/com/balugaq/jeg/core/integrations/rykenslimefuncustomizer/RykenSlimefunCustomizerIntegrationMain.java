@@ -87,7 +87,7 @@ public class RykenSlimefunCustomizerIntegrationMain implements Integration {
             return;
         }
 
-        for (SlimefunItem sf : Slimefun.getRegistry().getAllSlimefunItems()) {
+        for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
             Class<? extends SlimefunItem> clazz = sf.getClass();
             if (!((classCustomWorkbench != null && clazz == classCustomWorkbench)
                     || (classCustomLinkedRecipeMachine != null && clazz == classCustomLinkedRecipeMachine))) {
