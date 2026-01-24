@@ -296,11 +296,6 @@ public class JEGGuideSettings {
             @Range(from = 1, to = Integer.MAX_VALUE) int page) {
         List<Integer> slots = Formats.settings.getChars('o');
         List<SlimefunGuideOption<?>> options = new ArrayList<>(getOptions());
-        options.removeIf(option -> {
-            String sm = option.getClass().getSimpleName();
-            return option.getAddon() instanceof Slimefun && (sm.equals("FireworksOption") || sm.equals(
-                    "LearningAnimationOption"));
-        });
         int maxPage = (int) Math.ceil(options.size() / (double) slots.size());
         List<SlimefunGuideOption<?>> split = options.stream()
                 .skip((long) (page - 1) * slots.size())
@@ -359,6 +354,7 @@ public class JEGGuideSettings {
     }
 
     public static void patchSlimefun() {
+        if (!patched.isEmpty()) return;
         for (var option : getOptions()) {
             if (option.getAddon() instanceof Slimefun) {
                 String sm = option.getClass().getSimpleName();
@@ -396,6 +392,7 @@ public class JEGGuideSettings {
         for (var po : patched) {
             getOptions().add(po);
         }
+        patched.clear();
     }
 
     @SuppressWarnings("unused")

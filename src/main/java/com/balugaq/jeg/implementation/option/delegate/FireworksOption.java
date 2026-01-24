@@ -34,6 +34,7 @@ package com.balugaq.jeg.implementation.option.delegate;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.config.SlimefunConfigManager;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
@@ -69,6 +70,9 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
                     "", "&7你现在可以选择是否", "&7在解锁一个新物品的时候", "&7展示烟花特效.", "",
                     "&7⇨ &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效"
             );
+            var meta = item.getItemMeta();
+            meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            item.setItemMeta(meta);
             return Optional.of(item);
         } else {
             return Optional.empty();
