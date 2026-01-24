@@ -58,8 +58,11 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author TheBusyBiscuit
@@ -73,15 +76,25 @@ import java.util.Optional;
 public class JEGGuideSettings {
     @Getter
     private static final List<SlimefunGuideOption<?>> patched = new ArrayList<>();
+    private static final Map<UUID, Integer> pages = new HashMap<>();
+
+    public static int getLastPage(Player p) {
+        return pages.getOrDefault(p.getUniqueId(), 1);
+    }
+
+    public static void setLastPage(Player p, int page) {
+        pages.put(p.getUniqueId(), page);
+    }
 
     public static void openSettings(final Player p, final ItemStack guide) {
-        openSettings(p, guide, 1);
+        openSettings(p, guide, getLastPage(p));
     }
 
     public static void openSettings(
             final Player p,
             final ItemStack guide,
             @Range(from = 1, to = Integer.MAX_VALUE) int page) {
+        setLastPage(p, page);
         ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "guide.title.settings"));
 
         menu.setEmptySlotsClickable(false);

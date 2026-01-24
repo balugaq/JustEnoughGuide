@@ -25,7 +25,7 @@
  *
  */
 
-package com.balugaq.jeg.implementation.option;
+package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -45,18 +45,17 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
-import static com.balugaq.jeg.api.recipe_complete.source.base.Source.RECIPE_DEPTH_THRESHOLD;
-
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.0
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<Integer> {
-    public static final RecursiveRecipeFillingGuideOption instance = new RecursiveRecipeFillingGuideOption();
+public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
+    public static final HUDReachBlockGuideOption instance = new HUDReachBlockGuideOption();
+    public static final int MAX_REACH_BLOCK = 8;
 
-    public static RecursiveRecipeFillingGuideOption instance() {
+    public static HUDReachBlockGuideOption instance() {
         return instance;
     }
 
@@ -68,54 +67,53 @@ public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<In
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         int value = getSelectedOption(p, guide).orElse(1);
-        if (value > RECIPE_DEPTH_THRESHOLD) {
-            value = RECIPE_DEPTH_THRESHOLD;
+        if (value > MAX_REACH_BLOCK) {
+            value = MAX_REACH_BLOCK;
             PersistentDataAPI.setInt(p, key0(), value);
         }
 
         ItemStack item = Converter.getItem(
-                Material.FURNACE,
-                "&a配方补全深度",
-                "&7配方补全深度越大，需要的时间越长",
-                "&7如果遇到一个材料不存在，会尝试补全",
-                "&7这个材料的材料，以此类推，此过程视为一层深度",
-                "&e&l此功能为实验性功能，谨慎使用",
-                "&c&l此功能容易造成错误",
+                Material.REDSTONE_LAMP,
+                "&a粘液HUD显示距离",
                 "",
-                "&7当前深度: " + value + " (限制范围: 1~" + RECIPE_DEPTH_THRESHOLD + ")",
-                "&7\u21E8 &e点击设置深度"
+                "&7当前距离: " + value + " (限制范围: 1~" + MAX_REACH_BLOCK + ")",
+                "&7\u21E8 &e点击设置距离"
         );
         return Optional.of(item);
     }
 
     public static NamespacedKey key0() {
-        return KeyUtil.newKey("recursive_recipe_filling");
+        return KeyUtil.newKey("hud_reach_block");
     }
 
     public static int getDepth(Player p) {
-        return PersistentDataAPI.getInt(p, key0(), 1);
+        return PersistentDataAPI.getInt(p, key0(), 5);
     }
 
     @Override
     public void onClick(Player p, ItemStack guide) {
         p.closeInventory();
-        p.sendMessage(ChatColors.color("&a请输入配方补全深度"));
+        p.sendMessage(ChatColors.color("&a请输入粘液HUD显示距离"));
         ChatInput.waitForPlayer(
                 JustEnoughGuide.getInstance(), p, s -> {
                     try {
                         int value = Calculator.calculate(s).intValue();
-                        if (value < 1 || value > RECIPE_DEPTH_THRESHOLD) {
-                            p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
+                        if (value < 1 || value > MAX_REACH_BLOCK) {
+                            p.sendMessage("请输入 1 ~ " + MAX_REACH_BLOCK + " 之间的正整数");
                             return;
                         }
 
                         setSelectedOption(p, guide, value);
                         JEGGuideSettings.openSettings(p, guide);
                     } catch (NumberFormatException ignored) {
-                        p.sendMessage("请输入 1 ~ " + RECIPE_DEPTH_THRESHOLD + " 之间的正整数");
+                        p.sendMessage("请输入 1 ~ " + MAX_REACH_BLOCK + " 之间的正整数");
                     }
                 }
         );
+    }
+
+    public static int getReachBlock(Player p) {
+        return PersistentDataAPI.getInt(p, key0(), 5);
     }
 
     @Override

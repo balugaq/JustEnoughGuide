@@ -25,7 +25,7 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.logitech;
+package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -47,10 +47,10 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class MachineStackableDisplayOption implements SlimefunGuideOption<Boolean> {
-    public static final MachineStackableDisplayOption instance = new MachineStackableDisplayOption();
+public class VanillaBlockHUDDisplayGuideOption implements SlimefunGuideOption<Boolean> {
+    public static final VanillaBlockHUDDisplayGuideOption instance = new VanillaBlockHUDDisplayGuideOption();
 
-    public static MachineStackableDisplayOption instance() {
+    public static VanillaBlockHUDDisplayGuideOption instance() {
         return instance;
     }
 
@@ -61,16 +61,16 @@ public class MachineStackableDisplayOption implements SlimefunGuideOption<Boolea
 
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        boolean enabled = getSelectedOption(p, guide).orElse(true);
+        boolean enabled = getSelectedOption(p, guide).orElse(false);
         ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.BLAST_FURNACE : Material.FURNACE,
-                "&b逻辑工艺-堆叠显示: &" + (enabled ? "a启用" : "4禁用"),
+                isEnabled(p) ? Material.GRASS_BLOCK : Material.DIRT,
+                "&b原版方块HUD显示: &" + (enabled ? "a启用" : "4禁用"),
                 "",
                 "&7你现在可以选择是否",
-                "&7在查阅一个物品的时候",
-                "&7显示它是否能被逻辑工艺的堆叠机器堆叠",
+                "&7在使用SlimeHUD显示方块信息时",
+                "&7允许显示原版方块的信息",
                 "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 逻辑工艺-堆叠显示"
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 原版方块HUD显示"
         );
         return Optional.of(item);
     }
@@ -89,7 +89,7 @@ public class MachineStackableDisplayOption implements SlimefunGuideOption<Boolea
     }
 
     public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "logitech_machine_stackable");
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "vanilla_block_hud_display");
     }
 
     @Override
@@ -101,7 +101,7 @@ public class MachineStackableDisplayOption implements SlimefunGuideOption<Boolea
     @Override
     public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
         NamespacedKey key = getKey();
-        boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == (byte) 1;
+        boolean value = PersistentDataAPI.hasByte(p, key) && PersistentDataAPI.getByte(p, key) == (byte) 1;
         return Optional.of(value);
     }
 

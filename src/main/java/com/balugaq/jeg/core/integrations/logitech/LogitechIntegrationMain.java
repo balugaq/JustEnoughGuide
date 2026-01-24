@@ -181,7 +181,7 @@ public class LogitechIntegrationMain implements Integration {
         }
 
         if (JustEnoughGuide.getConfigManager().isLogitechMachineStackableDisplay()) {
-            SlimefunGuideSettings.addOption(MachineStackableDisplayOption.instance());
+            SlimefunGuideSettings.addOption(MachineStackableDisplayGuideOption.instance());
             JustEnoughGuide.getListenerManager().registerListener(new LogitechItemPatchListener());
         }
     }

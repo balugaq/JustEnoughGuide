@@ -82,7 +82,7 @@ public class LogitechItemPatchListener implements ItemPatchListener {
     }
 
     public boolean disabledOption(Player player) {
-        return !MachineStackableDisplayOption.isEnabled(player);
+        return !MachineStackableDisplayGuideOption.isEnabled(player);
     }
 
     @SuppressWarnings("deprecation")
