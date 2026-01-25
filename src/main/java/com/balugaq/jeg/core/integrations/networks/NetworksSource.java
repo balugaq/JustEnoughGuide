@@ -25,27 +25,42 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.def;
+package com.balugaq.jeg.core.integrations.networks;
 
-import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
+import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import io.github.sefiraat.networks.network.NetworkRoot;
+import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.0
  */
 @NullMarked
-public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements VanillaSource, JEGSource {
+public interface NetworksSource extends Source {
     @SuppressWarnings("deprecation")
-    @Override
-    public boolean handleable(
+    default boolean handleable(
+            BlockMenu blockMenu,
+            Player player,
+            ClickAction clickAction,
+            @Range(from = 0, to = 53) int[] ingredientSlots,
+            boolean unordered,
+            int recipeDepth) {
+        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
+    }
+
+    @SuppressWarnings("deprecation")
+    default boolean handleable(
             Block block,
             Inventory inventory,
             Player player,
@@ -53,13 +68,34 @@ public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements Vanill
             int[] ingredientSlots,
             boolean unordered,
             int recipeDepth) {
-        // Always available
-        return true;
+        return NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation()) != null;
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Nullable
-    public ItemStack getItemStack(Player player, Location target, ItemStack itemStack) {
-        return getItemStackFromPlayerInventory(player, itemStack);
+    default ItemStack getItemStack(Player player, Location target, ItemStack itemStack) {
+        ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
+        if (i1 != null) {
+            return i1;
+        }
+
+        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(player.getLocation());
+        if (root == null) {
+            return null;
+        }
+
+        // get from root
+        ItemRequest request = new ItemRequest(itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
+        try {
+            return root.getItemStack0(player.getLocation(), request);
+        } catch (Exception e) {
+            return root.getItemStack(request);
+        }
+    }
+
+    @Override
+    default JavaPlugin plugin() {
+        return NetworksIntegrationMain.getPlugin();
     }
 }

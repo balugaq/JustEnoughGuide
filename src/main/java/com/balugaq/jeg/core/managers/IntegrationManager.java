@@ -37,6 +37,8 @@ import com.balugaq.jeg.core.integrations.cultivation.CultivationIntegrationMain;
 import com.balugaq.jeg.core.integrations.danktech2.DankTech2IntegrationMain;
 import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteSlimefunSource;
 import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteVanillaSource;
+import com.balugaq.jeg.core.integrations.def.DefaultPlayerNearbyContainerRecipeCompleteSlimefunSource;
+import com.balugaq.jeg.core.integrations.def.DefaultPlayerNearbyContainerRecipeCompleteVanillaSource;
 import com.balugaq.jeg.core.integrations.elementmanipulation.ElementManipulationIntegrationMain;
 import com.balugaq.jeg.core.integrations.emctech.EMCTechIntegrationMain;
 import com.balugaq.jeg.core.integrations.fastmachines.FastMachinesIntegrationMain;
@@ -222,6 +224,8 @@ public class IntegrationManager extends AbstractManager {
 
             startupIntegrations();
 
+            RecipeCompleteProvider.addSource(new DefaultPlayerNearbyContainerRecipeCompleteSlimefunSource());
+            RecipeCompleteProvider.addSource(new DefaultPlayerNearbyContainerRecipeCompleteVanillaSource());
             RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteSlimefunSource());
             RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteVanillaSource());
         }, 1L);

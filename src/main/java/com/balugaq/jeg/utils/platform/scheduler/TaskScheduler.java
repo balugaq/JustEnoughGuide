@@ -34,6 +34,8 @@ import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.function.Supplier;
+
 /**
  * @author balugaq
  * @since 2.0
@@ -63,12 +65,31 @@ public interface TaskScheduler {
 
     void runNextTick(Runnable runnable);
 
+    default void runNextTick(Supplier<?> callable) {
+        runNextTick(() -> {callable.get();});
+    }
+
     void runLater(Runnable runnable, long delay);
+
+    default void runLater(Supplier<?> callable, long delay) {
+        runLater(() -> {callable.get();}, delay);
+    }
 
     void runLaterAsync(Runnable runnable, long delay);
 
+    default void runLaterAsync(Supplier<?> callable, long delay) {
+        runLaterAsync(() -> {callable.get();}, delay);
+    }
+
     void runTimer(Runnable runnable, long delay, long period);
+
+    default void runTimer(Supplier<?> callable, long delay, long period) {
+        runTimer(() -> {callable.get();}, delay, period);
+    }
 
     void runTimerAsync(Runnable runnable, long delay, long period);
 
+    default void runTimerAsync(Supplier<?> callable, long delay, long period) {
+        runTimerAsync(() -> {callable.get();}, delay, period);
+    }
 }

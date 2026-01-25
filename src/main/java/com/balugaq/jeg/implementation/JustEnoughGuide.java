@@ -49,6 +49,7 @@ import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
 import com.balugaq.jeg.implementation.option.CerPatchGuideOption;
 import com.balugaq.jeg.implementation.option.KeybindsSettingsGuideOption;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
@@ -96,6 +97,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 /**
@@ -218,6 +220,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
     public static void runLaterAsync(Runnable runnable, long delay) {
         getScheduler().runLaterAsync(runnable, delay);
+    }
+
+    public static void runLaterAsync(Supplier<?> callable, long delay) {
+        getScheduler().runLaterAsync(callable, delay);
     }
 
     public static boolean disableAutomaticallyLoadItems() {
@@ -385,6 +391,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 JEGGuideSettings.addOption(ShareOutGuideOption.instance());
                 JEGGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
                 JEGGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
+                JEGGuideSettings.addOption(RecipeFillingWithNearbyContainerGuideOption.instance());
                 getLogger().info("指南选项加载完毕！");
             }
 

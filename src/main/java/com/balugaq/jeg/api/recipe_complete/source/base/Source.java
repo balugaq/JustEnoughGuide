@@ -28,13 +28,23 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.SimpleRecipeChoice;
+import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -49,6 +59,8 @@ import org.jspecify.annotations.NullMarked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author balugaq
@@ -149,6 +161,79 @@ public interface Source {
         return null;
     }
 
+    default @Nullable ItemStack getItemStackFromNearbyContainer(Player player, Location target, ItemStack itemStack) {
+        return getItemStackFromNearbyContainer(player, target, itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
+    }
+
+    default @Nullable ItemStack getItemStackFromNearbyContainer(Player player, Location target, ItemStack itemStack, int amount) {
+        int total = amount;
+
+        int d = RecipeFillingWithNearbyContainerGuideOption.getRadiusDistance(player);
+        if (d <= 0) {
+            return null;
+        }
+
+        // get from nearby container
+        for (int x = -d; x <= d; x++) {
+            for (int y = -d; y <= d; y++) {
+                for (int z = -d; z <= d; z++) {
+                    Location bloc = player.getLocation().clone().add(x, y, z);
+                    if (bloc.getBlockX() == target.getBlockX() && bloc.getBlockY() == target.getBlockY() && bloc.getBlockZ() == target.getBlockZ())
+                        continue; // never include itself
+
+                    BlockMenu menu = StorageCacheUtils.getMenu(bloc);
+                    if (menu == null) continue;
+                    if (!Slimefun.getProtectionManager().hasPermission(player, bloc, Interaction.INTERACT_BLOCK)) continue;
+                    int[] slots = mergeSlots(
+                            menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.WITHDRAW, itemStack),
+                            menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.INSERT, itemStack)
+                    );
+                    if (slots.length == 0) {
+                        try {
+                            var handlers = ReflectionUtil.getValue(menu, "handlers", Map.class);
+                            if (handlers == null) continue;
+                            var set = handlers.keySet();
+                            if (set.isEmpty()) continue;
+                            var list = new IntArrayList(menu.getSize());
+                            for (int i = 0; i < menu.getSize(); i++) list.add(i);
+                            list.removeAll((Set<Integer>) set);
+                            slots = list.toIntArray();
+                        } catch (Exception e) {
+                            continue;
+                        }
+                    }
+                    for (int slot : slots) {
+                        ItemStack itemStack1 = menu.getItemInSlot(slot);
+
+                        if (itemStack1 != null
+                                && itemStack1.getType() != Material.AIR
+                                && StackUtils.itemsMatch(itemStack1, itemStack)) {
+
+                            int existing = itemStack1.getAmount();
+
+                            if (existing <= amount) {
+                                amount -= existing;
+                                menu.replaceExistingItem(slot, null);
+                            } else {
+                                itemStack1.setAmount(existing - amount);
+                                menu.replaceExistingItem(slot, itemStack1);
+                                amount = 0;
+                            }
+
+                            if (amount <= 0) {
+                                ItemStack clone = itemStack.clone();
+                                clone.setAmount(total);
+                                return clone;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     default boolean depthInRange(Player player, int depth) {
         return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
     }
@@ -167,5 +252,120 @@ public interface Source {
                 v.add(itemStack);
             }
         }
+    }
+
+    default boolean completeRecipeWithGuide(
+            GuideEvents.ItemButtonClickEvent event,
+            Location target,
+            int[] ingredientSlots,
+            boolean unordered,
+            int recipeDepth,
+            ItemGetter itemGetter,
+            ItemPusher itemPusher) {
+        Player player = GuideUtil.updatePlayer(event.getPlayer());
+        if (player == null) {
+            return false;
+        }
+
+        ItemStack clickedItem = event.getClickedItem();
+        if (clickedItem == null) {
+            return false;
+        }
+
+        List<@Nullable RecipeChoice> choices = getRecipe(clickedItem);
+        if (choices == null) {
+            sendMissingMaterial(player, clickedItem);
+            return false;
+        }
+
+        for (int i = 0; i < choices.size(); i++) {
+            if (i >= ingredientSlots.length) {
+                break;
+            }
+
+            RecipeChoice choice = choices.get(i);
+            if (choice == null) {
+                continue;
+            }
+
+            if (!unordered) {
+                ItemStack existing = itemGetter.apply(ingredientSlots[i]);
+                if (existing != null && existing.getType() != Material.AIR) {
+                    if (existing.getAmount() >= existing.getMaxStackSize()) {
+                        continue;
+                    }
+
+                    if (!choice.test(existing)) {
+                        continue;
+                    }
+                }
+            }
+
+            if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
+                List<ItemStack> itemStacks =
+                        materialChoice.getChoices().stream().map(ItemStack::new).toList();
+                for (ItemStack itemStack : itemStacks) {
+                    ItemStack received = getItemStack(player, target, itemStack);
+                    if (received != null && received.getType() != Material.AIR) {
+                        itemPusher.apply(received, i);
+                    } else {
+                        if (depthInRange(player, recipeDepth + 1)) {
+                            completeRecipeWithGuide(
+                                    event, target, ingredientSlots, unordered, recipeDepth + 1,
+                                    itemGetter, itemPusher
+                            );
+                        } else {
+                            sendMissingMaterial(player, itemStack);
+                        }
+                    }
+                }
+            } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
+                for (ItemStack itemStack : exactChoice.getChoices()) {
+                    ItemStack received = getItemStack(player, target, itemStack);
+                    if (received != null && received.getType() != Material.AIR) {
+                        itemPusher.apply(received, i);
+                    } else {
+                        if (depthInRange(player, recipeDepth + 1)) {
+                            completeRecipeWithGuide(
+                                    event, target, ingredientSlots, unordered, recipeDepth + 1,
+                                    itemGetter, itemPusher
+                            );
+                        } else {
+                            sendMissingMaterial(player, itemStack);
+                        }
+                    }
+                }
+            }
+        }
+
+        event.setCancelled(true);
+        return true;
+    }
+
+    private int[] mergeSlots(int[]... slots) {
+        IntOpenHashSet set = new IntOpenHashSet();
+        for (int[] slot : slots)
+            for (int i : slot) set.add(i);
+        return set.toIntArray();
+    }
+
+    @Nullable ItemStack getItemStack(Player player, Location target, ItemStack itemStack);
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @FunctionalInterface
+    interface ItemGetter {
+        @Nullable ItemStack apply(int slot);
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @FunctionalInterface
+    interface ItemPusher {
+        void apply(ItemStack itemStack, int i);
     }
 }

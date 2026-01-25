@@ -58,7 +58,7 @@ public class Models {
             )
     ));
     public static final ItemStack JEG_GUIDE_GROUP = Converter.getItem(
-            new SlimefunItemStack("JEG_JEG_GUIDE_GROUP", Converter.getItem(Material.KNOWLEDGE_BOOK, "&bJEG 使用指南")));
+            new SlimefunItemStack("JEG_JEG_GUIDE_GROUP", Converter.getItem(Material.KNOWLEDGE_BOOK, "&bJEG 高阶指南书使用指南")));
     public static final ItemStack HIDDEN_ITEMS_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_HIDDEN_ITEMS_GROUP", Converter.getItem(Material.BARRIER, "&c隐藏物品")));
     public static final ItemStack NEXCAVATE_ITEMS_GROUP = Converter.getItem(new SlimefunItemStack(
@@ -66,7 +66,7 @@ public class Models {
     public static final ItemStack VANILLA_ITEMS_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_VANILLA_ITEMS_GROUP", Converter.getItem(Material.CRAFTING_TABLE, "&7原版物品")));
     public static final ItemStack JEG_ITEMS_GROUP = Converter.getItem(
-            new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, "&bJEG 物品")));
+            new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, "&b配方补全书")));
     public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(
             Material.YELLOW_STAINED_GLASS_PANE, " ",
             " "
@@ -77,7 +77,7 @@ public class Models {
                     Material.SLIME_BALL,
                     "&b配方补全书",
                     "",
-                    "&f点击进行配方补全",
+                    "&f点击进行配方补全（使用方法见说明）",
                     RECIPE_COMPLETE_BOOK_MECHANISM_1,
                     RECIPE_COMPLETE_BOOK_MECHANISM_2,
                     RECIPE_COMPLETE_BOOK_MECHANISM_3
@@ -89,9 +89,10 @@ public class Models {
                     Material.PAPER,
                     "&a使用方法",
                     "",
-                    "&f1. &e将配方补全书放到物品栏里",
-                    "&f2. &e打开任意一个适配配方补全的机器（如快捷机器）",
-                    "&f3. &e左键点击配方补全书"
+                    "&f1. &e将配方补全书放到你的物品栏里",
+                    "&f2. &e右键打开任意一个适配配方补全的机器界面（如快捷机器）",
+                    "&f3. &e然后左键点击配方补全书",
+                    "&f4. &e选择你要补全的物品"
             )
     );
     public static final SlimefunItemStack MECHANISM = new SlimefunItemStack(

@@ -29,6 +29,7 @@ package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
@@ -152,10 +153,17 @@ public interface SlimefunSource extends Source {
     }
 
     @CanIgnoreReturnValue
-    boolean completeRecipeWithGuide(
+    default boolean completeRecipeWithGuide(
             BlockMenu blockMenu,
             GuideEvents.ItemButtonClickEvent event,
-            @Range(from = 0, to = 53) int[] ingredientSlots,
+            int[] ingredientSlots,
             boolean unordered,
-            int recipeDepth);
+            int recipeDepth) {
+        return completeRecipeWithGuide(
+                event, blockMenu.getLocation(), ingredientSlots, unordered, recipeDepth,
+                blockMenu::getItemInSlot,
+                (received, i) ->
+                        BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})
+        );
+    }
 }

@@ -27,169 +27,22 @@
 
 package com.balugaq.jeg.core.integrations.networksexpansion;
 
-import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
-import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
-import com.balugaq.jeg.utils.BlockMenuUtil;
-import io.github.sefiraat.networks.network.NetworkRoot;
-import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.List;
 
 /**
  * @author balugaq
  * @since 1.9
  */
 @NullMarked
-public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSource {
-
+public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSource, NetworksExpansionSource {
+    @Override
     @SuppressWarnings("deprecation")
-    @Override
-    public boolean handleable(
-            BlockMenu blockMenu,
-            Player player,
-            ClickAction clickAction,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
-        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
-    }
-
-    @Override
-    public boolean completeRecipeWithGuide(
-            BlockMenu blockMenu,
-            GuideEvents.ItemButtonClickEvent event,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
-        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation());
-        if (root == null) {
-            return false;
-        }
-
-        Player player = event.getPlayer();
-
-        ItemStack clickedItem = event.getClickedItem();
-        if (clickedItem == null) {
-            return false;
-        }
-
-        List<@Nullable RecipeChoice> choices = getRecipe(clickedItem);
-        if (choices == null) {
-            sendMissingMaterial(player, clickedItem);
-            return false;
-        }
-
-        for (int i = 0; i < choices.size(); i++) {
-            if (i >= ingredientSlots.length) {
-                break;
-            }
-
-            RecipeChoice choice = choices.get(i);
-            if (choice == null) {
-                continue;
-            }
-
-            if (!unordered) {
-                ItemStack existing = blockMenu.getItemInSlot(ingredientSlots[i]);
-                if (existing != null && existing.getType() != Material.AIR) {
-                    if (existing.getAmount() >= existing.getMaxStackSize()) {
-                        continue;
-                    }
-
-                    if (!choice.test(existing)) {
-                        continue;
-                    }
-                }
-            }
-
-            if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
-                List<ItemStack> itemStacks =
-                        materialChoice.getChoices().stream().map(ItemStack::new).toList();
-                for (ItemStack itemStack : itemStacks) {
-                    ItemStack received = getItemStack(root, player, itemStack);
-                    if (received != null && received.getType() != Material.AIR) {
-                        if (unordered) {
-                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots);
-                        } else {
-                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[i]);
-                        }
-                    } else {
-                        if (depthInRange(player, recipeDepth + 1)) {
-                            completeRecipeWithGuide(
-                                    blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(
-                                            event.getPlayer(), itemStack,
-                                            event.getClickedSlot(),
-                                            event.getClickAction(), event.getMenu(),
-                                            event.getGuide()
-                                    ),
-                                    ingredientSlots,
-                                    unordered,
-                                    recipeDepth + 1
-                            );
-                        } else {
-                            sendMissingMaterial(player, itemStack);
-                        }
-                    }
-                }
-            } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
-                for (ItemStack itemStack : exactChoice.getChoices()) {
-                    ItemStack received = getItemStack(root, player, itemStack);
-                    if (received != null && received.getType() != Material.AIR) {
-                        if (unordered) {
-                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots);
-                        } else {
-                            BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[i]);
-                        }
-                    } else {
-                        if (depthInRange(player, recipeDepth + 1)) {
-                            completeRecipeWithGuide(
-                                    blockMenu,
-                                    new GuideEvents.ItemButtonClickEvent(
-                                            event.getPlayer(), itemStack,
-                                            event.getClickedSlot(),
-                                            event.getClickAction(), event.getMenu(),
-                                            event.getGuide()
-                                    ),
-                                    ingredientSlots,
-                                    unordered,
-                                    recipeDepth + 1
-                            );
-                        } else {
-                            sendMissingMaterial(player, itemStack);
-                        }
-                    }
-                }
-            }
-        }
-
-        event.setCancelled(true);
-        return true;
-    }
-
-    @Nullable
-    private ItemStack getItemStack(NetworkRoot root, Player player, ItemStack itemStack) {
-        ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
-        if (i1 != null) {
-            return i1;
-        }
-
-        // get from root
-        return root.getItemStack0(player.getLocation(), new ItemRequest(itemStack, 1));
-    }
-
-    @Override
-    public JavaPlugin plugin() {
-        return NetworksExpansionIntegrationMain.getPlugin();
+    public boolean handleable(final BlockMenu blockMenu, final Player player, final ClickAction clickAction, @Range(from = 0, to = 53) final int[] ingredientSlots, final boolean unordered, final int recipeDepth) {
+        return NetworksExpansionSource.super.handleable(blockMenu, player, clickAction, ingredientSlots, unordered, recipeDepth);
     }
 }

@@ -25,24 +25,21 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.networks;
+package com.balugaq.jeg.core.integrations.def;
 
-import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Range;
+import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.0
  */
 @NullMarked
-public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource, NetworksSource {
+public interface JEGSource extends Source {
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean handleable(final BlockMenu blockMenu, final Player player, final ClickAction clickAction, @Range(from = 0, to = 53) final int[] ingredientSlots, final boolean unordered, final int recipeDepth) {
-        return NetworksSource.super.handleable(blockMenu, player, clickAction, ingredientSlots, unordered, recipeDepth);
+    default JavaPlugin plugin() {
+        return JustEnoughGuide.getInstance();
     }
 }
