@@ -116,9 +116,13 @@ public class RecipeCompletableListener implements Listener {
 
                         var v = missingMaterials.get(player);
                         ArrayList<ItemStack> clone;
-                        synchronized (v) {
-                            clone = new ArrayList<>(v);
-                            v.clear();
+                        if (v != null) {
+                            synchronized (v) {
+                                clone = new ArrayList<>(v);
+                                v.clear();
+                            }
+                        } else {
+                            clone = new ArrayList<>();
                         }
 
                         Map<ItemStack, Integer> map = new HashMap<>();
