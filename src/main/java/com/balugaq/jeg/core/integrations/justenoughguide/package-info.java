@@ -25,24 +25,4 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.networksexpansion;
-
-import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Range;
-import org.jspecify.annotations.NullMarked;
-
-/**
- * @author balugaq
- * @since 1.9
- */
-@NullMarked
-public class NetworksExpansionRecipeCompleteSlimefunSource implements SlimefunSource, NetworksExpansionSource {
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean handleable(final BlockMenu blockMenu, final Player player, final ClickAction clickAction, @Range(from = 0, to = 53) final int[] ingredientSlots, final boolean unordered, final int recipeDepth) {
-        return NetworksExpansionSource.super.handleable(blockMenu, player, clickAction, ingredientSlots, unordered, recipeDepth);
-    }
-}
+package com.balugaq.jeg.core.integrations.justenoughguide;

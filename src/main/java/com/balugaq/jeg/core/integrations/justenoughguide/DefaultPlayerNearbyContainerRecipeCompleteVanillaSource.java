@@ -25,4 +25,15 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.def;
+package com.balugaq.jeg.core.integrations.justenoughguide;
+
+import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
+import org.jspecify.annotations.NullMarked;
+
+/**
+ * @author balugaq
+ * @since 2.0
+ */
+@NullMarked
+public class DefaultPlayerNearbyContainerRecipeCompleteVanillaSource implements VanillaSource, PlayerNearbyContainerSource {
+}

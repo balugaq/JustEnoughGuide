@@ -35,10 +35,6 @@ import com.balugaq.jeg.core.integrations.bedrocktechnology.BedrockTechnologyInte
 import com.balugaq.jeg.core.integrations.claytech.ClayTechIntegrationMain;
 import com.balugaq.jeg.core.integrations.cultivation.CultivationIntegrationMain;
 import com.balugaq.jeg.core.integrations.danktech2.DankTech2IntegrationMain;
-import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteSlimefunSource;
-import com.balugaq.jeg.core.integrations.def.DefaultPlayerInventoryRecipeCompleteVanillaSource;
-import com.balugaq.jeg.core.integrations.def.DefaultPlayerNearbyContainerRecipeCompleteSlimefunSource;
-import com.balugaq.jeg.core.integrations.def.DefaultPlayerNearbyContainerRecipeCompleteVanillaSource;
 import com.balugaq.jeg.core.integrations.elementmanipulation.ElementManipulationIntegrationMain;
 import com.balugaq.jeg.core.integrations.emctech.EMCTechIntegrationMain;
 import com.balugaq.jeg.core.integrations.fastmachines.FastMachinesIntegrationMain;
@@ -51,8 +47,13 @@ import com.balugaq.jeg.core.integrations.gastronomicon.GastronomiconIntegrationM
 import com.balugaq.jeg.core.integrations.infinitycompress.InfinityCompressIntegrationMain;
 import com.balugaq.jeg.core.integrations.infinityexpansion.InfinityExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.infinityexpansion2.InfinityExpansion2IntegrationMain;
+import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerInventoryRecipeCompleteSlimefunSource;
+import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerInventoryRecipeCompleteVanillaSource;
+import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerNearbyContainerRecipeCompleteSlimefunSource;
+import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerNearbyContainerRecipeCompleteVanillaSource;
 import com.balugaq.jeg.core.integrations.logitech.LogitechIntegrationMain;
 import com.balugaq.jeg.core.integrations.magicexpansion.MagicExpansionIntegrationMain;
+import com.balugaq.jeg.core.integrations.momotech.MomotechIntegrationMain;
 import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
 import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.nexcavate.NexcavateIntegrationMain;
@@ -118,6 +119,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledInfinityExpansion_Changed;
     private boolean enabledLogiTech;
     private boolean enabledMagicExpansion;
+    private boolean enabledMomotech;
     private boolean enabledNetworks;
     private boolean enabledNetworksExpansion;
     private boolean enabledNexcavate;
@@ -140,13 +142,6 @@ public class IntegrationManager extends AbstractManager {
         this.plugin = plugin;
         JustEnoughGuide.runLater(() -> {
             PluginManager pm = Bukkit.getPluginManager();
-            try {
-                Class.forName("com.ytdd9527.networksexpansion.implementation.ExpansionItems");
-                enabledNetworksExpansion = true;
-            } catch (ClassNotFoundException e) {
-                enabledNetworksExpansion = false;
-            }
-
             this.enabledAlchimiaVitae = pm.isPluginEnabled("AlchimiaVitae");
             this.enabledBedrockTechnology = pm.isPluginEnabled("BedrockTechnology");
             this.enabledClayTechFixed = pm.isPluginEnabled("ClayTech-Fixed");
@@ -172,7 +167,9 @@ public class IntegrationManager extends AbstractManager {
             this.enabledInfinityExpansion2 = pm.isPluginEnabled("InfinityExpansion2");
             this.enabledLogiTech = pm.isPluginEnabled("LogiTech");
             this.enabledMagicExpansion = pm.isPluginEnabled("magicexpansion");
-            this.enabledNetworks = enabledNetworksExpansion || pm.isPluginEnabled("Networks");
+            this.enabledMomotech = pm.isPluginEnabled("Momotech") || pm.isPluginEnabled("Momotech-Changed");
+            this.enabledNetworksExpansion = classExists("com.ytdd9527.networksexpansion.implementation.ExpansionItems");
+            this.enabledNetworks = enabledNetworksExpansion || pm.isPluginEnabled("Networks") || pm.isPluginEnabled("Networks-Changed");
             this.enabledNexcavate = pm.isPluginEnabled("Nexcavate");
             this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
             this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
@@ -209,6 +206,7 @@ public class IntegrationManager extends AbstractManager {
             addIntegration(enabledInfinityExpansion2, InfinityExpansion2IntegrationMain::new);
             addIntegration(enabledLogiTech, LogitechIntegrationMain::new);
             addIntegration(enabledMagicExpansion, MagicExpansionIntegrationMain::new);
+            addIntegration(enabledMomotech, MomotechIntegrationMain::new);
             addIntegration(enabledNexcavate, NexcavateIntegrationMain::new);
             addIntegration(enabledNetworks, NetworksIntegrationMain::new);
             addIntegration(enabledNetworksExpansion, NetworksExpansionIntegrationMain::new);

@@ -28,8 +28,11 @@
 package com.balugaq.jeg.core.integrations.finaltechs.finaltechv1;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
+import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTechDustRecipeSettingsGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.jspecify.annotations.NullMarked;
@@ -43,6 +46,7 @@ import java.util.List;
  */
 @NullMarked
 public class FinalTechIntegrationMain implements Integration {
+    // @formatter:off
     public static final int[] MATRIX_CRAFTING_TABLE_INPUT_SLOTS = new int[] {
             0, 1, 2, 3, 4, 5,
             9, 10, 11, 12, 13, 14,
@@ -52,10 +56,32 @@ public class FinalTechIntegrationMain implements Integration {
             45, 46, 47, 48, 49, 50
     };
     public static final int[] MANUAL_CRAFTER_INPUT_SLOTS = new int[] {
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-            29,
-            33, 34, 35, 36, 37, 38, 42, 43, 44, 45, 46, 47, 51, 52, 53
+            0,  1,  2,  3,  4,  5,  6,  7,  8,
+            9,  10, 11, 12, 13, 14, 15, 16, 17,
+            18, 19, 20, 21, 22, 23, 24, 25, 26,
+            27, 28, 29,             33, 34, 35,
+            36, 37, 38,             42, 43, 44,
+            45, 46, 47,             51, 52, 53
     };
+    public static final int[] ORDERED_DUST_FACTORY_STONE_INPUT_SLOTS = new int[] {
+            0,  1,  2,  3,  4,  5,
+            9,  10, 11, 12, 13, 14,
+            18, 19, 20, 21, 22, 23,
+            27, 28, 29, 30, 31, 32,
+    };
+    public static final int[] FINALTECH_ORDERED_DUST_AMOUNTS = new int[] {
+            1,  2,  3,  4,  5,  6,
+            7,  8,  9,  10, 11, 12,
+            13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23, 24
+    };
+    public static final int[] FINALTECH_UNORDERED_DUST_AMOUNTS = new int[] {
+            1,  1,  2,  3,  4,  5,
+            6,  7,  8,  9,  10, 11,
+            12, 13, 14, 15, 16, 17,
+            18, 19, 20, 21, 22, 23
+    };
+    // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     @Override
@@ -69,6 +95,21 @@ public class FinalTechIntegrationMain implements Integration {
             SlimefunGuideSettings.addOption(FinalTechValueDisplayOption.instance());
             JustEnoughGuide.getListenerManager().registerListener(new FinalTechItemPatchListener());
         }
+
+        if (!FinalTechDustRecipeSettingsGuideOption.isBooted()) {
+            SlimefunGuideSettings.addOption(FinalTechDustRecipeSettingsGuideOption.instance());
+        }
+        RecipeCompleteProvider.registerSpecialRecipeHandler((p, i, s) -> {
+            if (s == null) return null;
+
+            return switch (s.getId()) {
+                case "FINALTECH_ORDERED_DUST" ->
+                        ItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_ORDERED_DUST_AMOUNTS);
+                case "FINALTECH_UNORDERED_DUST" ->
+                        ItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_UNORDERED_DUST_AMOUNTS);
+                default -> null;
+            };
+        });
 
         rrc("FINALTECH_MANUAL_CRAFTING_TABLE");
         rrc("FINALTECH_MANUAL_ENHANCED_CRAFTING_TABLE");
@@ -86,6 +127,7 @@ public class FinalTechIntegrationMain implements Integration {
         rrc("FINALTECH_MANUAL_JUICER");
         rrc("FINALTECH_MANUAL_ANCIENT_ALTAR");
         rrc("FINALTECH_MATRIX_CRAFTING_TABLE", MATRIX_CRAFTING_TABLE_INPUT_SLOTS, false);
+        rrc("FINALTECH_ORDERED_DUST_FACTORY_STONE", ORDERED_DUST_FACTORY_STONE_INPUT_SLOTS, false);
     }
 
     public static void rrc(String id) {

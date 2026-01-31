@@ -25,44 +25,21 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.def;
+package com.balugaq.jeg.api.recipe_complete.source.base;
 
-import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
-import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.Location;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NullMarked;
+
+import java.util.List;
 
 /**
  * @author balugaq
  * @since 2.0
  */
-@NullMarked
-public class DefaultPlayerNearbyContainerRecipeCompleteSlimefunSource implements SlimefunSource, JEGSource {
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean handleable(
-            BlockMenu blockMenu,
-            Player player,
-            ClickAction clickAction,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
-        return RecipeFillingWithNearbyContainerGuideOption.getRadiusDistance(player) > 0;
-    }
-
-    @Override
-    @Nullable
-    public ItemStack getItemStack(Player player, Location target, ItemStack itemStack) {
-        ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
-        if (i1 != null) {
-            return i1;
-        }
-
-        return getItemStackFromNearbyContainer(player, target, itemStack);
-    }
+@FunctionalInterface
+public interface RecipeHandler {
+    @Nullable List<@Nullable RecipeChoice> get(Player player, ItemStack itemStack, @Nullable SlimefunItem sf);
 }

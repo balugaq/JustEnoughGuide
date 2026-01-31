@@ -28,10 +28,13 @@
 package com.balugaq.jeg.core.integrations.finaltechs.finalTECHv2;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHItemPatchListener;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
+import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTechDustRecipeSettingsGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.jspecify.annotations.NullMarked;
@@ -45,19 +48,46 @@ import java.util.List;
  */
 @NullMarked
 public class FinalTECHIntegrationMain implements Integration {
+    // @formatter:off
     public static final int[] MATRIX_CRAFTING_TABLE_INPUT_SLOTS = new int[] {
-            0, 1, 2, 3, 4, 5,
-            9, 10, 11, 12, 13, 14,
+            0,  1,  2,  3,  4,  5,
+            9,  10, 11, 12, 13, 14,
             18, 19, 20, 21, 22, 23,
             27, 28, 29, 30, 31, 32,
             36, 37, 38, 39, 40, 41,
             45, 46, 47, 48, 49, 50
     };
     public static final int[] MANUAL_CRAFTER_INPUT_SLOTS = new int[] {
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-            29,
+            0,  1,  2,  3,  4,  5,  6,  7,  8,
+            9,  10, 11, 12, 13, 14, 15, 16, 17,
+            18, 19, 20, 21, 22, 23, 24, 25, 26,
+            27, 28, 29, 30, 31, 32, 33, 34, 35
+    };
+    public static final int[] ORDERED_DUST_FACTORY_STONE_INPUT_SLOTS = new int[] {
+            0,  1,  2,  3,  4,  5,
+            9,  10, 11, 12, 13, 14,
+            18, 19, 20, 21, 22, 23,
+            27, 28, 29, 30, 31, 32,
+            36, 37, 38, 39, 40, 41,
+            45, 46, 47, 48, 49, 50
+    };
+    public static final int[] FINALTECH_ORDERED_DUST_AMOUNTS = new int[] {
+            1,  2,  3,  4,  5,  6,
+            7,  8,  9,  10, 11, 12,
+            13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23, 24,
+            25, 26, 27, 28, 29, 30,
+            31, 32, 33, 34, 35, 36
+    };
+    public static final int[] FINALTECH_UNORDERED_DUST_AMOUNTS = new int[] {
+            1,  1,  2,  3,  4,  5,
+            6,  7,  8,  9,  10, 11,
+            12, 13, 14, 15, 16, 17,
+            18, 19, 20, 21, 22, 23,
+            24, 25, 26, 27, 28, 29,
             30, 31, 32, 33, 34, 35
     };
+    // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     @Override
@@ -68,12 +98,27 @@ public class FinalTECHIntegrationMain implements Integration {
     @Override
     public void onEnable() {
         if (JustEnoughGuide.getConfigManager().isFinalTECHValueDisplay()) {
-            if (!FinalTECHValueDisplayOption.booted()) {
-                FinalTECHValueDisplayOption.boot();
+            if (!FinalTECHValueDisplayOption.isBooted()) {
+                FinalTECHValueDisplayOption.setBooted(true);
                 SlimefunGuideSettings.addOption(FinalTECHValueDisplayOption.instance());
                 JustEnoughGuide.getListenerManager().registerListener(new FinalTECHItemPatchListener());
             }
         }
+
+        if (!FinalTechDustRecipeSettingsGuideOption.isBooted()) {
+            SlimefunGuideSettings.addOption(FinalTechDustRecipeSettingsGuideOption.instance());
+        }
+        RecipeCompleteProvider.registerSpecialRecipeHandler((p, i, s) -> {
+            if (s == null) return null;
+
+            return switch (s.getId()) {
+                case "FINALTECH_ORDERED_DUST" ->
+                        ItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_ORDERED_DUST_AMOUNTS);
+                case "FINALTECH_UNORDERED_DUST" ->
+                        ItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_UNORDERED_DUST_AMOUNTS);
+                default -> null;
+            };
+        });
 
         rrc("FINALTECH_MANUAL_CRAFT_MACHINE");
         rrc("FINALTECH_MANUAL_CRAFTING_TABLE");
@@ -93,6 +138,7 @@ public class FinalTECHIntegrationMain implements Integration {
         rrc("FINALTECH_MANUAL_ANCIENT_ALTAR");
         rrc("FINALTECH_MANUAL_HEATED_PRESSURE_CHAMBER");
         rrc("FINALTECH_MATRIX_CRAFTING_TABLE", MATRIX_CRAFTING_TABLE_INPUT_SLOTS, false);
+        rrc("FINALTECH_ORDERED_DUST_FACTORY_STONE", ORDERED_DUST_FACTORY_STONE_INPUT_SLOTS, false);
     }
 
     public static void rrc(String id) {

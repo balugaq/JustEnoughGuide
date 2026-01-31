@@ -28,10 +28,10 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.InventoryUtil;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.block.Block;
@@ -39,7 +39,6 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -51,26 +50,17 @@ import org.jspecify.annotations.NullMarked;
 @SuppressWarnings({"SameReturnValue", "unused"})
 @NullMarked
 public interface VanillaSource extends Source {
-    @SuppressWarnings("deprecation")
-    boolean handleable(
-            Block block,
-            Inventory inventory,
-            Player player,
-            ClickAction clickAction,
-            @Range(from = 0, to = 53) int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth);
-
     @SuppressWarnings({"deprecation", "UnusedReturnValue"})
-    default boolean openGuide(
-            Block block,
-            Inventory inventory,
-            Player player,
-            ClickAction clickAction,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth,
-            @Nullable Runnable callback) {
+    @Override
+    default boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
+        Block block = session.getBlock();
+        Inventory inventory = session.getInventory();
+        Player player = session.getPlayer();
+        ClickAction clickAction = session.getClickAction();
+        int[] ingredientSlots = session.getIngredientSlots();
+        boolean unordered = session.isUnordered();
+        int recipeDepth = session.getRecipeDepth();
+
         var p = GuideUtil.updatePlayer(player);
         if (p == null) return false;
         GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p);
@@ -80,8 +70,9 @@ public interface VanillaSource extends Source {
                 times = 64;
             }
 
+            session.setEvent(lastEvent);
             for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(block, inventory, lastEvent, ingredientSlots, unordered, recipeDepth);
+                completeRecipeWithGuide(session);
             }
             if (callback != null) {
                 callback.run();
@@ -92,6 +83,7 @@ public interface VanillaSource extends Source {
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(
                 player.getUniqueId(), ((event, profile) -> {
+                    session.setEvent(event);
                     int times = 1;
                     if (event.getClickAction().isRightClicked()) {
                         times = 64;
@@ -99,7 +91,7 @@ public interface VanillaSource extends Source {
 
                     // I think it is runnable
                     for (int i = 0; i < times; i++) {
-                        completeRecipeWithGuide(block, inventory, event, ingredientSlots, unordered, recipeDepth);
+                        completeRecipeWithGuide(session);
                     }
 
                     player.updateInventory();
@@ -113,16 +105,13 @@ public interface VanillaSource extends Source {
         return true;
     }
 
-    @CanIgnoreReturnValue
-    default boolean completeRecipeWithGuide(
-            Block block,
-            Inventory inventory,
-            GuideEvents.ItemButtonClickEvent event,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
+    @Override
+    default boolean completeRecipeWithGuide(RecipeCompleteSession session) {
+        Inventory inventory = session.getInventory();
+        int[] ingredientSlots = session.getIngredientSlots();
+        boolean unordered = session.isUnordered();
         return completeRecipeWithGuide(
-                event, block.getLocation(), ingredientSlots, unordered, recipeDepth,
+                session,
                 inventory::getItem,
                 (received, i) ->
                     InventoryUtil.pushItem(inventory, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]})

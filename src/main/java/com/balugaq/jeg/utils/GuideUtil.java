@@ -77,6 +77,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -161,16 +162,21 @@ public final class GuideUtil {
      */
     public static SlimefunGuideImplementation getGuide(Player player, SlimefunGuideMode mode) {
         if (mode == SlimefunGuideMode.SURVIVAL_MODE) {
-            return Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
+            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
         }
 
         // Player must be op or have the permission "slimefun.cheat.items" to access the cheat guide
         if ((player.isOp() || player.hasPermission("slimefun.cheat.items")) && mode == SlimefunGuideMode.CHEAT_MODE) {
-            return Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
+            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
         }
 
         // Fallback to survival guide if no permission is given
-        return Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
+        return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
+    }
+
+    @ApiStatus.Obsolete
+    public static SlimefunGuideImplementation getSlimefunGuide(SlimefunGuideMode mode) {
+        return Slimefun.getRegistry().getSlimefunGuide(mode);
     }
 
     public static void removeLastEntry(GuideHistory guideHistory) {

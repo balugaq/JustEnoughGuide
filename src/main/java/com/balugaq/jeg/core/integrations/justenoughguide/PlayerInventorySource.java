@@ -25,25 +25,34 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.networksexpansion;
+package com.balugaq.jeg.core.integrations.justenoughguide;
 
-import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.Range;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.0
  */
 @NullMarked
-public class NetworksExpansionRecipeCompleteVanillaSource implements VanillaSource, NetworksExpansionSource {
+public interface PlayerInventorySource extends JEGSource {
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean handleable(final Block block, final Inventory inventory, final Player player, final ClickAction clickAction, @Range(from = 0, to = 53) final int[] ingredientSlots, final boolean unordered, final int recipeDepth) {
-        return NetworksExpansionSource.super.handleable(block, inventory, player, clickAction, ingredientSlots, unordered, recipeDepth);
+    default boolean handleable(RecipeCompleteSession session) {
+        // Always available
+        return true;
+    }
+
+    @Override
+    default int handleLevel() {
+        return RecipeCompleteProvider.PLAYER_INVENTORY_HANDLE_LEVEL;
+    }
+
+    @Override
+    @Nullable
+    default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
+        return getItemStackFromPlayerInventory(session.getPlayer(), itemStack);
     }
 }

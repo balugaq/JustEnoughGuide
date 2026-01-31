@@ -27,9 +27,9 @@
 
 package com.balugaq.jeg.implementation.items;
 
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.SlimefunGuideItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -48,7 +48,7 @@ public class GroupTierEditorGuide extends SlimefunGuideItem {
     public static final GroupTierEditorGuide instance = new GroupTierEditorGuide();
 
     public GroupTierEditorGuide() {
-        super(Slimefun.getRegistry().getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE), "&a物品组调位书");
+        super(GuideUtil.getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE), "&a物品组调位书");
 
         ItemMeta meta = getItemMeta();
         meta.getPersistentDataContainer().set(KEY, PersistentDataType.BOOLEAN, true);

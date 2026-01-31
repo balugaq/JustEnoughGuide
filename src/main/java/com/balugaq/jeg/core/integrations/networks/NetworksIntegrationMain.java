@@ -30,7 +30,6 @@ package com.balugaq.jeg.core.integrations.networks;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
@@ -104,10 +103,8 @@ public class NetworksIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
-        if (!JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion()) {
-            RecipeCompleteProvider.addSource(new NetworksRecipeCompleteSlimefunSource());
-            RecipeCompleteProvider.addSource(new NetworksRecipeCompleteVanillaSource());
-        }
+        RecipeCompleteProvider.addSource(new NetworksRecipeCompleteSlimefunSource());
+        RecipeCompleteProvider.addSource(new NetworksRecipeCompleteVanillaSource());
 
         rrc("NTW_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_CRAFTING_GRID", CRAFTING_GRID_RECIPE_SLOTS, false);

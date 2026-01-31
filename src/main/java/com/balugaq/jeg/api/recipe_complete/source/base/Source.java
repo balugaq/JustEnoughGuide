@@ -28,7 +28,7 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.SimpleRecipeChoice;
-import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
@@ -36,6 +36,7 @@ import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -71,10 +72,42 @@ public interface Source {
     int RECIPE_DEPTH_THRESHOLD = 8;
 
     JavaPlugin plugin();
+    boolean handleable(RecipeCompleteSession session);
+    @Nullable ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack);
+
+    @CanIgnoreReturnValue
+    boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback);
+
+    @CanIgnoreReturnValue
+    boolean completeRecipeWithGuide(RecipeCompleteSession session);
+
+    @CanIgnoreReturnValue
+    default boolean openGuide(RecipeCompleteSession session) {
+        return openGuide(session, null);
+    }
+
+    /**
+     * The handle level of the source.
+     * The lower the level, the earlier items will try to be gotten from.
+     * @return the handle level
+     */
+    default int handleLevel() {
+        return 20;
+    }
+
+    default @Nullable List<@Nullable RecipeChoice> getSpecialRecipe(Player player, ItemStack itemStack, @Nullable SlimefunItem sf) {
+        for (var handler : RecipeCompleteProvider.getSpecialRecipeHandlers()) {
+            var r = handler.get(player, itemStack, sf);
+            if (r != null) return r;
+        }
+        return null;
+    }
 
     @SuppressWarnings("ConstantValue")
-    default @Nullable List<@Nullable RecipeChoice> getRecipe(ItemStack itemStack) {
+    default @Nullable List<@Nullable RecipeChoice> getRecipe(Player player, ItemStack itemStack) {
         SlimefunItem sf = SlimefunItem.getByItem(itemStack);
+        var r = getSpecialRecipe(player, itemStack, sf);
+        if (r != null) return r;
         if (sf != null) {
             List<@Nullable RecipeChoice> raw = new ArrayList<>(Arrays.stream(sf.getRecipe())
                                                                        .map(item -> item == null ? null :
@@ -234,7 +267,7 @@ public interface Source {
         return null;
     }
 
-    default boolean depthInRange(Player player, int depth) {
+    static boolean depthInRange(Player player, int depth) {
         return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
     }
 
@@ -255,13 +288,14 @@ public interface Source {
     }
 
     default boolean completeRecipeWithGuide(
-            GuideEvents.ItemButtonClickEvent event,
-            Location target,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth,
+            RecipeCompleteSession session,
             ItemGetter itemGetter,
             ItemPusher itemPusher) {
+        var event = session.getEvent();
+        var ingredientSlots = session.getIngredientSlots();
+        var unordered = session.isUnordered();
+        var recipeDepth = session.getRecipeDepth();
+
         Player player = GuideUtil.updatePlayer(event.getPlayer());
         if (player == null) {
             return false;
@@ -272,7 +306,7 @@ public interface Source {
             return false;
         }
 
-        List<@Nullable RecipeChoice> choices = getRecipe(clickedItem);
+        List<@Nullable RecipeChoice> choices = getRecipe(player, clickedItem);
         if (choices == null) {
             sendMissingMaterial(player, clickedItem);
             return false;
@@ -289,7 +323,7 @@ public interface Source {
             }
 
             if (!unordered) {
-                ItemStack existing = itemGetter.apply(ingredientSlots[i]);
+                ItemStack existing = itemGetter.get(ingredientSlots[i]);
                 if (existing != null && existing.getType() != Material.AIR) {
                     if (existing.getAmount() >= existing.getMaxStackSize()) {
                         continue;
@@ -305,13 +339,15 @@ public interface Source {
                 List<ItemStack> itemStacks =
                         materialChoice.getChoices().stream().map(ItemStack::new).toList();
                 for (ItemStack itemStack : itemStacks) {
-                    ItemStack received = getItemStack(player, target, itemStack);
+                    ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
                     if (received != null && received.getType() != Material.AIR) {
-                        itemPusher.apply(received, i);
+                        session.setPushed(session.getPushed() + received.getAmount());
+                        itemPusher.push(received, i);
                     } else {
-                        if (depthInRange(player, recipeDepth + 1)) {
+                        if (session.isExpired()) {
+                            session.setRecipeDepth(recipeDepth + 1);
                             completeRecipeWithGuide(
-                                    event, target, ingredientSlots, unordered, recipeDepth + 1,
+                                    session,
                                     itemGetter, itemPusher
                             );
                         } else {
@@ -321,13 +357,15 @@ public interface Source {
                 }
             } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
                 for (ItemStack itemStack : exactChoice.getChoices()) {
-                    ItemStack received = getItemStack(player, target, itemStack);
+                    ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
                     if (received != null && received.getType() != Material.AIR) {
-                        itemPusher.apply(received, i);
+                        session.setPushed(session.getPushed() + received.getAmount());
+                        itemPusher.push(received, i);
                     } else {
-                        if (depthInRange(player, recipeDepth + 1)) {
+                        if (session.isExpired()) {
+                            session.setRecipeDepth(recipeDepth + 1);
                             completeRecipeWithGuide(
-                                    event, target, ingredientSlots, unordered, recipeDepth + 1,
+                                    session,
                                     itemGetter, itemPusher
                             );
                         } else {
@@ -349,15 +387,13 @@ public interface Source {
         return set.toIntArray();
     }
 
-    @Nullable ItemStack getItemStack(Player player, Location target, ItemStack itemStack);
-
     /**
      * @author balugaq
      * @since 2.0
      */
     @FunctionalInterface
     interface ItemGetter {
-        @Nullable ItemStack apply(int slot);
+        @Nullable ItemStack get(int slot);
     }
 
     /**
@@ -366,6 +402,6 @@ public interface Source {
      */
     @FunctionalInterface
     interface ItemPusher {
-        void apply(ItemStack itemStack, int i);
+        void push(ItemStack itemStack, int i);
     }
 }

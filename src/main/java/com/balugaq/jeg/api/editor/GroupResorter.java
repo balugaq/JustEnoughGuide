@@ -79,7 +79,7 @@ public class GroupResorter {
                                 int offset = 0;
                                 ItemGroup lastItemGroup = null;
                                 for (ItemGroup itemGroup :
-                                        Slimefun.getRegistry().getAllItemGroups()) {
+                                        new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                                     oldTiers.put(itemGroup, itemGroup.getTier());
 
                                     Integer cfg = getTierCfg(getKey(itemGroup));

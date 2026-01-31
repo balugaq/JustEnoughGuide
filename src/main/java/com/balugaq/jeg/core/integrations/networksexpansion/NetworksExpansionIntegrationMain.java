@@ -28,7 +28,6 @@
 package com.balugaq.jeg.core.integrations.networksexpansion;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
-import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.Bukkit;
@@ -84,9 +83,6 @@ public class NetworksExpansionIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
-        RecipeCompleteProvider.addSource(new NetworksExpansionRecipeCompleteSlimefunSource());
-        RecipeCompleteProvider.addSource(new NetworksExpansionRecipeCompleteVanillaSource());
-
         rrc("NTW_EXPANSION_ANCIENT_ALTAR_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_ARMOR_FORGE_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_EXPANSION_COMPRESSOR_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);

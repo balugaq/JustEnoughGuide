@@ -132,7 +132,7 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
             } else if (s.startsWith("lookupgroup ")) {
                 PlayerProfile profile = PlayerProfile.find(player).orElse(null);
                 if (profile == null) return;
-                for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
+                for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                     if (group.getKey().toString().equals(s.substring(12))) {
                         GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).openItemGroup(profile, group, 1);
                         return;
@@ -153,7 +153,7 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
 
         OnClick.preset(chestMenu);
 
-        SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode);
+        SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
 
         for (int ss : Formats.sub.getChars('b')) {
             chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));

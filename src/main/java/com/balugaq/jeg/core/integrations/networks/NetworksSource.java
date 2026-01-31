@@ -27,19 +27,15 @@
 
 package com.balugaq.jeg.core.integrations.networks;
 
+import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -48,41 +44,26 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 public interface NetworksSource extends Source {
-    @SuppressWarnings("deprecation")
-    default boolean handleable(
-            BlockMenu blockMenu,
-            Player player,
-            ClickAction clickAction,
-            @Range(from = 0, to = 53) int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
-        return NetworksIntegrationMain.findNearbyNetworkRoot(blockMenu.getLocation()) != null;
+    default boolean handleable(RecipeCompleteSession session) {
+        return NetworksIntegrationMain.findNearbyNetworkRoot(session.getLocation()) != null;
     }
 
-    @SuppressWarnings("deprecation")
-    default boolean handleable(
-            Block block,
-            Inventory inventory,
-            Player player,
-            ClickAction clickAction,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
-        return NetworksIntegrationMain.findNearbyNetworkRoot(block.getLocation()) != null;
+    @Override
+    default int handleLevel() {
+        return RecipeCompleteProvider.NETWORKS_HANDLE_LEVEL;
     }
 
     @Override
     @SuppressWarnings("removal")
     @Nullable
-    default ItemStack getItemStack(Player player, Location target, ItemStack itemStack) {
-        ItemStack i1 = getItemStackFromPlayerInventory(player, itemStack);
-        if (i1 != null) {
-            return i1;
-        }
-
-        NetworkRoot root = NetworksIntegrationMain.findNearbyNetworkRoot(player.getLocation());
+    default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
+        Player player = session.getPlayer();
+        NetworkRoot root = session.getCache(this, NetworkRoot.class);
         if (root == null) {
-            return null;
+            root = NetworksIntegrationMain.findNearbyNetworkRoot(session.getLocation());
+            if (root == null) return null;
+
+            session.setCache(this, root);
         }
 
         // get from root

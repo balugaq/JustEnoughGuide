@@ -482,7 +482,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 }
             }
             JEGGuideSettings.unpatchSlimefun();
-            FinalTECHValueDisplayOption.unboot();
+            FinalTECHValueDisplayOption.setBooted(false);
         } catch (Exception ignored) {
         }
 

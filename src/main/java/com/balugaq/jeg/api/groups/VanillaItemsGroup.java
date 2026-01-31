@@ -162,7 +162,7 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
         ChestMenu chestMenu = new ChestMenu("原版物品");
 
         OnClick.preset(chestMenu);
-        SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode);
+        SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
 
         for (int ss : Formats.sub.getChars('b')) {
             chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));

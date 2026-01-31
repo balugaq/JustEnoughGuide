@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
@@ -315,21 +316,18 @@ public class RecipeCompletableListener implements Listener {
                         enterSelectingItemStackToRecipeComplete(player);
                         int[] slots = getIngredientSlots(sf);
                         boolean unordered = isUnordered(sf);
+                        var session = RecipeCompleteSession.create(blockMenu, player, clickAction, slots, unordered, 1);
+                        if (session == null) return false;
                         for (SlimefunSource source : RecipeCompleteProvider.getSlimefunSources()) {
                             // Strategy mode
                             // Default strategy see {@link DefaultPlayerInventoryRecipeCompleteSlimefunSource}
-                            if (source.handleable(blockMenu, player, clickAction, slots, unordered, 1)) {
+                            if (source.handleable(session)) {
                                 source.openGuide(
-                                        blockMenu,
-                                        player,
-                                        clickAction,
-                                        slots,
-                                        unordered,
-                                        1,
+                                        session,
                                         () -> exitSelectingItemStackToRecipeComplete(player)
                                 );
                                 break;
-                            }
+                            } // todo: deprecated, will be changed, since handleable no longer should be used here
                         }
 
                         return false;
@@ -425,11 +423,13 @@ public class RecipeCompletableListener implements Listener {
 
         Block block = dispenser.getBlock();
         ClickAction clickAction = new ClickAction(event.isRightClick(), event.isShiftClick());
+        var session = RecipeCompleteSession.create(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1);
+        if (session == null) return;
         for (VanillaSource source : RecipeCompleteProvider.getVanillaSources()) {
             // Strategy mode
             // Default strategy see {@link DefaultPlayerInventoryRecipeCompleteVanillaSource}
-            if (source.handleable(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1)) {
-                source.openGuide(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1, null);
+            if (source.handleable(session)) {
+                source.openGuide(session, null);
                 break;
             }
         }
@@ -581,11 +581,11 @@ public class RecipeCompletableListener implements Listener {
                 lore = new ArrayList<>();
             }
 
-            // Patch start
+            // Patch hint start
             lore.add("");
             lore.add(ChatColors.color(Models.RECIPE_COMPLETE_GUI_MECHANISM_1));
             lore.add(ChatColors.color(Models.RECIPE_COMPLETE_GUI_MECHANISM_2));
-            // Patch end
+            // Patch hint end
 
             meta.setLore(lore);
             old.setItemMeta(meta);

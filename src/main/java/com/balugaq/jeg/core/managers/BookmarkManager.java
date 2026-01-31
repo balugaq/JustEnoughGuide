@@ -291,7 +291,7 @@ public class BookmarkManager extends AbstractManager {
             for (String id : lore) {
                 if (id.startsWith("itemgroup:")) {
                     String s = id.substring(10);
-                    for (ItemGroup itemGroup : Slimefun.getRegistry().getAllItemGroups()) {
+                    for (ItemGroup itemGroup : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                         if (itemGroup.getKey().toString().equals(s)) {
                             bookmarkedItems.add(Bookmark.of(itemGroup));
                         }

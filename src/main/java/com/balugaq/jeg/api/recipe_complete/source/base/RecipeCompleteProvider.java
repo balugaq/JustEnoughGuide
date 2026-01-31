@@ -27,13 +27,17 @@
 
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
+import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -44,21 +48,30 @@ import java.util.List;
 @Getter
 @NullMarked
 public class RecipeCompleteProvider {
+    public static final int PLAYER_INVENTORY_HANDLE_LEVEL = 5;
+    public static final int SLIME_AE_PLUGIN_HANDLE_LEVEL = 10;
+    public static final int NETWORKS_HANDLE_LEVEL = 15;
+    public static final int PLAYER_NEARBY_CONTAINER_HANDLE_LEVEL = 20;
+
     @Getter
     private static final List<SlimefunSource> slimefunSources = new ArrayList<>();
 
     @Getter
     private static final List<VanillaSource> vanillaSources = new ArrayList<>();
 
+    @Getter
+    private static final List<RecipeHandler> specialRecipeHandlers = new ArrayList<>();
+
     public static void addSource(SlimefunSource source) {
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
-            slimefunSources.add(source);
+            slimefunSources.add(0, source);
+            slimefunSources.sort(Comparator.comparingInt(Source::handleLevel));
         }
     }
 
     public static void addSource(VanillaSource source) {
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
-            vanillaSources.add(source);
+            vanillaSources.add(0, source);
         }
     }
 
@@ -75,6 +88,17 @@ public class RecipeCompleteProvider {
             }
         }
         return null;
+    }
+
+    @CanIgnoreReturnValue
+    public static RecipeHandler registerSpecialRecipeHandler(RecipeHandler handler) {
+        specialRecipeHandlers.add(handler);
+        return handler;
+    }
+
+    public static RecipeHandler unregisterSpecialRecipeHandler(RecipeHandler handler) {
+        specialRecipeHandlers.remove(handler);
+        return handler;
     }
 
     @Nullable
@@ -95,5 +119,24 @@ public class RecipeCompleteProvider {
     public static void shutdown() {
         slimefunSources.clear();
         vanillaSources.clear();
+        specialRecipeHandlers.clear();
+    }
+
+    @Nullable
+    public static ItemStack getItemStack(RecipeCompleteSession session, ItemStack template) {
+        for (SlimefunSource source : slimefunSources) {
+            if (session.isNotHandleable(source)) {
+                continue;
+            }
+            if (!source.handleable(session)) {
+                session.setNotHandleable(source);
+                continue;
+            }
+            var result = source.getItemStack(session, template);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 }

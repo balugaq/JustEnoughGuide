@@ -25,17 +25,12 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.slimeaeplugin;
+package com.balugaq.jeg.core.integrations.justenoughguide;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
-import me.ddggdd135.guguslimefunlib.items.ItemKey;
-import me.ddggdd135.slimeae.api.interfaces.IStorage;
-import me.ddggdd135.slimeae.api.items.ItemRequest;
-import org.bukkit.entity.Player;
+import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -44,42 +39,20 @@ import org.jspecify.annotations.NullMarked;
  * @since 2.0
  */
 @NullMarked
-public interface SlimeAEPluginSource extends Source {
+public interface PlayerNearbyContainerSource extends JEGSource {
+    @Override
     default boolean handleable(RecipeCompleteSession session) {
-        return SlimeAEPluginIntegrationMain.findNearbyIStorage(session.getLocation()) != null;
+        return RecipeFillingWithNearbyContainerGuideOption.getRadiusDistance(session.getPlayer()) > 0;
     }
 
     @Override
     default int handleLevel() {
-        return RecipeCompleteProvider.SLIME_AE_PLUGIN_HANDLE_LEVEL;
+        return RecipeCompleteProvider.PLAYER_NEARBY_CONTAINER_HANDLE_LEVEL;
     }
 
     @Override
     @Nullable
     default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
-        Player player = session.getPlayer();
-        IStorage networkStorage = session.getCache(this, IStorage.class);
-        if (networkStorage == null) {
-            networkStorage = SlimeAEPluginIntegrationMain.findNearbyIStorage(session.getLocation());
-            if (networkStorage == null) return null;
-
-            session.setCache(this, networkStorage);
-        }
-
-        // get from networkStorage
-        ItemStack[] gotten = networkStorage
-                .takeItem(new ItemRequest(new ItemKey(itemStack), Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize()))))
-                .toItemStacks();
-        if (gotten.length != 0) {
-            return gotten[0];
-        }
-
-        return null;
+        return getItemStackFromNearbyContainer(session.getPlayer(), session.getTarget(), itemStack);
     }
-
-    @Override
-    default JavaPlugin plugin() {
-        return SlimeAEPluginIntegrationMain.getPlugin();
-    }
-
 }

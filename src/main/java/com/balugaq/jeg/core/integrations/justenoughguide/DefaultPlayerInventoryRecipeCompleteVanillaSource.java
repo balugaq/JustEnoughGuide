@@ -25,16 +25,9 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.def;
+package com.balugaq.jeg.core.integrations.justenoughguide;
 
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -42,24 +35,5 @@ import org.jspecify.annotations.NullMarked;
  * @since 1.9
  */
 @NullMarked
-public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements VanillaSource, JEGSource {
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean handleable(
-            Block block,
-            Inventory inventory,
-            Player player,
-            ClickAction clickAction,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
-        // Always available
-        return true;
-    }
-
-    @Override
-    @Nullable
-    public ItemStack getItemStack(Player player, Location target, ItemStack itemStack) {
-        return getItemStackFromPlayerInventory(player, itemStack);
-    }
+public class DefaultPlayerInventoryRecipeCompleteVanillaSource implements VanillaSource, PlayerInventorySource {
 }

@@ -25,20 +25,15 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.networksexpansion;
+package com.balugaq.jeg.core.integrations.justenoughguide;
 
-import com.balugaq.jeg.core.integrations.networks.NetworksSource;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 2.0
+ * @since 1.9
  */
 @NullMarked
-public interface NetworksExpansionSource extends NetworksSource {
-    @Override
-    default JavaPlugin plugin() {
-        return NetworksExpansionIntegrationMain.getPlugin();
-    }
+public class DefaultPlayerInventoryRecipeCompleteSlimefunSource implements SlimefunSource, PlayerInventorySource {
 }

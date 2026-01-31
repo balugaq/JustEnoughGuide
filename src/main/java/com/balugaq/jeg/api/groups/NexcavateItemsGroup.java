@@ -76,7 +76,7 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
         super(key, icon);
         this.page = 1;
         List<SlimefunItem> slimefunItemList = new ArrayList<>();
-        for (SlimefunItem item : Slimefun.getRegistry().getAllSlimefunItems()) {
+        for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
             if ("nexcavate".equalsIgnoreCase(item.getAddon().getName())) {
                 slimefunItemList.add(item);
             }
@@ -101,7 +101,7 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
 
         OnClick.preset(chestMenu);
 
-        SlimefunGuideImplementation implementation = Slimefun.getRegistry().getSlimefunGuide(slimefunGuideMode);
+        SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
         for (int ss : Formats.sub.getChars('b')) {
             chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
             chestMenu.addMenuClickHandler(

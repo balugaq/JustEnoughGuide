@@ -28,6 +28,7 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -38,7 +39,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -51,35 +51,17 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface SlimefunSource extends Source {
     @SuppressWarnings("deprecation")
-    boolean handleable(
-            BlockMenu blockMenu,
-            Player player,
-            ClickAction clickAction,
-            @Range(from = 0, to = 53) int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth);
-
-    @CanIgnoreReturnValue
-    @SuppressWarnings("deprecation")
+    @Override
     default boolean openGuide(
-            BlockMenu blockMenu,
-            Player player,
-            ClickAction clickAction,
-            @Range(from = 0, to = 53) int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
-        return openGuide(blockMenu, player, clickAction, ingredientSlots, unordered, recipeDepth, null);
-    }
-
-    @SuppressWarnings("deprecation")
-    default boolean openGuide(
-            BlockMenu blockMenu,
-            Player player,
-            ClickAction clickAction,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth,
+            RecipeCompleteSession session,
             @Nullable Runnable callback) {
+        BlockMenu blockMenu = session.getMenu();
+        Player player = session.getPlayer();
+        ClickAction clickAction = session.getClickAction();
+        int[] ingredientSlots = session.getIngredientSlots();
+        boolean unordered = session.isUnordered();
+        int recipeDepth = session.getRecipeDepth();
+
         var p = GuideUtil.updatePlayer(player);
         if (p == null) return false;
         GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p);
@@ -105,8 +87,10 @@ public interface SlimefunSource extends Source {
             }
 
             // I think it is runnable
+            session.setMenu(actualMenu);
+            session.setEvent(lastEvent);
             for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(actualMenu, lastEvent, ingredientSlots, unordered, recipeDepth);
+                completeRecipeWithGuide(session);
             }
             if (callback != null) {
                 callback.run();
@@ -117,6 +101,7 @@ public interface SlimefunSource extends Source {
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(
                 player.getUniqueId(), ((event, profile) -> {
+                    session.setEvent(event);
                     BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
                     if (actualMenu == null) {
                         if (callback != null) {
@@ -137,8 +122,9 @@ public interface SlimefunSource extends Source {
                         times = 64;
                     }
 
+                    session.setMenu(actualMenu);
                     for (int i = 0; i < times; i++) {
-                        completeRecipeWithGuide(actualMenu, event, ingredientSlots, unordered, recipeDepth);
+                        completeRecipeWithGuide(session);
                     }
 
                     player.updateInventory();
@@ -154,13 +140,13 @@ public interface SlimefunSource extends Source {
 
     @CanIgnoreReturnValue
     default boolean completeRecipeWithGuide(
-            BlockMenu blockMenu,
-            GuideEvents.ItemButtonClickEvent event,
-            int[] ingredientSlots,
-            boolean unordered,
-            int recipeDepth) {
+            RecipeCompleteSession session) {
+        BlockMenu blockMenu = session.getMenu();
+        boolean unordered = session.isUnordered();
+        int[] ingredientSlots = session.getIngredientSlots();
+        session.setTarget(blockMenu.getLocation());
         return completeRecipeWithGuide(
-                event, blockMenu.getLocation(), ingredientSlots, unordered, recipeDepth,
+                session,
                 blockMenu::getItemInSlot,
                 (received, i) ->
                         BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})

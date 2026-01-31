@@ -25,21 +25,4 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.def;
-
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jspecify.annotations.NullMarked;
-
-/**
- * @author balugaq
- * @since 2.0
- */
-@NullMarked
-public interface JEGSource extends Source {
-    @Override
-    default JavaPlugin plugin() {
-        return JustEnoughGuide.getInstance();
-    }
-}
+package com.balugaq.jeg.core.integrations.momotech;
