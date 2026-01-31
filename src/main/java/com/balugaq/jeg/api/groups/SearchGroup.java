@@ -261,6 +261,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     /**
      * Initializes the search group by populating caches and preparing data.
      */
+    @SuppressWarnings("ExtractMethodRecommender")
     public static void init() {
         if (LOADED) {
             return;

@@ -67,6 +67,7 @@ import java.util.Set;
  * @author balugaq
  * @since 1.9
  */
+@SuppressWarnings("unused")
 @NullMarked
 public interface Source {
     int RECIPE_DEPTH_THRESHOLD = 8;
@@ -198,6 +199,7 @@ public interface Source {
         return getItemStackFromNearbyContainer(player, target, itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
     }
 
+    @SuppressWarnings("unchecked")
     default @Nullable ItemStack getItemStackFromNearbyContainer(Player player, Location target, ItemStack itemStack, int amount) {
         int total = amount;
 
@@ -391,6 +393,7 @@ public interface Source {
      * @author balugaq
      * @since 2.0
      */
+    @SuppressWarnings("unused")
     @FunctionalInterface
     interface ItemGetter {
         @Nullable ItemStack get(int slot);

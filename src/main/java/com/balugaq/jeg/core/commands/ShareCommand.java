@@ -33,7 +33,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.Getter;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -93,6 +92,7 @@ public class ShareCommand implements JEGCommand {
         onShare(sender);
     }
 
+    @SuppressWarnings("ConstantValue")
     private void onShare(CommandSender sender) {
         if (sender instanceof Player player) {
             ItemStack item = player.getInventory().getItemInMainHand();

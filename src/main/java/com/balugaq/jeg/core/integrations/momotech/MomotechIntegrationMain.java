@@ -46,7 +46,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"DataFlowIssue", "ConstantValue"})
+@SuppressWarnings({"DataFlowIssue", "ConstantValue", "unused"})
 @NullMarked
 public class MomotechIntegrationMain implements Integration {
     // @formatter:off
@@ -126,6 +126,7 @@ public class MomotechIntegrationMain implements Integration {
     public void onEnable() {
         SlimefunGuideSettings.addOption(MomotechCreativeItemRecipeSettingsGuideOption.instance());
         SlimefunGuideSettings.addOption(MomotechNoneRecipeSettingsGuideOption.instance());
+        SlimefunGuideSettings.addOption(MomotechQuantityItemRecipeSettingsGuideOption.instance());
         var UEC = ItemSettingsGuideOption.generateChoices(UNCONTROLLABLE_EMPTY, MAX_AMOUNTS);
         var RC = ItemSettingsGuideOption.generateChoices(RESOURCE, MAX_AMOUNTS);
         var FC = ItemSettingsGuideOption.generateChoices(FINAL_ITEM, MAX_AMOUNTS);

@@ -54,6 +54,7 @@ public interface SlimeAEPluginSource extends Source {
         return RecipeCompleteProvider.SLIME_AE_PLUGIN_HANDLE_LEVEL;
     }
 
+    @SuppressWarnings("unused")
     @Override
     @Nullable
     default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {

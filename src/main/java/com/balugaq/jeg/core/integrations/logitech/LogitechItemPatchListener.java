@@ -85,7 +85,7 @@ public class LogitechItemPatchListener implements ItemPatchListener {
         return !MachineStackableDisplayGuideOption.isEnabled(player);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "unused"})
     public void patchItem(@Nullable ItemStack itemStack, PatchScope scope) {
         if (itemStack == null) {
             return;

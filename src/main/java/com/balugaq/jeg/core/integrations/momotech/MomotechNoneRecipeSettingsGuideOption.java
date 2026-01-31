@@ -27,18 +27,9 @@
 
 package com.balugaq.jeg.core.integrations.momotech;
 
-import com.balugaq.jeg.api.objects.enums.PatchScope;
-import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
-import com.balugaq.jeg.utils.EventUtil;
-import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -80,30 +71,13 @@ public class MomotechNoneRecipeSettingsGuideOption extends ItemSettingsGuideOpti
     }
 
     @Override
-    public ChestMenu getMenu(Player p) {
-        ChestMenu menu = new ChestMenu("&aNONE配方补全配置", 18);
-        for (int i = 0; i < 9; i++) {
-            menu.addItem(i, PatchScope.Background.patch(p, ChestMenuUtils.getBackground()), ChestMenuUtils.getEmptyClickHandler());
-        }
-        menu.addMenuClickHandler(
-                1, (pl, s, is, action) -> EventUtil.callEvent(
-                                new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, GuideUtil.getLastGuide(pl)))
-                        .ifSuccess(() -> {
-                            PlayerProfile playerProfile = PlayerProfile.find(pl).orElse(null);
-                            if (playerProfile == null) {
-                                return false;
-                            }
-                            GuideHistory guideHistory = playerProfile.getGuideHistory();
-                            if (action.isShiftClicked()) {
-                                SlimefunGuide.openMainMenu(
-                                        playerProfile, GuideUtil.getLastGuide(pl).getMode(), guideHistory.getMainMenuPage());
-                            } else {
-                                GuideUtil.goBack(guideHistory);
-                            }
-                            return false;
-                        })
-        );
-        return menu;
+    public String getTitle() {
+        return "&aNONE配方补全配置";
+    }
+
+    @Override
+    public int getSize() {
+        return 18;
     }
 
     @Override

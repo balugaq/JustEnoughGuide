@@ -29,7 +29,6 @@ package com.balugaq.jeg.api.recipe_complete;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
-import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.utils.GuideUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -117,6 +116,7 @@ public class RecipeCompleteSession {
         cache.put(source, obj);
     }
 
+    @SuppressWarnings("ConstantValue")
     public Location getLocation() {
         return block != null ? block.getLocation() : menu.getLocation();
     }

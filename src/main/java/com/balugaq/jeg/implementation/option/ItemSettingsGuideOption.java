@@ -27,19 +27,29 @@
 
 package com.balugaq.jeg.implementation.option;
 
+import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.EventUtil;
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -64,9 +74,38 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
         openItemSettingsGui(p);
     }
 
-    public abstract ChestMenu getMenu(Player player);
+    public abstract String getTitle();
+    @SuppressWarnings("SameReturnValue")
+    public abstract int getSize();
     public abstract int[] getItemSlots();
 
+    public ChestMenu getMenu(Player p) {
+        ChestMenu menu = new ChestMenu(getTitle(), getSize());
+        for (int i = 0; i < getSize(); i++) {
+            menu.addItem(i, PatchScope.Background.patch(p, ChestMenuUtils.getBackground()), ChestMenuUtils.getEmptyClickHandler());
+        }
+        menu.addItem(
+                1, ChestMenuUtils.getBackButton(p), (pl, s, is, action) -> EventUtil.callEvent(
+                                new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, GuideUtil.getLastGuide(pl)))
+                        .ifSuccess(() -> {
+                            PlayerProfile playerProfile = PlayerProfile.find(pl).orElse(null);
+                            if (playerProfile == null) {
+                                return false;
+                            }
+                            GuideHistory guideHistory = playerProfile.getGuideHistory();
+                            if (action.isShiftClicked()) {
+                                SlimefunGuide.openMainMenu(
+                                        playerProfile, GuideUtil.getLastGuide(pl).getMode(), guideHistory.getMainMenuPage());
+                            } else {
+                                GuideUtil.goBack(guideHistory);
+                            }
+                            return false;
+                        })
+        );
+        return menu;
+    }
+
+    @SuppressWarnings("ConstantValue")
     private void openItemSettingsGui(Player p) {
         ChestMenu menu = getMenu(p);
 
@@ -79,6 +118,7 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
                         }
 
                         setItemStack(p, getKey(), i, cursor);
+                        openItemSettingsGui(player);
 
                         return false;
                     })
@@ -104,7 +144,6 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
         if (sf == null) {
             Material material = item.getType();
             setItemStack(p, k, index, "mc:" + material.name().toLowerCase());
-            return;
         } else {
             setItemStack(p, k, index, "sf:" + sf.getId());
         }
@@ -131,14 +170,25 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
     public static final ItemStack DEFAULT_ICON = Converter.getItem(
             Material.BARRIER,
             "&c未设置物品",
-            "&c点击设置物品"
+            "&c手持物品点击设置"
     );
 
     private static ItemStack getIconOrDefault(Player p, NamespacedKey k, int index) {
-        ItemStack item = getItem(p, k, index);
-        if (item == null) {
-            item = DEFAULT_ICON;
+        ItemStack ri = getItem(p, k, index);
+        if (ri == null) {
+            ri = DEFAULT_ICON;
         }
+
+        ItemStack item = ri.clone();
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return Converter.getItem(item, "&f空气");
+
+        List<String> lore = meta.getLore();
+        if (lore == null) lore = new ArrayList<>();
+        lore.add("");
+        lore.add(ChatColors.color("&c已设置物品"));
+        meta.setLore(lore);
+        item.setItemMeta(meta);
         return item;
     }
 

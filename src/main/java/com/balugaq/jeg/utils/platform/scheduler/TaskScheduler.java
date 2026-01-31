@@ -40,6 +40,7 @@ import java.util.function.Supplier;
  * @author balugaq
  * @since 2.0
  */
+@SuppressWarnings("unused")
 @NullMarked
 public interface TaskScheduler {
     static Server getServer() {

@@ -342,7 +342,7 @@ public final class ItemStackUtil {
         return false;
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
     public static <T extends SlimefunItem> boolean isInstance(T item, String className) {
         Class<?> clazz = item.getClass();
         while (clazz != SlimefunItem.class) {

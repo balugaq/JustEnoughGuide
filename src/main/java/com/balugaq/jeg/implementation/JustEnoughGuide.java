@@ -439,7 +439,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 if (SlimefunItems.ELECTRIC_INGOT_FACTORY_2.getItem() instanceof AContainer ac) {
                     ac.registerRecipe(114514, easterEgg, easterEgg);
                 }
-                ;
             } catch (Exception ignored) {
             }
         });

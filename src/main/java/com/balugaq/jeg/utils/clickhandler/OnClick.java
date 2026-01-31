@@ -101,6 +101,7 @@ public interface OnClick {
             Holder.Item, Holder.ItemGroup, Holder.RecipeType
     );
 
+    @SuppressWarnings("RedundantIfStatement")
     static void preset(ChestMenu menu) {
         menu.setEmptySlotsClickable(false);
         menu.addPlayerInventoryClickHandler((p, s, i, a) ->

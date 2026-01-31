@@ -27,18 +27,9 @@
 
 package com.balugaq.jeg.core.integrations.momotech;
 
-import com.balugaq.jeg.api.objects.enums.PatchScope;
-import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
-import com.balugaq.jeg.utils.EventUtil;
-import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -51,7 +42,7 @@ import java.util.Optional;
  * @author balugaq
  * @since 2.0
  */
-@SuppressWarnings({"SameReturnValue", "deprecation"})
+@SuppressWarnings({"SameReturnValue", "unused"})
 @NullMarked
 public class MomotechQuantityItemRecipeSettingsGuideOption extends ItemSettingsGuideOption {
     public static final MomotechQuantityItemRecipeSettingsGuideOption instance = new MomotechQuantityItemRecipeSettingsGuideOption();
@@ -79,30 +70,13 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends ItemSettingsG
     }
 
     @Override
-    public ChestMenu getMenu(Player p) {
-        ChestMenu menu = new ChestMenu("&a量化插件配方补全配置", 18);
-        for (int i = 0; i < 18; i++) {
-            menu.addItem(i, PatchScope.Background.patch(p, ChestMenuUtils.getBackground()), ChestMenuUtils.getEmptyClickHandler());
-        }
-        menu.addMenuClickHandler(
-                1, (pl, s, is, action) -> EventUtil.callEvent(
-                                new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, GuideUtil.getLastGuide(pl)))
-                        .ifSuccess(() -> {
-                            PlayerProfile playerProfile = PlayerProfile.find(pl).orElse(null);
-                            if (playerProfile == null) {
-                                return false;
-                            }
-                            GuideHistory guideHistory = playerProfile.getGuideHistory();
-                            if (action.isShiftClicked()) {
-                                SlimefunGuide.openMainMenu(
-                                        playerProfile, GuideUtil.getLastGuide(pl).getMode(), guideHistory.getMainMenuPage());
-                            } else {
-                                GuideUtil.goBack(guideHistory);
-                            }
-                            return false;
-                        })
-        );
-        return menu;
+    public String getTitle() {
+        return "&a量化插件配方补全配置";
+    }
+
+    @Override
+    public int getSize() {
+        return 18;
     }
 
     @Override
@@ -110,7 +84,7 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends ItemSettingsG
         return new int[] {13};
     }
 
-    public static ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
+    public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
 
     public static ItemStack getItem(Player player) {
         ItemStack itemStack = ItemSettingsGuideOption.getItem(player, key0(), 13);

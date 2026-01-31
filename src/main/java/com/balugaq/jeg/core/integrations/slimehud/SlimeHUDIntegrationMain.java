@@ -89,6 +89,7 @@ public class SlimeHUDIntegrationMain implements Integration {
         JEGPlayerWAILA.onDisable();
     }
 
+    @SuppressWarnings({"unused", "UnstableApiUsage"})
     public static String getVanillaBlockName(Player player, Block block) {
         if (block.getType().isAir() || !block.getType().isItem()) {
             return "";

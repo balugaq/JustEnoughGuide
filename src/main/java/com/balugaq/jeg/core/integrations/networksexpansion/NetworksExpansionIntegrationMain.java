@@ -41,7 +41,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"DataFlowIssue", "ConstantValue"})
+@SuppressWarnings({"DataFlowIssue", "ConstantValue", "unused"})
 @NullMarked
 public class NetworksExpansionIntegrationMain implements Integration {
     public static final int[] ENCODER_RECIPE_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 30, 31, 32};

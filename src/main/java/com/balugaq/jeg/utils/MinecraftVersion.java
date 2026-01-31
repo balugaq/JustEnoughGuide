@@ -36,6 +36,7 @@ import org.jspecify.annotations.NullMarked;
  * @author lijinhong11
  * @author balugaq
  */
+@SuppressWarnings("unused")
 @NullMarked
 public record MinecraftVersion(int major, int minor, int patch) implements Comparable<MinecraftVersion> {
     public static final MinecraftVersion UNKNOWN = new MinecraftVersion();

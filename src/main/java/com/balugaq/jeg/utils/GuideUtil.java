@@ -577,6 +577,7 @@ public final class GuideUtil {
         return GuideUtil.getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
     }
 
+    @SuppressWarnings("DataFlowIssue")
     public static void goBack(GuideHistory history) {
         goBack(ReflectionUtil.getValue(history, "profile", PlayerProfile.class));
     }
@@ -594,7 +595,7 @@ public final class GuideUtil {
             return;
         }
         var content = ReflectionUtil.invokeMethod(entry, "getIndexedObject");
-        int page = (int) ReflectionUtil.invokeMethod(entry, "getPage");
+        @SuppressWarnings("DataFlowIssue") int page = (int) ReflectionUtil.invokeMethod(entry, "getPage");
         if (content instanceof final ItemGroup group) {
             guide.openItemGroup(profile, group, page);
             return;

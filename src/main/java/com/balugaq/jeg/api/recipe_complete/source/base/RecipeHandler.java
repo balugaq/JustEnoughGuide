@@ -41,5 +41,6 @@ import java.util.List;
  */
 @FunctionalInterface
 public interface RecipeHandler {
+    @SuppressWarnings("unused")
     @Nullable List<@Nullable RecipeChoice> get(Player player, ItemStack itemStack, @Nullable SlimefunItem sf);
 }
