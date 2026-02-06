@@ -117,6 +117,14 @@ public final class GuideUtil {
                     "&e&l性价比界面（仅供参考）"
             )));
 
+    public static void openMainMenuAsync(Player player) {
+        openMainMenuAsync(player, getLastGuide(player).getMode());
+    }
+
+    public static void openMainMenuAsync(Player player, SlimefunGuideMode mode) {
+        openMainMenuAsync(player, mode, 1);
+    }
+
     /**
      * Open the main menu of the guide for the given player and mode.
      *
@@ -546,11 +554,14 @@ public final class GuideUtil {
                             continue;
                         }
                         if (!(group instanceof SubItemGroup) && !sm.equals("DummyItemGroup")) {
+                            String key = group.getKey().getKey();
                             if (sm.equals("SubGroup")) {
-                                String key = group.getKey().getKey();
                                 if (!key.equals("infinity_cheat") && !key.equals("omc_forge_cheat")) {
                                     continue;
                                 }
+                            }
+                            if (key.equals("momotech_final_")) {
+                                continue;
                             }
                             specialGroups.add(group);
                         }
@@ -575,6 +586,10 @@ public final class GuideUtil {
     public SlimefunGuideImplementation getLastGuide(Player player) {
         var mode = GuideListener.guideModeMap.get(player);
         return GuideUtil.getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
+    }
+
+    public SlimefunGuideMode getLastGuideMode(Player player) {
+        return getLastGuide(player).getMode();
     }
 
     @SuppressWarnings("DataFlowIssue")

@@ -29,6 +29,7 @@ package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -36,9 +37,6 @@ import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
@@ -88,18 +86,7 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
                 1, ChestMenuUtils.getBackButton(p), (pl, s, is, action) -> EventUtil.callEvent(
                                 new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, GuideUtil.getLastGuide(pl)))
                         .ifSuccess(() -> {
-                            PlayerProfile playerProfile = PlayerProfile.find(pl).orElse(null);
-                            if (playerProfile == null) {
-                                return false;
-                            }
-                            GuideHistory guideHistory = playerProfile.getGuideHistory();
-                            if (action.isShiftClicked()) {
-                                SlimefunGuide.openMainMenu(
-                                        playerProfile, GuideUtil.getLastGuide(pl).getMode(), guideHistory.getMainMenuPage());
-                            } else {
-                                GuideUtil.goBack(guideHistory);
-                            }
-                            return false;
+                            JEGGuideSettings.openSettings(pl, GuideUtil.getLastGuide(pl).getItem());
                         })
         );
         return menu;
@@ -159,7 +146,7 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
             if (sf == null) return null;
             return Converter.getItem(sf.getItem());
         } else if (s.startsWith("mc:")) {
-            Material material = Material.getMaterial(s.substring(3));
+            Material material = Material.getMaterial(s.substring(3).toUpperCase());
             if (material == null) return null;
             return Converter.getItem(material);
         } else {

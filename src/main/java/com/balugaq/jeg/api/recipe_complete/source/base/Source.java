@@ -28,6 +28,7 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.objects.SimpleRecipeChoice;
+import com.balugaq.jeg.api.objects.menu.VanillaInventoryWrapper;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
@@ -47,6 +48,8 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -216,9 +219,18 @@ public interface Source {
                     if (bloc.getBlockX() == target.getBlockX() && bloc.getBlockY() == target.getBlockY() && bloc.getBlockZ() == target.getBlockZ())
                         continue; // never include itself
 
-                    BlockMenu menu = StorageCacheUtils.getMenu(bloc);
-                    if (menu == null) continue;
                     if (!Slimefun.getProtectionManager().hasPermission(player, bloc, Interaction.INTERACT_BLOCK)) continue;
+
+                    BlockMenu menu = StorageCacheUtils.getMenu(bloc);
+                    if (menu == null) {
+                        // check if it is vanilla container
+                        BlockState state = bloc.getBlock().getState();
+                        if (state instanceof Container container) {
+                            menu = new VanillaInventoryWrapper(container.getInventory(), state);
+                        } else {
+                            continue;
+                        }
+                    }
                     int[] slots = mergeSlots(
                             menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.WITHDRAW, itemStack),
                             menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.INSERT, itemStack)

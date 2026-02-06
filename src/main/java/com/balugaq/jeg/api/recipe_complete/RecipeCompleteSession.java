@@ -39,6 +39,8 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
@@ -68,8 +70,8 @@ public class RecipeCompleteSession {
     private ClickAction clickAction;
     private @Range(from = 0, to = 53) int[] ingredientSlots;
     private boolean unordered;
-    private int recipeDepth;
-    private int pushed;
+    private @Positive int recipeDepth;
+    private @NonNegative int pushed;
 
     private RecipeCompleteSession(Player player) {
         this.player = player;

@@ -33,7 +33,10 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Openable;
@@ -57,6 +60,7 @@ import org.bukkit.block.data.type.TrialSpawner;
 import org.bukkit.block.data.type.Tripwire;
 import org.bukkit.block.data.type.Vault;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
@@ -152,9 +156,32 @@ public class SlimeHUDIntegrationMain implements Integration {
                 name += "不详的";
             }
         }
+        BlockState state = block.getState(true);
+        if (state instanceof Container container) {
+            if (container.isLocked()) {
+                name += "锁上的";
+            }
+        }
         name += base;
         if (data instanceof EndPortalFrame d && d.hasEye()) {
             name += " (有眼睛)";
+        }
+        if (state instanceof Container container) {
+            Inventory inv = container.getSnapshotInventory();
+            int space = 0;
+            for (int i = 0; i < inv.getSize(); i++) {
+                var item = inv.getItem(i);
+                if (item == null || item.getType() == Material.AIR) {
+                    space++;
+                }
+            }
+            if (space == 0) {
+                name += " (满)";
+            } else if (space == inv.getSize()) {
+                name += " (空)";
+            } else {
+                name += " (剩余 " + space + " 个空位)";
+            }
         }
         return name;
     }
