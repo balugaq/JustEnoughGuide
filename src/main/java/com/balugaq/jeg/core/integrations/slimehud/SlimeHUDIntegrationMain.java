@@ -156,32 +156,9 @@ public class SlimeHUDIntegrationMain implements Integration {
                 name += "不详的";
             }
         }
-        BlockState state = block.getState(true);
-        if (state instanceof Container container) {
-            if (container.isLocked()) {
-                name += "锁上的";
-            }
-        }
         name += base;
         if (data instanceof EndPortalFrame d && d.hasEye()) {
             name += " (有眼睛)";
-        }
-        if (state instanceof Container container) {
-            Inventory inv = container.getSnapshotInventory();
-            int space = 0;
-            for (int i = 0; i < inv.getSize(); i++) {
-                var item = inv.getItem(i);
-                if (item == null || item.getType() == Material.AIR) {
-                    space++;
-                }
-            }
-            if (space == 0) {
-                name += " (满)";
-            } else if (space == inv.getSize()) {
-                name += " (空)";
-            } else {
-                name += " (剩余 " + space + " 个空位)";
-            }
         }
         return name;
     }
