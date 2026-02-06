@@ -48,6 +48,7 @@ import com.balugaq.jeg.utils.platform.PlatformUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -549,7 +550,9 @@ public interface OnClick {
 
                                 guide.openItemGroup(profile, itemGroup, page);
                             }
-                    )
+                    ),
+                    Action.of("none", "无操作", Material.BARRIER, (guide, event, player, slot, group, clickAction, menu, page) -> {
+                    })
             );
 
             @Override
@@ -824,11 +827,23 @@ public interface OnClick {
                                 player.chat("/sf search " + ChatColor.stripColor(recipeTypeName));
                             }
                     ),
+                    OpAction.of(
+                            "copy-id", "作弊模式 - 复制配方类型ID", Material.MAGENTA_GLAZED_TERRACOTTA, (guide, player, slot, recipeType, action, menu, page) -> {
+                                if (!player.isOp()) {
+                                    return;
+                                }
+
+                                String s = recipeType.getId();
+                                ClipboardUtil.send(player, "&e点击复制配方类型的ID", s, s);
+                            }
+                    ),
                     Action.of(
                             "default", "默认", Material.COMPASS,
                             (guide, player, slot, recipeType, action, menu, page) -> {
                             }
-                    )
+                    ),
+                    Action.of("none", "无操作", Material.BARRIER, (guide, player, slot, recipeType, clickAction, menu, page) -> {
+                    })
             );
 
             @Override
@@ -845,6 +860,46 @@ public interface OnClick {
             @SuppressWarnings("SameReturnValue")
             public ObjectImmutableList<Action> listActions() {
                 return listActions;
+            }
+        }
+
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
+        @NullMarked
+        interface OpAction extends Action, PermissibleAction {
+            static OpAction of(String key, String name, Material material, ActionHandle handle) {
+                return new OpAction() {
+                    @Override
+                    public Material material() {
+                        return material;
+                    }
+
+                    @Override
+                    public String name() {
+                        return name;
+                    }
+
+                    @Override
+                    public NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
+                    }
+
+                    @Override
+                    public boolean click(JEGSlimefunGuideImplementation guide,
+                                         Player player, int slot,
+                                         io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
+                                         ClickAction clickAction, ChestMenu menu, int page) {
+                        handle.click(guide, player, slot, recipeType, clickAction, menu, page);
+                        return false;
+                    }
+                };
+            }
+
+            @Override
+            default boolean hasPermission(Player player) {
+                return player.isOp() || player.hasPermission("slimefun.cheat.items");
             }
         }
     }
@@ -1418,7 +1473,9 @@ public interface OnClick {
                                     guide.displayItem(profile, item, 0, true);
                                 }
                             }
-                    )
+                    ),
+                    Action.of("none", "无操作", Material.BARRIER, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                    })
             );
 
             @Override
