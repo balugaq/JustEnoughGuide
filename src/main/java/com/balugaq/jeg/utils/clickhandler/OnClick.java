@@ -833,7 +833,7 @@ public interface OnClick {
                                     return;
                                 }
 
-                                String s = recipeType.getId();
+                                String s = recipeType.getKey().asString();
                                 ClipboardUtil.send(player, "&e点击复制配方类型的ID", s, s);
                             }
                     ),
