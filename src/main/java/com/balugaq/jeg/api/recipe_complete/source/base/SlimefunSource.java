@@ -47,7 +47,7 @@ import org.jspecify.annotations.NullMarked;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecation"})
 @NullMarked
 public interface SlimefunSource extends Source {
     @SuppressWarnings("deprecation")
@@ -55,83 +55,22 @@ public interface SlimefunSource extends Source {
     default boolean openGuide(
             RecipeCompleteSession session,
             @Nullable Runnable callback) {
-        BlockMenu blockMenu = session.getMenu();
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
-        int[] ingredientSlots = session.getIngredientSlots();
-        boolean unordered = session.isUnordered();
-        int recipeDepth = session.getRecipeDepth();
 
         var p = GuideUtil.updatePlayer(player);
         if (p == null) return false;
+        session.setPlayer(p);
         GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p);
         if (clickAction.isRightClicked() && lastEvent != null) {
-            int times = 1;
-            if (clickAction.isShiftClicked()) {
-                times = 64;
-            }
-
-            BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
-            if (actualMenu == null) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return false;
-            }
-
-            if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
-                if (callback != null) {
-                    callback.run();
-                }
-                return false;
-            }
-
-            // I think it is runnable
-            session.setMenu(actualMenu);
-            session.setEvent(lastEvent);
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(session);
-            }
-            if (callback != null) {
-                callback.run();
-            }
+            handleSession(session, lastEvent, clickAction, false, callback);
             return true;
         }
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(
                 player.getUniqueId(), ((event, profile) -> {
-                    session.setEvent(event);
-                    BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
-                    if (actualMenu == null) {
-                        if (callback != null) {
-                            callback.run();
-                        }
-                        return;
-                    }
-
-                    if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
-                        if (callback != null) {
-                            callback.run();
-                        }
-                        return;
-                    }
-
-                    int times = 1;
-                    if (event.getClickAction().isRightClicked()) {
-                        times = 64;
-                    }
-
-                    session.setMenu(actualMenu);
-                    for (int i = 0; i < times; i++) {
-                        completeRecipeWithGuide(session);
-                    }
-
-                    player.updateInventory();
-                    actualMenu.open(player);
-                    if (callback != null) {
-                        callback.run();
-                    }
+                    handleSession(session, event, event.getClickAction(), true, callback);
                 })
         );
         RecipeCompletableListener.tagGuideOpen(player);
@@ -151,5 +90,43 @@ public interface SlimefunSource extends Source {
                 (received, i) ->
                         BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})
         );
+    }
+
+    default void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenMenu, @Nullable Runnable callback) {
+        BlockMenu blockMenu = session.getMenu();
+
+        session.setEvent(event);
+        int times = 1;
+        if (reopenMenu ? clickAction.isRightClicked() : clickAction.isShiftClicked()) {
+            times = 64;
+        }
+
+        BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
+        if (actualMenu == null) {
+            if (callback != null) {
+                callback.run();
+            }
+            return;
+        }
+
+        if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
+            if (callback != null) {
+                callback.run();
+            }
+            return;
+        }
+
+        session.setMenu(actualMenu);
+        for (int i = 0; i < times; i++) {
+            completeRecipeWithGuide(session);
+        }
+
+        if (reopenMenu) {
+            actualMenu.open(session.getPlayer());
+        }
+        if (callback != null) {
+            callback.run();
+        }
+        RecipeCompleteSession.complete(session);
     }
 }

@@ -48,7 +48,6 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"DataFlowIssue", "ConstantValue"})
 @NullMarked
 public class NetworksIntegrationMain implements Integration {
     public static final int[] ENCODER_RECIPE_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 30, 31, 32};
@@ -58,7 +57,7 @@ public class NetworksIntegrationMain implements Integration {
     public static final BlockFace[] VALID_FACES = new BlockFace[] {
             BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
     };
-    public static JavaPlugin plugin = null;
+    public static @Nullable JavaPlugin plugin = null;
 
     public static JavaPlugin getPlugin() {
         if (plugin == null) {

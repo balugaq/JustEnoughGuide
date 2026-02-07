@@ -47,58 +47,27 @@ import org.jspecify.annotations.NullMarked;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"SameReturnValue", "unused"})
+@SuppressWarnings({"SameReturnValue", "unused", "deprecation"})
 @NullMarked
 public interface VanillaSource extends Source {
     @SuppressWarnings({"deprecation", "UnusedReturnValue"})
     @Override
     default boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
-        Block block = session.getBlock();
-        Inventory inventory = session.getInventory();
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
-        int[] ingredientSlots = session.getIngredientSlots();
-        boolean unordered = session.isUnordered();
-        int recipeDepth = session.getRecipeDepth();
 
         var p = GuideUtil.updatePlayer(player);
         if (p == null) return false;
         GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p);
         if (clickAction.isRightClicked() && lastEvent != null) {
-            int times = 1;
-            if (clickAction.isShiftClicked()) {
-                times = 64;
-            }
-
-            session.setEvent(lastEvent);
-            for (int i = 0; i < times; i++) {
-                completeRecipeWithGuide(session);
-            }
-            if (callback != null) {
-                callback.run();
-            }
+            handleSession(session, lastEvent, clickAction, false, callback);
             return true;
         }
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(
                 player.getUniqueId(), ((event, profile) -> {
-                    session.setEvent(event);
-                    int times = 1;
-                    if (event.getClickAction().isRightClicked()) {
-                        times = 64;
-                    }
-
-                    // I think it is runnable
-                    for (int i = 0; i < times; i++) {
-                        completeRecipeWithGuide(session);
-                    }
-
-                    player.updateInventory();
-                    player.openInventory(inventory);
-                    if (callback != null) {
-                        callback.run();
-                    }
+                    handleSession(session, event, event.getClickAction(), true, callback);
                 })
         );
         RecipeCompletableListener.tagGuideOpen(player);
@@ -116,5 +85,25 @@ public interface VanillaSource extends Source {
                 (received, i) ->
                     InventoryUtil.pushItem(inventory, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]})
         );
+    }
+
+    default void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenInventory, @Nullable Runnable callback) {
+        session.setEvent(event);
+        int times = 1;
+        if (reopenInventory ? clickAction.isRightClicked() : clickAction.isShiftClicked()) {
+            times = 64;
+        }
+
+        for (int i = 0; i < times; i++) {
+            completeRecipeWithGuide(session);
+        }
+
+        if (reopenInventory) {
+            session.getPlayer().openInventory(session.getInventory());
+        }
+        if (callback != null) {
+            callback.run();
+        }
+        RecipeCompleteSession.complete(session);
     }
 }

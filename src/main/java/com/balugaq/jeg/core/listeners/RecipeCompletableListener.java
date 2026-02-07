@@ -31,10 +31,12 @@ import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
+import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
+import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -51,6 +53,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -68,6 +71,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
@@ -89,7 +93,7 @@ import java.util.function.BiConsumer;
  */
 @SuppressWarnings({"unused", "ConstantValue"})
 @NullMarked
-public class RecipeCompletableListener implements Listener {
+public class RecipeCompletableListener implements ItemPatchListener {
     public static final NamespacedKey RECIPE_COMPLETE_EXIT_KEY = KeyUtil.newKey("recipe_complete_exit");
     public static final int[] DISPENSER_SLOTS = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
     public static final ConcurrentHashMap<Player, GuideEvents.ItemButtonClickEvent> LAST_EVENTS =
@@ -322,12 +326,9 @@ public class RecipeCompletableListener implements Listener {
                             // Strategy mode
                             // Default strategy see {@link DefaultPlayerInventoryRecipeCompleteSlimefunSource}
                             if (source.handleable(session)) {
-                                source.openGuide(
-                                        session,
-                                        () -> exitSelectingItemStackToRecipeComplete(player)
-                                );
+                                source.openGuide(session);
                                 break;
-                            } // todo: deprecated, will be changed, since handleable no longer should be used here
+                            }
                         }
 
                         return false;
@@ -399,6 +400,16 @@ public class RecipeCompletableListener implements Listener {
         listening.remove(player);
     }
 
+    @EventHandler
+    public void exit(RecipeCompleteEvents.SessionCancelEvent event) {
+        exitSelectingItemStackToRecipeComplete(event.getPlayer());
+    }
+
+    @EventHandler
+    public void exit(RecipeCompleteEvents.SessionCompleteEvent event) {
+        exitSelectingItemStackToRecipeComplete(event.getPlayer());
+    }
+
     @SuppressWarnings("deprecation")
     @EventHandler
     public void clickVanilla(InventoryClickEvent event) {
@@ -429,7 +440,7 @@ public class RecipeCompletableListener implements Listener {
             // Strategy mode
             // Default strategy see {@link DefaultPlayerInventoryRecipeCompleteVanillaSource}
             if (source.handleable(session)) {
-                source.openGuide(session, null);
+                source.openGuide(session);
                 break;
             }
         }
@@ -576,6 +587,10 @@ public class RecipeCompletableListener implements Listener {
                 return;
             }
 
+            if (isTagged(meta)) {
+                return;
+            }
+
             List<String> lore = meta.getLore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -588,6 +603,7 @@ public class RecipeCompletableListener implements Listener {
             // Patch hint end
 
             meta.setLore(lore);
+            tagMeta(meta);
             old.setItemMeta(meta);
             event.setItemStack(old);
         }
@@ -612,6 +628,10 @@ public class RecipeCompletableListener implements Listener {
                 return;
             }
 
+            if (isTagged(meta)) {
+                return;
+            }
+
             List<String> lore = meta.getLore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -624,6 +644,7 @@ public class RecipeCompletableListener implements Listener {
             // Patch end
 
             meta.setLore(lore);
+            tagMeta(meta);
             old.setItemMeta(meta);
             event.setItemStack(old);
         }
@@ -653,11 +674,21 @@ public class RecipeCompletableListener implements Listener {
     }
 
     public void exit(Player player) {
-        exitSelectingItemStackToRecipeComplete(player);
+        RecipeCompleteSession.cancel(player);
         PlayerProfile profile = RecipeCompletableListener.getPlayerProfile(player);
         rollbackGuideHistory(profile);
         RecipeCompletableListener.PROFILE_CALLBACKS.remove(player);
         player.closeInventory();
+    }
+
+    @EventHandler
+    public void updateInventory(RecipeCompleteEvents.SessionCompleteEvent event) {
+        event.getPlayer().updateInventory();
+    }
+
+    @EventHandler
+    public void updateInventory(RecipeCompleteEvents.SessionCancelEvent event) {
+        event.getPlayer().updateInventory();
     }
 
     /**
@@ -682,5 +713,9 @@ public class RecipeCompletableListener implements Listener {
     @SuppressWarnings("deprecation")
     @FunctionalInterface
     public interface RecipeCompletableClickHandler extends ChestMenu.MenuClickHandler, TaggedRecipeCompletable {
+    }
+
+    public static NamespacedKey getKey0() {
+        return KeyUtil.newKey(RecipeCompletableListener.class.getSimpleName().toLowerCase());
     }
 }

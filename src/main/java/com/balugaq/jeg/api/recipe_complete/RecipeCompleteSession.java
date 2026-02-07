@@ -28,13 +28,16 @@
 package com.balugaq.jeg.api.recipe_complete;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import com.balugaq.jeg.utils.GuideUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -49,19 +52,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author balugaq
  * @since 2.0
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 @NullMarked
 @SuppressWarnings("deprecation")
 public class RecipeCompleteSession {
-    private final Player player;
+    private static Map<Player, RecipeCompleteSession> SESSIONS = new ConcurrentHashMap<>();
     private final Map<Source, Object> cache = new HashMap<>();
     private final Set<Source> notHandleable = new HashSet<>();
+    private Player player;
     private GuideEvents.ItemButtonClickEvent event;
     private Location target;
     private Block block;
@@ -72,40 +78,44 @@ public class RecipeCompleteSession {
     private boolean unordered;
     private @Positive int recipeDepth;
     private @NonNegative int pushed;
-
-    private RecipeCompleteSession(Player player) {
-        this.player = player;
-    }
+    private boolean expired;
 
     @Nullable
     public static RecipeCompleteSession create(BlockMenu menu, Player player, ClickAction clickAction, @Range(from = 0, to = 53) int[] ingredientSlots, boolean unordered, int recipeDepth) {
         player = GuideUtil.updatePlayer(player);
         if (player == null) return null;
-        var session = create(player);
+        var session = new RecipeCompleteSession();
+        session.player = player;
         session.menu = menu;
         session.clickAction = clickAction;
         session.ingredientSlots = ingredientSlots;
         session.unordered = unordered;
         session.recipeDepth = recipeDepth;
-        return session;
+        return fireEvent(session);
     }
 
     @Nullable
     public static RecipeCompleteSession create(Block block, Inventory inventory, Player player, ClickAction clickAction, @Range(from = 0, to = 53) int[] ingredientSlots, boolean unordered, int recipeDepth) {
         player = GuideUtil.updatePlayer(player);
         if (player == null) return null;
-        var session = create(player);
+        var session = new RecipeCompleteSession();
+        session.player = player;
         session.block = block;
         session.inventory = inventory;
         session.clickAction = clickAction;
         session.ingredientSlots = ingredientSlots;
         session.unordered = unordered;
         session.recipeDepth = recipeDepth;
-        return session;
+        return fireEvent(session);
     }
 
-    public static RecipeCompleteSession create(Player player) {
-        return new RecipeCompleteSession(player);
+    @Nullable
+    private static RecipeCompleteSession fireEvent(RecipeCompleteSession session) {
+        var event = new RecipeCompleteEvents.SessionCreateEvent(session);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return null;
+        SESSIONS.put(session.getPlayer(), session);
+        return event.getSession();
     }
 
     @Nullable
@@ -132,6 +142,52 @@ public class RecipeCompleteSession {
     }
 
     public boolean isExpired() {
-        return pushed > 3456 || Source.depthInRange(player, recipeDepth);
+        return expired || pushed > 3456 || !Source.depthInRange(player, recipeDepth);
+    }
+
+    @Nullable
+    public static RecipeCompleteSession getSession(Player player) {
+        return SESSIONS.get(player);
+    }
+
+    public static void setExpired(Player player) {
+        var session = getSession(player);
+        if (session != null) session.setExpired(true);
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+        if (expired) {
+            SESSIONS.remove(getPlayer());
+        } else {
+            SESSIONS.put(getPlayer(), this);
+        }
+    }
+
+    public static void complete(Player player) {
+        var session = getSession(player);
+        if (session == null) return;
+        complete(session);
+    }
+
+    public static void complete(RecipeCompleteSession session) {
+        Bukkit.getPluginManager().callEvent(new RecipeCompleteEvents.SessionCompleteEvent(session));
+        session.setExpired(true);
+    }
+
+    public static void cancel(Player player) {
+        var session = getSession(player);
+        if (session == null) return;
+        cancel(session);
+    }
+
+    public static void cancel(RecipeCompleteSession session) {
+        Bukkit.getPluginManager().callEvent(new RecipeCompleteEvents.SessionCancelEvent(session));
+        session.setExpired(true);
+    }
+
+    public ClickAction getClickAction() {
+        if (event != null) return event.getClickAction();
+        return clickAction;
     }
 }
