@@ -28,12 +28,15 @@
 package com.balugaq.jeg.core.integrations;
 
 import com.balugaq.jeg.utils.KeyUtil;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.Keyed;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -59,5 +62,15 @@ public interface ItemPatchListener extends Listener, Keyed {
 
     default NamespacedKey getKey() {
         return KeyUtil.newKey(getClass().getSimpleName().toLowerCase());
+    }
+
+    @Nullable
+    @Contract("null -> null")
+    static ItemStack untag(@Nullable ItemStack dirty) {
+        if (dirty == null || dirty.getType() == Material.AIR) {
+            return null;
+        }
+        SlimefunItem sfi = SlimefunItem.getByItem(dirty);
+        return sfi == null ? new ItemStack(dirty.getType()) : sfi.getItem();
     }
 }

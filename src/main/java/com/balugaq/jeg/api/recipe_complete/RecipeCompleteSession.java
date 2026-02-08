@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import com.balugaq.jeg.utils.GuideUtil;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -113,7 +114,11 @@ public class RecipeCompleteSession {
     private static RecipeCompleteSession fireEvent(RecipeCompleteSession session) {
         var event = new RecipeCompleteEvents.SessionCreateEvent(session);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return null;
+        if (event.isCancelled()) {
+            String reason = event.getCancelReason();
+            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
+            return null;
+        }
         SESSIONS.put(session.getPlayer(), session);
         return event.getSession();
     }
@@ -175,6 +180,10 @@ public class RecipeCompleteSession {
         session.setExpired(true);
     }
 
+    public void complete() {
+        complete(this);
+    }
+
     public static void cancel(Player player) {
         var session = getSession(player);
         if (session == null) return;
@@ -186,8 +195,27 @@ public class RecipeCompleteSession {
         session.setExpired(true);
     }
 
+    public void cancel() {
+        cancel(this);
+    }
+
     public ClickAction getClickAction() {
         if (event != null) return event.getClickAction();
         return clickAction;
+    }
+
+    public static boolean canStart(RecipeCompleteSession session) {
+        var event = new RecipeCompleteEvents.SessionStartEvent(session);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            cancel(session);
+            String reason = event.getCancelReason();
+            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
+        }
+        return !event.isCancelled();
+    }
+
+    public boolean canStart() {
+        return canStart(this);
     }
 }

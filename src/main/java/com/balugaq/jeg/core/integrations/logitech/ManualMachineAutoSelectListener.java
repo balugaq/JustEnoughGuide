@@ -28,6 +28,7 @@
 package com.balugaq.jeg.core.integrations.logitech;
 
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
+import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -55,12 +56,7 @@ public class ManualMachineAutoSelectListener implements Listener {
         SlimefunItem sf = menu.getPreset().getSlimefunItem();
         if (!sf.getAddon().equals(LogitechIntegrationMain.getPlugin())) return;
 
-        ItemStack dirty = event.getSession().getEvent().getClickedItem();
-        if (dirty == null || dirty.getType() == Material.AIR) {
-            return;
-        }
-        SlimefunItem sfi = SlimefunItem.getByItem(dirty);
-        ItemStack target = sfi == null ? new ItemStack(dirty.getType()) : sfi.getItem();
+        ItemStack target = ItemPatchListener.untag(event.getSession().getEvent().getClickedItem());
         try {
             // Logitech v1.0.3
             if (sf instanceof me.matl114.logitech.SlimefunItem.Machines.AbstractManual mm) {

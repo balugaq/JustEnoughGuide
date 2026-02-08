@@ -94,16 +94,17 @@ public interface VanillaSource extends Source {
             times = 64;
         }
 
+        if (!session.canStart()) {
+            if (reopenInventory) session.getPlayer().openInventory(session.getInventory());
+            if (callback != null) callback.run();
+            return;
+        }
         for (int i = 0; i < times; i++) {
             completeRecipeWithGuide(session);
         }
 
-        if (reopenInventory) {
-            session.getPlayer().openInventory(session.getInventory());
-        }
-        if (callback != null) {
-            callback.run();
-        }
+        if (reopenInventory) session.getPlayer().openInventory(session.getInventory());
+        if (callback != null) callback.run();
         RecipeCompleteSession.complete(session);
     }
 }

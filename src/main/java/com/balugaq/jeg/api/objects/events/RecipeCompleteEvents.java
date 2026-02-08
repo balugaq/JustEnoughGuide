@@ -29,6 +29,7 @@ package com.balugaq.jeg.api.objects.events;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -46,13 +47,53 @@ public class RecipeCompleteEvents {
      * @since 2.0
      */
     @SuppressWarnings("unused")
+    @Setter
     @Getter
     @NullMarked
     public static class SessionCreateEvent extends PlayerEvent implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
         private final RecipeCompleteSession session;
+        private @Nullable String cancelReason;
 
         public SessionCreateEvent(RecipeCompleteSession session) {
+            super(session.getPlayer());
+            this.session = session;
+        }
+
+        public static HandlerList getHandlerList() {
+            return HANDLERS;
+        }
+
+        @Override
+        public final HandlerList getHandlers() {
+            return HANDLERS;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return session.isExpired();
+        }
+
+        @Override
+        public void setCancelled(final boolean b) {
+            session.setExpired(b);
+        }
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @SuppressWarnings("unused")
+    @Setter
+    @Getter
+    @NullMarked
+    public static class SessionStartEvent extends PlayerEvent implements Cancellable {
+        private static final HandlerList HANDLERS = new HandlerList();
+        private final RecipeCompleteSession session;
+        private @Nullable String cancelReason;
+
+        public SessionStartEvent(RecipeCompleteSession session) {
             super(session.getPlayer());
             this.session = session;
         }

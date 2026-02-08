@@ -117,16 +117,17 @@ public interface SlimefunSource extends Source {
         }
 
         session.setMenu(actualMenu);
+        if (!session.canStart()) {
+            if (reopenMenu) actualMenu.open(session.getPlayer());
+            if (callback != null) callback.run();
+            return;
+        }
         for (int i = 0; i < times; i++) {
             completeRecipeWithGuide(session);
         }
 
-        if (reopenMenu) {
-            actualMenu.open(session.getPlayer());
-        }
-        if (callback != null) {
-            callback.run();
-        }
+        if (reopenMenu) actualMenu.open(session.getPlayer());
+        if (callback != null) callback.run();
         RecipeCompleteSession.complete(session);
     }
 }
