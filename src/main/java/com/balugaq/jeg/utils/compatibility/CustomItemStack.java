@@ -254,10 +254,10 @@ public class CustomItemStack implements Cloneable {
      * @param itemStack
      *         the Bukkit ItemStack to create from
      * @param list
-     *         the list of lore
+     *         the list of name and lore
      */
     public CustomItemStack(ItemStack itemStack, List<String> list) {
-        this(itemStack, list.get(0), list.subList(1, list.size()).toArray(new String[0]));
+        this(itemStack, list.get(0), new ArrayList<>(list.subList(1, list.size())).toArray(new String[0]));
     }
 
     /**
