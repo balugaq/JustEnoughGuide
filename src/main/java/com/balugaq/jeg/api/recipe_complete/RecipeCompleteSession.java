@@ -96,6 +96,19 @@ public class RecipeCompleteSession {
     }
 
     @Nullable
+    private static RecipeCompleteSession fireEvent(RecipeCompleteSession session) {
+        var event = new RecipeCompleteEvents.SessionCreateEvent(session);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            String reason = event.getCancelReason();
+            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
+            return null;
+        }
+        SESSIONS.put(session.getPlayer(), session);
+        return event.getSession();
+    }
+
+    @Nullable
     public static RecipeCompleteSession create(Block block, Inventory inventory, Player player, ClickAction clickAction, @Range(from = 0, to = 53) int[] ingredientSlots, boolean unordered, int recipeDepth) {
         player = GuideUtil.updatePlayer(player);
         if (player == null) return null;
@@ -110,17 +123,26 @@ public class RecipeCompleteSession {
         return fireEvent(session);
     }
 
-    @Nullable
-    private static RecipeCompleteSession fireEvent(RecipeCompleteSession session) {
-        var event = new RecipeCompleteEvents.SessionCreateEvent(session);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            String reason = event.getCancelReason();
-            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
-            return null;
-        }
-        SESSIONS.put(session.getPlayer(), session);
-        return event.getSession();
+    public static void complete(Player player) {
+        var session = getSession(player);
+        if (session == null) return;
+        complete(session);
+    }
+
+    public static void complete(RecipeCompleteSession session) {
+        Bukkit.getPluginManager().callEvent(new RecipeCompleteEvents.SessionCompleteEvent(session));
+        session.setExpired(true);
+    }
+
+    public static void cancel(Player player) {
+        var session = getSession(player);
+        if (session == null) return;
+        cancel(session);
+    }
+
+    public static void cancel(RecipeCompleteSession session) {
+        Bukkit.getPluginManager().callEvent(new RecipeCompleteEvents.SessionCancelEvent(session));
+        session.setExpired(true);
     }
 
     @Nullable
@@ -150,14 +172,14 @@ public class RecipeCompleteSession {
         return expired || pushed > 3456 || !Source.depthInRange(player, recipeDepth);
     }
 
-    @Nullable
-    public static RecipeCompleteSession getSession(Player player) {
-        return SESSIONS.get(player);
-    }
-
     public static void setExpired(Player player) {
         var session = getSession(player);
         if (session != null) session.setExpired(true);
+    }
+
+    @Nullable
+    public static RecipeCompleteSession getSession(Player player) {
+        return SESSIONS.get(player);
     }
 
     public void setExpired(boolean expired) {
@@ -169,30 +191,8 @@ public class RecipeCompleteSession {
         }
     }
 
-    public static void complete(Player player) {
-        var session = getSession(player);
-        if (session == null) return;
-        complete(session);
-    }
-
-    public static void complete(RecipeCompleteSession session) {
-        Bukkit.getPluginManager().callEvent(new RecipeCompleteEvents.SessionCompleteEvent(session));
-        session.setExpired(true);
-    }
-
     public void complete() {
         complete(this);
-    }
-
-    public static void cancel(Player player) {
-        var session = getSession(player);
-        if (session == null) return;
-        cancel(session);
-    }
-
-    public static void cancel(RecipeCompleteSession session) {
-        Bukkit.getPluginManager().callEvent(new RecipeCompleteEvents.SessionCancelEvent(session));
-        session.setExpired(true);
     }
 
     public void cancel() {
@@ -204,6 +204,10 @@ public class RecipeCompleteSession {
         return clickAction;
     }
 
+    public boolean canStart() {
+        return canStart(this);
+    }
+
     public static boolean canStart(RecipeCompleteSession session) {
         var event = new RecipeCompleteEvents.SessionStartEvent(session);
         Bukkit.getPluginManager().callEvent(event);
@@ -213,9 +217,5 @@ public class RecipeCompleteSession {
             session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
         }
         return !event.isCancelled();
-    }
-
-    public boolean canStart() {
-        return canStart(this);
     }
 }

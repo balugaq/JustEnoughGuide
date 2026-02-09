@@ -147,7 +147,7 @@ public class Debug {
                 stream.println("Java version: " + System.getProperty("java.version"));
                 stream.println("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " "
                                        + System.getProperty("os.arch"));
-                stream.println("Minecraft version: " + JustEnoughGuide.getMinecraftVersion());
+                stream.println("Minecraft version: " + MinecraftVersion.current().humanize());
                 stream.println("Slimefun version: " + Slimefun.getVersion());
                 if (code != null) {
                     stream.println("Error code: " + code);

@@ -72,7 +72,7 @@ import java.util.logging.Level;
 @NullMarked
 public class JEGPlayerWAILA extends PlayerWAILA {
     public static final boolean IS_1_20_1 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_20_1);
+            MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20_1);
     public static final long TICK_RATE = SlimeHUD.getInstance().getConfig().getLong("waila.tick-rate");
     public final Supplier<BossBar> kyoriBossBarSupplier;
     public boolean visible;
@@ -215,6 +215,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         return waila;
     }
 
+    @Override
     @SuppressWarnings({"RedundantLabeledSwitchRuleCodeBlock", "DataFlowIssue"})
     public void run() {
         updateFacing0();
@@ -327,6 +328,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         return ReflectionUtil.getValue(this, "useAutoBossBarColor", boolean.class);
     }
 
+    @Override
     public PlayerWAILA setVisible(boolean visible) {
         this.visible = visible;
         if (kyoriBossBarSupplier.get() != null) {
@@ -361,6 +363,9 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         return BarColor.valueOf(color.name());
     }
 
+    /**
+     * @see #unwrap(PlayerWAILA)
+     */
     @SuppressWarnings("unused")
     public PlayerWAILA toOrigin() {
         PlayerWAILA waila = new PlayerWAILA(getPlayer());

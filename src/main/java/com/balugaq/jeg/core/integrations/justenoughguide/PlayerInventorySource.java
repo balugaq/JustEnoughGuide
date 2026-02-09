@@ -46,13 +46,13 @@ public interface PlayerInventorySource extends JEGSource {
     }
 
     @Override
-    default int handleLevel() {
-        return RecipeCompleteProvider.PLAYER_INVENTORY_HANDLE_LEVEL;
-    }
-
-    @Override
     @Nullable
     default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
         return getItemStackFromPlayerInventory(session.getPlayer(), itemStack);
+    }
+
+    @Override
+    default int handleLevel() {
+        return RecipeCompleteProvider.PLAYER_INVENTORY_HANDLE_LEVEL;
     }
 }

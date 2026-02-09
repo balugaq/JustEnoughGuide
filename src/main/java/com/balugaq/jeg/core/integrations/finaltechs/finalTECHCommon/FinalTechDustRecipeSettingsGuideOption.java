@@ -48,12 +48,19 @@ import java.util.Optional;
 @NullMarked
 public class FinalTechDustRecipeSettingsGuideOption extends ItemSettingsGuideOption {
     public static final FinalTechDustRecipeSettingsGuideOption instance = new FinalTechDustRecipeSettingsGuideOption();
+    public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
     @Setter
     @Getter
     public static boolean booted = false;
 
     public static FinalTechDustRecipeSettingsGuideOption instance() {
         return instance;
+    }
+
+    public static ItemStack getItem(Player player) {
+        ItemStack itemStack = ItemSettingsGuideOption.getItem(player, key0(), 13);
+        if (itemStack == null) return DEFAULT_ITEM;
+        return itemStack;
     }
 
     @Override
@@ -87,13 +94,5 @@ public class FinalTechDustRecipeSettingsGuideOption extends ItemSettingsGuideOpt
     @Override
     public int[] getItemSlots() {
         return new int[] {13};
-    }
-
-    public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
-
-    public static ItemStack getItem(Player player) {
-        ItemStack itemStack = ItemSettingsGuideOption.getItem(player, key0(), 13);
-        if (itemStack == null) return DEFAULT_ITEM;
-        return itemStack;
     }
 }

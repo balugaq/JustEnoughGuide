@@ -181,20 +181,19 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         return false;
     }
 
+    public static String getPinyin(String string) {
+        return getPinyin(string, PinyinStyleEnum.FIRST_LETTER);
+    }
+
+    public static String getPinyin(String string, PinyinStyleEnum style) {
+        return PinyinHelper.toPinyin(string, style, "");
+    }
+
     public static boolean isSearchFilterApplicable(Player player, SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
         if (slimefunItem == null) {
             return false;
         }
         String itemName = ChatColor.stripColor(SlimefunTranslationIntegrationMain.getTranslatedItemName(player, slimefunItem)).toLowerCase(Locale.ROOT);
-        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
-    }
-
-    @Deprecated
-    public static boolean isSearchFilterApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
-        if (slimefunItem == null) {
-            return false;
-        }
-        String itemName = ChatColor.stripColor(slimefunItem.getItemName()).toLowerCase(Locale.ROOT);
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
@@ -217,12 +216,13 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         return false;
     }
 
-    public static String getPinyin(String string) {
-        return getPinyin(string, PinyinStyleEnum.FIRST_LETTER);
-    }
-
-    public static String getPinyin(String string, PinyinStyleEnum style) {
-        return PinyinHelper.toPinyin(string, style, "");
+    @Deprecated
+    public static boolean isSearchFilterApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
+        if (slimefunItem == null) {
+            return false;
+        }
+        String itemName = ChatColor.stripColor(slimefunItem.getItemName()).toLowerCase(Locale.ROOT);
+        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
     public static boolean isSearchFilterApplicable(ItemStack itemStack, String searchTerm, boolean pinyin) {
@@ -258,6 +258,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                 .collect(Collectors.toSet());
     }
 
+    // @formatter:off
     /**
      * Initializes the search group by populating caches and preparing data.
      */
@@ -846,6 +847,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             Debug.debug("Cache 2 (Display Recipes): " + CACHE2.size());
         }, 1L);
     }
+    // @formatter:on
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean inBanlist(SlimefunItem slimefunItem) {

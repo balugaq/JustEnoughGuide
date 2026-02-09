@@ -63,11 +63,11 @@ public class KeyUtil {
         return new NamespacedKey(plugin, key);
     }
 
-    public static NamespacedKey customKey(String namespace, String key) {
-        return new NamespacedKey(namespace, key);
-    }
-
     public static NamespacedKey append(NamespacedKey key, String append) {
         return customKey(key.getNamespace(), key.getKey() + append);
+    }
+
+    public static NamespacedKey customKey(String namespace, String key) {
+        return new NamespacedKey(namespace, key);
     }
 }

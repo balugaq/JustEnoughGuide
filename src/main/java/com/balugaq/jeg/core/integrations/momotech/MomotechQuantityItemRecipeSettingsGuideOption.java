@@ -46,9 +46,16 @@ import java.util.Optional;
 @NullMarked
 public class MomotechQuantityItemRecipeSettingsGuideOption extends ItemSettingsGuideOption {
     public static final MomotechQuantityItemRecipeSettingsGuideOption instance = new MomotechQuantityItemRecipeSettingsGuideOption();
+    public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
 
     public static MomotechQuantityItemRecipeSettingsGuideOption instance() {
         return instance;
+    }
+
+    public static ItemStack getItem(Player player) {
+        ItemStack itemStack = ItemSettingsGuideOption.getItem(player, key0(), 13);
+        if (itemStack == null) return DEFAULT_ITEM;
+        return itemStack;
     }
 
     @Override
@@ -82,13 +89,5 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends ItemSettingsG
     @Override
     public int[] getItemSlots() {
         return new int[] {13};
-    }
-
-    public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
-
-    public static ItemStack getItem(Player player) {
-        ItemStack itemStack = ItemSettingsGuideOption.getItem(player, key0(), 13);
-        if (itemStack == null) return DEFAULT_ITEM;
-        return itemStack;
     }
 }

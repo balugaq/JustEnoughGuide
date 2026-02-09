@@ -90,6 +90,11 @@ public class MomotechIntegrationMain implements Integration {
     public static final ItemStack UNCONTROLLABLE_EMPTY;
     public static final ItemStack RESOURCE;
     public static final ItemStack FINAL_ITEM;
+    public static final ItemStack COMMAND_BLOCK = new ItemStack(Material.COMMAND_BLOCK);
+    public static final ItemStack REPEATING_COMMAND_BLOCK = new ItemStack(Material.REPEATING_COMMAND_BLOCK);
+    public static final ItemStack CHAIN_COMMAND_BLOCK = new ItemStack(Material.CHAIN_COMMAND_BLOCK);
+    public static JavaPlugin plugin = null;
+
     static {
         // @formatter:off
         var sf1              = SlimefunItem.getById("MOMOTECH_UNCONTROLLABLE_EMPTY_");
@@ -100,10 +105,6 @@ public class MomotechIntegrationMain implements Integration {
         FINAL_ITEM           = sf3 == null ? null : sf3.getItem();
         // @formatter:on
     }
-    public static final ItemStack COMMAND_BLOCK = new ItemStack(Material.COMMAND_BLOCK);
-    public static final ItemStack REPEATING_COMMAND_BLOCK = new ItemStack(Material.REPEATING_COMMAND_BLOCK);
-    public static final ItemStack CHAIN_COMMAND_BLOCK = new ItemStack(Material.CHAIN_COMMAND_BLOCK);
-    public static JavaPlugin plugin = null;
 
     public static JavaPlugin getPlugin() {
         if (plugin == null) {
@@ -134,31 +135,25 @@ public class MomotechIntegrationMain implements Integration {
         var CC2 = ItemSettingsGuideOption.generateChoices(REPEATING_COMMAND_BLOCK, MAX_AMOUNTS);
         var CC3 = ItemSettingsGuideOption.generateChoices(CHAIN_COMMAND_BLOCK, MAX_AMOUNTS);
         RecipeCompleteProvider.registerSpecialRecipeHandler((p, i, s) -> {
-           if (s == null) return null;
+            if (s == null) return null;
 
-           return switch (s.getId()) {
-               case "MOMOTECH_CREATIVE" ->
-                       ItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_AMOUNTS);
-               case "MOMOTECH_CREATIVE_I" ->
-                       ItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_I_AMOUNTS);
-               case "MOMOTECH_NONE" ->
-                       ItemSettingsGuideOption.generateChoices(MomotechNoneRecipeSettingsGuideOption.getItems(p), MOMOTECH_NONE_AMOUNTS);
-               case "MOMOTECH_QUANTITY_ITEM" ->
-                       ItemSettingsGuideOption.generateChoices(MomotechQuantityItemRecipeSettingsGuideOption.getItem(p), MAX_AMOUNTS);
-               case "MOMOTECH_CREATIVE_II" ->
-                       UEC;
-               case "MOMOTECH_FINAL_RULE" ->
-                       RC;
-               case "MOMOTECH_FINAL_STAR" ->
-                       FC;
-               case "MOMOTECH_COMMAND_BLOCK1" ->
-                       CC1;
-               case "MOMOTECH_COMMAND_BLOCK2" ->
-                       CC2;
-               case "MOMOTECH_COMMAND_BLOCK3" ->
-                       CC3;
-               default -> null;
-           };
+            return switch (s.getId()) {
+                case "MOMOTECH_CREATIVE" ->
+                        ItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_AMOUNTS);
+                case "MOMOTECH_CREATIVE_I" ->
+                        ItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_I_AMOUNTS);
+                case "MOMOTECH_NONE" ->
+                        ItemSettingsGuideOption.generateChoices(MomotechNoneRecipeSettingsGuideOption.getItems(p), MOMOTECH_NONE_AMOUNTS);
+                case "MOMOTECH_QUANTITY_ITEM" ->
+                        ItemSettingsGuideOption.generateChoices(MomotechQuantityItemRecipeSettingsGuideOption.getItem(p), MAX_AMOUNTS);
+                case "MOMOTECH_CREATIVE_II" -> UEC;
+                case "MOMOTECH_FINAL_RULE" -> RC;
+                case "MOMOTECH_FINAL_STAR" -> FC;
+                case "MOMOTECH_COMMAND_BLOCK1" -> CC1;
+                case "MOMOTECH_COMMAND_BLOCK2" -> CC2;
+                case "MOMOTECH_COMMAND_BLOCK3" -> CC3;
+                default -> null;
+            };
         });
 
         rrc("MOMOTECH_CREATIVE_ITEM_GENERATOR", CREATIVE_ITEM_GENERATOR_RECIPE_SLOTS, false);

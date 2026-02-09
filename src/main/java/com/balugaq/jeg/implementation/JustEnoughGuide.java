@@ -186,10 +186,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getInstance().commandManager;
     }
 
-    public static ConfigManager getConfigManager() {
-        return getInstance().configManager;
-    }
-
     public static ListenerManager getListenerManager() {
         return getInstance().listenerManager;
     }
@@ -298,6 +294,95 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      */
     public void debug(String message) {
         Debug.debug(message);
+    }
+
+    public String getVersion() {
+        return getDescription().getVersion();
+    }
+
+    /**
+     * Cleans up resources and shuts down the plugin.
+     */
+    @Override
+    public void onDisable() {
+        CustomGroupConfigurations.unload();
+        GroupResorter.rollback();
+
+        getIntegrationManager().shutdownIntegrations();
+
+        GroupSetup.shutdown();
+        RecipeCompleteProvider.shutdown();
+        GuideUtil.shutdown();
+
+        /**
+         * Unregister all {@link SlimefunItem}
+         *
+         * @see VanillaItemsGroup
+         * @see ItemsSetup#RECIPE_COMPLETE_GUIDE
+         */
+        SlimefunRegistryUtil.unregisterItems(JustEnoughGuide.getInstance());
+
+        try {
+            List<SlimefunGuideOption<?>> l = JEGGuideSettings.getOptions();
+            List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
+            for (SlimefunGuideOption<?> option : copy) {
+                if (option.getAddon() instanceof JustEnoughGuide) {
+                    l.remove(option);
+                }
+            }
+            JEGGuideSettings.unpatchSlimefun();
+            FinalTECHValueDisplayOption.setBooted(false);
+        } catch (Exception ignored) {
+        }
+
+        try {
+            Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
+            newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide());
+            newGuides.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
+            ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
+        } catch (Exception e) {
+            Debug.trace(e);
+        }
+
+        // Managers
+        if (this.bookmarkManager != null) {
+            this.bookmarkManager.unload();
+        }
+
+        if (this.integrationManager != null) {
+            this.integrationManager.unload();
+        }
+
+        if (this.commandManager != null) {
+            this.commandManager.unload();
+        }
+
+        if (this.listenerManager != null) {
+            this.listenerManager.unload();
+        }
+
+        if (this.rtsBackpackManager != null) {
+            this.rtsBackpackManager.unload();
+        }
+
+        if (this.configManager != null) {
+            this.configManager.unload();
+        }
+
+        this.bookmarkManager = null;
+        this.integrationManager = null;
+        this.commandManager = null;
+        this.listenerManager = null;
+        this.configManager = null;
+        Debug.setPlugin(null);
+
+        // Other fields
+        this.minecraftVersion = null;
+        this.javaVersion = 0;
+
+        // Clear instance
+        instance = null;
+        getLogger().info("成功禁用此附属");
     }
 
     /**
@@ -446,95 +531,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getLogger().info("成功启用此附属");
     }
 
-    public String getVersion() {
-        return getDescription().getVersion();
-    }
-
-    /**
-     * Cleans up resources and shuts down the plugin.
-     */
-    @Override
-    public void onDisable() {
-        CustomGroupConfigurations.unload();
-        GroupResorter.rollback();
-
-        getIntegrationManager().shutdownIntegrations();
-
-        GroupSetup.shutdown();
-        RecipeCompleteProvider.shutdown();
-        GuideUtil.shutdown();
-
-        /**
-         * Unregister all {@link SlimefunItem}
-         *
-         * @see VanillaItemsGroup
-         * @see ItemsSetup#RECIPE_COMPLETE_GUIDE
-         */
-        SlimefunRegistryUtil.unregisterItems(JustEnoughGuide.getInstance());
-
-        try {
-            List<SlimefunGuideOption<?>> l = JEGGuideSettings.getOptions();
-            List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
-            for (SlimefunGuideOption<?> option : copy) {
-                if (option.getAddon() instanceof JustEnoughGuide) {
-                    l.remove(option);
-                }
-            }
-            JEGGuideSettings.unpatchSlimefun();
-            FinalTECHValueDisplayOption.setBooted(false);
-        } catch (Exception ignored) {
-        }
-
-        try {
-            Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
-            newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide());
-            newGuides.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
-            ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
-        } catch (Exception e) {
-            Debug.trace(e);
-        }
-
-        // Managers
-        if (this.bookmarkManager != null) {
-            this.bookmarkManager.unload();
-        }
-
-        if (this.integrationManager != null) {
-            this.integrationManager.unload();
-        }
-
-        if (this.commandManager != null) {
-            this.commandManager.unload();
-        }
-
-        if (this.listenerManager != null) {
-            this.listenerManager.unload();
-        }
-
-        if (this.rtsBackpackManager != null) {
-            this.rtsBackpackManager.unload();
-        }
-
-        if (this.configManager != null) {
-            this.configManager.unload();
-        }
-
-        this.bookmarkManager = null;
-        this.integrationManager = null;
-        this.commandManager = null;
-        this.listenerManager = null;
-        this.configManager = null;
-        Debug.setPlugin(null);
-
-        // Other fields
-        this.minecraftVersion = null;
-        this.javaVersion = 0;
-
-        // Clear instance
-        instance = null;
-        getLogger().info("成功禁用此附属");
-    }
-
     /**
      * Checks if debugging is enabled.
      *
@@ -542,6 +538,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      */
     public boolean isDebug() {
         return getConfigManager().isDebug();
+    }
+
+    public static ConfigManager getConfigManager() {
+        return getInstance().configManager;
     }
 
     /**

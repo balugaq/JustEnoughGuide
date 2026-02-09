@@ -60,20 +60,20 @@ public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, Gui
         return new JEGClickHandler() {
             private final Map<Class<? extends Processor>, Processor> processors = new HashMap<>();
 
-            public ChestMenu.MenuClickHandler getOrigin() {
-                return Optional.ofNullable(current).orElse(ChestMenuUtils.getEmptyClickHandler());
-            }
-
-            public SlimefunGuideImplementation getGuide() {
-                return guide;
+            public Map<Class<? extends Processor>, Processor> getProcessors() {
+                return processors;
             }
 
             public ChestMenu getMenu() {
                 return menu;
             }
 
-            public Map<Class<? extends Processor>, Processor> getProcessors() {
-                return processors;
+            public SlimefunGuideImplementation getGuide() {
+                return guide;
+            }
+
+            public ChestMenu.MenuClickHandler getOrigin() {
+                return Optional.ofNullable(current).orElse(ChestMenuUtils.getEmptyClickHandler());
             }
         };
     }

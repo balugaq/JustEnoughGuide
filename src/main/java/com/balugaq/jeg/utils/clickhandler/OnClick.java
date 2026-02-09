@@ -95,6 +95,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings({"deprecation"})
 @NullMarked
 public interface OnClick {
+    // @formatter:off
     MessageFormat SHARED_ITEM_MESSAGE = new MessageFormat(ChatColors.color("&a{0} &e分享了 &7[{1}&r&7]&e <点击搜索>"));
     String CLICK_TO_SEARCH = ChatColors.color("&e点击搜索");
     FrequencyWatcher<UUID> SHARING_WATCHER = new FrequencyWatcher<>(1, TimeUnit.MINUTES, 10, 5000);
@@ -1517,4 +1518,5 @@ public interface OnClick {
         public static final ItemGroup ItemGroup = () -> Material.CAMPFIRE;
         public static final RecipeType RecipeType = () -> Material.CRAFTING_TABLE;
     }
+    // @formatter:on
 }

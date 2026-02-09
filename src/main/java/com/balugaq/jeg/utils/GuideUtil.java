@@ -158,35 +158,6 @@ public final class GuideUtil {
         getGuide(player, mode).openMainMenu(profile, selectedPage);
     }
 
-    /**
-     * Get the guide implementation for the given player and mode.
-     *
-     * @param player
-     *         The player to get the guide for.
-     * @param mode
-     *         The mode to get the guide for.
-     *
-     * @return The guide implementation for the given player and mode.
-     */
-    public static SlimefunGuideImplementation getGuide(Player player, SlimefunGuideMode mode) {
-        if (mode == SlimefunGuideMode.SURVIVAL_MODE) {
-            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
-        }
-
-        // Player must be op or have the permission "slimefun.cheat.items" to access the cheat guide
-        if ((player.isOp() || player.hasPermission("slimefun.cheat.items")) && mode == SlimefunGuideMode.CHEAT_MODE) {
-            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
-        }
-
-        // Fallback to survival guide if no permission is given
-        return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
-    }
-
-    @ApiStatus.Obsolete
-    public static SlimefunGuideImplementation getSlimefunGuide(SlimefunGuideMode mode) {
-        return Slimefun.getRegistry().getSlimefunGuide(mode);
-    }
-
     public static void removeLastEntry(GuideHistory guideHistory) {
         try {
             Method getLastEntry = guideHistory.getClass().getDeclaredMethod("getLastEntry", boolean.class);
@@ -301,6 +272,82 @@ public final class GuideUtil {
         }
     }
 
+    @SuppressWarnings("DataFlowIssue")
+    public static void goBack(GuideHistory history) {
+        goBack(ReflectionUtil.getValue(history, "profile", PlayerProfile.class));
+    }
+
+    public static void goBack(PlayerProfile profile) {
+        var p = profile.getPlayer();
+        if (p == null) return;
+
+        GuideHistory history = profile.getGuideHistory();
+        var entry = ReflectionUtil.invokeMethod(history, "getLastEntry", true);
+        var guide = getLastGuide(p);
+
+        if (entry == null) {
+            guide.openMainMenu(profile, history.getMainMenuPage());
+            return;
+        }
+        var content = ReflectionUtil.invokeMethod(entry, "getIndexedObject");
+        @SuppressWarnings("DataFlowIssue") int page = (int) ReflectionUtil.invokeMethod(entry, "getPage");
+        if (content instanceof final ItemGroup group) {
+            guide.openItemGroup(profile, group, page);
+            return;
+        }
+
+        if (content instanceof final SlimefunItem item) {
+            guide.displayItem(profile, item, false);
+            return;
+        }
+
+        if (content instanceof final ItemStack stack) {
+            guide.displayItem(profile, stack, page, false);
+            return;
+        }
+
+        if (content instanceof final String query) {
+            guide.openSearch(profile, query, false);
+            return;
+        }
+
+        throw new IllegalStateException("Unknown GuideHistory entry: " + content);
+    }
+
+    public SlimefunGuideImplementation getLastGuide(Player player) {
+        var mode = GuideListener.guideModeMap.get(player);
+        return GuideUtil.getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
+    }
+
+    /**
+     * Get the guide implementation for the given player and mode.
+     *
+     * @param player
+     *         The player to get the guide for.
+     * @param mode
+     *         The mode to get the guide for.
+     *
+     * @return The guide implementation for the given player and mode.
+     */
+    public static SlimefunGuideImplementation getGuide(Player player, SlimefunGuideMode mode) {
+        if (mode == SlimefunGuideMode.SURVIVAL_MODE) {
+            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
+        }
+
+        // Player must be op or have the permission "slimefun.cheat.items" to access the cheat guide
+        if ((player.isOp() || player.hasPermission("slimefun.cheat.items")) && mode == SlimefunGuideMode.CHEAT_MODE) {
+            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
+        }
+
+        // Fallback to survival guide if no permission is given
+        return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
+    }
+
+    @ApiStatus.Obsolete
+    public static SlimefunGuideImplementation getSlimefunGuide(SlimefunGuideMode mode) {
+        return Slimefun.getRegistry().getSlimefunGuide(mode);
+    }
+
     @SuppressWarnings("deprecation")
     public static void addBookMarkButton(
             ChestMenu menu,
@@ -413,10 +460,6 @@ public final class GuideUtil {
         return new ArrayList<>(forceHiddens);
     }
 
-    public static boolean isForceHidden(ItemGroup group) {
-        return forceHiddens.contains(group);
-    }
-
     public static void shutdown() {
         forceHiddens.clear();
     }
@@ -470,46 +513,6 @@ public final class GuideUtil {
 
     public static @Nullable Player updatePlayer(UUID uuid) {
         return Bukkit.getPlayer(uuid);
-    }
-
-    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public static List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile) {
-        List<ItemGroup> groups = new ArrayList<>();
-
-        for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
-            try {
-                if (group.getClass().isAnnotationPresent(NotDisplayInSurvivalMode.class)) {
-                    continue;
-                }
-                if (group.getClass().isAnnotationPresent(DisplayInSurvivalMode.class)) {
-                    groups.add(group);
-                    continue;
-                }
-                if (GuideUtil.isForceHidden(group)) {
-                    continue;
-                }
-                if (group instanceof FlexItemGroup flexItemGroup) {
-                    if (flexItemGroup.isVisible(p, profile, SlimefunGuideMode.SURVIVAL_MODE)) {
-                        groups.add(group);
-                    }
-                } else if (!group.isHidden(p) && group.isVisible(p) && group.isAccessible(p)) {
-                    groups.add(group);
-                }
-            } catch (Exception | LinkageError x) {
-                SlimefunAddon addon = group.getAddon();
-
-                if (addon != null) {
-                    addon.getLogger().log(Level.SEVERE, x, () -> "Could not display item group: " + group);
-                } else {
-                    JustEnoughGuide.getInstance()
-                            .getLogger()
-                            .log(Level.SEVERE, x, () -> "Could not display item group: " + group);
-                }
-            }
-        }
-        GroupResorter.sort(groups);
-
-        return groups;
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
@@ -583,55 +586,52 @@ public final class GuideUtil {
         return groups;
     }
 
-    public SlimefunGuideImplementation getLastGuide(Player player) {
-        var mode = GuideListener.guideModeMap.get(player);
-        return GuideUtil.getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
+    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
+    public static List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile) {
+        List<ItemGroup> groups = new ArrayList<>();
+
+        for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+            try {
+                if (group.getClass().isAnnotationPresent(NotDisplayInSurvivalMode.class)) {
+                    continue;
+                }
+                if (group.getClass().isAnnotationPresent(DisplayInSurvivalMode.class)) {
+                    groups.add(group);
+                    continue;
+                }
+                if (GuideUtil.isForceHidden(group)) {
+                    continue;
+                }
+                if (group instanceof FlexItemGroup flexItemGroup) {
+                    if (flexItemGroup.isVisible(p, profile, SlimefunGuideMode.SURVIVAL_MODE)) {
+                        groups.add(group);
+                    }
+                } else if (!group.isHidden(p) && group.isVisible(p) && group.isAccessible(p)) {
+                    groups.add(group);
+                }
+            } catch (Exception | LinkageError x) {
+                SlimefunAddon addon = group.getAddon();
+
+                if (addon != null) {
+                    addon.getLogger().log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+                } else {
+                    JustEnoughGuide.getInstance()
+                            .getLogger()
+                            .log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+                }
+            }
+        }
+        GroupResorter.sort(groups);
+
+        return groups;
+    }
+
+    public static boolean isForceHidden(ItemGroup group) {
+        return forceHiddens.contains(group);
     }
 
     public SlimefunGuideMode getLastGuideMode(Player player) {
         return getLastGuide(player).getMode();
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    public static void goBack(GuideHistory history) {
-        goBack(ReflectionUtil.getValue(history, "profile", PlayerProfile.class));
-    }
-
-    public static void goBack(PlayerProfile profile) {
-        var p = profile.getPlayer();
-        if (p == null) return;
-
-        GuideHistory history = profile.getGuideHistory();
-        var entry = ReflectionUtil.invokeMethod(history, "getLastEntry", true);
-        var guide = getLastGuide(p);
-
-        if (entry == null) {
-            guide.openMainMenu(profile, history.getMainMenuPage());
-            return;
-        }
-        var content = ReflectionUtil.invokeMethod(entry, "getIndexedObject");
-        @SuppressWarnings("DataFlowIssue") int page = (int) ReflectionUtil.invokeMethod(entry, "getPage");
-        if (content instanceof final ItemGroup group) {
-            guide.openItemGroup(profile, group, page);
-            return;
-        }
-
-        if (content instanceof final SlimefunItem item) {
-            guide.displayItem(profile, item, false);
-            return;
-        }
-
-        if (content instanceof final ItemStack stack) {
-            guide.displayItem(profile, stack, page, false);
-            return;
-        }
-
-        if (content instanceof final String query) {
-            guide.openSearch(profile, query, false);
-            return;
-        }
-
-        throw new IllegalStateException("Unknown GuideHistory entry: " + content);
     }
 
     public static void goBack(Player player) {

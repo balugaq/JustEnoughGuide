@@ -50,6 +50,23 @@ public class SlimefunTranslationIntegrationMain implements Integration {
     @Nullable
     private Boolean interceptSearch;
 
+    public static ItemStack translateItem(Player player, ItemStack itemStack) {
+        itemStack = Converter.getItem(itemStack);
+        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimefunTranslation()) {
+            SlimefunTranslationAPI.translateItem(SlimefunTranslationAPI.getUser(player), itemStack);
+        }
+
+        return itemStack;
+    }
+
+    public static String getTranslatedItemName(Player player, SlimefunItem slimefunItem) {
+        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimefunTranslation()) {
+            return SlimefunTranslationAPI.getItemName(SlimefunTranslationAPI.getUser(player), slimefunItem);
+        }
+
+        return slimefunItem.getItemName();
+    }
+
     @Override
     public String getHookPlugin() {
         return "SlimefunTranslation";
@@ -70,22 +87,5 @@ public class SlimefunTranslationIntegrationMain implements Integration {
         if (interceptSearch != null) {
             ReflectionUtil.setValue(SlimefunTranslation.getConfigService(), "interceptSearch", interceptSearch);
         }
-    }
-
-    public static ItemStack translateItem(Player player, ItemStack itemStack) {
-        itemStack = Converter.getItem(itemStack);
-        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimefunTranslation()) {
-            SlimefunTranslationAPI.translateItem(SlimefunTranslationAPI.getUser(player), itemStack);
-        }
-
-        return itemStack;
-    }
-
-    public static String getTranslatedItemName(Player player, SlimefunItem slimefunItem) {
-        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimefunTranslation()) {
-            return SlimefunTranslationAPI.getItemName(SlimefunTranslationAPI.getUser(player), slimefunItem);
-        }
-
-        return slimefunItem.getItemName();
     }
 }

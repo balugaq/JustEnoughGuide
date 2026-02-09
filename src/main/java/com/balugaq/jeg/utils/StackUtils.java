@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.utils;
 
-import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
@@ -75,15 +74,15 @@ import java.util.Optional;
 @NullMarked
 public class StackUtils {
     public static final boolean IS_1_17_1 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_17_1);
+            MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17_1);
     public static final boolean IS_1_19_4 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_19_4);
+            MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_19_4);
     public static final boolean IS_1_20 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_20);
+            MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20);
     public static final boolean IS_1_20_5 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_20_5);
+            MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20_5);
     public static final boolean IS_1_21 =
-            JustEnoughGuide.getMinecraftVersion().isAtLeast(MinecraftVersion.V1_21);
+            MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_21);
 
     public static ItemStack getAsQuantity(@Nullable ItemStack itemStack, int amount) {
         if (itemStack == null) {

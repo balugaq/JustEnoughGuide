@@ -45,8 +45,22 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 public interface ItemPatchListener extends Listener, Keyed {
+    @Nullable
+    @Contract("null -> null")
+    static ItemStack untag(@Nullable ItemStack dirty) {
+        if (dirty == null || dirty.getType() == Material.AIR) {
+            return null;
+        }
+        SlimefunItem sfi = SlimefunItem.getByItem(dirty);
+        return sfi == null ? new ItemStack(dirty.getType()) : sfi.getItem();
+    }
+
     default void tagMeta(ItemMeta meta) {
         meta.getPersistentDataContainer().set(getKey(), PersistentDataType.BOOLEAN, true);
+    }
+
+    default NamespacedKey getKey() {
+        return KeyUtil.newKey(getClass().getSimpleName().toLowerCase());
     }
 
     default boolean isTagged(@Nullable ItemStack stack) {
@@ -58,19 +72,5 @@ public interface ItemPatchListener extends Listener, Keyed {
 
     default boolean isTagged(ItemMeta meta) {
         return meta.getPersistentDataContainer().has(getKey(), PersistentDataType.BOOLEAN);
-    }
-
-    default NamespacedKey getKey() {
-        return KeyUtil.newKey(getClass().getSimpleName().toLowerCase());
-    }
-
-    @Nullable
-    @Contract("null -> null")
-    static ItemStack untag(@Nullable ItemStack dirty) {
-        if (dirty == null || dirty.getType() == Material.AIR) {
-            return null;
-        }
-        SlimefunItem sfi = SlimefunItem.getByItem(dirty);
-        return sfi == null ? new ItemStack(dirty.getType()) : sfi.getItem();
     }
 }

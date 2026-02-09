@@ -62,6 +62,69 @@ import java.util.Optional;
 @SuppressWarnings("deprecation")
 @NullMarked
 public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boolean> {
+    public static final ItemStack DEFAULT_ICON = Converter.getItem(
+            Material.BARRIER,
+            "&c未设置物品",
+            "&c手持物品点击设置"
+    );
+
+    private static NamespacedKey getKey(NamespacedKey key, int index) {
+        return KeyUtil.append(key, "_item_" + index);
+    }
+
+    @Nullable
+    public static ItemStack getItem(Player p, NamespacedKey k, int index) {
+        var key = getKey(k, index);
+        String s = PersistentDataAPI.getString(p, key);
+        if (s == null) return null;
+        if (s.startsWith("sf:")) {
+            SlimefunItem sf = SlimefunItem.getById(s.substring(3));
+            if (sf == null) return null;
+            return Converter.getItem(sf.getItem());
+        } else if (s.startsWith("mc:")) {
+            Material material = Material.getMaterial(s.substring(3).toUpperCase());
+            if (material == null) return null;
+            return Converter.getItem(material);
+        } else {
+            return null;
+        }
+    }
+
+    private static ItemStack getIconOrDefault(Player p, NamespacedKey k, int index) {
+        ItemStack ri = getItem(p, k, index);
+        if (ri == null) {
+            ri = DEFAULT_ICON;
+        }
+
+        ItemStack item = ri.clone();
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return Converter.getItem(item, "&f空气");
+
+        List<String> lore = meta.getLore();
+        if (lore == null) lore = new ArrayList<>();
+        lore.add("");
+        lore.add(ChatColors.color("&c已设置物品"));
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static List<RecipeChoice> generateChoices(ItemStack itemStack, int... amounts) {
+        return generateChoices(new ItemStack[] {itemStack}, amounts);
+    }
+
+    public static List<RecipeChoice> generateChoices(@Nullable ItemStack[] itemStacks, int... amounts) {
+        int i = 0;
+        List<RecipeChoice> choices = new ArrayList<>();
+        for (int amount : amounts) {
+            var item = itemStacks[i % itemStacks.length];
+            if (item == null) continue;
+            choices.add(new RecipeChoice.ExactChoice(Converter.getItem(item, amount)));
+            i++;
+        }
+        return choices;
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -72,9 +135,20 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
         openItemSettingsGui(p);
     }
 
+    @Override
+    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
+        return Optional.of(false);
+    }
+
+    @Override
+    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
+    }
+
     public abstract String getTitle();
+
     @SuppressWarnings("SameReturnValue")
     public abstract int getSize();
+
     public abstract int[] getItemSlots();
 
     public ChestMenu getMenu(Player p) {
@@ -117,10 +191,6 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
         menu.open(p);
     }
 
-    private static NamespacedKey getKey(NamespacedKey key, int index) {
-        return KeyUtil.append(key, "_item_" + index);
-    }
-
     private void setItemStack(Player p, NamespacedKey k, int index, String item) {
         var key = getKey(k, index);
         PersistentDataAPI.setString(p, key, item);
@@ -134,73 +204,5 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
         } else {
             setItemStack(p, k, index, "sf:" + sf.getId());
         }
-    }
-
-    @Nullable
-    public static ItemStack getItem(Player p, NamespacedKey k, int index) {
-        var key = getKey(k, index);
-        String s = PersistentDataAPI.getString(p, key);
-        if (s == null) return null;
-        if (s.startsWith("sf:")) {
-            SlimefunItem sf = SlimefunItem.getById(s.substring(3));
-            if (sf == null) return null;
-            return Converter.getItem(sf.getItem());
-        } else if (s.startsWith("mc:")) {
-            Material material = Material.getMaterial(s.substring(3).toUpperCase());
-            if (material == null) return null;
-            return Converter.getItem(material);
-        } else {
-            return null;
-        }
-    }
-
-    public static final ItemStack DEFAULT_ICON = Converter.getItem(
-            Material.BARRIER,
-            "&c未设置物品",
-            "&c手持物品点击设置"
-    );
-
-    private static ItemStack getIconOrDefault(Player p, NamespacedKey k, int index) {
-        ItemStack ri = getItem(p, k, index);
-        if (ri == null) {
-            ri = DEFAULT_ICON;
-        }
-
-        ItemStack item = ri.clone();
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return Converter.getItem(item, "&f空气");
-
-        List<String> lore = meta.getLore();
-        if (lore == null) lore = new ArrayList<>();
-        lore.add("");
-        lore.add(ChatColors.color("&c已设置物品"));
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static List<RecipeChoice> generateChoices(@Nullable ItemStack[] itemStacks, int... amounts) {
-        int i = 0;
-        List<RecipeChoice> choices = new ArrayList<>();
-        for (int amount : amounts) {
-            var item = itemStacks[i % itemStacks.length];
-            if (item == null) continue;
-            choices.add(new RecipeChoice.ExactChoice(Converter.getItem(item, amount)));
-            i++;
-        }
-        return choices;
-    }
-
-    public static List<RecipeChoice> generateChoices(ItemStack itemStack, int... amounts) {
-        return generateChoices(new ItemStack[]{itemStack}, amounts);
-    }
-
-    @Override
-    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
-        return Optional.of(false);
-    }
-
-    @Override
-    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
     }
 }

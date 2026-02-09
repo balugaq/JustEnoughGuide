@@ -316,6 +316,22 @@ public class ReflectionUtil {
         return null;
     }
 
+    public static Class<?> warpClass(Class<?> clazz) {
+        return !clazz.isPrimitive()
+                ? clazz
+                : switch (clazz.getName()) {
+            case "boolean" -> Boolean.class;
+            case "byte" -> Byte.class;
+            case "char" -> Character.class;
+            case "double" -> Double.class;
+            case "float" -> Float.class;
+            case "int" -> Integer.class;
+            case "long" -> Long.class;
+            case "short" -> Short.class;
+            default -> clazz;
+        };
+    }
+
     @Nullable
     public static Object invokeStaticMethod(
             Class<?> clazz, String methodName, @Nullable Object @Nullable ... args) {
@@ -353,21 +369,5 @@ public class ReflectionUtil {
             Debug.trace(e);
         }
         return null;
-    }
-
-    public static Class<?> warpClass(Class<?> clazz) {
-        return !clazz.isPrimitive()
-                ? clazz
-                : switch (clazz.getName()) {
-                    case "boolean" -> Boolean.class;
-                    case "byte" -> Byte.class;
-                    case "char" -> Character.class;
-                    case "double" -> Double.class;
-                    case "float" -> Float.class;
-                    case "int" -> Integer.class;
-                    case "long" -> Long.class;
-                    case "short" -> Short.class;
-                    default -> clazz;
-                };
     }
 }

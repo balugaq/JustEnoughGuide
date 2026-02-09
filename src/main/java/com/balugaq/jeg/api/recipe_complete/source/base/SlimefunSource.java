@@ -69,9 +69,9 @@ public interface SlimefunSource extends Source {
 
         GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
         RecipeCompletableListener.addCallback(
-                player.getUniqueId(), ((event, profile) -> {
-                    handleSession(session, event, event.getClickAction(), true, callback);
-                })
+                player.getUniqueId(), ((event, profile) ->
+                        handleSession(session, event, event.getClickAction(), true, callback)
+                )
         );
         RecipeCompletableListener.tagGuideOpen(player);
         return true;
@@ -88,7 +88,7 @@ public interface SlimefunSource extends Source {
                 session,
                 blockMenu::getItemInSlot,
                 (received, i) ->
-                        BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})
+                        BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]})
         );
     }
 

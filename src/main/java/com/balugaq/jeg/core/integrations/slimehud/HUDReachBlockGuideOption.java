@@ -59,6 +59,10 @@ public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
         return instance;
     }
 
+    public static int getReachBlock(Player p) {
+        return PersistentDataAPI.getInt(p, key0(), 5);
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -110,10 +114,6 @@ public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
                     }
                 }
         );
-    }
-
-    public static int getReachBlock(Player p) {
-        return PersistentDataAPI.getInt(p, key0(), 5);
     }
 
     @Override

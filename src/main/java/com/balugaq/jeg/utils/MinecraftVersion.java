@@ -60,6 +60,23 @@ public record MinecraftVersion(int major, int minor, int patch) implements Compa
         return deserialize(version);
     }
 
+    public static MinecraftVersion deserialize(String s) {
+        String[] split = s.split("\\.");
+        if (split.length < 2) throw new IllegalArgumentException("Invalid version string: " + s);
+        int major = Integer.parseUnsignedInt(split[0]);
+        int minor = Integer.parseUnsignedInt(split[1]);
+        int patch = Integer.parseUnsignedInt(split.length == 2 ? "0" : split[2]);
+        return MinecraftVersion.of(major, minor, patch);
+    }
+
+    public static MinecraftVersion of(int major, int minor, int patch) {
+        return new MinecraftVersion(major, minor, patch);
+    }
+
+    public static MinecraftVersion of(int major, int minor) {
+        return of(major, minor, 0);
+    }
+
     public boolean isAtLeast(String version) {
         return isAtLeast(of(version));
     }
@@ -78,29 +95,16 @@ public record MinecraftVersion(int major, int minor, int patch) implements Compa
         return !isAtLeast(version) && this != version;
     }
 
-    public static MinecraftVersion deserialize(String s) {
-        String[] split = s.split("\\.");
-        if (split.length < 2) throw new IllegalArgumentException("Invalid version string: " + s);
-        int major = Integer.parseUnsignedInt(split[0]);
-        int minor = Integer.parseUnsignedInt(split[1]);
-        int patch = Integer.parseUnsignedInt(split.length == 2 ? "0" : split[2]);
-        return MinecraftVersion.of(major, minor, patch);
-    }
-
-    public static MinecraftVersion of(int major, int minor, int patch) {
-        return new MinecraftVersion(major, minor, patch);
-    }
-
-    public static MinecraftVersion of(int major, int minor) {
-        return of(major, minor, 0);
-    }
-
     @Override
     public int compareTo(MinecraftVersion o) {
         return Integer.compare(this.major * 1000000 + this.minor * 10000 + this.patch, o.major * 1000000 + o.minor * 10000 + o.patch);
     }
 
     public String humanize() {
+        if (patch == 0) {
+            return major + "." + minor;
+        }
+
         return major + "." + minor + "." + patch;
     }
 }

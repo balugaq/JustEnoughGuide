@@ -75,12 +75,15 @@ import java.util.Set;
 public interface Source {
     int RECIPE_DEPTH_THRESHOLD = 8;
 
-    JavaPlugin plugin();
-    boolean handleable(RecipeCompleteSession session);
-    @Nullable ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack);
+    static boolean depthInRange(Player player, int depth) {
+        return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
+    }
 
-    @CanIgnoreReturnValue
-    boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback);
+    JavaPlugin plugin();
+
+    boolean handleable(RecipeCompleteSession session);
+
+    @Nullable ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack);
 
     @CanIgnoreReturnValue
     boolean completeRecipeWithGuide(RecipeCompleteSession session);
@@ -90,9 +93,12 @@ public interface Source {
         return openGuide(session, null);
     }
 
+    @CanIgnoreReturnValue
+    boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback);
+
     /**
-     * The handle level of the source.
-     * The lower the level, the earlier items will try to be gotten from.
+     * The handle level of the source. The lower the level, the earlier items will try to be gotten from.
+     *
      * @return the handle level
      */
     default int handleLevel() {
@@ -219,7 +225,8 @@ public interface Source {
                     if (bloc.getBlockX() == target.getBlockX() && bloc.getBlockY() == target.getBlockY() && bloc.getBlockZ() == target.getBlockZ())
                         continue; // never include itself
 
-                    if (!Slimefun.getProtectionManager().hasPermission(player, bloc, Interaction.INTERACT_BLOCK)) continue;
+                    if (!Slimefun.getProtectionManager().hasPermission(player, bloc, Interaction.INTERACT_BLOCK))
+                        continue;
 
                     BlockMenu menu = StorageCacheUtils.getMenu(bloc);
                     if (menu == null) {
@@ -281,8 +288,11 @@ public interface Source {
         return null;
     }
 
-    static boolean depthInRange(Player player, int depth) {
-        return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
+    private int[] mergeSlots(int[]... slots) {
+        IntOpenHashSet set = new IntOpenHashSet();
+        for (int[] slot : slots)
+            for (int i : slot) set.add(i);
+        return set.toIntArray();
     }
 
     default void sendMissingMaterial(Player player, ItemStack itemStack) {
@@ -392,13 +402,6 @@ public interface Source {
 
         event.setCancelled(true);
         return true;
-    }
-
-    private int[] mergeSlots(int[]... slots) {
-        IntOpenHashSet set = new IntOpenHashSet();
-        for (int[] slot : slots)
-            for (int i : slot) set.add(i);
-        return set.toIntArray();
     }
 
     /**

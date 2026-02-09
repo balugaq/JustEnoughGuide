@@ -46,13 +46,13 @@ public interface PlayerNearbyContainerSource extends JEGSource {
     }
 
     @Override
-    default int handleLevel() {
-        return RecipeCompleteProvider.PLAYER_NEARBY_CONTAINER_HANDLE_LEVEL;
-    }
-
-    @Override
     @Nullable
     default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
         return getItemStackFromNearbyContainer(session.getPlayer(), session.getTarget(), itemStack);
+    }
+
+    @Override
+    default int handleLevel() {
+        return RecipeCompleteProvider.PLAYER_NEARBY_CONTAINER_HANDLE_LEVEL;
     }
 }

@@ -45,13 +45,13 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 public interface SlimeAEPluginSource extends Source {
-    default boolean handleable(RecipeCompleteSession session) {
-        return SlimeAEPluginIntegrationMain.findNearbyIStorage(session.getLocation()) != null;
+    @Override
+    default JavaPlugin plugin() {
+        return SlimeAEPluginIntegrationMain.getPlugin();
     }
 
-    @Override
-    default int handleLevel() {
-        return RecipeCompleteProvider.SLIME_AE_PLUGIN_HANDLE_LEVEL;
+    default boolean handleable(RecipeCompleteSession session) {
+        return SlimeAEPluginIntegrationMain.findNearbyIStorage(session.getLocation()) != null;
     }
 
     @SuppressWarnings("unused")
@@ -79,8 +79,8 @@ public interface SlimeAEPluginSource extends Source {
     }
 
     @Override
-    default JavaPlugin plugin() {
-        return SlimeAEPluginIntegrationMain.getPlugin();
+    default int handleLevel() {
+        return RecipeCompleteProvider.SLIME_AE_PLUGIN_HANDLE_LEVEL;
     }
 
 }

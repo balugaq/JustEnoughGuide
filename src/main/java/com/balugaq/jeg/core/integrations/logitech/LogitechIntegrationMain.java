@@ -87,6 +87,23 @@ public class LogitechIntegrationMain implements Integration {
         return plugin;
     }
 
+    public static boolean isMachineStackable(SlimefunItem sf) {
+        return stackableMachines.contains(sf);
+    }
+
+    public static boolean isGeneratorStackable(SlimefunItem sf) {
+        var className = sf.getClass().getName();
+        return sf instanceof EnergyNetProvider
+                && !"me.matl114.logitech.core.Machines.Electrics.EnergyAmplifier".equals(className)
+                && !"me.matl114.logitech.SlimefunItem.Machines.Electrics.EnergyAmplifier".equals(className)
+                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.SlimefunItem.Machines.Electrics.AbstractEnergyMachine")
+                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.core.Machines.Abstracts.AbstractEnergyMachine");
+    }
+
+    public static boolean isMaterialGeneratorStackable(SlimefunItem sf) {
+        return stackableMaterialGenerators.contains(sf);
+    }
+
     @Override
     public String getHookPlugin() {
         return "Logitech";
@@ -228,22 +245,5 @@ public class LogitechIntegrationMain implements Integration {
         for (SlimefunItem slimefunItem : handledSlimefunItems) {
             RecipeCompletableRegistry.unregisterRecipeCompletable(slimefunItem);
         }
-    }
-
-    public static boolean isMachineStackable(SlimefunItem sf) {
-        return stackableMachines.contains(sf);
-    }
-
-    public static boolean isGeneratorStackable(SlimefunItem sf) {
-        var className = sf.getClass().getName();
-        return sf instanceof EnergyNetProvider
-                && !"me.matl114.logitech.core.Machines.Electrics.EnergyAmplifier".equals(className)
-                && !"me.matl114.logitech.SlimefunItem.Machines.Electrics.EnergyAmplifier".equals(className)
-                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.SlimefunItem.Machines.Electrics.AbstractEnergyMachine")
-                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.core.Machines.Abstracts.AbstractEnergyMachine");
-    }
-
-    public static boolean isMaterialGeneratorStackable(SlimefunItem sf) {
-        return stackableMaterialGenerators.contains(sf);
     }
 }

@@ -44,13 +44,13 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 public interface NetworksSource extends Source {
-    default boolean handleable(RecipeCompleteSession session) {
-        return NetworksIntegrationMain.findNearbyNetworkRoot(session.getLocation()) != null;
+    @Override
+    default JavaPlugin plugin() {
+        return NetworksIntegrationMain.getPlugin();
     }
 
-    @Override
-    default int handleLevel() {
-        return RecipeCompleteProvider.NETWORKS_HANDLE_LEVEL;
+    default boolean handleable(RecipeCompleteSession session) {
+        return NetworksIntegrationMain.findNearbyNetworkRoot(session.getLocation()) != null;
     }
 
     @Override
@@ -76,7 +76,7 @@ public interface NetworksSource extends Source {
     }
 
     @Override
-    default JavaPlugin plugin() {
-        return NetworksIntegrationMain.getPlugin();
+    default int handleLevel() {
+        return RecipeCompleteProvider.NETWORKS_HANDLE_LEVEL;
     }
 }
