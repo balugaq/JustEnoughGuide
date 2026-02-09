@@ -377,6 +377,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
 
     @Override
     public void cancel() {
+        super.cancel();
         setVisible(false);
     }
 }
