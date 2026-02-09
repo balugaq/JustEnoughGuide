@@ -50,7 +50,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.jspecify.annotations.NullMarked;
 
-@SuppressWarnings("removal")
+@SuppressWarnings({"removal", "ConstantValue"})
 @Getter
 @NullMarked
 public class VanillaInventoryWrapper extends BlockMenu {
@@ -88,6 +88,7 @@ public class VanillaInventoryWrapper extends BlockMenu {
         };
     }
 
+    @SuppressWarnings("deprecation")
     private static int[] getSlotsAccessedByItemTransport(final Inventory inv, final BlockState blockState, final ItemTransportFlow flow, final ItemStack itemStack) {
         if (inv instanceof BrewerInventory) {
             if (flow == ItemTransportFlow.WITHDRAW) {

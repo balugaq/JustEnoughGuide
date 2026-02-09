@@ -43,7 +43,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings({"ClassCanBeRecord", "deprecation", "SwitchStatementWithTooFewBranches", "ConstantValue"})
+@SuppressWarnings({"ClassCanBeRecord", "SwitchStatementWithTooFewBranches"})
 @Getter
 @NullMarked
 public class ReloadCommand implements JEGCommand {

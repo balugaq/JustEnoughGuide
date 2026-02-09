@@ -52,6 +52,7 @@ import java.util.Set;
  * @author balugaq
  * @since 1.9
  */
+@SuppressWarnings("DataFlowIssue")
 @NullMarked
 public class LogitechIntegrationMain implements Integration {
     // @formatter:off

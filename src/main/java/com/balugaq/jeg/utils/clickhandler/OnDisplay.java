@@ -338,6 +338,7 @@ public interface OnDisplay {
      * @author balugaq
      * @since 2.0
      */
+    @SuppressWarnings("ConstantValue")
     interface Item extends OnDisplay {
         DisplayType Normal = DisplayType.Normal, ItemMark = DisplayType.ItemMark, Bookmark = DisplayType.Bookmark,
                 Search = DisplayType.Search;

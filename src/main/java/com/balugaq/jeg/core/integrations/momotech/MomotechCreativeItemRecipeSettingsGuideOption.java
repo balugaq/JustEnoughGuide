@@ -42,7 +42,7 @@ import java.util.Optional;
  * @author balugaq
  * @since 2.0
  */
-@SuppressWarnings({"SameReturnValue", "deprecation"})
+@SuppressWarnings({"SameReturnValue"})
 @NullMarked
 public class MomotechCreativeItemRecipeSettingsGuideOption extends ItemSettingsGuideOption {
     public static final MomotechCreativeItemRecipeSettingsGuideOption instance = new MomotechCreativeItemRecipeSettingsGuideOption();

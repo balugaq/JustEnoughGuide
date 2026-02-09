@@ -63,7 +63,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 @NullMarked
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused", "ConstantValue"})
 public class RecipeCompleteSession {
     private static Map<Player, RecipeCompleteSession> SESSIONS = new ConcurrentHashMap<>();
     private final Map<Source, Object> cache = new HashMap<>();
@@ -204,6 +204,7 @@ public class RecipeCompleteSession {
         return clickAction;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canStart() {
         return canStart(this);
     }

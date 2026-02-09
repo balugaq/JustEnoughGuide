@@ -43,6 +43,7 @@ import org.bukkit.inventory.ItemStack;
  * @author balugaq
  * @since 2.0
  */
+@SuppressWarnings("ConstantValue")
 public class FinalTechDustRecipeCompletePrecheckListener implements Listener {
     @Setter
     @Getter

@@ -44,6 +44,7 @@ import java.util.List;
  * @author balugaq
  * @since 2.0
  */
+@SuppressWarnings("ConstantValue")
 public class ManualMachineAutoSelectListener implements Listener {
     @EventHandler
     public void onComplete(RecipeCompleteEvents.SessionCompleteEvent event) {

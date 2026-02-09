@@ -159,9 +159,9 @@ public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boo
         menu.addItem(
                 1, ChestMenuUtils.getBackButton(p), (pl, s, is, action) -> EventUtil.callEvent(
                                 new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, GuideUtil.getLastGuide(pl)))
-                        .ifSuccess(() -> {
-                            JEGGuideSettings.openSettings(pl, GuideUtil.getLastGuide(pl).getItem());
-                        })
+                        .ifSuccess(() ->
+                            JEGGuideSettings.openSettings(pl, GuideUtil.getLastGuide(pl).getItem())
+                        )
         );
         return menu;
     }
