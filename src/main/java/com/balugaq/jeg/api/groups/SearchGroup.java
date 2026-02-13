@@ -1135,17 +1135,19 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         for (String s : split) {
             boolean isFilter = false;
             for (FilterType filterType : FilterType.lengthSortedValues()) {
-                if (s.length() > filterType.getSymbol().length()) {
-                    if (s.startsWith(filterType.getSymbol())) {
-                        isFilter = true;
-                        String filterValue = s.substring(filterType.getSymbol().length());
-                        filters.put(filterType, filterValue);
-                        break;
-                    } else if (s.endsWith(filterType.getSymbol())) {
-                        isFilter = true;
-                        String filterValue = s.substring(0, s.length() - filterType.getSymbol().length());
-                        filters.put(filterType, filterValue);
-                        break;
+                for (var symbol : filterType.getSymbols()) {
+                    if (s.length() > symbol.length()) {
+                        if (s.startsWith(symbol)) {
+                            isFilter = true;
+                            String filterValue = s.substring(symbol.length());
+                            filters.put(filterType, filterValue);
+                            break;
+                        } else if (s.endsWith(symbol)) {
+                            isFilter = true;
+                            String filterValue = s.substring(0, s.length() - symbol.length());
+                            filters.put(filterType, filterValue);
+                            break;
+                        }
                     }
                 }
             }
@@ -1157,9 +1159,10 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
 
         String actualSearchTerm = actualSearchTermBuilder.toString().trim();
         for (FilterType filterType : FilterType.values()) {
-            String flag = filterType.getSymbol();
-            // Quote the flag to be used as a literal replacement
-            actualSearchTerm = actualSearchTerm.replaceAll(Pattern.quote(flag), Matcher.quoteReplacement(flag));
+            for (var symbol : filterType.getSymbols()) {
+                // Quote the flag to be used as a literal replacement
+                actualSearchTerm = actualSearchTerm.replaceAll(Pattern.quote(symbol), Matcher.quoteReplacement(symbol));
+            }
         }
         Set<SlimefunItem> merge = new HashSet<>(36 * 4);
         // The unfiltered items

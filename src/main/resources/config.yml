@@ -71,6 +71,7 @@ shared-chars:
   - "蜂蜜"
   - "竿杆"
   - "鱼渔"
+  - "沙砂"
 
 # 是否注册配方补全书
 recipe-complete: true

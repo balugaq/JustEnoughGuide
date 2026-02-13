@@ -33,6 +33,7 @@ import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.objects.collection.cooldown.FrequencyWatcher;
 import com.balugaq.jeg.api.objects.enums.FilterType;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
@@ -121,7 +122,7 @@ public interface OnClick {
 
     static void share(Player player, String itemName) {
         if (!checkShareCooldown(player)) return;
-        if (!ShareOutGuideOption.isEnabled(player)) return;
+        if (!ShareOutGuideOption.instance().isEnabled(player)) return;
 
         String s = itemName;
         while (s.contains(" ")) s = s.substring(0, itemName.indexOf(" "));
@@ -138,7 +139,7 @@ public interface OnClick {
             Component clickToCopy =
                     base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, itemName));
             Bukkit.getOnlinePlayers().forEach(p -> {
-                if (ShareInGuideOption.isEnabled(p)) {
+                if (ShareInGuideOption.instance().isEnabled(p)) {
                     if (p.hasPermission("slimefun.command.search")) {
                         p.sendMessage(clickToSearch);
                     } else {
@@ -152,7 +153,7 @@ public interface OnClick {
             msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sf search " + ChatColor.stripColor(s)));
 
             Bukkit.getOnlinePlayers().forEach(p -> {
-                if (ShareInGuideOption.isEnabled(p)) {
+                if (ShareInGuideOption.instance().isEnabled(p)) {
                     if (p.hasPermission("slimefun.command.search")) {
                         ClipboardUtil.send(p, msg);
                     } else {
@@ -806,7 +807,7 @@ public interface OnClick {
                             "right-click", "查找使用此配方类型的物品", Material.NAME_TAG, (guide, player, slot, recipeType,
                                                                                            action, menu, page) -> {
                                 String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
-                                player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getSymbol() + ChatColor.stripColor(recipeTypeName));
+                                player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getFirstSymbol() + ChatColor.stripColor(recipeTypeName));
                             }
                     ),
                     Action.of(
@@ -1022,7 +1023,7 @@ public interface OnClick {
                     );
                 }
                 // Shift+左键
-                if (clickType == ClickType.SHIFT_LEFT) {
+                if (clickType == ClickType.SHIFT_LEFT && !RecipeCompletableListener.isRecipeCompleting(player)) {
                     return findAction(player, "shift-left-click").click(
                             guide, player, slot, slimefunItem, item,
                             action, menu, page
@@ -1036,7 +1037,7 @@ public interface OnClick {
                     );
                 }
                 // 有cheat权限
-                if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
+                if (!RecipeCompletableListener.isRecipeCompleting(player) && (player.isOp() || player.hasPermission("slimefun.cheat.items"))) {
                     ItemStack cursor = event.getCursor();
                     if (event.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR)) {
                         return findAction(player, "clone-item").click(
@@ -1357,7 +1358,7 @@ public interface OnClick {
                                 String itemName = ItemStackHelper.getDisplayName(item).trim();
                                 while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                                player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
+                                player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getFirstSymbol() + ChatColor.stripColor(itemName));
                             }
                     ),
                     Action.of(
@@ -1372,7 +1373,7 @@ public interface OnClick {
                                 String itemName = ItemStackHelper.getDisplayName(item).trim();
                                 while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                                player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getSymbol() + ChatColor.stripColor(itemName));
+                                player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getFirstSymbol() + ChatColor.stripColor(itemName));
                             }
                     ),
                     Action.of(

@@ -119,11 +119,11 @@ public interface Source {
         var r = getSpecialRecipe(player, itemStack, sf);
         if (r != null) return r;
         if (sf != null) {
-            List<@Nullable RecipeChoice> raw = new ArrayList<>(Arrays.stream(sf.getRecipe())
-                                                                       .map(item -> item == null ? null :
-                                                                               new SimpleRecipeChoice(item))
-                                                                       .toList());
-
+            List<@Nullable RecipeChoice> raw = new ArrayList<>(
+                    Arrays.stream(sf.getRecipe())
+                            .map(item -> item == null ? null : new SimpleRecipeChoice(item))
+                            .toList()
+            );
             for (int i = raw.size(); i < 9; i++) {
                 raw.add(null);
             }
@@ -314,6 +314,7 @@ public interface Source {
     default boolean completeRecipeWithGuide(
             RecipeCompleteSession session,
             ItemGetter itemGetter,
+            ItemFitter itemFitter,
             ItemPusher itemPusher) {
         var event = session.getEvent();
         var ingredientSlots = session.getIngredientSlots();
@@ -363,6 +364,10 @@ public interface Source {
                 List<ItemStack> itemStacks =
                         materialChoice.getChoices().stream().map(ItemStack::new).toList();
                 for (ItemStack itemStack : itemStacks) {
+                    // Issue #64
+                    if (!itemFitter.fits(itemStack, i)) {
+                        continue;
+                    }
                     ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
                     if (received != null && received.getType() != Material.AIR) {
                         session.setPushed(session.getPushed() + received.getAmount());
@@ -372,7 +377,7 @@ public interface Source {
                             session.setRecipeDepth(recipeDepth + 1);
                             completeRecipeWithGuide(
                                     session,
-                                    itemGetter, itemPusher
+                                    itemGetter, itemFitter, itemPusher
                             );
                         } else {
                             sendMissingMaterial(player, itemStack);
@@ -381,6 +386,10 @@ public interface Source {
                 }
             } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
                 for (ItemStack itemStack : exactChoice.getChoices()) {
+                    // Issue #64
+                    if (!itemFitter.fits(itemStack, i)) {
+                        continue;
+                    }
                     ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
                     if (received != null && received.getType() != Material.AIR) {
                         session.setPushed(session.getPushed() + received.getAmount());
@@ -390,7 +399,7 @@ public interface Source {
                             session.setRecipeDepth(recipeDepth + 1);
                             completeRecipeWithGuide(
                                     session,
-                                    itemGetter, itemPusher
+                                    itemGetter, itemFitter, itemPusher
                             );
                         } else {
                             sendMissingMaterial(player, itemStack);
@@ -420,6 +429,15 @@ public interface Source {
      */
     @FunctionalInterface
     interface ItemPusher {
-        void push(ItemStack itemStack, int i);
+        void push(ItemStack itemStack, int ingredientIndex);
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.0
+     */
+    @FunctionalInterface
+    interface ItemFitter {
+        boolean fits(ItemStack itemStack, int ingredientIndex);
     }
 }

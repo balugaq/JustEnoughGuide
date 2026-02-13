@@ -29,9 +29,9 @@ package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.Calculator;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
-import com.balugaq.netex.api.algorithm.Calculator;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;

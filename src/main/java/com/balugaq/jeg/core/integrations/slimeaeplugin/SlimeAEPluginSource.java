@@ -39,6 +39,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Set;
+
 /**
  * @author balugaq
  * @since 2.0
@@ -51,28 +53,32 @@ public interface SlimeAEPluginSource extends Source {
     }
 
     default boolean handleable(RecipeCompleteSession session) {
-        return SlimeAEPluginIntegrationMain.findNearbyIStorage(session.getLocation()) != null;
+        return !SlimeAEPluginIntegrationMain.findNearbyIStorages(session.getLocation()).isEmpty();
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "unchecked"})
     @Override
     @Nullable
     default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
         Player player = session.getPlayer();
-        IStorage networkStorage = session.getCache(this, IStorage.class);
-        if (networkStorage == null) {
-            networkStorage = SlimeAEPluginIntegrationMain.findNearbyIStorage(session.getLocation());
-            if (networkStorage == null) return null;
+        // Issue #67
+        Set<IStorage> networkStorages = (Set<IStorage>) session.getCache(this, Set.class);
+        if (networkStorages == null) {
+            networkStorages = SlimeAEPluginIntegrationMain.findNearbyIStorages(session.getLocation());
+            if (networkStorages.isEmpty()) return null;
 
-            session.setCache(this, networkStorage);
+            session.setCache(this, networkStorages);
         }
 
         // get from networkStorage
-        ItemStack[] gotten = networkStorage
-                .takeItem(new ItemRequest(new ItemKey(itemStack), Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize()))))
-                .toItemStacks();
-        if (gotten.length != 0) {
-            return gotten[0];
+        ItemRequest request = new ItemRequest(new ItemKey(itemStack), Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
+        for (var networkStorage : networkStorages) {
+            ItemStack[] gotten = networkStorage
+                    .takeItem(request)
+                    .toItemStacks();
+            if (gotten.length != 0) {
+                return gotten[0];
+            }
         }
 
         return null;

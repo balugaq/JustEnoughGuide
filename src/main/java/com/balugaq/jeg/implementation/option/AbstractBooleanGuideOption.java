@@ -29,11 +29,10 @@ package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.compatibility.Converter;
+import com.balugaq.jeg.utils.KeyUtil;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,15 +42,17 @@ import java.util.Optional;
 
 /**
  * @author balugaq
- * @since 2.0
+ * @since 1.9
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class SlimefunIdDisplayOption implements SlimefunGuideOption<Boolean> {
-    public static final SlimefunIdDisplayOption instance = new SlimefunIdDisplayOption();
+public abstract class AbstractBooleanGuideOption implements SlimefunGuideOption<Boolean> {
+    public boolean isEnabled(Player p) {
+        return getSelectedOption(p);
+    }
 
-    public static SlimefunIdDisplayOption instance() {
-        return instance;
+    public boolean getSelectedOption(Player p) {
+        return !PersistentDataAPI.hasByte(p, getKey()) || PersistentDataAPI.getByte(p, getKey()) == (byte) 1;
     }
 
     @Override
@@ -61,40 +62,27 @@ public class SlimefunIdDisplayOption implements SlimefunGuideOption<Boolean> {
 
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        boolean enabled = getSelectedOption(p, guide).orElse(true);
-        ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.GLOWSTONE : Material.REDSTONE_LAMP,
-                "&b粘液物品ID显示: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择是否",
-                "&7在查阅一个物品的时候",
-                "&7显示它的粘液ID",
-                "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 粘液物品ID显示"
-        );
+        boolean enabled = getSelectedOption(p, guide).orElse(defaultValue());
+        ItemStack item = getDisplayItem(p, guide, enabled);
         return Optional.of(item);
     }
 
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
-    }
+    public abstract ItemStack getDisplayItem(Player player, ItemStack guide, boolean enabled);
 
     @Override
     public NamespacedKey getKey() {
-        return key0();
+        return KeyUtil.newKey(key0());
     }
 
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
+    public abstract String key0();
 
-    public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "slimefun_id_display");
+    public boolean defaultValue() {
+        return true;
     }
 
     @Override
     public void onClick(Player p, ItemStack guide) {
-        setSelectedOption(p, guide, !getSelectedOption(p, guide).orElse(true));
+        setSelectedOption(p, guide, !getSelectedOption(p, guide).orElse(defaultValue()));
         JEGGuideSettings.openSettings(p, guide);
     }
 

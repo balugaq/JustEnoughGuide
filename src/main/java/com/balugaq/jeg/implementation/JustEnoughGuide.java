@@ -49,11 +49,12 @@ import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
 import com.balugaq.jeg.implementation.option.CerPatchGuideOption;
 import com.balugaq.jeg.implementation.option.KeybindsSettingsGuideOption;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
-import com.balugaq.jeg.implementation.option.SlimefunIdDisplayOption;
+import com.balugaq.jeg.implementation.option.SlimefunIdDisplayGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
@@ -467,7 +468,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 getLogger().info("正在加载指南选项...");
                 JEGGuideSettings.patchSlimefun();
                 if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
-                    JEGGuideSettings.addOption(SlimefunIdDisplayOption.instance());
+                    JEGGuideSettings.addOption(SlimefunIdDisplayGuideOption.instance());
                 }
                 JEGGuideSettings.addOption(KeybindsSettingsGuideOption.instance());
                 JEGGuideSettings.addOption(BeginnersGuideOption.instance());
@@ -477,6 +478,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 JEGGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
                 JEGGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
                 JEGGuideSettings.addOption(RecipeFillingWithNearbyContainerGuideOption.instance());
+                JEGGuideSettings.addOption(RecipeCompleteOpenModeGuideOption.instance());
                 getLogger().info("指南选项加载完毕！");
             }
 

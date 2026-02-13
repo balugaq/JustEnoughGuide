@@ -55,6 +55,7 @@ import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Format;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.events.SlimefunGuideOpenEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -624,6 +625,13 @@ public final class GuideUtil {
         GroupResorter.sort(groups);
 
         return groups;
+    }
+
+    public static void openGuide(Player player) {
+        SlimefunGuideOpenEvent event = new SlimefunGuideOpenEvent(
+                player, getLastGuide(player).getItem(), getLastGuideMode(player)
+        );
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     public static boolean isForceHidden(ItemGroup group) {

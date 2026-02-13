@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.api.objects.enums.RecipeCompleteOpenMode;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
@@ -39,6 +40,7 @@ import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
+import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
@@ -192,14 +194,20 @@ public class RecipeCompletableListener implements ItemPatchListener {
         PROFILE_CALLBACKS.remove(player);
     }
 
+    public static boolean isRecipeCompleting(Player player) {
+        return PROFILE_CALLBACKS.containsKey(player);
+    }
+
     public static void tagGuideOpen(Player player) {
-        if (!PROFILE_CALLBACKS.containsKey(player)) {
+        if (!isRecipeCompleting(player)) {
             return;
         }
 
         PlayerProfile profile = getPlayerProfile(player);
         saveOriginGuideHistory(profile);
-        clearGuideHistory(profile);
+        if (RecipeCompleteOpenModeGuideOption.instance().get(player) == RecipeCompleteOpenMode.NEW) {
+            clearGuideHistory(profile);
+        }
     }
 
     @SneakyThrows
@@ -314,7 +322,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
                     if (StackUtils.itemsMatch(itemStack, getRecipeCompletableBookItem(), false, false, false, false)
                             && blockMenu.isPlayerInventoryClickable()) {
                         if (isSelectingItemStackToRecipeComplete(player)) {
-                            player.sendMessage(ChatColors.color("&c[配方补全] 你已经在进行配方补全了"));
+                            GuideUtil.openGuide(player);
                             return false;
                         }
 
@@ -458,7 +466,11 @@ public class RecipeCompletableListener implements ItemPatchListener {
     @EventHandler
     public void onJEGItemClick(GuideEvents.ItemButtonClickEvent event) {
         Player player = event.getPlayer();
-        if (!RecipeCompletableListener.PROFILE_CALLBACKS.containsKey(player)) {
+        if (!isRecipeCompleting(player)) {
+            return;
+        }
+
+        if (event.getClickAction().isShiftClicked()) {
             return;
         }
 

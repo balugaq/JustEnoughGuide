@@ -27,7 +27,7 @@
 
 package com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon;
 
-import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
+import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import lombok.Getter;
@@ -46,7 +46,7 @@ import java.util.Optional;
  */
 @SuppressWarnings("SameReturnValue")
 @NullMarked
-public class FinalTechDustRecipeSettingsGuideOption extends ItemSettingsGuideOption {
+public class FinalTechDustRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
     public static final FinalTechDustRecipeSettingsGuideOption instance = new FinalTechDustRecipeSettingsGuideOption();
     public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
     @Setter
@@ -58,7 +58,7 @@ public class FinalTechDustRecipeSettingsGuideOption extends ItemSettingsGuideOpt
     }
 
     public static ItemStack getItem(Player player) {
-        ItemStack itemStack = ItemSettingsGuideOption.getItem(player, key0(), 13);
+        ItemStack itemStack = AbstractItemSettingsGuideOption.getItem(player, key0(), 13);
         if (itemStack == null) return DEFAULT_ITEM;
         return itemStack;
     }

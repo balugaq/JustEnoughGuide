@@ -25,72 +25,43 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.momotech;
+package com.balugaq.jeg.implementation.option;
 
-import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
-import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.Optional;
 
 /**
  * @author balugaq
  * @since 2.0
  */
-@SuppressWarnings({"SameReturnValue"})
+@SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
-    public static final MomotechNoneRecipeSettingsGuideOption instance = new MomotechNoneRecipeSettingsGuideOption();
+public class SlimefunIdDisplayGuideOption extends AbstractBooleanGuideOption {
+    private static final SlimefunIdDisplayGuideOption instance = new SlimefunIdDisplayGuideOption();
 
-    public static MomotechNoneRecipeSettingsGuideOption instance() {
+    public static SlimefunIdDisplayGuideOption instance() {
         return instance;
     }
 
-    public static @Nullable ItemStack[] getItems(Player player) {
-        @Nullable ItemStack[] items = new ItemStack[9];
-        for (int i = 9; i < 18; i++) {
-            ItemStack itemStack = AbstractItemSettingsGuideOption.getItem(player, key0(), i);
-            items[i - 9] = itemStack;
-        }
-        return items;
-    }
-
     @Override
-    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        ItemStack item = Converter.getItem(
-                Material.BLACK_WOOL,
-                "&a单击打开NONE配方补全配置界面"
+    public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
+        return Converter.getItem(
+                isEnabled(p) ? Material.GLOWSTONE : Material.REDSTONE_LAMP,
+                "&b粘液物品ID显示: &" + (enabled ? "a启用" : "4禁用"),
+                "",
+                "&7你现在可以选择是否",
+                "&7在查阅一个物品的时候",
+                "&7显示它的粘液ID",
+                "",
+                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 粘液物品ID显示"
         );
-        return Optional.of(item);
     }
 
     @Override
-    public NamespacedKey getKey() {
-        return key0();
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("momotech_none_recipe_settings");
-    }
-
-    @Override
-    public String getTitle() {
-        return "&aNONE配方补全配置";
-    }
-
-    @Override
-    public int getSize() {
-        return 18;
-    }
-
-    @Override
-    public int[] getItemSlots() {
-        return new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
+    public String key0() {
+        return "slimefun_id_display";
     }
 }

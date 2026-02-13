@@ -291,7 +291,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                             return false;
                         }
 
-                        if (!BeginnersGuideOption.isEnabled(p)) {
+                        if (!BeginnersGuideOption.instance().isEnabled(p)) {
                             p.sendMessage("§c此功能需要您在设置中启用新手指引。");
                             return false;
                         }
@@ -387,7 +387,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_recipe_item_name = FilterType.BY_RECIPE_ITEM_NAME.getSymbol();
+        String flag_recipe_item_name = FilterType.BY_RECIPE_ITEM_NAME.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -410,7 +410,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_recipe_type_name = FilterType.BY_RECIPE_TYPE_NAME.getSymbol();
+        String flag_recipe_type_name = FilterType.BY_RECIPE_TYPE_NAME.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -433,7 +433,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_display_item_name = FilterType.BY_DISPLAY_ITEM_NAME.getSymbol();
+        String flag_display_item_name = FilterType.BY_DISPLAY_ITEM_NAME.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -456,7 +456,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_addon_name = FilterType.BY_ADDON_NAME.getSymbol();
+        String flag_addon_name = FilterType.BY_ADDON_NAME.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -479,7 +479,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_item_name = FilterType.BY_ITEM_NAME.getSymbol();
+        String flag_item_name = FilterType.BY_ITEM_NAME.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -502,7 +502,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_item_lore = FilterType.BY_ITEM_LORE.getSymbol();
+        String flag_item_lore = FilterType.BY_ITEM_LORE.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -525,7 +525,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_material_name = FilterType.BY_MATERIAL_NAME.getSymbol();
+        String flag_material_name = FilterType.BY_MATERIAL_NAME.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -548,7 +548,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                 }
         );
 
-        String flag_full_name = FilterType.BY_FULL_NAME.getSymbol();
+        String flag_full_name = FilterType.BY_FULL_NAME.getFirstSymbol();
         addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
                 Converter.getItem(
@@ -594,7 +594,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
                             return false;
                         }
 
-                        if (!BeginnersGuideOption.isEnabled(p)) {
+                        if (!BeginnersGuideOption.instance().isEnabled(p)) {
                             p.sendMessage("§c此功能需要您在设置中启用新手指引。");
                             return false;
                         }

@@ -27,7 +27,7 @@
 
 package com.balugaq.jeg.core.integrations.momotech;
 
-import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
+import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
@@ -44,7 +44,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"SameReturnValue"})
 @NullMarked
-public class MomotechCreativeItemRecipeSettingsGuideOption extends ItemSettingsGuideOption {
+public class MomotechCreativeItemRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
     public static final MomotechCreativeItemRecipeSettingsGuideOption instance = new MomotechCreativeItemRecipeSettingsGuideOption();
     public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
 
@@ -53,7 +53,7 @@ public class MomotechCreativeItemRecipeSettingsGuideOption extends ItemSettingsG
     }
 
     public static ItemStack getItem(Player player) {
-        ItemStack itemStack = ItemSettingsGuideOption.getItem(player, key0(), 13);
+        ItemStack itemStack = AbstractItemSettingsGuideOption.getItem(player, key0(), 13);
         if (itemStack == null) return DEFAULT_ITEM;
         return itemStack;
     }

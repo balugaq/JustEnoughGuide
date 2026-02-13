@@ -37,6 +37,8 @@ import org.jspecify.annotations.NullMarked;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain.PUSHER_SLOTS;
+
 /**
  * @author balugaq
  * @since 1.9
@@ -44,12 +46,25 @@ import java.util.List;
 @SuppressWarnings({"DataFlowIssue", "ConstantValue", "unused"})
 @NullMarked
 public class NetworksExpansionIntegrationMain implements Integration {
-    public static final int[] ENCODER_RECIPE_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 30, 31, 32};
-    public static final int[] CRAFTING_GRID_NEW_STYLE_RECIPE_SLOTS = new int[] {6, 7, 8, 15, 16, 17, 24, 25, 26};
-    public static final int[] EXPANSION_WORKBENCH_RECIPE_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
+    // @formatter:off
+    public static final int[] ENCODER_RECIPE_SLOTS = new int[] {
+            12, 13, 14,
+            21, 22, 23,
+            30, 31, 32
+    };
+    public static final int[] CRAFTING_GRID_NEW_STYLE_RECIPE_SLOTS = new int[] {
+            6, 7, 8,
+            15, 16, 17,
+            24, 25, 26
+    };
+    public static final int[] EXPANSION_WORKBENCH_RECIPE_SLOTS = new int[] {
+            10, 11, 12,
+            19, 20, 21,
+            28, 29, 30
+    };
     public static final int[] EXPANSION_WORKBENCH_6X6_RECIPE_SLOTS = new int[] {
-            0, 1, 2, 3, 4, 5,
-            9, 10, 11, 12, 13, 14,
+            0,  1,  2,  3,  4,  5,
+            9,  10, 11, 12, 13, 14,
             18, 19, 20, 21, 22, 23,
             27, 28, 29, 30, 31, 32,
             36, 37, 38, 39, 40, 41,
@@ -65,6 +80,17 @@ public class NetworksExpansionIntegrationMain implements Integration {
             9, 10, 11,
             18, 19, 20
     };
+    public static final int[] DUE_MACHINE_DUE_SLOTS = new int[] {
+            0, 1, 2, 3, 4, 5, 6, 7, 8
+    };
+    public static final int[] ADVANCED_EXPORT_SLOTS = new int[] {
+            0, 1,  2,  3,  4,  5,  6,  7,  8,
+            9, 10, 11, 12, 13, 14, 15, 16, 17
+    };
+    public static final int[] ADVANCED_VACUUM_SLOTS = new int[] {
+            27, 28, 29, 30, 31, 32, 33, 34, 35
+    };
+    // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     public static JavaPlugin plugin = null;
 
@@ -102,6 +128,29 @@ public class NetworksExpansionIntegrationMain implements Integration {
                 "NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE",
                 NTW_EXPANSION_SMART_NETWORK_CRAFTING_GRID_NEW_STYLE_SLOTS, false
         );
+        rrcAll(
+                "NTW_EXPANSION_LINE_TRANSFER", "NTW_EXPANSION_LINE_TRANSFER_PUSHER", "NTW_EXPANSION_LINE_TRANSFER_MORE_PUSHER", "NTW_EXPANSION_LINE_TRANSFER_BEST_PUSHER",
+                "NTW_EXPANSION_LINE_TRANSFER_PLUS", "NTW_EXPANSION_LINE_TRANSFER_PLUS_PUSHER", "NTW_EXPANSION_LINE_TRANSFER_PLUS_MORE_PUSHER", "NTW_EXPANSION_LINE_TRANSFER_PLUS_BEST_PUSHER",
+                "NTW_EXPANSION_LINE_TRANSFER_VANILLA_PUSHER",
+                "NTW_EXPANSION_ADVANCED_LINE_TRANSFER", "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_PUSHER", "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_MORE_PUSHER", "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_BEST_PUSHER",
+                "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_VANILLA_PUSHER",
+                "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_PLUS", "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_PLUS_PUSHER", "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_PLUS_MORE_PUSHER", "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_PLUS_BEST_PUSHER",
+                "NTW_EXPANSION_ADVANCED_LINE_TRANSFER_PLUS_VANILLA_PUSHER",
+                "NTW_EXPANSION_TRANSFER", "NTW_EXPANSION_TRANSFER_PUSHER", "NTW_EXPANSION_TRANSFER_MORE_PUSHER", "NTW_EXPANSION_TRANSFER_BEST_PUSHER",
+                "NTW_EXPANSION_TRANSFER_PLUS", "NTW_EXPANSION_TRANSFER_PLUS_PUSHER", "NTW_EXPANSION_TRANSFER_PLUS_MORE_PUSHER", "NTW_EXPANSION_TRANSFER_PLUS_BEST_PUSHER",
+                "NTW_EXPANSION_ADVANCED_TRANSFER", "NTW_EXPANSION_ADVANCED_TRANSFER_PUSHER", "NTW_EXPANSION_ADVANCED_TRANSFER_MORE_PUSHER", "NTW_EXPANSION_ADVANCED_TRANSFER_BEST_PUSHER",
+                "NTW_EXPANSION_ADVANCED_TRANSFER_PLUS", "NTW_EXPANSION_ADVANCED_TRANSFER_PLUS_PUSHER", "NTW_EXPANSION_ADVANCED_TRANSFER_PLUS_MORE_PUSHER", "NTW_EXPANSION_ADVANCED_TRANSFER_PLUS_BEST_PUSHER",
+                "NTW_EXPANSION_SMART_PUSHER", "NTW_EXPANSION_ADVANCED_IMPORT", "NTW_EXPANSION_ADVANCED_PURGER", "NTW_EXPANSION_ADVANCED_WIRELESS_TRANSMITTER"
+                );
+        rrc("NTW_EXPANSION_DUE_MACHINE", DUE_MACHINE_DUE_SLOTS, false);
+        rrc("NTW_EXPANSION_ADVANCED_EXPORT", ADVANCED_EXPORT_SLOTS, false);
+        rrc("NTW_EXPANSION_ADVANCED_VACUUM", ADVANCED_VACUUM_SLOTS, true);
+    }
+
+    public static void rrcAll(String... ids) {
+        for (var id : ids) {
+            rrc(id, PUSHER_SLOTS, true);
+        }
     }
 
     public static void rrc(String id, int[] slots, boolean unordered) {

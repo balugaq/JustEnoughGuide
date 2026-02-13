@@ -35,7 +35,7 @@ import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHVal
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTechDustRecipeCompletePrecheckListener;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTechDustRecipeSettingsGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
+import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.jspecify.annotations.NullMarked;
@@ -110,9 +110,9 @@ public class FinalTECHChangedIntegrationMain implements Integration {
 
             return switch (s.getId()) {
                 case "_FINALTECH_ORDERED_DUST" ->
-                        ItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_ORDERED_DUST_AMOUNTS);
+                        AbstractItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_ORDERED_DUST_AMOUNTS);
                 case "_FINALTECH_UNORDERED_DUST" ->
-                        ItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_UNORDERED_DUST_AMOUNTS);
+                        AbstractItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_UNORDERED_DUST_AMOUNTS);
                 default -> null;
             };
         });

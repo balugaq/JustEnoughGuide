@@ -80,7 +80,14 @@ public interface VanillaSource extends Source {
         boolean unordered = session.isUnordered();
         return completeRecipeWithGuide(
                 session,
-                inventory::getItem,
+                (slot) -> {
+                    if (slot < inventory.getSize()) {
+                        return inventory.getItem(slot);
+                    }
+                    return null;
+                },
+                (received, i) ->
+                        InventoryUtil.fits(inventory, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]}),
                 (received, i) ->
                         InventoryUtil.pushItem(inventory, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]})
         );
@@ -93,12 +100,14 @@ public interface VanillaSource extends Source {
             times = 64;
         }
 
+        session.setTarget(session.getBlock().getLocation());
+        session.setTimes(times);
         if (!session.canStart()) {
             if (reopenInventory) session.getPlayer().openInventory(session.getInventory());
             if (callback != null) callback.run();
             return;
         }
-        for (int i = 0; i < times; i++) {
+        for (int i = 0; i < session.getTimes(); i++) {
             completeRecipeWithGuide(session);
         }
 

@@ -27,20 +27,11 @@
 
 package com.balugaq.jeg.implementation.option;
 
-import com.balugaq.jeg.api.patches.JEGGuideSettings;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.Optional;
 
 /**
  * @author balugaq
@@ -48,34 +39,20 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class ShareOutGuideOption implements SlimefunGuideOption<Boolean> {
-    public static final ShareOutGuideOption instance = new ShareOutGuideOption();
+public class ShareOutGuideOption extends AbstractBooleanGuideOption {
+    private static final ShareOutGuideOption instance = new ShareOutGuideOption();
 
     public static ShareOutGuideOption instance() {
         return instance;
     }
 
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
-    }
-
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("share_out");
+    public String key0() {
+        return "share_out";
     }
 
     @Override
-    public SlimefunAddon getAddon() {
-        return JustEnoughGuide.getInstance();
-    }
-
-    @Override
-    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        boolean enabled = getSelectedOption(p, guide).orElse(true);
-        ItemStack item = Converter.getItem(
+    public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
+        return Converter.getItem(
                 Material.WRITABLE_BOOK,
                 "&b向他人分享物品: &" + (enabled ? "a启用" : "4禁用"),
                 "",
@@ -85,29 +62,5 @@ public class ShareOutGuideOption implements SlimefunGuideOption<Boolean> {
                 "",
                 "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 向他人分享物品"
         );
-        return Optional.of(item);
-    }
-
-    @Override
-    public NamespacedKey getKey() {
-        return key0();
-    }
-
-    @Override
-    public void onClick(Player p, ItemStack guide) {
-        setSelectedOption(p, guide, !getSelectedOption(p, guide).orElse(true));
-        JEGGuideSettings.openSettings(p, guide);
-    }
-
-    @Override
-    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
-        NamespacedKey key = getKey();
-        boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == (byte) 1;
-        return Optional.of(value);
-    }
-
-    @Override
-    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
-        PersistentDataAPI.setByte(p, getKey(), value ? (byte) 1 : (byte) 0);
     }
 }

@@ -83,10 +83,16 @@ public interface SlimefunSource extends Source {
         BlockMenu blockMenu = session.getMenu();
         boolean unordered = session.isUnordered();
         int[] ingredientSlots = session.getIngredientSlots();
-        session.setTarget(blockMenu.getLocation());
         return completeRecipeWithGuide(
                 session,
-                blockMenu::getItemInSlot,
+                (slot) -> {
+                    if (slot < blockMenu.getSize()) {
+                        return blockMenu.getItemInSlot(slot);
+                    }
+                    return null;
+                },
+                (template, i) ->
+                        BlockMenuUtil.fits(blockMenu, template, unordered ? ingredientSlots : new int[] {ingredientSlots[i]}),
                 (received, i) ->
                         BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]})
         );
@@ -117,12 +123,14 @@ public interface SlimefunSource extends Source {
         }
 
         session.setMenu(actualMenu);
+        session.setTarget(actualMenu.getLocation());
+        session.setTimes(times);
         if (!session.canStart()) {
             if (reopenMenu) actualMenu.open(session.getPlayer());
             if (callback != null) callback.run();
             return;
         }
-        for (int i = 0; i < times; i++) {
+        for (int i = 0; i < session.getTimes(); i++) {
             completeRecipeWithGuide(session);
         }
 

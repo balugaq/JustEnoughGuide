@@ -32,11 +32,14 @@ import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.Set;
 
 /**
  * @author balugaq
@@ -50,29 +53,40 @@ public interface NetworksSource extends Source {
     }
 
     default boolean handleable(RecipeCompleteSession session) {
-        return NetworksIntegrationMain.findNearbyNetworkRoot(session.getLocation()) != null;
+        return !NetworksIntegrationMain.findNearbyNetworkRoots(session.getLocation()).isEmpty();
     }
 
     @Override
-    @SuppressWarnings("removal")
+    @SuppressWarnings({"unchecked", "removal"})
     @Nullable
     default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
         Player player = session.getPlayer();
-        NetworkRoot root = session.getCache(this, NetworkRoot.class);
-        if (root == null) {
-            root = NetworksIntegrationMain.findNearbyNetworkRoot(session.getLocation());
-            if (root == null) return null;
+        // Issue #67
+        Set<NetworkRoot> roots = (Set<NetworkRoot>) session.getCache(this, Set.class);
+        if (roots == null) {
+            roots = NetworksIntegrationMain.findNearbyNetworkRoots(session.getLocation());
+            if (roots.isEmpty()) return null;
 
-            session.setCache(this, root);
+            session.setCache(this, roots);
         }
 
         // get from root
         ItemRequest request = new ItemRequest(itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
-        try {
-            return root.getItemStack0(player.getLocation(), request);
-        } catch (Exception e) {
-            return root.getItemStack(request);
+        for (var root : roots) {
+            try {
+                var got = root.getItemStack0(player.getLocation(), request);
+                if (got != null && got.getType() != Material.AIR) {
+                    return got;
+                }
+            } catch (Exception e) {
+                var got = root.getItemStack(request);
+                if (got != null && got.getType() != Material.AIR) {
+                    return got;
+                }
+            }
         }
+
+        return null;
     }
 
     @Override

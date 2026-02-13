@@ -61,7 +61,7 @@ import java.util.Optional;
  */
 @SuppressWarnings("deprecation")
 @NullMarked
-public abstract class ItemSettingsGuideOption implements SlimefunGuideOption<Boolean> {
+public abstract class AbstractItemSettingsGuideOption implements SlimefunGuideOption<Boolean> {
     public static final ItemStack DEFAULT_ICON = Converter.getItem(
             Material.BARRIER,
             "&c未设置物品",

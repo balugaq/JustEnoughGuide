@@ -49,7 +49,7 @@ import java.util.Optional;
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
 public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boolean> {
-    public static final NoticeMissingMaterialGuideOption instance = new NoticeMissingMaterialGuideOption();
+    private static final NoticeMissingMaterialGuideOption instance = new NoticeMissingMaterialGuideOption();
 
     public static NoticeMissingMaterialGuideOption instance() {
         return instance;

@@ -30,7 +30,8 @@ package com.balugaq.jeg.core.integrations.momotech;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
-import com.balugaq.jeg.implementation.option.ItemSettingsGuideOption;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.bukkit.Bukkit;
@@ -128,24 +129,24 @@ public class MomotechIntegrationMain implements Integration {
         SlimefunGuideSettings.addOption(MomotechCreativeItemRecipeSettingsGuideOption.instance());
         SlimefunGuideSettings.addOption(MomotechNoneRecipeSettingsGuideOption.instance());
         SlimefunGuideSettings.addOption(MomotechQuantityItemRecipeSettingsGuideOption.instance());
-        var UEC = ItemSettingsGuideOption.generateChoices(UNCONTROLLABLE_EMPTY, MAX_AMOUNTS);
-        var RC = ItemSettingsGuideOption.generateChoices(RESOURCE, MAX_AMOUNTS);
-        var FC = ItemSettingsGuideOption.generateChoices(FINAL_ITEM, MAX_AMOUNTS);
-        var CC1 = ItemSettingsGuideOption.generateChoices(COMMAND_BLOCK, MAX_AMOUNTS);
-        var CC2 = ItemSettingsGuideOption.generateChoices(REPEATING_COMMAND_BLOCK, MAX_AMOUNTS);
-        var CC3 = ItemSettingsGuideOption.generateChoices(CHAIN_COMMAND_BLOCK, MAX_AMOUNTS);
+        var UEC = AbstractItemSettingsGuideOption.generateChoices(UNCONTROLLABLE_EMPTY, MAX_AMOUNTS);
+        var RC = AbstractItemSettingsGuideOption.generateChoices(RESOURCE, MAX_AMOUNTS);
+        var FC = AbstractItemSettingsGuideOption.generateChoices(FINAL_ITEM, MAX_AMOUNTS);
+        var CC1 = AbstractItemSettingsGuideOption.generateChoices(COMMAND_BLOCK, MAX_AMOUNTS);
+        var CC2 = AbstractItemSettingsGuideOption.generateChoices(REPEATING_COMMAND_BLOCK, MAX_AMOUNTS);
+        var CC3 = AbstractItemSettingsGuideOption.generateChoices(CHAIN_COMMAND_BLOCK, MAX_AMOUNTS);
         RecipeCompleteProvider.registerSpecialRecipeHandler((p, i, s) -> {
             if (s == null) return null;
 
             return switch (s.getId()) {
                 case "MOMOTECH_CREATIVE" ->
-                        ItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_AMOUNTS);
+                        AbstractItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_AMOUNTS);
                 case "MOMOTECH_CREATIVE_I" ->
-                        ItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_I_AMOUNTS);
+                        AbstractItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_I_AMOUNTS);
                 case "MOMOTECH_NONE" ->
-                        ItemSettingsGuideOption.generateChoices(MomotechNoneRecipeSettingsGuideOption.getItems(p), MOMOTECH_NONE_AMOUNTS);
+                        AbstractItemSettingsGuideOption.generateChoices(MomotechNoneRecipeSettingsGuideOption.getItems(p), MOMOTECH_NONE_AMOUNTS);
                 case "MOMOTECH_QUANTITY_ITEM" ->
-                        ItemSettingsGuideOption.generateChoices(MomotechQuantityItemRecipeSettingsGuideOption.getItem(p), MAX_AMOUNTS);
+                        AbstractItemSettingsGuideOption.generateChoices(MomotechQuantityItemRecipeSettingsGuideOption.getItem(p), MAX_AMOUNTS);
                 case "MOMOTECH_CREATIVE_II" -> UEC;
                 case "MOMOTECH_FINAL_RULE" -> RC;
                 case "MOMOTECH_FINAL_STAR" -> FC;
@@ -159,6 +160,8 @@ public class MomotechIntegrationMain implements Integration {
         rrc("MOMOTECH_CREATIVE_ITEM_GENERATOR", CREATIVE_ITEM_GENERATOR_RECIPE_SLOTS, false);
         rrc("MOMOTECH_NONE_GENERATOR", NONE_GENERATOR_RECIPE_SLOTS, false);
         rrc("MOMOTECH_QUANTITY_CONSTRUCTOR", QUANTITY_CONSTRUCTOR_RECIPE_SLOTS, true);
+
+        JustEnoughGuide.getListenerManager().registerListener(new MomotechCreativeItemRecipeCompletePrecheckListener());
     }
 
     public static void rrc(String id, int[] slots, boolean unordered) {

@@ -30,7 +30,7 @@ package com.balugaq.jeg.core.listeners;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
-import com.balugaq.jeg.implementation.option.SlimefunIdDisplayOption;
+import com.balugaq.jeg.implementation.option.SlimefunIdDisplayGuideOption;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.entity.Player;
@@ -82,7 +82,7 @@ public class SlimefunIdPatchListener implements ItemPatchListener {
     }
 
     public boolean disabledOption(Player player) {
-        return !SlimefunIdDisplayOption.isEnabled(player);
+        return !SlimefunIdDisplayGuideOption.instance().isEnabled(player);
     }
 
     @SuppressWarnings({"deprecation", "unused"})

@@ -30,6 +30,7 @@ package com.balugaq.jeg.core.integrations.networks;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
@@ -42,7 +43,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author balugaq
@@ -51,9 +54,20 @@ import java.util.List;
 @SuppressWarnings("DataFlowIssue")
 @NullMarked
 public class NetworksIntegrationMain implements Integration {
+    // @formatter:off
     public static final int[] ENCODER_RECIPE_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 30, 31, 32};
     public static final int[] CRAFTING_GRID_RECIPE_SLOTS = new int[] {6, 7, 8, 15, 16, 17, 24, 25, 26};
     public static final int[] QUANTUM_WORKBENCH_RECIPE_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
+    // a trick
+    public static final int[] PUSHER_SLOTS = new int[] {
+            0,  1,  2,  3,  4,  5,  6,  7,  8,
+            9,  10, 11, 12, 13, 14, 15, 16, 17,
+            18, 19, 20, 21, 22, 23, 24, 25, 26,
+            27, 28, 29, 30, 31, 32, 33, 34, 35,
+            36, 37, 38, 39, 40, 41, 42, 43, 44,
+            45, 46, 47, 48, 49, 50, 51, 52, 53
+    };
+    // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     public static final BlockFace[] VALID_FACES = new BlockFace[] {
             BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
@@ -72,9 +86,8 @@ public class NetworksIntegrationMain implements Integration {
         return plugin;
     }
 
-    @Nullable
-    public static NetworkRoot findNearbyNetworkRoot(Location location) {
-        NetworkRoot root = null;
+    public static Set<NetworkRoot> findNearbyNetworkRoots(Location location) {
+        Set<NetworkRoot> roots = new HashSet<>();
 
         for (BlockFace blockFace : VALID_FACES) {
             Location clone = location.clone();
@@ -88,12 +101,11 @@ public class NetworksIntegrationMain implements Integration {
             }
             NodeDefinition def2 = NetworkStorage.getNode(clone);
             if (def2 != null && def2.getNode() != null) {
-                root = def2.getNode().getRoot();
-                break;
+                roots.add(def2.getNode().getRoot());
             }
         }
 
-        return root;
+        return roots;
     }
 
     @Override
@@ -109,6 +121,10 @@ public class NetworksIntegrationMain implements Integration {
         rrc("NTW_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_CRAFTING_GRID", CRAFTING_GRID_RECIPE_SLOTS, false);
         rrc("NTW_QUANTUM_WORKBENCH", QUANTUM_WORKBENCH_RECIPE_SLOTS, false);
+        rrc("NTW_PUSHER", PUSHER_SLOTS, true);
+        rrc("NTW_MOREPUSHER", PUSHER_SLOTS, true);
+        rrc("NTW_BESTPUSHER", PUSHER_SLOTS, true);
+        rrc("NTW_IMPORTER", PUSHER_SLOTS, true);
     }
 
     public static void rrc(String id, int[] slots, boolean unordered) {

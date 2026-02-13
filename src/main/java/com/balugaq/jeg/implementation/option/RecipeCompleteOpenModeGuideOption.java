@@ -25,72 +25,43 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.momotech;
+package com.balugaq.jeg.implementation.option;
 
-import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
-import com.balugaq.jeg.utils.KeyUtil;
+import com.balugaq.jeg.api.objects.enums.RecipeCompleteOpenMode;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.Optional;
 
 /**
  * @author balugaq
  * @since 2.0
  */
-@SuppressWarnings({"SameReturnValue"})
+@SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
-    public static final MomotechNoneRecipeSettingsGuideOption instance = new MomotechNoneRecipeSettingsGuideOption();
+public class RecipeCompleteOpenModeGuideOption extends AbstractBooleanGuideOption {
+    private static final RecipeCompleteOpenModeGuideOption instance = new RecipeCompleteOpenModeGuideOption();
 
-    public static MomotechNoneRecipeSettingsGuideOption instance() {
+    public static RecipeCompleteOpenModeGuideOption instance() {
         return instance;
     }
 
-    public static @Nullable ItemStack[] getItems(Player player) {
-        @Nullable ItemStack[] items = new ItemStack[9];
-        for (int i = 9; i < 18; i++) {
-            ItemStack itemStack = AbstractItemSettingsGuideOption.getItem(player, key0(), i);
-            items[i - 9] = itemStack;
-        }
-        return items;
+    public RecipeCompleteOpenMode get(Player player) {
+        return isEnabled(player) ? RecipeCompleteOpenMode.INHERIT :RecipeCompleteOpenMode.NEW;
     }
 
     @Override
-    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        ItemStack item = Converter.getItem(
-                Material.BLACK_WOOL,
-                "&a单击打开NONE配方补全配置界面"
+    public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
+        return Converter.getItem(
+                isEnabled(p) ? Material.KNOWLEDGE_BOOK : Material.ENCHANTED_BOOK,
+                "&b配方补全打开模式: &" + (enabled ? "a打开新界面" : "4继承上一次打开的界面"),
+                "",
+                "&7\u21E8 &e点击切换配方补全打开模式为 " + (enabled ? "继承上一次打开的界面" : "打开新界面")
         );
-        return Optional.of(item);
     }
 
-    @Override
-    public NamespacedKey getKey() {
-        return key0();
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("momotech_none_recipe_settings");
-    }
-
-    @Override
-    public String getTitle() {
-        return "&aNONE配方补全配置";
-    }
-
-    @Override
-    public int getSize() {
-        return 18;
-    }
-
-    @Override
-    public int[] getItemSlots() {
-        return new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
+    public String key0() {
+        return "recipe_complete_open_mode";
     }
 }

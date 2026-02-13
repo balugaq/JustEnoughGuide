@@ -79,6 +79,7 @@ public class RecipeCompleteSession {
     private boolean unordered;
     private @Positive int recipeDepth;
     private @NonNegative int pushed;
+    private int times;
     private boolean expired;
 
     @Nullable
@@ -204,6 +205,17 @@ public class RecipeCompleteSession {
         return clickAction;
     }
 
+    public void setTimes(int times) {
+        if (times <= 0) {
+            cancel();
+            return;
+        }
+        if (times > 64) {
+            times = 64;
+        }
+        this.times = times;
+    }
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canStart() {
         return canStart(this);
@@ -212,11 +224,11 @@ public class RecipeCompleteSession {
     public static boolean canStart(RecipeCompleteSession session) {
         var event = new RecipeCompleteEvents.SessionStartEvent(session);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
+        if (event.isCancelled() || session.isExpired()) {
             cancel(session);
             String reason = event.getCancelReason();
             session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
         }
-        return !event.isCancelled();
+        return !event.isCancelled() && !session.isExpired();
     }
 }
