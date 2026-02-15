@@ -389,6 +389,9 @@ public class LocalHelper {
         addonLocals.put("SimpleTech", "简单科技");
         addonLocals.put("Komutech", "口木科技");
         addonLocals.put("SlimefunInfiniteBlocks", "粘液无尽方块");
+        addonLocals.put("RSC_YunQi_History", "云启文明");
+        addonLocals.put("fvvtech", "fvv科技");
+        addonLocals.put("AeroDragonTech", "飞龙科技");
     }
 
     public static String getOfficialAddonName(ItemGroup itemGroup, String itemId) {
