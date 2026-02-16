@@ -25,15 +25,13 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.rykenslimefuncustomizer;
+package com.balugaq.jeg.core.integrations.justenoughguide;
 
-import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
-import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import org.jetbrains.annotations.Nullable;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -41,15 +39,11 @@ import java.util.List;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
-@SuppressWarnings({"unchecked", "unused"})
 @NullMarked
-public class RykenSlimefunCustomizerIntegrationMain implements Integration {
+public class SlimefunRecipeCompleteSupportMain implements Integration {
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
-    public static @Nullable Class<? extends SlimefunItem> classCustomWorkbench = null;
-    public static @Nullable Class<? extends SlimefunItem> classCustomLinkedRecipeMachine = null;
-    public static @Nullable Class<? extends SlimefunItem> classCustomRecipeMachine = null;
 
     public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
@@ -65,52 +59,15 @@ public class RykenSlimefunCustomizerIntegrationMain implements Integration {
 
     @Override
     public String getHookPlugin() {
-        return "RykenSlimefunCustomizer";
+        return "Slimefun";
     }
 
     @Override
-    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     public void onEnable() {
-        try {
-            classCustomWorkbench = (Class<? extends SlimefunItem>)
-                    Class.forName("org.lins.mmmjjkx.rykenslimefuncustomizer.objects.customs.machine.CustomWorkbench");
-        } catch (Exception ignored) {
-            classCustomWorkbench = null;
-        }
-        try {
-            classCustomLinkedRecipeMachine = (Class<? extends SlimefunItem>) Class.forName(
-                    "org.lins.mmmjjkx.rykenslimefuncustomizer.objects.customs.machine.CustomLinkedRecipeMachine");
-        } catch (Exception ignored) {
-            classCustomLinkedRecipeMachine = null;
-        }
-        try {
-            classCustomRecipeMachine = (Class<? extends SlimefunItem>) Class.forName(
-                    "org.lins.mmmjjkx.rykenslimefuncustomizer.objects.customs.machine.CustomRecipeMachine");
-        } catch (Exception e) {
-            classCustomRecipeMachine = null;
-        }
-
-        if (classCustomWorkbench == null && classCustomLinkedRecipeMachine == null && classCustomRecipeMachine == null) {
-            return;
-        }
-
         for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
-            Class<? extends SlimefunItem> clazz = sf.getClass();
-            if (clazz != classCustomWorkbench && clazz != classCustomLinkedRecipeMachine && clazz != classCustomRecipeMachine) {
-                continue;
+            if (sf instanceof AContainer ac) {
+                rrc(sf, ac.getInputSlots(), false);
             }
-
-            int[] input;
-            try {
-                input = (int[]) ReflectionUtil.getValue(sf, "input");
-            } catch (Throwable ignored) {
-                continue;
-            }
-            if (input == null) {
-                continue;
-            }
-
-            rrc(sf, input, false);
         }
     }
 
