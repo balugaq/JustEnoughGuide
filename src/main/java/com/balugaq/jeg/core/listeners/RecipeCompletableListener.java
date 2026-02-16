@@ -204,8 +204,8 @@ public class RecipeCompletableListener implements ItemPatchListener {
         }
 
         PlayerProfile profile = getPlayerProfile(player);
-        saveOriginGuideHistory(profile);
         if (RecipeCompleteOpenModeGuideOption.instance().get(player) == RecipeCompleteOpenMode.NEW) {
+            saveOriginGuideHistory(profile);
             clearGuideHistory(profile);
         }
     }
@@ -480,7 +480,12 @@ public class RecipeCompletableListener implements ItemPatchListener {
         }
 
         PlayerProfile profile = RecipeCompletableListener.getPlayerProfile(player);
-        rollbackGuideHistory(profile);
+        // try
+        if (RecipeCompleteOpenModeGuideOption.instance().get(player) == RecipeCompleteOpenMode.NEW) {
+            rollbackGuideHistory(profile);
+        }
+        // finally
+        GUIDE_HISTORY.remove(player);
         RecipeCompletableListener.PROFILE_CALLBACKS.get(player).accept(event, profile);
         RecipeCompletableListener.PROFILE_CALLBACKS.remove(player);
         RecipeCompletableListener.LAST_EVENTS.put(player, event);
