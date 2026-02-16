@@ -77,7 +77,7 @@ public class LogitechIntegrationMain implements Integration {
             20, 21, 22,
             29, 30, 31
     };
-    public static final int[] LEFT_PART_2x6_SLOTS = new int[] {
+    public static final int[] STAR_SMELTERY_SLOTS = new int[] {
             0,  1,
             9,  10,
             18, 19,
@@ -85,13 +85,21 @@ public class LogitechIntegrationMain implements Integration {
             36, 37,
             45, 46
     };
-    public static final int[] LEFT_PART_3x6_SLOTS = new int[] {
+    public static final int[] STACKMACHINE_SLOTS = new int[] {
             0,  1,  2,
             9,  10, 11,
             18, 19, 20,
             27, 28, 29,
             36, 37, 38,
             45, 46, 47
+    };
+    public static final int[] MULTIBLOCK_MANUAL_SLOTS = new int[] {
+            4,  5,  6,  7,  8,
+            13, 14, 15, 16, 17,
+            22, 23, 24, 25, 26,
+            31, 32, 33, 34, 35,
+            40, 41, 42, 43, 44,
+            49, 50, 51, 52, 53
     };
     // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
@@ -224,8 +232,9 @@ public class LogitechIntegrationMain implements Integration {
 
         rrc("LOGITECH_BUG_CRAFTER", BUG_CRAFTER_INPUT_SLOTS, false);
         rrc("LOGITECH_CARD_MAKER", CARD_MAKER_INPUT_SLOTS, false);
-        rrc("LOGITECH_STACKMACHINE", LEFT_PART_3x6_SLOTS, false);
-        rrc("LOGITECH_STAR_SMELTERY", LEFT_PART_2x6_SLOTS, false);
+        rrc("LOGITECH_STACKMACHINE", STACKMACHINE_SLOTS, false);
+        rrc("LOGITECH_STAR_SMELTERY", STAR_SMELTERY_SLOTS, false);
+        rrc("LOGITECH_MULTIBLOCK_MANUAL", MULTIBLOCK_MANUAL_SLOTS, false);
 
         try {
             // LogiTech v1.0.4
