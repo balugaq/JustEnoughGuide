@@ -1023,7 +1023,7 @@ public interface OnClick {
                     );
                 }
                 // Shift+左键
-                if (clickType == ClickType.SHIFT_LEFT && !RecipeCompletableListener.isRecipeCompleting(player)) {
+                if (clickType == ClickType.SHIFT_LEFT && !RecipeCompletableListener.isSelectingItemStackToRecipeComplete(player)) {
                     return findAction(player, "shift-left-click").click(
                             guide, player, slot, slimefunItem, item,
                             action, menu, page
@@ -1037,7 +1037,7 @@ public interface OnClick {
                     );
                 }
                 // 有cheat权限
-                if (!RecipeCompletableListener.isRecipeCompleting(player) && (player.isOp() || player.hasPermission("slimefun.cheat.items"))) {
+                if (!RecipeCompletableListener.isSelectingItemStackToRecipeComplete(player) && (player.isOp() || player.hasPermission("slimefun.cheat.items"))) {
                     ItemStack cursor = event.getCursor();
                     if (event.getClick() == ClickType.MIDDLE && (cursor == null || cursor.getType() == Material.AIR)) {
                         return findAction(player, "clone-item").click(

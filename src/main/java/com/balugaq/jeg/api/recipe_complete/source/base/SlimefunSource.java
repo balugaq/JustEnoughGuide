@@ -67,7 +67,7 @@ public interface SlimefunSource extends Source {
             return true;
         }
 
-        GuideUtil.openMainMenuAsync(player, SlimefunGuideMode.SURVIVAL_MODE, 1);
+        GuideUtil.openGuide(player);
         RecipeCompletableListener.addCallback(
                 player.getUniqueId(), ((event, profile) ->
                         handleSession(session, event, event.getClickAction(), true, callback)

@@ -199,7 +199,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     public static void tagGuideOpen(Player player) {
-        if (!isRecipeCompleting(player)) {
+        if (!isSelectingItemStackToRecipeComplete(player)) {
             return;
         }
 
@@ -326,7 +326,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
                             return false;
                         }
 
-                        enterSelectingItemStackToRecipeComplete(player);
+                        allowSelectingItemStackToRecipeComplete(player);
                         int[] slots = getIngredientSlots(sf);
                         boolean unordered = isUnordered(sf);
                         var session = RecipeCompleteSession.create(blockMenu, player, clickAction, slots, unordered, 1);
@@ -389,8 +389,13 @@ public class RecipeCompletableListener implements ItemPatchListener {
         return listening.contains(player);
     }
 
-    public static void enterSelectingItemStackToRecipeComplete(Player player) {
+    public static void allowSelectingItemStackToRecipeComplete(Player player) {
         listening.add(player);
+    }
+
+    @Deprecated
+    public static void enterSelectingItemStackToRecipeComplete(Player player) {
+        allowSelectingItemStackToRecipeComplete(player);
     }
 
     public static int[] getIngredientSlots(SlimefunItem slimefunItem) {
@@ -466,7 +471,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     @EventHandler
     public void onJEGItemClick(GuideEvents.ItemButtonClickEvent event) {
         Player player = event.getPlayer();
-        if (!isRecipeCompleting(player)) {
+        if (!isSelectingItemStackToRecipeComplete(player)) {
             return;
         }
 
