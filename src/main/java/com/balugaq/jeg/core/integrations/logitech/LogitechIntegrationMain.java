@@ -232,9 +232,9 @@ public class LogitechIntegrationMain implements Integration {
 
         rrc("LOGITECH_BUG_CRAFTER", BUG_CRAFTER_INPUT_SLOTS, false);
         rrc("LOGITECH_CARD_MAKER", CARD_MAKER_INPUT_SLOTS, false);
-        rrc("LOGITECH_STACKMACHINE", STACKMACHINE_SLOTS, false);
-        rrc("LOGITECH_STAR_SMELTERY", STAR_SMELTERY_SLOTS, false);
-        rrc("LOGITECH_MULTIBLOCK_MANUAL", MULTIBLOCK_MANUAL_SLOTS, false);
+        rrc("LOGITECH_STACKMACHINE", STACKMACHINE_SLOTS, true);
+        rrc("LOGITECH_STAR_SMELTERY", STAR_SMELTERY_SLOTS, true);
+        rrc("LOGITECH_MULTIBLOCK_MANUAL", MULTIBLOCK_MANUAL_SLOTS, true);
 
         try {
             // LogiTech v1.0.4

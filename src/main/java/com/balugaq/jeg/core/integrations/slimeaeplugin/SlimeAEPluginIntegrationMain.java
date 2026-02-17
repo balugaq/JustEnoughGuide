@@ -31,14 +31,17 @@ import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import me.ddggdd135.slimeae.SlimeAEPlugin;
 import me.ddggdd135.slimeae.api.interfaces.IStorage;
+import me.ddggdd135.slimeae.api.items.StorageCollection;
 import me.ddggdd135.slimeae.core.NetworkInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -89,11 +92,19 @@ public class SlimeAEPluginIntegrationMain implements Integration {
             }
             NetworkInfo def2 = SlimeAEPlugin.getNetworkData().getNetworkInfo(clone);
             if (def2 != null) {
-                networkStorages.add(def2.getStorage());
+                var storage = getIStorage(def2);
+                if (storage != null) {
+                    networkStorages.add(storage);
+                }
             }
         }
 
         return networkStorages;
+    }
+
+    @Nullable
+    public static IStorage getIStorage(NetworkInfo info) {
+        return (IStorage) ReflectionUtil.invokeMethod(info, "getStorage");
     }
 
     @Override

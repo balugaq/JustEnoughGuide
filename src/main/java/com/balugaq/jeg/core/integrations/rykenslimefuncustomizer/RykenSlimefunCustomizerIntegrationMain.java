@@ -128,7 +128,7 @@ public class RykenSlimefunCustomizerIntegrationMain implements Integration {
                 continue;
             }
 
-            rrc(sf, input, false);
+            rrc(sf, input, clazz == classCustomRecipeMachine);
         }
 
         rrc("FVV_FAST_DEVINE_ALTAR", FVV_FAST_DEVINE_ALTAR_SLOTS, true);
