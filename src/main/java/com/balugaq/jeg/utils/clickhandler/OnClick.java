@@ -308,7 +308,7 @@ public interface OnClick {
 
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
                                     io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
-            return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+            return withGroup(itemGroup, (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 if (!easterredPlayer.contains(player.getUniqueId())) {
                     LocalDate date = LocalDate.now();
                     if (date.getMonth() == Month.APRIL && date.getDayOfMonth() == 1) {
@@ -343,7 +343,7 @@ public interface OnClick {
                 }
 
                 return findAction(player, "default").click(guide, event, player, slot, itemGroup, action, menu, 1);
-            });
+            }));
         }
 
         /**
@@ -616,7 +616,7 @@ public interface OnClick {
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
                                        io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup) {
-                return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+                return withGroup(itemGroup, (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                     ClickType clickType = event.getClick();
                     // 注入右键
                     if (clickType == ClickType.RIGHT) {
@@ -627,8 +627,31 @@ public interface OnClick {
                     }
 
                     return super.create(guide, menu, itemGroup).onClick(event, player, slot, cursor, action);
-                });
+                }));
             }
+        }
+
+        /**
+         * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        interface ClickHandler extends BaseClickHandler {
+            io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup();
+        }
+
+        static ClickHandler withGroup(io.github.thebusybiscuit.slimefun4.api.items.ItemGroup group, BaseClickHandler base) {
+            return new ClickHandler() {
+                @Override
+                public io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup() {
+                    return group;
+                }
+
+                @Override
+                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
+                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
+                }
+            };
         }
     }
 
@@ -709,7 +732,7 @@ public interface OnClick {
 
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu,
                                     io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType) {
-            return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+            return withType(recipeType, (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 ItemStack item = event.getCurrentItem();
                 if (item == null) return false;
                 if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
@@ -729,7 +752,7 @@ public interface OnClick {
                 }
 
                 return findAction(player, "default").click(guide, player, slot, recipeType, action, menu, 1);
-            });
+            }));
         }
 
         /**
@@ -903,6 +926,29 @@ public interface OnClick {
                 return player.isOp() || player.hasPermission("slimefun.cheat.items");
             }
         }
+
+        /**
+         * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        interface ClickHandler extends BaseClickHandler {
+            io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType();
+        }
+
+        static ClickHandler withType(io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType type, BaseClickHandler base) {
+            return new ClickHandler() {
+                @Override
+                public io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType() {
+                    return type;
+                }
+
+                @Override
+                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
+                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
+                }
+            };
+        }
     }
 
     /**
@@ -1001,7 +1047,7 @@ public interface OnClick {
 
         default ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
                                     @Nullable SlimefunItem sf) {
-            return (event, player, slot, s, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+            return withItem(sf, (event, player, slot, s, action) -> EventUtil.callEvent(new GuideEvents.ItemButtonClickEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                 ItemStack item = event.getCurrentItem();
                 if (item == null) return false;
                 SlimefunItem slimefunItem = sf == null ? SlimefunItem.getByItem(item) : sf;
@@ -1054,7 +1100,7 @@ public interface OnClick {
                 }
 
                 return findAction(player, "default").click(guide, player, slot, slimefunItem, item, action, menu, page);
-            });
+            }));
         }
 
         /**
@@ -1200,7 +1246,7 @@ public interface OnClick {
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
                                        @Nullable SlimefunItem slimefunItem) {
-                return (event, player, slot, s, action) -> {
+                return withItem(slimefunItem, (event, player, slot, s, action) -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
                     ClickType clickType = event.getClick();
@@ -1214,7 +1260,7 @@ public interface OnClick {
                     }
 
                     return super.create(guide, menu, page, slimefunItem).onClick(event, player, slot, item, action);
-                };
+                });
             }
         }
 
@@ -1263,7 +1309,7 @@ public interface OnClick {
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
                                        @Nullable SlimefunItem slimefunItem) {
-                return (event, player, slot, cursor, action) -> {
+                return withItem(slimefunItem, (event, player, slot, cursor, action) -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
                     ClickType clickType = event.getClick();
@@ -1277,7 +1323,7 @@ public interface OnClick {
                     }
 
                     return Normal.create(guide, menu, page, slimefunItem).onClick(event, player, slot, item, action);
-                };
+                });
             }
         }
 
@@ -1332,7 +1378,7 @@ public interface OnClick {
             @Override
             public ClickHandler create(JEGSlimefunGuideImplementation guide, ChestMenu menu, int page,
                                        @Nullable SlimefunItem slimefunItem) {
-                return (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
+                return withItem(slimefunItem, (event, player, slot, cursor, action) -> EventUtil.callEvent(new GuideEvents.ResearchItemEvent(player, event.getCurrentItem(), slot, action, menu, guide)).ifSuccess(() -> {
                     ItemStack item = event.getCurrentItem();
                     if (item == null) return false;
                     if (event.getClick() == ClickType.DOUBLE_CLICK) return false;
@@ -1340,7 +1386,7 @@ public interface OnClick {
                             guide, player, slot, slimefunItem, item, action, menu,
                             page
                     );
-                });
+                }));
             }
         }
 
@@ -1494,6 +1540,30 @@ public interface OnClick {
                 return listActions;
             }
         }
+
+        /**
+         * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        interface ClickHandler extends BaseClickHandler {
+            @Nullable SlimefunItem getSlimefunItem();
+        }
+
+        static ClickHandler withItem(@Nullable SlimefunItem sf, BaseClickHandler base) {
+            return new ClickHandler() {
+                @Override
+                @Nullable
+                public SlimefunItem getSlimefunItem() {
+                    return sf;
+                }
+
+                @Override
+                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
+                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
+                }
+            };
+        }
     }
 
     /**
@@ -1502,8 +1572,8 @@ public interface OnClick {
      */
     @NullMarked
     @FunctionalInterface
-    interface ClickHandler extends ChestMenu.AdvancedMenuClickHandler {
-        static ClickHandler deny() {
+    interface BaseClickHandler extends ChestMenu.AdvancedMenuClickHandler {
+        static BaseClickHandler deny() {
             return (event, player, slot, item, action) -> false;
         }
 

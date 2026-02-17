@@ -46,6 +46,7 @@ import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
+import com.balugaq.jeg.utils.clickhandler.OnClick;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;

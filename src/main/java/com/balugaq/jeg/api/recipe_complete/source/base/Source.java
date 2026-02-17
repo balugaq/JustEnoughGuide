@@ -34,7 +34,6 @@ import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
-import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
@@ -119,8 +118,8 @@ public interface Source {
     }
 
     @SuppressWarnings("ConstantValue")
-    default @Nullable List<@Nullable RecipeChoice> getRecipe(Player player, ItemStack itemStack) {
-        SlimefunItem sf = SlimefunItem.getByItem(itemStack);
+    default @Nullable List<@Nullable RecipeChoice> getRecipe(Player player, @Nullable SlimefunItem origin, ItemStack itemStack) {
+        SlimefunItem sf = origin == null ? SlimefunItem.getByItem(itemStack) : origin;
         var r = getSpecialRecipe(player, itemStack, sf);
         if (r != null) return r;
         if (sf != null) {
@@ -420,7 +419,7 @@ public interface Source {
             return false;
         }
 
-        List<@Nullable RecipeChoice> choices = getRecipe(player, clickedItem);
+        List<@Nullable RecipeChoice> choices = getRecipe(player, session.getSlimefunItem(), clickedItem);
         if (choices == null) {
             sendMissingMaterial(player, clickedItem);
             return false;

@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import com.balugaq.jeg.utils.GuideUtil;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -75,6 +76,7 @@ public class RecipeCompleteSession {
     private Inventory inventory;
     private BlockMenu menu;
     private ClickAction clickAction;
+    private @Nullable SlimefunItem slimefunItem;
     private @Range(from = 0, to = 53) int[] ingredientSlots;
     private boolean unordered;
     private @Positive int recipeDepth;

@@ -32,6 +32,7 @@ import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
@@ -122,6 +123,9 @@ public interface SlimefunSource extends Source {
             return;
         }
 
+        if (event.getMenu().getMenuClickHandler(event.getClickedSlot()) instanceof OnClick.Item.ClickHandler data) {
+            session.setSlimefunItem(data.getSlimefunItem());
+        }
         session.setMenu(actualMenu);
         session.setTarget(actualMenu.getLocation());
         session.setTimes(times);
