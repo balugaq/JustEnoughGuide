@@ -41,6 +41,7 @@ import org.jspecify.annotations.NullMarked;
 public record MinecraftVersion(int major, int minor, int patch) implements Comparable<MinecraftVersion> {
     public static final MinecraftVersion UNKNOWN = new MinecraftVersion();
     public static final MinecraftVersion V1_16 = MinecraftVersion.of(1, 16);
+    public static final MinecraftVersion V1_17 = MinecraftVersion.of(1, 17);
     public static final MinecraftVersion V1_17_1 = MinecraftVersion.of(1, 17, 1);
     public static final MinecraftVersion V1_19_4 = MinecraftVersion.of(1, 19, 4);
     public static final MinecraftVersion V1_20 = MinecraftVersion.of(1, 20);

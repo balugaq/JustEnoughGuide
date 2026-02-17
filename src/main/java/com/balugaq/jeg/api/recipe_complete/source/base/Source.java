@@ -34,7 +34,9 @@ import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -51,11 +53,14 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -178,30 +183,114 @@ public interface Source {
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             ItemStack itemStack1 = player.getInventory().getItem(i);
 
-            if (itemStack1 != null
-                    && itemStack1.getType() != Material.AIR
-                    && StackUtils.itemsMatch(itemStack1, itemStack)) {
+            if (itemStack1 != null && itemStack1.getType() != Material.AIR) {
+                if (StackUtils.itemsMatch(itemStack1, itemStack)) {
 
-                int existing = itemStack1.getAmount();
+                    int existing = itemStack1.getAmount();
 
-                if (existing <= amount) {
-                    amount -= existing;
-                    player.getInventory().clear(i);
-                } else {
-                    itemStack1.setAmount(existing - amount);
-                    player.getInventory().setItem(i, itemStack1);
-                    amount = 0;
+                    if (existing <= amount) {
+                        amount -= existing;
+                        player.getInventory().clear(i);
+                    } else {
+                        itemStack1.setAmount(existing - amount);
+                        player.getInventory().setItem(i, itemStack1);
+                        amount = 0;
+                    }
+
+                    if (amount <= 0) {
+                        ItemStack clone = itemStack.clone();
+                        clone.setAmount(total);
+                        return clone;
+                    }
                 }
 
-                if (amount <= 0) {
-                    ItemStack clone = itemStack.clone();
-                    clone.setAmount(total);
-                    return clone;
+                else if (itemStack1.getType().name().contains("SHULKER_BOX")) {
+                    var meta = itemStack1.getItemMeta();
+                    if (meta instanceof BlockStateMeta blockStateMeta) {
+                        var blockState = blockStateMeta.getBlockState();
+                        if (blockState instanceof Container container) {
+                            Inventory shulker = container.getInventory();
+                            for (int idx = 0; idx < shulker.getSize(); idx++) {
+                                ItemStack item = shulker.getItem(idx);
+
+                                if (item != null && item.getType() != Material.AIR) {
+                                    if (StackUtils.itemsMatch(item, itemStack)) {
+
+                                        int existing = item.getAmount();
+
+                                        if (existing <= amount) {
+                                            amount -= existing;
+                                            shulker.clear(idx);
+                                        } else {
+                                            item.setAmount(existing - amount);
+                                            shulker.setItem(idx, item);
+                                            amount = 0;
+                                        }
+
+                                        if (amount <= 0) {
+                                            ItemStack clone = itemStack.clone();
+                                            clone.setAmount(total);
+                                            blockStateMeta.setBlockState(blockState);
+                                            itemStack1.setItemMeta(blockStateMeta);
+                                            return clone;
+                                        }
+                                    }
+                                }
+                            }
+                            blockStateMeta.setBlockState(blockState);
+                            itemStack1.setItemMeta(blockStateMeta);
+                        }
+                    }
+                }
+
+                else if (itemStack1.getType().name().contains("BUNDLE")) {
+                    var meta = itemStack1.getItemMeta();
+                    if (MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17) && meta instanceof BundleMeta bundle) {
+                        var origin = bundle.getItems();
+                        if (origin == null || origin.isEmpty()) continue;
+                        var items = new ArrayList<>(origin);
+                        for (int idx = 0; idx < items.size(); idx++) {
+                            ItemStack item = items.get(idx);
+                            if (item != null && item.getType() != Material.AIR &&
+                                    StackUtils.itemsMatch(item, itemStack)) {
+
+                                int existing = item.getAmount();
+
+                                if (existing <= amount) {
+                                    amount -= existing;
+                                    items.set(idx, null);
+                                } else {
+                                    item.setAmount(existing - amount);
+                                    amount = 0;
+                                }
+
+                                if (amount <= 0) {
+                                    ItemStack clone = itemStack.clone();
+                                    clone.setAmount(total);
+                                    bundle.setItems(trimItems(items));
+                                    itemStack1.setItemMeta(meta);
+                                    return clone;
+                                }
+                            }
+                        }
+                        bundle.setItems(trimItems(items));
+                        itemStack1.setItemMeta(meta);
+                    }
                 }
             }
         }
 
         return null;
+    }
+
+    default List<ItemStack> trimItems(List<@Nullable ItemStack> origin) {
+        List<ItemStack> list = new ArrayList<>();
+        for (ItemStack item : origin) {
+            if (item != null && item.getType() != Material.AIR) {
+                list.add(item);
+            }
+        }
+        return list;
     }
 
     default @Nullable ItemStack getItemStackFromNearbyContainer(Player player, Location target, ItemStack itemStack) {
