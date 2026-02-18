@@ -313,7 +313,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
         ChestMenu.MenuClickHandler old = blockMenu.getPlayerInventoryClickHandler();
         if (old instanceof TaggedRecipeCompletable) {
-            // Already added
+            // Already modified
             return;
         }
 
@@ -455,6 +455,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
             // Strategy mode
             // Default strategy see {@link DefaultPlayerInventoryRecipeCompleteVanillaSource}
             if (source.handleable(session)) {
+                allowSelectingItemStackToRecipeComplete(player);
                 source.openGuide(session);
                 break;
             }
