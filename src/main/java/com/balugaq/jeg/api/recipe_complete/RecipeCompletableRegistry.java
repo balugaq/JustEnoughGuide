@@ -29,9 +29,12 @@ package com.balugaq.jeg.api.recipe_complete;
 
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.Collection;
 
 /**
  * @author balugaq
@@ -78,5 +81,25 @@ public class RecipeCompletableRegistry {
     @ApiStatus.Obsolete
     public static void unregisterRecipeCompletable(SlimefunItem slimefunItem) {
         RecipeCompletableListener.unregisterRecipeCompletable(slimefunItem);
+    }
+
+    @ApiStatus.Obsolete
+    public static void registerPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemGetter itemGetter) {
+        RecipeCompletableListener.registerPlayerInventoryItemGetter(itemGetter);
+    }
+
+    @ApiStatus.Obsolete
+    public static void unregisterPlayerInventoryItemGetter(NamespacedKey key) {
+        RecipeCompletableListener.unregisterPlayerInventoryItemGetter(key);
+    }
+
+    @ApiStatus.Obsolete
+    public static void unregisterPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemGetter itemGetter) {
+        RecipeCompletableListener.unregisterPlayerInventoryItemGetter(itemGetter.getKey());
+    }
+
+    @ApiStatus.Obsolete
+    public static Collection<RecipeCompletableListener.PlayerInventoryItemGetter> getPlayerInventoryItemGetters() {
+        return RecipeCompletableListener.PLAYER_INVENTORY_ITEM_GETTERS.values();
     }
 }

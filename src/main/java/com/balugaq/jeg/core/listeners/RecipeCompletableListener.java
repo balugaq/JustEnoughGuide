@@ -36,8 +36,11 @@ import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
+import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
+import com.balugaq.jeg.core.integrations.justenoughguide.BundlePlayerInventoryItemGetter;
+import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemGetter;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
@@ -55,6 +58,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -71,7 +75,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
@@ -107,6 +113,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     public static final ConcurrentHashMap<Player, Location> DISPENSER_LISTENING = new ConcurrentHashMap<>();
     public static final NamespacedKey LAST_RECIPE_COMPLETE_KEY = KeyUtil.newKey("last_recipe_complete");
     public static final ConcurrentHashMap<Player, ArrayList<ItemStack>> missingMaterials = new ConcurrentHashMap<>();
+    public static final Map<NamespacedKey, PlayerInventoryItemGetter> PLAYER_INVENTORY_ITEM_GETTERS = new HashMap<>();
     private static @UnknownNullability ItemStack RECIPE_COMPLETABLE_BOOK_ITEM = null;
 
     static {
@@ -726,11 +733,20 @@ public class RecipeCompletableListener implements ItemPatchListener {
         event.getPlayer().updateInventory();
     }
 
+    public static void registerPlayerInventoryItemGetter(PlayerInventoryItemGetter itemGetter) {
+        PLAYER_INVENTORY_ITEM_GETTERS.put(itemGetter.getKey(), itemGetter);
+    }
+
+    public static void unregisterPlayerInventoryItemGetter(NamespacedKey key) {
+        PLAYER_INVENTORY_ITEM_GETTERS.remove(key);
+    }
+
     /**
      * @author balugaq
      * @see RecipeCompletableListener#addNotApplicableItem(SlimefunItem)
      * @since 1.9
      */
+    @NullMarked
     public interface NotApplicable {
     }
 
@@ -738,6 +754,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
      * @author balugaq
      * @since 1.9
      */
+    @NullMarked
     public interface TaggedRecipeCompletable {
     }
 
@@ -746,7 +763,28 @@ public class RecipeCompletableListener implements ItemPatchListener {
      * @since 1.9
      */
     @SuppressWarnings("deprecation")
+    @NullMarked
     @FunctionalInterface
     public interface RecipeCompletableClickHandler extends ChestMenu.MenuClickHandler, TaggedRecipeCompletable {
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.1
+     *
+     * @see ShulkerBoxPlayerInventoryItemGetter
+     * @see Source#getItemStackFromPlayerInventory(RecipeCompleteSession, ItemStack, int)
+     */
+    @NullMarked
+    public interface PlayerInventoryItemGetter extends Keyed {
+        /**
+         * @param session The session
+         * @param target The target item
+         * @param item The item to be checked or handled
+         * @param need The requested amount
+         * @return gotten item stack amount
+         */
+        @NonNegative
+        int getItemStack(RecipeCompleteSession session, ItemStack target, ItemStack item, int need);
     }
 }

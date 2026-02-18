@@ -125,6 +125,8 @@ public class NetworksIntegrationMain implements Integration {
         rrc("NTW_MOREPUSHER", PUSHER_SLOTS, true);
         rrc("NTW_BESTPUSHER", PUSHER_SLOTS, true);
         rrc("NTW_IMPORTER", PUSHER_SLOTS, true);
+
+        RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new QuantumStoragePlayerInventoryItemGetter());
     }
 
     public static void rrc(String id, int[] slots, boolean unordered) {
