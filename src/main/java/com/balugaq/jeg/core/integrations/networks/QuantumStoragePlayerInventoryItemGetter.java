@@ -72,13 +72,18 @@ public class QuantumStoragePlayerInventoryItemGetter implements RecipeCompletabl
         long innerItemAmount = instance.getAmount();
         if (innerItemAmount <= 0) return 0;
 
+        int got;
         if (innerItemAmount <= amount) {
             instance.reduceAmount((int) innerItemAmount);
-            return (int) innerItemAmount;
+            got = (int) innerItemAmount;
         } else {
             instance.reduceAmount(amount);
-            return amount;
+            got = amount;
         }
+        DataTypeMethods.setCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE, instance);
+        item.setItemMeta(meta);
+
+        return got;
     }
 
     @Override
