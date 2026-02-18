@@ -77,6 +77,15 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @NullMarked
 public interface Source {
+    // @formatter:off
+    int[] PLAYER_INVENTORY_AVAILABLE_SLOTS = new int[] {
+            0,  1,  2,  3,  4,  5,  6,  7,  8, // storage slots
+            9,  10, 11, 12, 13, 14, 15, 16, 17,
+            18, 19, 20, 21, 22, 23, 24, 25, 26,
+            27, 28, 29, 30, 31, 32, 33, 34, 35,
+            40 // offhand slot
+    };
+    // @formatter:on
     int RECIPE_DEPTH_THRESHOLD = 8;
 
     static boolean depthInRange(Player player, int depth) {
@@ -179,7 +188,7 @@ public interface Source {
         int total = amount;
 
         // get from player inventory
-        for (int i = 0; i < player.getInventory().getSize(); i++) {
+        for (int i : PLAYER_INVENTORY_AVAILABLE_SLOTS) {
             ItemStack itemStack1 = player.getInventory().getItem(i);
 
             if (itemStack1 != null && itemStack1.getType() != Material.AIR) {

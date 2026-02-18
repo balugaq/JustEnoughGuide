@@ -46,7 +46,6 @@ import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
-import com.balugaq.jeg.utils.clickhandler.OnClick;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
@@ -292,7 +291,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     @EventHandler
     public void prepare(InventoryOpenEvent event) {
         if (event.getInventory().getHolder() instanceof BlockMenu blockMenu) {
-            tryAddClickHandler(blockMenu);
+            tryAddPlayerInventoryClickHandler(blockMenu);
         }
 
         if (event.getInventory().getHolder() instanceof Dispenser dispenser) {
@@ -301,7 +300,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     @SuppressWarnings("deprecation")
-    private static void tryAddClickHandler(BlockMenu blockMenu) {
+    private static void tryAddPlayerInventoryClickHandler(BlockMenu blockMenu) {
         SlimefunItem sf = blockMenu.getPreset().getSlimefunItem();
         if (!isApplicable(sf)) {
             return;
@@ -323,8 +322,14 @@ public class RecipeCompletableListener implements ItemPatchListener {
                     if (StackUtils.itemsMatch(itemStack, getRecipeCompletableBookItem(), false, false, false, false)
                             && blockMenu.isPlayerInventoryClickable()) {
                         if (isSelectingItemStackToRecipeComplete(player)) {
-                            GuideUtil.openGuide(player);
-                            return false;
+                            var session = RecipeCompleteSession.getSession(player);
+                            if (session == null) return false;
+                            if (session.getMenu() != null && session.getMenu().getLocation().equals(blockMenu.getLocation())) {
+                                GuideUtil.openGuide(player);
+                                return false;
+                            } else {
+                                session.cancel();
+                            }
                         }
 
                         allowSelectingItemStackToRecipeComplete(player);

@@ -105,6 +105,7 @@ public interface VanillaSource extends Source {
         if (!session.canStart()) {
             if (reopenInventory) session.getPlayer().openInventory(session.getInventory());
             if (callback != null) callback.run();
+            session.cancel();
             return;
         }
         for (int i = 0; i < session.getTimes(); i++) {
@@ -113,6 +114,6 @@ public interface VanillaSource extends Source {
 
         if (reopenInventory) session.getPlayer().openInventory(session.getInventory());
         if (callback != null) callback.run();
-        RecipeCompleteSession.complete(session);
+        session.complete();
     }
 }

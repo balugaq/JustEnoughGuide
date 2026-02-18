@@ -110,16 +110,14 @@ public interface SlimefunSource extends Source {
 
         BlockMenu actualMenu = StorageCacheUtils.getMenu(blockMenu.getLocation());
         if (actualMenu == null) {
-            if (callback != null) {
-                callback.run();
-            }
+            if (callback != null) callback.run();
+            session.cancel();
             return;
         }
 
         if (!actualMenu.getPreset().getID().equals(blockMenu.getPreset().getID())) {
-            if (callback != null) {
-                callback.run();
-            }
+            if (callback != null) callback.run();
+            session.cancel();
             return;
         }
 
@@ -132,6 +130,7 @@ public interface SlimefunSource extends Source {
         if (!session.canStart()) {
             if (reopenMenu) actualMenu.open(session.getPlayer());
             if (callback != null) callback.run();
+            session.cancel();
             return;
         }
         for (int i = 0; i < session.getTimes(); i++) {
@@ -140,6 +139,6 @@ public interface SlimefunSource extends Source {
 
         if (reopenMenu) actualMenu.open(session.getPlayer());
         if (callback != null) callback.run();
-        RecipeCompleteSession.complete(session);
+        session.complete();
     }
 }
