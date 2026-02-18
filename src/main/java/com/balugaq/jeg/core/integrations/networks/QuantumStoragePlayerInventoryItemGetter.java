@@ -54,7 +54,7 @@ import org.jspecify.annotations.NullMarked;
 public class QuantumStoragePlayerInventoryItemGetter implements RecipeCompletableListener.PlayerInventoryItemGetter {
     @Override
     public @NonNegative int getItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item, int amount) {
-        if (!(SlimefunItem.getByItem(item) instanceof NetworkQuantumStorage)) {
+        if (!(SlimefunItem.getByItem(item) instanceof NetworkQuantumStorage nqs)) {
             return 0;
         }
 
@@ -80,8 +80,10 @@ public class QuantumStoragePlayerInventoryItemGetter implements RecipeCompletabl
             instance.reduceAmount(amount);
             got = amount;
         }
-        DataTypeMethods.setCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE, instance);
-        item.setItemMeta(meta);
+        var newMeta = nqs.getItem().getItemMeta();
+        DataTypeMethods.setCustom(newMeta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE, instance);
+        instance.addMetaLore(newMeta);
+        item.setItemMeta(newMeta);
 
         return got;
     }
