@@ -36,9 +36,6 @@ import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
-import com.balugaq.jeg.core.integrations.logitech.LogitechItemPatchListener;
-import com.balugaq.jeg.core.integrations.logitech.MachineStackableDisplayGuideOption;
-import com.balugaq.jeg.core.integrations.logitech.ManualMachineAutoSelectListener;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
@@ -52,26 +49,17 @@ import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.implementation.option.SlimefunIdDisplayGuideOption;
 import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author balugaq
