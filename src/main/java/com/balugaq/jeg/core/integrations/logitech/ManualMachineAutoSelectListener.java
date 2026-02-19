@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.integrations.logitech;
 
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -57,80 +58,86 @@ public class ManualMachineAutoSelectListener implements Listener {
         if (!sf.getAddon().equals(LogitechIntegrationMain.getPlugin())) return;
 
         ItemStack target = ItemPatchListener.untag(event.getSession().getEvent().getClickedItem());
-        try {
-            // Logitech v1.0.3
-            if (sf instanceof me.matl114.logitech.SlimefunItem.Machines.AbstractManual mm) {
-                var rps = mm.getMachineRecipes(menu.getBlock(), menu);
-                int targetIndex = getTargetIndex(rps, target);
-                if (targetIndex == -1) return;
-
-                int index = me.matl114.logitech.Utils.DataCache.getLastRecipe(menu.getLocation());
-                if (index == -1) {
-                    mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.Utils.Settings.RUN);
-                } else {
-                    int delta = targetIndex - index;
-                    if (delta > 0) {
-                        for (int i = 0; i < delta; i++)
-                            mm.orderSearchRecipe(menu, me.matl114.logitech.Utils.Settings.SEQUNTIAL);
-                    }
-                    if (delta < 0) {
-                        for (int i = 0; i < -delta; i++)
-                            mm.orderSearchRecipe(menu, me.matl114.logitech.Utils.Settings.REVERSE);
-                    }
-
-                    mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.Utils.Settings.RUN);
-                }
-            }
-        } catch (Throwable ignored) {
+        JustEnoughGuide.runLaterAsync(() -> {
             try {
-                if (sf instanceof me.matl114.logitech.core.Machines.Abstracts.AbstractManual mm) {
+                // Logitech v1.0.3
+                if (sf instanceof me.matl114.logitech.SlimefunItem.Machines.AbstractManual mm) {
                     var rps = mm.getMachineRecipes(menu.getBlock(), menu);
                     int targetIndex = getTargetIndex(rps, target);
                     if (targetIndex == -1) return;
 
-                    int index = me.matl114.logitech.utils.DataCache.getLastRecipe(menu.getLocation());
-                    try {
-                        // Logitech v1.0.4
+                    if (mm.getNowRecordRecipe(menu.getLocation()) != -1) {
+                        int index = me.matl114.logitech.Utils.DataCache.getLastRecipe(menu.getLocation());
                         if (index == -1) {
-                            mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
+                            mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.Utils.Settings.RUN);
                         } else {
                             int delta = targetIndex - index;
                             if (delta > 0) {
                                 for (int i = 0; i < delta; i++)
-                                    mm.orderSearchRecipe(menu, me.matl114.logitech.utils.Settings.SEQUNTIAL);
+                                    mm.orderSearchRecipe(menu, me.matl114.logitech.Utils.Settings.SEQUNTIAL);
                             }
                             if (delta < 0) {
                                 for (int i = 0; i < -delta; i++)
-                                    mm.orderSearchRecipe(menu, me.matl114.logitech.utils.Settings.REVERSE);
+                                    mm.orderSearchRecipe(menu, me.matl114.logitech.Utils.Settings.REVERSE);
                             }
 
-                            mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
-                        }
-                    } catch (Throwable ignored2) {
-                        try {
-                            // Logitech 2025-07-07
-                            if (index == -1) {
-                                mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
-                            } else {
-                                int delta = targetIndex - index;
-                                if (delta > 0) {
-                                    for (int i = 0; i < delta; i++)
-                                        ReflectionUtil.invokeMethod(mm, "orderSearchRecipe", menu, me.matl114.logitech.utils.Settings.SEQUNTIAL, true);
-                                }
-                                if (delta < 0) {
-                                    for (int i = 0; i < -delta; i++)
-                                        ReflectionUtil.invokeMethod(mm, "orderSearchRecipe", menu, me.matl114.logitech.utils.Settings.REVERSE, true);
-                                }
-
-                                mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
-                            }
-                        } catch (Throwable ignored3) {
+                            mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.Utils.Settings.RUN);
                         }
                     }
                 }
-            } catch (Throwable ignored2) {
+            } catch (Throwable ignored) {
+                try {
+                    if (sf instanceof me.matl114.logitech.core.Machines.Abstracts.AbstractManual mm) {
+                        var rps = mm.getMachineRecipes(menu.getBlock(), menu);
+                        int targetIndex = getTargetIndex(rps, target);
+                        if (targetIndex == -1) return;
+
+                        if (mm.getNowRecordRecipe(menu.getLocation()) != -1) {
+                            int index = me.matl114.logitech.utils.DataCache.getLastRecipe(menu.getLocation());
+                            try {
+                                // Logitech v1.0.4
+                                if (index == -1) {
+                                    mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
+                                } else {
+                                    int delta = targetIndex - index;
+                                    if (delta > 0) {
+                                        for (int i = 0; i < delta; i++)
+                                            mm.orderSearchRecipe(menu, me.matl114.logitech.utils.Settings.SEQUNTIAL);
+                                    }
+                                    if (delta < 0) {
+                                        for (int i = 0; i < -delta; i++)
+                                            mm.orderSearchRecipe(menu, me.matl114.logitech.utils.Settings.REVERSE);
+                                    }
+
+                                    mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
+                                }
+                            } catch (Throwable ignored2) {
+                                try {
+                                    // Logitech 2025-07-07
+                                    if (index == -1) {
+                                        mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
+                                    } else {
+                                        int delta = targetIndex - index;
+                                        if (delta > 0) {
+                                            for (int i = 0; i < delta; i++)
+                                                ReflectionUtil.invokeMethod(mm, "orderSearchRecipe", menu, me.matl114.logitech.utils.Settings.SEQUNTIAL, true);
+                                        }
+                                        if (delta < 0) {
+                                            for (int i = 0; i < -delta; i++)
+                                                ReflectionUtil.invokeMethod(mm, "orderSearchRecipe", menu, me.matl114.logitech.utils.Settings.REVERSE, true);
+                                        }
+
+                                        mm.updateMenu(menu, menu.getBlock(), me.matl114.logitech.utils.Settings.RUN);
+                                    }
+                                } catch (Throwable ignored3) {
+                                }
+                            }
+                        }
+                    }
+                } catch (Throwable ignored2) {
+                }
             }
-        }
+        }, 1L);
     }
 
     public static int getTargetIndex(List<MachineRecipe> rps, ItemStack clicked) {
