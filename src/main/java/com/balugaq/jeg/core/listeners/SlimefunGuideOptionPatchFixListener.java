@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.option.delegate.FireworksOption;
+import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.events.ResearchUnlockEvent;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -44,10 +45,18 @@ public class SlimefunGuideOptionPatchFixListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onResearch(ResearchUnlockEvent event) {
         if (!FireworksOption.isEnabled(event.getPlayer()) && Slimefun.getConfigManager().isResearchFireworkEnabled()) {
-            ReflectionUtil.setValue(Slimefun.getConfigManager(), "researchFireworks", false);
-            JustEnoughGuide.runLaterAsync(() -> {
-                ReflectionUtil.setValue(Slimefun.getConfigManager(), "researchFireworks", true);
-            }, 1L);
+            if (LearningAnimationOption.isEnabled(event.getPlayer())) {
+                JustEnoughGuide.runLaterAsync(this::doFix, 5 * 20L);
+            } else {
+                doFix();
+            }
         }
+    }
+
+    private void doFix() {
+        ReflectionUtil.setValue(Slimefun.getConfigManager(), "researchFireworks", false);
+        JustEnoughGuide.runLaterAsync(() -> {
+            ReflectionUtil.setValue(Slimefun.getConfigManager(), "researchFireworks", true);
+        }, 1L);
     }
 }
