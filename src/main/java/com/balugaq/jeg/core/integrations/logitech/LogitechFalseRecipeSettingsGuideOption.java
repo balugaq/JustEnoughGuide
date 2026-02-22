@@ -25,7 +25,7 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.momotech;
+package com.balugaq.jeg.core.integrations.logitech;
 
 import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -42,20 +42,20 @@ import java.util.Optional;
 
 /**
  * @author balugaq
- * @since 2.0
+ * @since 2.1
  */
 @SuppressWarnings({"SameReturnValue"})
 @NullMarked
-public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
-    public static final MomotechNoneRecipeSettingsGuideOption instance = new MomotechNoneRecipeSettingsGuideOption();
+public class LogitechFalseRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
+    public static final LogitechFalseRecipeSettingsGuideOption instance = new LogitechFalseRecipeSettingsGuideOption();
 
-    public static MomotechNoneRecipeSettingsGuideOption instance() {
+    public static LogitechFalseRecipeSettingsGuideOption instance() {
         return instance;
     }
 
     public static @Nullable ItemStack[] getItems(Player player) {
-        @Nullable ItemStack[] items = new ItemStack[9];
-        for (int i = 9; i < 18; i++) {
+        @Nullable ItemStack[] items = new ItemStack[4];
+        for (int i = 9; i < 13; i++) {
             ItemStack itemStack = AbstractItemSettingsGuideOption.getItem(player, key0(), i);
             items[i - 9] = itemStack;
         }
@@ -64,12 +64,12 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
 
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        var sf = SlimefunItem.getById("MOMOTECH_NONE");
+        var sf = SlimefunItem.getById("LOGITECH_FALSE_");
         ItemStack item = sf != null ? Converter.getItem(
                 sf.getItem(),
                 "&a单击打开" + getTitle()
         ) : Converter.getItem(
-                Material.BLACK_WOOL,
+                Material.MUSIC_DISC_5,
                 "&a单击打开" + getTitle()
         );
         return Optional.of(item);
@@ -81,12 +81,12 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
     }
 
     public static NamespacedKey key0() {
-        return KeyUtil.newKey("momotech_none_recipe_settings");
+        return KeyUtil.newKey("logitech_false_recipe_settings");
     }
 
     @Override
     public String getTitle() {
-        return "&aNONE配方补全配置";
+        return "&aFALSE配方补全配置";
     }
 
     @Override
@@ -96,6 +96,6 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
 
     @Override
     public int[] getItemSlots() {
-        return new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
+        return new int[] {9, 10, 11, 12};
     }
 }

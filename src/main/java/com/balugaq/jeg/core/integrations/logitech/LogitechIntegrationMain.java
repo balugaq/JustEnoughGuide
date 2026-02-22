@@ -32,13 +32,16 @@
 package com.balugaq.jeg.core.integrations.logitech;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
+import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -101,6 +104,17 @@ public class LogitechIntegrationMain implements Integration {
             40, 41, 42, 43, 44,
             49, 50, 51, 52, 53
     };
+    public static final int[] BOOL_GENERATOR_SLOTS = new int[] {
+            1, 7, 19, 25
+    };
+    public static final int[] LOGIC_REACTOR_SLOTS = new int[] {
+            1, 3, 5, 7,
+            37, 39, 41, 43, 20
+    };
+    public static final List<RecipeChoice> LOGIC_ITEMS = new ArrayList<>();
+    public static final List<RecipeChoice> NOLOGIC_ITEMS = new ArrayList<>();
+    public static final List<RecipeChoice> UNIQUE_ITEMS = new ArrayList<>();
+    public static final List<RecipeChoice> EXISTE_ITEMS = new ArrayList<>();
     // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
@@ -235,6 +249,8 @@ public class LogitechIntegrationMain implements Integration {
         rrc("LOGITECH_STACKMACHINE", STACKMACHINE_SLOTS, true);
         rrc("LOGITECH_STAR_SMELTERY", STAR_SMELTERY_SLOTS, true);
         rrc("LOGITECH_MULTIBLOCK_MANUAL", MULTIBLOCK_MANUAL_SLOTS, true);
+        rrc("LOGITECH_BOOL_GENERATOR", BOOL_GENERATOR_SLOTS, false);
+        rrc("LOGITECH_LOGIC_REACTOR", LOGIC_REACTOR_SLOTS, false);
 
         try {
             // LogiTech v1.0.4
@@ -253,6 +269,27 @@ public class LogitechIntegrationMain implements Integration {
             SlimefunGuideSettings.addOption(MachineStackableDisplayGuideOption.instance());
             JustEnoughGuide.getListenerManager().registerListener(new LogitechItemPatchListener());
         }
+
+        LOGIC_ITEMS.addAll(getLogicReactorRecipe("ttttttttg"));
+        NOLOGIC_ITEMS.addAll(getLogicReactorRecipe("ffffttttg"));
+        UNIQUE_ITEMS.addAll(getLogicReactorRecipe("ftttttttg"));
+        EXISTE_ITEMS.addAll(getLogicReactorRecipe("ffftttttg"));
+
+        RecipeCompleteProvider.registerSpecialRecipeHandler((p, i, s) -> {
+            if (s == null) return null;
+
+            return switch (s.getId()) {
+                case "LOGITECH_TRUE_" ->
+                        AbstractItemSettingsGuideOption.generateChoices(LogitechTrueRecipeSettingsGuideOption.getItem(p), 1, 1, 1, 1);
+                case "LOGITECH_FALSE_" ->
+                        AbstractItemSettingsGuideOption.generateChoices(LogitechFalseRecipeSettingsGuideOption.getItems(p), 1, 1, 1, 1);
+                case "LOGITECH_LOGIC" -> LOGIC_ITEMS;
+                case "LOGITECH_NOLOGIC" -> NOLOGIC_ITEMS;
+                case "LOGITECH_UNIQUE" -> UNIQUE_ITEMS;
+                case "LOGITECH_EXISTE" -> EXISTE_ITEMS;
+                default -> null;
+            };
+        });
     }
 
     public static void rrc(SlimefunItem slimefunItem, int[] slots) {
@@ -277,5 +314,24 @@ public class LogitechIntegrationMain implements Integration {
         for (SlimefunItem slimefunItem : handledSlimefunItems) {
             RecipeCompletableRegistry.unregisterRecipeCompletable(slimefunItem);
         }
+    }
+
+    public static List<RecipeChoice> getLogicReactorRecipe(String s) {
+        List<RecipeChoice> list = new ArrayList<>();
+        var t = SlimefunItem.getById("LOGITECH_TRUE_").getItem();
+        var f = SlimefunItem.getById("LOGITECH_FALSE_").getItem();
+        var g = SlimefunItem.getById("LOGITECH_LOGIGATE").getItem();
+        RecipeChoice tf = new RecipeChoice.ExactChoice(t, f);
+        RecipeChoice ft = new RecipeChoice.ExactChoice(f, t);
+        RecipeChoice gg = new RecipeChoice.ExactChoice(g);
+        for (int i = 0; i < s.length(); i ++) {
+            var c = s.charAt(i);
+            switch (c) {
+                case 't' -> list.add(tf);
+                case 'f' -> list.add(ft);
+                case 'g' -> list.add(gg);
+            }
+        }
+        return list;
     }
 }

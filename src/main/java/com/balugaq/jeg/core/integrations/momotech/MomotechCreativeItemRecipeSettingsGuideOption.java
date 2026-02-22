@@ -62,7 +62,7 @@ public class MomotechCreativeItemRecipeSettingsGuideOption extends AbstractItemS
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
                 Material.END_CRYSTAL,
-                "&a单击打开原始物质配方补全配置界面"
+                "&a单击打开" + getTitle()
         );
         return Optional.of(item);
     }
