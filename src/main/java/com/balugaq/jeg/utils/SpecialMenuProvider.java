@@ -103,7 +103,6 @@ public class SpecialMenuProvider {
     public static @Nullable Method methodObsidianExpansion_openFORGERecipe = null; // check research
     public static @Nullable Constructor<?> constructorObsidianExpansion_BackEntry = null;
     // Galactifun
-    public static @Nullable Class<?> classGalactifun_CoreItemGroup = null;
     public static @Nullable Object objectGalactifun_ASSEMBLY_CATEGORY = null;
     public static @Nullable Method methodGalactifun_displayItem = null;
 
@@ -389,13 +388,13 @@ public class SpecialMenuProvider {
         }
         // Galactifun
         try {
-            // io.github.addoncommunity.galactifun.core.CoreItemGroup
-            Class<?> clazz = Class.forName("io.github.addoncommunity.galactifun.core.CoreItemGroup");
-            if (clazz != null) {
-                classGalactifun_CoreItemGroup = clazz;
-                objectGalactifun_ASSEMBLY_CATEGORY = ReflectionUtil.getStaticValue(clazz, "ASSEMBLY_CATEGORY");
-                if (objectGalactifun_ASSEMBLY_CATEGORY != null) {
-                    methodGalactifun_displayItem = ReflectionUtil.getMethod(objectGalactifun_ASSEMBLY_CATEGORY.getClass(), "displayItem");
+            Object ASSEMBLY_CATEGORY = ReflectionUtil.getStaticValue(Class.forName("io.github.addoncommunity.galactifun.core.CoreItemGroup"), "ASSEMBLY_CATEGORY");
+            if (ASSEMBLY_CATEGORY != null) {
+                objectGalactifun_ASSEMBLY_CATEGORY = ASSEMBLY_CATEGORY;
+                Method method = ReflectionUtil.getMethod(ASSEMBLY_CATEGORY.getClass(), "displayItem");
+                if (method != null) {
+                    methodGalactifun_displayItem = method;
+                    methodGalactifun_displayItem.setAccessible(true);
                 }
             }
         } catch (ClassNotFoundException ignored) {
@@ -431,7 +430,6 @@ public class SpecialMenuProvider {
         Debug.debug("methodObsidianExpansion_openFORGERecipe: " + (methodObsidianExpansion_openFORGERecipe != null));
         Debug.debug("constructorObsidianExpansion_BackEntry: " + (constructorObsidianExpansion_BackEntry != null));
         Debug.debug("-------------Galactifun----------");
-        Debug.debug("classGalactifun_CoreItemGroup: " + (classGalactifun_CoreItemGroup != null));
         Debug.debug("objectGalactifun_ASSEMBLY_CATEGORY: " + (objectGalactifun_ASSEMBLY_CATEGORY != null));
         Debug.debug("methodGalactifun_displayItem: " + (methodGalactifun_displayItem != null));
     }

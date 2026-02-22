@@ -57,6 +57,6 @@ public class SlimefunGuideOptionPatchFixListener implements Listener {
         ReflectionUtil.setValue(Slimefun.getConfigManager(), "researchFireworks", false);
         JustEnoughGuide.runLaterAsync(() -> {
             ReflectionUtil.setValue(Slimefun.getConfigManager(), "researchFireworks", true);
-        }, 1L);
+        }, 2L);
     }
 }
