@@ -37,6 +37,7 @@ import com.balugaq.jeg.core.listeners.MenuListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SearchReloadListener;
+import com.balugaq.jeg.core.listeners.SlimefunGuideOptionPatchFixListener;
 import com.balugaq.jeg.core.listeners.SlimefunIdPatchListener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -94,6 +95,7 @@ public class ListenerManager extends AbstractManager {
                 && MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17)) {
             listeners.add(new BundleListener());
         }
+        listeners.add(new SlimefunGuideOptionPatchFixListener());
     }
 
     public void registerListener(Listener listener) {

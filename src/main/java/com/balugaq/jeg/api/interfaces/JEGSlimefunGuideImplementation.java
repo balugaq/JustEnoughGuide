@@ -33,8 +33,10 @@ import com.balugaq.jeg.api.groups.ItemMarkGroup;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.LocalHelper;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Format;
@@ -47,10 +49,12 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
+import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -60,7 +64,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author balugaq
@@ -270,4 +276,16 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     void printErrorMessage0(Player p, Throwable x);
 
     void printErrorMessage0(Player p, SlimefunItem item, Throwable x);
+
+    @Override
+    @ParametersAreNonnullByDefault
+    default void unlockItem(Player p, SlimefunItem sfitem, Consumer<Player> callback) {
+        if (!Slimefun.getConfigManager().isLearningAnimationDisabled() && !LearningAnimationOption.isEnabled(p)) {
+            ReflectionUtil.setValue(Slimefun.getConfigManager(), "disableLearningAnimation", true);
+            JustEnoughGuide.runLaterAsync(() -> {
+                ReflectionUtil.setValue(Slimefun.getConfigManager(), "disableLearningAnimation", false);
+            }, 1L);
+        }
+        SlimefunGuideImplementation.super.unlockItem(p, sfitem, callback);
+    }
 }

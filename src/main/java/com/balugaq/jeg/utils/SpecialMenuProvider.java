@@ -395,7 +395,7 @@ public class SpecialMenuProvider {
                 classGalactifun_CoreItemGroup = clazz;
                 objectGalactifun_ASSEMBLY_CATEGORY = ReflectionUtil.getStaticValue(clazz, "ASSEMBLY_CATEGORY");
                 if (objectGalactifun_ASSEMBLY_CATEGORY != null) {
-                    methodGalactifun_displayItem = ReflectionUtil.getMethod(clazz, "displayItem");
+                    methodGalactifun_displayItem = ReflectionUtil.getMethod(objectGalactifun_ASSEMBLY_CATEGORY.getClass(), "displayItem");
                 }
             }
         } catch (ClassNotFoundException ignored) {
@@ -768,7 +768,7 @@ public class SpecialMenuProvider {
                     sfis,
                     slimefunItem.getRecipe()
             );
-            methodGalactifun_displayItem.invoke(player, playerProfile, entry);
+            methodGalactifun_displayItem.invoke(objectGalactifun_ASSEMBLY_CATEGORY, player, playerProfile, entry);
         }
     }
 

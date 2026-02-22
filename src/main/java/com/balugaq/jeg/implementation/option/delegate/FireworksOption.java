@@ -79,8 +79,16 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
         }
     }
 
-    public NamespacedKey getKey() {
+    public static NamespacedKey key0() {
         return new NamespacedKey(Slimefun.instance(), "research_fireworks");
+    }
+
+    public static boolean isEnabled(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == 1;
+    }
+
+    public NamespacedKey getKey() {
+        return key0();
     }
 
     public void onClick(Player p, ItemStack guide) {
@@ -89,9 +97,7 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
     }
 
     public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
-        NamespacedKey key = this.getKey();
-        boolean value = !PersistentDataAPI.hasByte(p, key) || PersistentDataAPI.getByte(p, key) == 1;
-        return Optional.of(value);
+        return Optional.of(isEnabled(p));
     }
 
     public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
