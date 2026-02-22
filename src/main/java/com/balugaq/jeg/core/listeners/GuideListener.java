@@ -108,7 +108,7 @@ public class GuideListener implements Listener {
         if (optional.isPresent()) {
             PlayerProfile profile = optional.get();
             SlimefunGuideImplementation guide = GuideUtil.getGuide(player, mode);
-            SlimefunGuideMode lastMode = guideModeMap.get(player);
+            SlimefunGuideMode lastMode = GuideUtil.getLastGuideMode(player);
             guideModeMap.put(player, mode);
             if (lastMode != mode) {
                 GuideUtil.openMainMenu(player, profile, mode, 1);
@@ -122,25 +122,7 @@ public class GuideListener implements Listener {
 
     @Internal
     public static void openGuideAsync(Player player, SlimefunGuideMode mode) {
-        JustEnoughGuide.runLaterAsync(
-                () -> {
-                    Optional<PlayerProfile> optional = PlayerProfile.find(player);
-
-                    if (optional.isPresent()) {
-                        PlayerProfile profile = optional.get();
-                        SlimefunGuideImplementation guide = GuideUtil.getGuide(player, mode);
-                        SlimefunGuideMode lastMode = guideModeMap.get(player);
-                        guideModeMap.put(player, mode);
-                        if (lastMode != mode) {
-                            GuideUtil.openMainMenu(player, profile, mode, 1);
-                        } else {
-                            profile.getGuideHistory().openLastEntry(guide);
-                        }
-                    } else {
-                        GuideUtil.openMainMenuAsync(player, mode, 1);
-                    }
-                }, 1L
-        );
+        JustEnoughGuide.runLaterAsync(() -> openGuide(player, mode), 1L);
     }
 
     @Internal

@@ -35,6 +35,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
@@ -73,6 +74,7 @@ public class SpecialMenuProvider {
     public static boolean ENABLED_LogiTech = false;
     public static boolean ENABLED_InfinityExpansion = false;
     public static boolean ENABLED_ObsidianExpansion = false;
+    public static boolean ENABLED_Galactifun = false;
     // FinalTECH | FinalTECH-Changed
     public static @Nullable Method methodRecipeItemGroup_getBySlimefunItem = null;
     // Nexcavate
@@ -100,6 +102,10 @@ public class SpecialMenuProvider {
     // ObsidianExpansion
     public static @Nullable Method methodObsidianExpansion_openFORGERecipe = null; // check research
     public static @Nullable Constructor<?> constructorObsidianExpansion_BackEntry = null;
+    // Galactifun
+    public static @Nullable Class<?> classGalactifun_CoreItemGroup = null;
+    public static @Nullable Object objectGalactifun_ASSEMBLY_CATEGORY = null;
+    public static @Nullable Method methodGalactifun_displayItem = null;
 
     public static void loadConfiguration() {
         IntegrationManager.scheduleRun(SpecialMenuProvider::loadConfigurationInternal);
@@ -112,6 +118,7 @@ public class SpecialMenuProvider {
         ENABLED_LogiTech = JustEnoughGuide.getIntegrationManager().isEnabledLogiTech();
         ENABLED_InfinityExpansion = JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion();
         ENABLED_ObsidianExpansion = JustEnoughGuide.getIntegrationManager().isEnabledObsidianExpansion();
+        ENABLED_Galactifun = JustEnoughGuide.getIntegrationManager().isEnabledGalactifun();
         // FinalTECH | FinalTECH-Changed
         try {
             Method method = ReflectionUtil.getMethod(
@@ -380,6 +387,19 @@ public class SpecialMenuProvider {
             }
         } catch (ClassNotFoundException ignored) {
         }
+        // Galactifun
+        try {
+            // io.github.addoncommunity.galactifun.core.CoreItemGroup
+            Class<?> clazz = Class.forName("io.github.addoncommunity.galactifun.core.CoreItemGroup");
+            if (clazz != null) {
+                classGalactifun_CoreItemGroup = clazz;
+                objectGalactifun_ASSEMBLY_CATEGORY = ReflectionUtil.getStaticValue(clazz, "ASSEMBLY_CATEGORY");
+                if (objectGalactifun_ASSEMBLY_CATEGORY != null) {
+                    methodGalactifun_displayItem = ReflectionUtil.getMethod(clazz, "displayItem");
+                }
+            }
+        } catch (ClassNotFoundException ignored) {
+        }
 
         Debug.debug("SpecialMenuProvider initialized");
         Debug.debug("ENABLED_FinalTECH: " + ENABLED_FinalTECH);
@@ -410,6 +430,10 @@ public class SpecialMenuProvider {
         Debug.debug("-------------ObsidianExpansion----------");
         Debug.debug("methodObsidianExpansion_openFORGERecipe: " + (methodObsidianExpansion_openFORGERecipe != null));
         Debug.debug("constructorObsidianExpansion_BackEntry: " + (constructorObsidianExpansion_BackEntry != null));
+        Debug.debug("-------------Galactifun----------");
+        Debug.debug("classGalactifun_CoreItemGroup: " + (classGalactifun_CoreItemGroup != null));
+        Debug.debug("objectGalactifun_ASSEMBLY_CATEGORY: " + (objectGalactifun_ASSEMBLY_CATEGORY != null));
+        Debug.debug("methodGalactifun_displayItem: " + (methodGalactifun_displayItem != null));
     }
 
     public static boolean isSpecialItem(SlimefunItem slimefunItem) {
@@ -417,7 +441,8 @@ public class SpecialMenuProvider {
                 || isNexcavateItem(slimefunItem)
                 || isLogiTechItem(slimefunItem)
                 || isInfinityItem(slimefunItem)
-                || isObsidianForgeItem(slimefunItem);
+                || isObsidianForgeItem(slimefunItem)
+                || isGalactifunItem(slimefunItem);
     }
 
     public static boolean isFinalTECHItem(SlimefunItem slimefunItem) {
@@ -486,6 +511,18 @@ public class SpecialMenuProvider {
         return false;
     }
 
+    public static boolean isGalactifunItem(SlimefunItem slimefunItem) {
+        if (!ENABLED_Galactifun) {
+            return false;
+        }
+
+        String addonName = slimefunItem.getAddon().getName();
+        if ("Galactifun".equals(addonName)) {
+            return slimefunItem.getRecipe().length > COMMON_RECIPE_LENGTH;
+        }
+        return false;
+    }
+
     public static boolean open(
             Player player,
             PlayerProfile playerProfile,
@@ -522,6 +559,10 @@ public class SpecialMenuProvider {
         } else if (isObsidianForgeItem(slimefunItem)) {
             openObsidianForgeMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
             Debug.debug("Opened ObsidianExpansion special menu");
+            return true;
+        } else if (isGalactifunItem(slimefunItem)) {
+            openGalactifunMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
+            Debug.debug("Opened Galactifun special menu");
             return true;
         }
         return false;
@@ -701,6 +742,33 @@ public class SpecialMenuProvider {
                     null, playerProfile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
             methodObsidianExpansion_openFORGERecipe.invoke(null, player, slimefunItem.getId(), backEntry);
             insertUselessHistory(playerProfile);
+        }
+    }
+
+    public static void openGalactifunMenu(
+            Player player,
+            PlayerProfile playerProfile,
+            SlimefunItem slimefunItem,
+            SlimefunGuideMode slimefunGuideMode) throws InvocationTargetException, IllegalAccessException {
+        if (!ENABLED_Galactifun) {
+            return;
+        }
+        if (isGalactifunItem(slimefunItem)) {
+            if (methodGalactifun_displayItem == null) {
+                return;
+            }
+
+            SlimefunItemStack sfis;
+            if (slimefunItem.getItem() instanceof SlimefunItemStack is) {
+                sfis = is;
+            } else {
+                sfis = new SlimefunItemStack(slimefunItem.getId(), slimefunItem.getItem());
+            }
+            Map.Entry<SlimefunItemStack, ItemStack[]> entry = Map.entry(
+                    sfis,
+                    slimefunItem.getRecipe()
+            );
+            methodGalactifun_displayItem.invoke(player, playerProfile, entry);
         }
     }
 

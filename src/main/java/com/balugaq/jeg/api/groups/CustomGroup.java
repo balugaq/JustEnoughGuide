@@ -278,10 +278,7 @@ public class CustomGroup extends BaseGroup<CustomGroup> {
                             .at(chestMenu, contentSlots.get(i), page);
                 } else if (o instanceof ItemGroup itemGroup) {
                     if (GuideUtil.getGuide(
-                            player, GuideListener.guideModeMap.getOrDefault(
-                                    player,
-                                    SlimefunGuideMode.SURVIVAL_MODE
-                            )
+                            player, GuideUtil.getLastGuideMode(player)
                     ) instanceof JEGSlimefunGuideImplementation guide) {
                         guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));
                     }

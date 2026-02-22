@@ -102,105 +102,104 @@ public class RTSSearchGroup extends FlexItemGroup {
         }
     }
 
+    // @formatter:off
     static {
-        JustEnoughGuide
-                .runTimer(
-                        () -> {
-                            Map<Player, AnvilInventory> copy;
-                            synchronized (RTS_PLAYERS) {
-                                copy = new HashMap<>(RTS_PLAYERS);
+        JustEnoughGuide.runTimer(() -> {
+            Map<Player, AnvilInventory> copy;
+            synchronized (RTS_PLAYERS) {
+                copy = new HashMap<>(RTS_PLAYERS);
+            }
+
+            Map<Player, String> searchTermCopy;
+            synchronized (RTS_SEARCH_TERMS) {
+                searchTermCopy = new HashMap<>(RTS_SEARCH_TERMS);
+            }
+
+            Map<Player, @Nullable String> writes = new HashMap<>();
+            copy.forEach((player, inventory) -> {
+                if (inventory == null) {
+                    return;
+                }
+                // Use reflection to avoid InventoryView compatibility issues
+                Object view = player.getOpenInventory();
+                Inventory openingInventory;
+                try {
+                    // Get top inventory using ReflectionUtil to avoid casting InventoryView
+                    openingInventory = (Inventory) ReflectionUtil.invokeMethod(view, "getTopInventory");
+                } catch (Exception e) {
+                    Debug.debug("Failed to get top inventory: " + e.getMessage());
+                    return;
+                }
+                if (openingInventory instanceof AnvilInventory anvilInventory
+                        && openingInventory.equals(inventory)) {
+                    String oldSearchTerm = searchTermCopy.get(player);
+                    try {
+                        String newSearchTerm = null;
+
+                        // Try Paper 1.21+ AnvilView method first using cached class
+                        if (anvilViewClass != null) {
+                            try {
+                                if (anvilViewClass.isInstance(view)) {
+                                    newSearchTerm = (String) ReflectionUtil.invokeMethod(
+                                            view,
+                                            "getRenameText"
+                                    );
+                                }
+                            } catch (Exception e) {
+                                // AnvilView method failed, will use fallback
                             }
+                        }
 
-                            Map<Player, String> searchTermCopy;
-                            synchronized (RTS_SEARCH_TERMS) {
-                                searchTermCopy = new HashMap<>(RTS_SEARCH_TERMS);
+                        // Fallback to legacy AnvilInventory method if AnvilView failed
+                        if (newSearchTerm == null) {
+                            try {
+                                // Use ReflectionUtil to avoid compile-time dependency
+                                newSearchTerm = (String) ReflectionUtil.invokeMethod(
+                                        anvilInventory,
+                                        "getRenameText"
+                                );
+                            } catch (Exception e) {
+                                Debug.debug("Both AnvilView and AnvilInventory getRenameText() " +
+                                                    "methods are unavailable");
+                                return;
                             }
+                        }
 
-                            Map<Player, @Nullable String> writes = new HashMap<>();
-                            copy.forEach((player, inventory) -> {
-                                if (inventory == null) {
-                                    return;
-                                }
-                                // Use reflection to avoid InventoryView compatibility issues
-                                Object view = player.getOpenInventory();
-                                Inventory openingInventory;
-                                try {
-                                    // Get top inventory using ReflectionUtil to avoid casting InventoryView
-                                    openingInventory = (Inventory) ReflectionUtil.invokeMethod(view, "getTopInventory");
-                                } catch (Exception e) {
-                                    Debug.debug("Failed to get top inventory: " + e.getMessage());
-                                    return;
-                                }
-                                if (openingInventory instanceof AnvilInventory anvilInventory
-                                        && openingInventory.equals(inventory)) {
-                                    String oldSearchTerm = searchTermCopy.get(player);
-                                    try {
-                                        String newSearchTerm = null;
+                        if (oldSearchTerm == null || newSearchTerm == null) {
+                            writes.put(player, newSearchTerm);
+                            return;
+                        }
 
-                                        // Try Paper 1.21+ AnvilView method first using cached class
-                                        if (anvilViewClass != null) {
-                                            try {
-                                                if (anvilViewClass.isInstance(view)) {
-                                                    newSearchTerm = (String) ReflectionUtil.invokeMethod(
-                                                            view,
-                                                            "getRenameText"
-                                                    );
-                                                }
-                                            } catch (Exception e) {
-                                                // AnvilView method failed, will use fallback
-                                            }
-                                        }
+                        if (!oldSearchTerm.equals(newSearchTerm)) {
+                            writes.put(player, newSearchTerm);
+                            RTSEvents.SearchTermChangeEvent event = new RTSEvents.SearchTermChangeEvent(
+                                    player,
+                                    view,
+                                    anvilInventory,
+                                    oldSearchTerm,
+                                    newSearchTerm,
+                                    GuideUtil.getLastGuideMode(player)
+                            );
+                            Bukkit.getPluginManager().callEvent(event);
+                        }
+                    } catch (Exception e) {
+                        Debug.trace(e);
+                    }
+                }
+            });
 
-                                        // Fallback to legacy AnvilInventory method if AnvilView failed
-                                        if (newSearchTerm == null) {
-                                            try {
-                                                // Use ReflectionUtil to avoid compile-time dependency
-                                                newSearchTerm = (String) ReflectionUtil.invokeMethod(
-                                                        anvilInventory,
-                                                        "getRenameText"
-                                                );
-                                            } catch (Exception e) {
-                                                Debug.debug("Both AnvilView and AnvilInventory getRenameText() " +
-                                                                    "methods are unavailable");
-                                                return;
-                                            }
-                                        }
-
-                                        if (oldSearchTerm == null || newSearchTerm == null) {
-                                            writes.put(player, newSearchTerm);
-                                            return;
-                                        }
-
-                                        if (!oldSearchTerm.equals(newSearchTerm)) {
-                                            writes.put(player, newSearchTerm);
-                                            RTSEvents.SearchTermChangeEvent event = new RTSEvents.SearchTermChangeEvent(
-                                                    player,
-                                                    view,
-                                                    anvilInventory,
-                                                    oldSearchTerm,
-                                                    newSearchTerm,
-                                                    GuideListener.guideModeMap.get(player)
-                                            );
-                                            Bukkit.getPluginManager().callEvent(event);
-                                        }
-                                    } catch (Exception e) {
-                                        Debug.trace(e);
-                                    }
-                                }
-                            });
-
-                            writes.forEach((player, searchTerm) -> {
-                                if (player != null && searchTerm != null) {
-                                    synchronized (RTS_SEARCH_TERMS) {
-                                        RTS_SEARCH_TERMS.put(player, searchTerm);
-                                    }
-                                }
-                            });
-                        },
-                        1,
-                        4
-                );
+            writes.forEach((player, searchTerm) -> {
+                if (player != null && searchTerm != null) {
+                    synchronized (RTS_SEARCH_TERMS) {
+                        RTS_SEARCH_TERMS.put(player, searchTerm);
+                    }
+                }
+            });
+        },
+        1,
+        4);
     }
+    // @formatter:on
 
     private final AnvilInventory anvilInventory;
     private final String presetSearchTerm;
