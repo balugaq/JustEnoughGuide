@@ -540,7 +540,7 @@ public class ConfigManager extends AbstractManager {
             }
 
             for (int i = 0; i < p.first().length(); i++) {
-                this.SHARED_CHARS.add(" " + p.first.charAt(i) + p.second.charAt(i));
+                this.SHARED_CHARS.add("" + p.first.charAt(i) + p.second.charAt(i));
             }
         }
     }

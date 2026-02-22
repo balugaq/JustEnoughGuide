@@ -48,6 +48,7 @@ import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.platform.PlatformUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
@@ -1354,7 +1355,7 @@ public interface OnClick {
                                         playerProfile,
                                         slimefunItem,
                                         slimefunItem.getItemGroup(),
-                                        page
+                                        findPage(slimefunItem)
                                 );
                             }
                     )
@@ -1387,6 +1388,18 @@ public interface OnClick {
                             page
                     );
                 }));
+            }
+
+            private static int findPage(SlimefunItem slimefunItem) {
+                var group = slimefunItem.getItemGroup();
+                if (!(group instanceof FlexItemGroup)) {
+                    var items = group.getItems();
+                    int idx = items.indexOf(slimefunItem);
+                    if (idx == -1) return 1;
+                    return idx / 36 + 1;
+                }
+
+                return 1;
             }
         }
 

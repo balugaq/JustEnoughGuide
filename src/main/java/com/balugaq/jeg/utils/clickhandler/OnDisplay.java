@@ -501,10 +501,10 @@ public interface OnDisplay {
                 icon.setItemMeta(meta);
 
                 menu.addItem(
-                        slot, PatchScope.Research.patch(player, icon), OnClick.Item.Research.create(
-                                guide, menu,
-                                page
-                        )
+                        slot,
+                        PatchScope.Research.patch(player, icon),
+                        // page argument is useless
+                        OnClick.Item.Research.create(guide, menu, 1)
                 );
             }
         }
