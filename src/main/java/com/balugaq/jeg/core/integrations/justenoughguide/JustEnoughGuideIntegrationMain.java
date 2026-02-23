@@ -82,9 +82,9 @@ public class JustEnoughGuideIntegrationMain implements Integration {
 
         if (!JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()
                 && MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17)) {
-            RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new BundlePlayerInventoryItemGetter());
+            RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new BundlePlayerInventoryItemSeeker());
         }
-        RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new ShulkerBoxPlayerInventoryItemGetter());
+        RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new ShulkerBoxPlayerInventoryItemSeeker());
 
         try {
             ItemStack easterEgg = new CustomItemStack(

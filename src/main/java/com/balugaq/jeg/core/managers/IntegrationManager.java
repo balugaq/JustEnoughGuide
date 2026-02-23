@@ -28,8 +28,6 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
-import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
-import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.core.integrations.alchimiavitae.AlchimiaVitaeIntegrationMain;
 import com.balugaq.jeg.core.integrations.bedrocktechnology.BedrockTechnologyIntegrationMain;
@@ -48,13 +46,7 @@ import com.balugaq.jeg.core.integrations.gastronomicon.GastronomiconIntegrationM
 import com.balugaq.jeg.core.integrations.infinitycompress.InfinityCompressIntegrationMain;
 import com.balugaq.jeg.core.integrations.infinityexpansion.InfinityExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.infinityexpansion2.InfinityExpansion2IntegrationMain;
-import com.balugaq.jeg.core.integrations.justenoughguide.BundlePlayerInventoryItemGetter;
-import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerInventoryRecipeCompleteSlimefunSource;
-import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerInventoryRecipeCompleteVanillaSource;
-import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerNearbyContainerRecipeCompleteSlimefunSource;
-import com.balugaq.jeg.core.integrations.justenoughguide.DefaultPlayerNearbyContainerRecipeCompleteVanillaSource;
 import com.balugaq.jeg.core.integrations.justenoughguide.JustEnoughGuideIntegrationMain;
-import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemGetter;
 import com.balugaq.jeg.core.integrations.logitech.LogitechIntegrationMain;
 import com.balugaq.jeg.core.integrations.magicexpansion.MagicExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.momotech.MomotechIntegrationMain;
@@ -65,6 +57,7 @@ import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionInte
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimefun.SlimefunIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimehud.SlimeHUDIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
@@ -72,7 +65,6 @@ import com.balugaq.jeg.core.integrations.tsingshantechnology.TsingshanTechnology
 import com.balugaq.jeg.core.integrations.wildernether.WilderNetherIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.MinecraftVersion;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -225,6 +217,7 @@ public class IntegrationManager extends AbstractManager {
             addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
             addIntegration(enabledTsingshanTechnology, TsingshanTechnologyIntegrationMain::new);
             addIntegration(enabledWilderNether, WilderNetherIntegrationMain::new);
+            addIntegration(true, SlimefunIntegrationMain::new);
             addIntegration(true, JustEnoughGuideIntegrationMain::new);
 
             startupIntegrations();

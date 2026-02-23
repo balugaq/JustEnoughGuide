@@ -121,16 +121,6 @@ public class LogitechIntegrationMain implements Integration {
     public static final Set<SlimefunItem> stackableMachines = new HashSet<>();
     public static final Set<SlimefunItem> stackableMaterialGenerators = new HashSet<>();
 
-    public static @Nullable JavaPlugin plugin = null;
-
-    public static JavaPlugin getPlugin() {
-        if (plugin == null) {
-            plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Logitech");
-        }
-
-        return plugin;
-    }
-
     public static boolean isMachineStackable(SlimefunItem sf) {
         return stackableMachines.contains(sf);
     }
@@ -290,6 +280,8 @@ public class LogitechIntegrationMain implements Integration {
                 default -> null;
             };
         });
+        SlimefunGuideSettings.addOption(LogitechTrueRecipeSettingsGuideOption.instance());
+        SlimefunGuideSettings.addOption(LogitechFalseRecipeSettingsGuideOption.instance());
     }
 
     public static void rrc(SlimefunItem slimefunItem, int[] slots) {

@@ -132,10 +132,15 @@ public class RecipeCompleteProvider {
                 session.setNotHandleable(source);
                 continue;
             }
+            if (session.itemNotIn(source, template)) {
+                continue;
+            }
             var result = source.getItemStack(session, template);
             if (result != null) {
                 return result;
             }
+
+            session.setItemNotIn(source, template);
         }
         return null;
     }

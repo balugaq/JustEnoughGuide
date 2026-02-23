@@ -62,7 +62,7 @@ public class Calculator {
         PRIORITY.put("(", 0);
     }
 
-    @SuppressWarnings("DuplicatedCode")
+    @SuppressWarnings({"DuplicatedCode", "ConstantValue"})
     public static BigDecimal calculate(String expression) throws NumberFormatException {
         if (expression == null || expression.trim().isEmpty()) {
             throw new NumberFormatException("Empty expression");

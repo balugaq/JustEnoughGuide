@@ -39,6 +39,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
+@SuppressWarnings("unused")
 @NullMarked
 public class WilderNetherIntegrationMain implements Integration {
     public static final int[] BLACKSTONE_STOVE_INPUT_SLOTS = new int[] {12, 13, 14, 21, 22, 23, 25, 19};

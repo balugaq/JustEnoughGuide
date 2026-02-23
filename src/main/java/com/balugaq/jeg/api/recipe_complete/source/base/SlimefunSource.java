@@ -35,7 +35,6 @@ import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.entity.Player;
@@ -133,10 +132,7 @@ public interface SlimefunSource extends Source {
             session.cancel();
             return;
         }
-        for (int i = 0; i < session.getTimes(); i++) {
-            completeRecipeWithGuide(session);
-        }
-
+        completeRecipeWithGuide(session);
         if (reopenMenu) actualMenu.open(session.getPlayer());
         if (callback != null) callback.run();
         session.complete();

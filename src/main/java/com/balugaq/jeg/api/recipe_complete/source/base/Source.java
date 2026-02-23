@@ -57,8 +57,6 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -365,77 +363,79 @@ public interface Source {
         }
 
         List<@Nullable RecipeChoice> choices = getRecipe(player, session.getSlimefunItem(), clickedItem);
-        if (choices == null) {
-            sendMissingMaterial(player, clickedItem);
-            return false;
-        }
-
-        for (int i = 0; i < choices.size(); i++) {
-            if (i >= ingredientSlots.length) {
-                break;
+        for (int time = 0; time < session.getTimes(); time++) {
+            if (choices == null) {
+                sendMissingMaterial(player, clickedItem);
+                continue; // intentionally repeat send missing material
             }
 
-            RecipeChoice choice = choices.get(i);
-            if (choice == null) {
-                continue;
-            }
-
-            if (!unordered) {
-                ItemStack existing = itemGetter.get(ingredientSlots[i]);
-                if (existing != null && existing.getType() != Material.AIR) {
-                    if (existing.getAmount() >= existing.getMaxStackSize()) {
-                        continue;
-                    }
-
-                    if (!choice.test(existing)) {
-                        continue;
-                    }
+            for (int i = 0; i < choices.size(); i++) {
+                if (i >= ingredientSlots.length) {
+                    break;
                 }
-            }
 
-            if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
-                List<ItemStack> itemStacks =
-                        materialChoice.getChoices().stream().map(ItemStack::new).toList();
-                for (ItemStack itemStack : itemStacks) {
-                    // Issue #64
-                    if (!itemFitter.fits(itemStack, i)) {
-                        continue;
-                    }
-                    ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
-                    if (received != null && received.getType() != Material.AIR) {
-                        session.setPushed(session.getPushed() + received.getAmount());
-                        itemPusher.push(received, i);
-                    } else {
-                        if (session.isExpired()) {
-                            session.setRecipeDepth(recipeDepth + 1);
-                            completeRecipeWithGuide(
-                                    session,
-                                    itemGetter, itemFitter, itemPusher
-                            );
-                        } else {
-                            sendMissingMaterial(player, itemStack);
+                RecipeChoice choice = choices.get(i);
+                if (choice == null) {
+                    continue;
+                }
+
+                if (!unordered) {
+                    ItemStack existing = itemGetter.get(ingredientSlots[i]);
+                    if (existing != null && existing.getType() != Material.AIR) {
+                        if (existing.getAmount() >= existing.getMaxStackSize()) {
+                            continue;
+                        }
+
+                        if (!choice.test(existing)) {
+                            continue;
                         }
                     }
                 }
-            } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
-                for (ItemStack itemStack : exactChoice.getChoices()) {
-                    // Issue #64
-                    if (!itemFitter.fits(itemStack, i)) {
-                        continue;
-                    }
-                    ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
-                    if (received != null && received.getType() != Material.AIR) {
-                        session.setPushed(session.getPushed() + received.getAmount());
-                        itemPusher.push(received, i);
-                    } else {
-                        if (session.isExpired()) {
-                            session.setRecipeDepth(recipeDepth + 1);
-                            completeRecipeWithGuide(
-                                    session,
-                                    itemGetter, itemFitter, itemPusher
-                            );
+
+                if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
+                    List<ItemStack> itemStacks =
+                            materialChoice.getChoices().stream().map(ItemStack::new).toList();
+                    for (ItemStack itemStack : itemStacks) {
+                        // Issue #64
+                        if (!itemFitter.fits(itemStack, i)) {
+                            continue;
+                        }
+                        ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
+                        if (received != null && received.getType() != Material.AIR) {
+                            session.setPushed(session.getPushed() + received.getAmount());
+                            itemPusher.push(received, i);
                         } else {
-                            sendMissingMaterial(player, itemStack);
+                            if (!session.isExpired()) {
+                                session.setRecipeDepth(recipeDepth + 1);
+                                completeRecipeWithGuide(
+                                        session,
+                                        itemGetter, itemFitter, itemPusher
+                                );
+                            } else {
+                                sendMissingMaterial(player, itemStack);
+                            }
+                        }
+                    }
+                } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
+                    for (ItemStack itemStack : exactChoice.getChoices()) {
+                        // Issue #64
+                        if (!itemFitter.fits(itemStack, i)) {
+                            continue;
+                        }
+                        ItemStack received = RecipeCompleteProvider.getItemStack(session, itemStack);
+                        if (received != null && received.getType() != Material.AIR) {
+                            session.setPushed(session.getPushed() + received.getAmount());
+                            itemPusher.push(received, i);
+                        } else {
+                            if (!session.isExpired()) {
+                                session.setRecipeDepth(recipeDepth + 1);
+                                completeRecipeWithGuide(
+                                        session,
+                                        itemGetter, itemFitter, itemPusher
+                                );
+                            } else {
+                                sendMissingMaterial(player, itemStack);
+                            }
                         }
                     }
                 }
@@ -471,6 +471,7 @@ public interface Source {
      */
     @FunctionalInterface
     interface ItemFitter {
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         boolean fits(ItemStack itemStack, int ingredientIndex);
     }
 }

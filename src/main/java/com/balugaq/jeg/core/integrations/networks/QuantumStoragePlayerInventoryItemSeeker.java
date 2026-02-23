@@ -25,78 +25,68 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.justenoughguide;
+package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.StackUtils;
+import io.github.sefiraat.networks.slimefun.network.NetworkQuantumStorage;
+import io.github.sefiraat.networks.utils.Keys;
+import io.github.sefiraat.networks.utils.datatypes.DataTypeMethods;
+import io.github.sefiraat.networks.utils.datatypes.PersistentQuantumStorageType;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BundleMeta;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.ArrayList;
 
 /**
  * @author balugaq
  * @since 2.1
  */
 @NullMarked
-public class BundlePlayerInventoryItemGetter implements RecipeCompletableListener.PlayerInventoryItemGetter {
+public class QuantumStoragePlayerInventoryItemSeeker implements RecipeCompletableListener.PlayerInventoryItemSeeker {
     @Override
     public @NonNegative int getItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item, int amount) {
-        if (!item.getType().name().contains("BUNDLE")) {
+        if (!(SlimefunItem.getByItem(item) instanceof NetworkQuantumStorage nqs)) {
             return 0;
         }
 
         var meta = item.getItemMeta();
-        if (!(meta instanceof BundleMeta bundle)) {
+        var instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE);
+        if (instance == null) instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE2, PersistentQuantumStorageType.TYPE);
+        if (instance == null) instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE3, PersistentQuantumStorageType.TYPE);
+        if (instance == null) return 0;
+
+        ItemStack innerItem = instance.getItemStack();
+        if (innerItem == null || innerItem.getType() == Material.AIR || !StackUtils.itemsMatch(innerItem, target)) {
             return 0;
         }
 
-        var origin = bundle.getItems();
-        if (origin == null || origin.isEmpty()) {
-            return 0;
+        long innerItemAmount = instance.getAmount();
+        if (innerItemAmount <= 0) return 0;
+
+        int got;
+        if (innerItemAmount <= amount) {
+            instance.reduceAmount((int) innerItemAmount);
+            got = (int) innerItemAmount;
+        } else {
+            instance.reduceAmount(amount);
+            got = amount;
         }
+        var newMeta = nqs.getItem().getItemMeta();
+        DataTypeMethods.setCustom(newMeta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE, instance);
+        instance.addMetaLore(newMeta);
+        item.setItemMeta(newMeta);
 
-        var items = new ArrayList<>(origin);
-        int got = 0;
-        for (int idx = 0; idx < items.size(); idx++) {
-            ItemStack innerItem = items.get(idx);
-            if (innerItem == null || innerItem.getType() == Material.AIR || !StackUtils.itemsMatch(innerItem, target)) {
-                continue;
-            }
-
-            int existing = innerItem.getAmount();
-
-            if (existing <= amount) {
-                amount -= existing;
-                got += existing;
-                items.set(idx, null);
-            } else {
-                innerItem.setAmount(existing - amount);
-                amount = 0;
-            }
-
-            if (amount <= 0) {
-                bundle.setItems(Source.trimItems(items));
-                item.setItemMeta(meta);
-                return got;
-            }
-        }
-        bundle.setItems(Source.trimItems(items));
-        item.setItemMeta(meta);
         return got;
     }
 
     @Override
     public @NotNull NamespacedKey getKey() {
-        return KeyUtil.newKey("bundle_handler");
+        return KeyUtil.newKey("quantum_storage_handler");
     }
 }

@@ -32,7 +32,6 @@ import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.InventoryUtil;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;

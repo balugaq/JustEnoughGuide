@@ -62,7 +62,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings("DuplicatedCode")
 @Getter
 @NullMarked
 public class GuideListener implements Listener {

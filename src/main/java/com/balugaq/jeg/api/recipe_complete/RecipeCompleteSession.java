@@ -44,6 +44,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Nullable;
@@ -69,6 +70,7 @@ public class RecipeCompleteSession {
     private static Map<Player, RecipeCompleteSession> SESSIONS = new ConcurrentHashMap<>();
     private final Map<Source, Object> cache = new HashMap<>();
     private final Set<Source> notHandleable = new HashSet<>();
+    private final Map<ItemStack, Set<Source>> itemNotIn = new HashMap<>();
     private Player player;
     private GuideEvents.ItemButtonClickEvent event;
     private Location target;
@@ -221,6 +223,17 @@ public class RecipeCompleteSession {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canStart() {
         return canStart(this);
+    }
+
+    public boolean itemNotIn(Source source, ItemStack itemStack) {
+        return itemNotIn.containsKey(itemStack) && itemNotIn.get(itemStack).contains(source);
+    }
+
+    public void setItemNotIn(Source source, ItemStack itemStack) {
+        if (!itemNotIn.containsKey(itemStack)) {
+            itemNotIn.put(itemStack, new HashSet<>());
+        }
+        itemNotIn.get(itemStack).add(source);
     }
 
     public static boolean canStart(RecipeCompleteSession session) {

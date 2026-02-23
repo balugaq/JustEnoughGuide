@@ -84,7 +84,7 @@ public class RecipeCompletableRegistry {
     }
 
     @ApiStatus.Obsolete
-    public static void registerPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemGetter itemGetter) {
+    public static void registerPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemSeeker itemGetter) {
         RecipeCompletableListener.registerPlayerInventoryItemGetter(itemGetter);
     }
 
@@ -94,12 +94,12 @@ public class RecipeCompletableRegistry {
     }
 
     @ApiStatus.Obsolete
-    public static void unregisterPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemGetter itemGetter) {
+    public static void unregisterPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemSeeker itemGetter) {
         RecipeCompletableListener.unregisterPlayerInventoryItemGetter(itemGetter.getKey());
     }
 
     @ApiStatus.Obsolete
-    public static Collection<RecipeCompletableListener.PlayerInventoryItemGetter> getPlayerInventoryItemGetters() {
+    public static Collection<RecipeCompletableListener.PlayerInventoryItemSeeker> getPlayerInventoryItemGetters() {
         return RecipeCompletableListener.PLAYER_INVENTORY_ITEM_GETTERS.values();
     }
 }

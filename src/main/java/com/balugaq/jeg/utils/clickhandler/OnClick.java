@@ -48,7 +48,6 @@ import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.platform.PlatformUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
@@ -638,7 +637,7 @@ public interface OnClick {
          */
         @NullMarked
         interface ClickHandler extends BaseClickHandler {
-            io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup();
+            @SuppressWarnings("unused") io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup();
         }
 
         static ClickHandler withGroup(io.github.thebusybiscuit.slimefun4.api.items.ItemGroup group, BaseClickHandler base) {
@@ -934,7 +933,7 @@ public interface OnClick {
          */
         @NullMarked
         interface ClickHandler extends BaseClickHandler {
-            io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType();
+            @SuppressWarnings("unused") io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType();
         }
 
         static ClickHandler withType(io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType type, BaseClickHandler base) {
@@ -1111,7 +1110,7 @@ public interface OnClick {
         @NullMarked
         @FunctionalInterface
         interface ActionHandle {
-            void click(JEGSlimefunGuideImplementation guide, Player player, int slot,
+            @SuppressWarnings("unused") void click(JEGSlimefunGuideImplementation guide, Player player, int slot,
                        @Nullable SlimefunItem slimefunItem, ItemStack itemStack, ClickAction clickAction,
                        ChestMenu menu, int page);
         }

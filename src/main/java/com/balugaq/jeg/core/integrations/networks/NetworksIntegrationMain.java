@@ -30,7 +30,6 @@ package com.balugaq.jeg.core.integrations.networks;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
@@ -126,7 +125,7 @@ public class NetworksIntegrationMain implements Integration {
         rrc("NTW_BESTPUSHER", PUSHER_SLOTS, true);
         rrc("NTW_IMPORTER", PUSHER_SLOTS, true);
 
-        RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new QuantumStoragePlayerInventoryItemGetter());
+        RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new QuantumStoragePlayerInventoryItemSeeker());
     }
 
     public static void rrc(String id, int[] slots, boolean unordered) {

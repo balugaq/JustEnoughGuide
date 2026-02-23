@@ -25,7 +25,7 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.justenoughguide;
+package com.balugaq.jeg.core.integrations.slimefun;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
@@ -42,7 +42,7 @@ import java.util.List;
  * @since 2.1
  */
 @NullMarked
-public class SlimefunRecipeCompleteSupportMain implements Integration {
+public class SlimefunIntegrationMain implements Integration {
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
     public static void rrc(String id, int[] slots, boolean unordered) {

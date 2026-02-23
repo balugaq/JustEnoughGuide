@@ -39,8 +39,7 @@ import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import com.balugaq.jeg.api.recipe_complete.source.base.VanillaSource;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
-import com.balugaq.jeg.core.integrations.justenoughguide.BundlePlayerInventoryItemGetter;
-import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemGetter;
+import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemSeeker;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
@@ -77,7 +76,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
@@ -113,7 +111,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     public static final ConcurrentHashMap<Player, Location> DISPENSER_LISTENING = new ConcurrentHashMap<>();
     public static final NamespacedKey LAST_RECIPE_COMPLETE_KEY = KeyUtil.newKey("last_recipe_complete");
     public static final ConcurrentHashMap<Player, ArrayList<ItemStack>> missingMaterials = new ConcurrentHashMap<>();
-    public static final Map<NamespacedKey, PlayerInventoryItemGetter> PLAYER_INVENTORY_ITEM_GETTERS = new HashMap<>();
+    public static final Map<NamespacedKey, PlayerInventoryItemSeeker> PLAYER_INVENTORY_ITEM_GETTERS = new HashMap<>();
     private static @UnknownNullability ItemStack RECIPE_COMPLETABLE_BOOK_ITEM = null;
 
     static {
@@ -733,7 +731,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
         event.getPlayer().updateInventory();
     }
 
-    public static void registerPlayerInventoryItemGetter(PlayerInventoryItemGetter itemGetter) {
+    public static void registerPlayerInventoryItemGetter(PlayerInventoryItemSeeker itemGetter) {
         PLAYER_INVENTORY_ITEM_GETTERS.put(itemGetter.getKey(), itemGetter);
     }
 
@@ -772,11 +770,11 @@ public class RecipeCompletableListener implements ItemPatchListener {
      * @author balugaq
      * @since 2.1
      *
-     * @see ShulkerBoxPlayerInventoryItemGetter
+     * @see ShulkerBoxPlayerInventoryItemSeeker
      * @see Source#getItemStackFromPlayerInventory(RecipeCompleteSession, ItemStack, int)
      */
     @NullMarked
-    public interface PlayerInventoryItemGetter extends Keyed {
+    public interface PlayerInventoryItemSeeker extends Keyed {
         /**
          * @param session The session
          * @param target The target item

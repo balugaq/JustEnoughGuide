@@ -25,13 +25,4 @@
  *
  */
 
-package com.balugaq.jeg.api.objects.enums;
-
-/**
- * @author balugaq
- * @since 2.0
- */
-public enum RecipeCompleteOpenMode {
-    NEW,
-    INHERIT
-}
+package com.balugaq.jeg.core.integrations.slimefun;

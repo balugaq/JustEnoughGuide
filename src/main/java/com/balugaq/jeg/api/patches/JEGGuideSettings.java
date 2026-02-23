@@ -371,11 +371,6 @@ public class JEGGuideSettings {
         if (!patched.isEmpty()) return;
         for (var option : getOptions()) {
             if (option.getAddon() instanceof Slimefun) {
-                String sm = option.getClass().getSimpleName();
-//                if (sm.equals("FireworksOption") || sm.equals("LearningAnimationOption")) {
-//                    continue;
-//                }
-
                 patched.add(option);
             }
         }
