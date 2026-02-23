@@ -290,7 +290,7 @@ public class ReflectionUtil {
                     boolean match = true;
                     // exact match
                     for (int i = 0; i < parameterTypes.length; i++) {
-                        if (warpClass(method.getParameterTypes()[i]) != warpClass(parameterTypes[i])) {
+                        if (wrapClass(method.getParameterTypes()[i]) != wrapClass(parameterTypes[i])) {
                             match = false;
                             break;
                         }
@@ -316,7 +316,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static Class<?> warpClass(Class<?> clazz) {
+    public static Class<?> wrapClass(Class<?> clazz) {
         return !clazz.isPrimitive()
                 ? clazz
                 : switch (clazz.getName()) {

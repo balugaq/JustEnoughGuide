@@ -35,6 +35,7 @@ import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -507,7 +508,7 @@ public class RTSListener implements Listener {
     @SuppressWarnings("DataFlowIssue")
     @EventHandler
     public void onLookup(InventoryClickEvent event) {
-        Player player = (Player) event.getView().getPlayer();
+        Player player = (Player) ReflectionUtil.invokeMethod(event.getView(), "getPlayer");
         if (isRTSPlayer(player)) {
             InventoryAction action = event.getAction();
             if (action == InventoryAction.PICKUP_ONE
