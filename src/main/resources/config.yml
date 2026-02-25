@@ -577,7 +577,7 @@ local-translate:
   Blocktreetech: "方块树"
   TinCraft: "&kabc &fTinCraft &kabc&r"
   InfinityExpansion-Changed: "无尽贪婪(心孜改版)" # Avoid conflict with InfinityExpansion
-  浮木科技: "浮木科技"
+  fm_tech: "浮木科技"
   Supermarket: "超能力机器"
   HseerTech: "HseerMC科技"
   ZeroSequenceTechnique: "零序技艺"

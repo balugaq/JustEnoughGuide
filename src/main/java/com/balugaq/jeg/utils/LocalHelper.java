@@ -381,7 +381,7 @@ public class LocalHelper {
         addonLocals.put("Blocktreetech", "方块树");
         addonLocals.put("TinCraft", "&kabc &fTinCraft &kabc&r");
         addonLocals.put("InfinityExpansion-Changed", "无尽贪婪(心孜改版)"); // Avoid conflict with InfinityExpansion
-        addonLocals.put("浮木科技", "浮木科技");
+        addonLocals.put("fm_tech", "浮木科技");
         addonLocals.put("Supermarket", "超能力机器");
         addonLocals.put("HseerTech", "HseerMC科技");
         addonLocals.put("ZeroSequenceTechnique", "零序技艺");
