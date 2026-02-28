@@ -588,6 +588,7 @@ local-translate:
   RSC_YunQi_History: "云启文明"
   fvvtech: "fvv科技"
   AeroDragonTech: "飞龙科技"
+  REGS: "沐莱物语"
 
 # Do not change this value unless you know what you are doing.
 config-version: 2.1
