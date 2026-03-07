@@ -589,6 +589,7 @@ local-translate:
   fvvtech: "fvv科技"
   AeroDragonTech: "飞龙科技"
   REGS: "沐莱物语"
+  FengQi_Tech: "风起科技"
 
 # Do not change this value unless you know what you are doing.
 config-version: 2.1
