@@ -336,8 +336,9 @@
         <dependency>
             <groupId>com.github.TimetownDev</groupId>
             <artifactId>GuguSlimefunLib</artifactId>
-            <version>afeac968aa</version>
-            <scope>provided</scope>
+            <version>Build-46</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/GuguSlimefunLib-Build 46.jar</systemPath>
         </dependency>
 
         <dependency>
