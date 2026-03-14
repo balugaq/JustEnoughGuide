@@ -101,6 +101,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean ALLOW_ACTION_REDIRECT;
     private final boolean LOGITECH_MACHINE_STACKABLE_DISPLAY;
     private final boolean SLIMEFUN_ID_DISPLAY;
+    private final boolean ADAPT_REPLACEMENT_CARDS;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -347,6 +348,7 @@ public class ConfigManager extends AbstractManager {
         this.ALLOW_ACTION_REDIRECT = cfg.getBoolean("improvements.allow-action-redirect", true);
         this.LOGITECH_MACHINE_STACKABLE_DISPLAY = cfg.getBoolean("improvements.logitech-machine-stackable-display", true);
         this.SLIMEFUN_ID_DISPLAY = cfg.getBoolean("improvements.slimefun-id-display", true);
+        this.ADAPT_REPLACEMENT_CARDS = cfg.getBoolean("adapt-replacement-cards", true);
     }
 
     private void setupDefaultConfig() {
@@ -547,5 +549,9 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isSlimefunIdDisplay() {
         return SLIMEFUN_ID_DISPLAY;
+    }
+
+    public boolean isAdaptReplacementCards() {
+        return ADAPT_REPLACEMENT_CARDS;
     }
 }

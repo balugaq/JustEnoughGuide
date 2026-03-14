@@ -113,7 +113,7 @@ public class SlimeAEPluginIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
-        if (JustEnoughGuide.getIntegrationManager().isEnabledGuguSlimefunLib()) {
+        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimeAEPlugin()) {
             RecipeCompleteProvider.addSource(new SlimeAEPluginRecipeCompleteSlimefunSource());
             RecipeCompleteProvider.addSource(new SlimeAEPluginRecipeCompleteVanillaSource());
         }

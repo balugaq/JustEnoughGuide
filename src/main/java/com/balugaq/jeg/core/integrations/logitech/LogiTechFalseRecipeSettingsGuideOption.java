@@ -35,6 +35,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -45,23 +46,25 @@ import java.util.Optional;
  */
 @SuppressWarnings({"SameReturnValue"})
 @NullMarked
-public class LogitechTrueRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
-    public static final LogitechTrueRecipeSettingsGuideOption instance = new LogitechTrueRecipeSettingsGuideOption();
-    public static final ItemStack DEFAULT_ITEM = new ItemStack(Material.COBBLESTONE);
+public class LogiTechFalseRecipeSettingsGuideOption extends AbstractItemSettingsGuideOption {
+    public static final LogiTechFalseRecipeSettingsGuideOption instance = new LogiTechFalseRecipeSettingsGuideOption();
 
-    public static LogitechTrueRecipeSettingsGuideOption instance() {
+    public static LogiTechFalseRecipeSettingsGuideOption instance() {
         return instance;
     }
 
-    public static ItemStack getItem(Player player) {
-        ItemStack itemStack = AbstractItemSettingsGuideOption.getItem(player, key0(), 13);
-        if (itemStack == null) return DEFAULT_ITEM;
-        return itemStack;
+    public static @Nullable ItemStack[] getItems(Player player) {
+        @Nullable ItemStack[] items = new ItemStack[4];
+        for (int i = 9; i < 13; i++) {
+            ItemStack itemStack = AbstractItemSettingsGuideOption.getItem(player, key0(), i);
+            items[i - 9] = itemStack;
+        }
+        return items;
     }
 
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
-        var sf = SlimefunItem.getById("LOGITECH_TRUE_");
+        var sf = SlimefunItem.getById("LOGITECH_FALSE_");
         ItemStack item = sf != null ? Converter.getItem(
                 sf.getItem(),
                 "&a单击打开" + getTitle()
@@ -78,12 +81,12 @@ public class LogitechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
     }
 
     public static NamespacedKey key0() {
-        return KeyUtil.newKey("logitech_true_recipe_settings");
+        return KeyUtil.newKey("logitech_false_recipe_settings");
     }
 
     @Override
     public String getTitle() {
-        return "&aTRUE配方补全配置";
+        return "&aFALSE配方补全配置";
     }
 
     @Override
@@ -93,6 +96,6 @@ public class LogitechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
 
     @Override
     public int[] getItemSlots() {
-        return new int[] {13};
+        return new int[] {9, 10, 11, 12};
     }
 }

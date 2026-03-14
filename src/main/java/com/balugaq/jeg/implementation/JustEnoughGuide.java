@@ -35,6 +35,7 @@ import com.balugaq.jeg.api.groups.VanillaItemsGroup;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
+import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
 import com.balugaq.jeg.core.managers.BookmarkManager;
 import com.balugaq.jeg.core.managers.CommandManager;
 import com.balugaq.jeg.core.managers.ConfigManager;
@@ -45,6 +46,7 @@ import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.GroupSetup;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
+import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.MinecraftVersion;
@@ -245,6 +247,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             SearchGroup.LOADED = false;
             SearchGroup.init();
             plugin.reloadConfig(); // 2nd reload
+            SlimefunRegistryFinalizeListener.getTasks().forEach(Runnable::run);
+            SlimefunRegistryFinalizeListener.clearTasks();
             sender.sendMessage(ChatColor.GREEN + "plugin has been reloaded.");
         } catch (Exception e) {
             sender.sendMessage(ChatColor.RED + "Failed to reload plugin.");
@@ -355,6 +359,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         if (this.configManager != null) {
             this.configManager.unload();
         }
+
+        ReplacementCardAdapter.getReplacementCards().clear();
 
         this.bookmarkManager = null;
         this.integrationManager = null;
@@ -482,6 +488,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         GroupResorter.load();
 
         SpecialMenuProvider.loadConfiguration();
+        ReplacementCardAdapter.load();
         ThirdPartyWarnings.check();
 
         getLogger().info("成功启用此附属");

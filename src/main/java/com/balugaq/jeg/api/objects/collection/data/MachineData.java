@@ -356,7 +356,7 @@ public abstract class MachineData {
             return new MobDataCardData(chamber, energy, interval, drops.toMap());
         }
 
-        if (sf.getAddon().getName().equals("Logitech") && ItemStackUtil.isInstanceSimple(sf, "AbstractMachine")) {
+        if (sf.getAddon().getName().equals("LogiTech") && ItemStackUtil.isInstanceSimple(sf, "AbstractMachine")) {
             List<MachineRecipe> machineRecipes = ReflectionUtil.getValue(sf, "machineRecipes", List.class);
             Supplier<@Nullable List<MachineRecipe>> machineRecipeSupplier = ReflectionUtil.getValue(
                     sf,

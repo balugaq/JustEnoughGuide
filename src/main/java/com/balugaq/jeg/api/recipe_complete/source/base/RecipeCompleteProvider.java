@@ -29,6 +29,7 @@ package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
@@ -132,15 +133,26 @@ public class RecipeCompleteProvider {
                 session.setNotHandleable(source);
                 continue;
             }
-            if (session.itemNotIn(source, template)) {
-                continue;
+            List<ItemStack> replacementCards = new ArrayList<>();
+            if (JustEnoughGuide.getConfigManager().isAdaptReplacementCards()) {
+                List<ItemStack> cards = ReplacementCardAdapter.getReplacementCards(template);
+                if (cards != null) {
+                    replacementCards.addAll(cards);
+                }
             }
-            var result = source.getItemStack(session, template);
-            if (result != null) {
-                return result;
-            }
+            replacementCards.add(template);
 
-            session.setItemNotIn(source, template);
+            for (ItemStack possibleTemplate : replacementCards) {
+                if (session.itemNotIn(source, possibleTemplate)) {
+                    continue;
+                }
+                var result = source.getItemStack(session, possibleTemplate);
+                if (result != null) {
+                    return result;
+                }
+
+                session.setItemNotIn(source, possibleTemplate);
+            }
         }
         return null;
     }

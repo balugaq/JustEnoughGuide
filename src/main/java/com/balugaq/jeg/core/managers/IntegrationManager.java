@@ -47,7 +47,7 @@ import com.balugaq.jeg.core.integrations.infinitycompress.InfinityCompressIntegr
 import com.balugaq.jeg.core.integrations.infinityexpansion.InfinityExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.infinityexpansion2.InfinityExpansion2IntegrationMain;
 import com.balugaq.jeg.core.integrations.justenoughguide.JustEnoughGuideIntegrationMain;
-import com.balugaq.jeg.core.integrations.logitech.LogitechIntegrationMain;
+import com.balugaq.jeg.core.integrations.logitech.LogiTechIntegrationMain;
 import com.balugaq.jeg.core.integrations.magicexpansion.MagicExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.momotech.MomotechIntegrationMain;
 import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
@@ -63,6 +63,7 @@ import com.balugaq.jeg.core.integrations.slimehud.SlimeHUDIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
 import com.balugaq.jeg.core.integrations.tsingshantechnology.TsingshanTechnologyIntegrationMain;
 import com.balugaq.jeg.core.integrations.wildernether.WilderNetherIntegrationMain;
+import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import lombok.Data;
@@ -115,6 +116,8 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledInfinityExpansion2;
     private boolean enabledInfinityExpansion_Changed;
     private boolean enabledLogiTech;
+    private boolean enabledLogiTech_1_0_3;
+    private boolean enabledLogiTech_1_0_4;
     private boolean enabledMagicExpansion;
     private boolean enabledMomotech;
     private boolean enabledNetworks;
@@ -164,6 +167,8 @@ public class IntegrationManager extends AbstractManager {
                     enabledInfinityExpansion_Changed || pm.isPluginEnabled("InfinityExpansion");
             this.enabledInfinityExpansion2 = pm.isPluginEnabled("InfinityExpansion2");
             this.enabledLogiTech = pm.isPluginEnabled("LogiTech");
+            this.enabledLogiTech_1_0_3 = this.enabledLogiTech && classExists("me.matl114.logitech.SlimefunItem.AddSlimefunItems");
+            this.enabledLogiTech_1_0_4 = this.enabledLogiTech && classExists("me.matl114.logitech.core.AddSlimefunItems");
             this.enabledMagicExpansion = pm.isPluginEnabled("magicexpansion");
             this.enabledMomotech = pm.isPluginEnabled("Momotech") || pm.isPluginEnabled("Momotech-Changed");
             this.enabledNetworksExpansion = classExists("com.ytdd9527.networksexpansion.implementation.ExpansionItems");
@@ -202,7 +207,7 @@ public class IntegrationManager extends AbstractManager {
             addIntegration(enabledInfinityCompress, InfinityCompressIntegrationMain::new);
             addIntegration(enabledInfinityExpansion, InfinityExpansionIntegrationMain::new);
             addIntegration(enabledInfinityExpansion2, InfinityExpansion2IntegrationMain::new);
-            addIntegration(enabledLogiTech, LogitechIntegrationMain::new);
+            addIntegration(enabledLogiTech, LogiTechIntegrationMain::new);
             addIntegration(enabledMagicExpansion, MagicExpansionIntegrationMain::new);
             addIntegration(enabledMomotech, MomotechIntegrationMain::new);
             addIntegration(enabledNexcavate, NexcavateIntegrationMain::new);
@@ -264,6 +269,10 @@ public class IntegrationManager extends AbstractManager {
         JustEnoughGuide.runLaterAsync(runnable, 2L);
     }
 
+    public static void scheduleRunPostRegistryFinalized(Runnable runnable) {
+        SlimefunRegistryFinalizeListener.addTask(runnable);
+    }
+
     @Deprecated
     public boolean hasRecipeCompletableWithGuide() {
         return hasRecipeCompletableWithGuide;
@@ -292,6 +301,10 @@ public class IntegrationManager extends AbstractManager {
         return enabledFinalTECH_Changed;
     }
 
+    /**
+     * @author balugaq
+     * @since 1.7
+     */
     @Data
     @RequiredArgsConstructor
     public static class Run implements Cloneable {

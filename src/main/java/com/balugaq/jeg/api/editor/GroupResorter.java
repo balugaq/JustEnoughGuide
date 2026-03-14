@@ -218,8 +218,7 @@ public class GroupResorter {
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     public static void resort() {
-        List<ItemGroup> copy = new ArrayList<>(Slimefun.getRegistry().getAllItemGroups());
-        for (ItemGroup itemGroup : copy) {
+        for (ItemGroup itemGroup : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
             itemGroup.setTier(getTier(itemGroup));
         }
 

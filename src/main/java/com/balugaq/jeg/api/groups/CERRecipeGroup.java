@@ -92,7 +92,7 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
         this.page = 1;
         this.implementation = implementation;
         this.pageMap.put(1, this);
-        this.icons = getDisplayIcons(player, machine, recipes);
+        this.icons = getDisplayIcons(player, machine, recipes.stream().limit(64).toList());
     }
 
     public static List<Pair<ItemStack, ChestMenu.MenuClickHandler>> getDisplayIcons(Player p, SlimefunItem machine,

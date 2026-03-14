@@ -57,7 +57,7 @@ public class ThirdPartyWarnings {
                 // Check if NetworksExpansion is in affected versions
                 if (netex.getPluginMeta().getPluginSoftDependencies().contains(JustEnoughGuide.getInstance().getName())) {
                     Debug.warn("Potential dependency cycle detected: Logitech -> Networks -> JustEnoughGuide -> " +
-                                       "Logitech");
+                                       "LogiTech");
                     Debug.warn("1. This may cause SpecialMenuProvider module load incorrectly, which will break the " +
                                        "Big Recipe module");
                     Debug.warn("2. This may cause incorrect load order where Logitech loads AFTER Networks and " +

@@ -228,43 +228,55 @@ public class ReflectionUtil {
     }
 
     @Nullable
-    public static Object invokeMethod(
-            Object object, String methodName, @Nullable Object @Nullable ... args) {
+    public static Object invokeMethod(Method method, @Nullable Object instance, @Nullable Object @Nullable ... args) {
         try {
-            Method method;
-            if (args == null) {
-                method = getMethod(object.getClass(), methodName, 1);
-            } else {
-                boolean containsNull = false;
-                for (Object arg : args) {
-                    if (arg == null) {
-                        containsNull = true;
-                        break;
-                    }
-                }
-
-                if (containsNull) {
-                    method = getMethod(object.getClass(), methodName, args.length);
-                } else {
-                    method = getMethod(
-                            object.getClass(),
-                            methodName,
-                            Arrays.stream(args)
-                                    .filter(Objects::nonNull)
-                                    .map(Object::getClass)
-                                    .toArray(Class[]::new)
-                    );
-                }
-            }
-
-            if (method != null) {
-                method.setAccessible(true);
-                return method.invoke(object, args);
-            }
+            method.setAccessible(true);
+            return method.invoke(instance, args);
         } catch (InvocationTargetException | IllegalAccessException e) {
             Debug.trace(e);
         }
         return null;
+    }
+
+    @Nullable
+    public static Object invokeStaticMethod(Method method, @Nullable Object @Nullable ... args) {
+        return invokeMethod(method, (Object) null, args);
+    }
+
+    @Nullable
+    public static Object invokeMethod(
+            Object object, String methodName, @Nullable Object @Nullable ... args) {
+        Method method;
+        if (args == null) {
+            method = getMethod(object.getClass(), methodName, 1);
+        } else {
+            boolean containsNull = false;
+            for (Object arg : args) {
+                if (arg == null) {
+                    containsNull = true;
+                    break;
+                }
+            }
+
+            if (containsNull) {
+                method = getMethod(object.getClass(), methodName, args.length);
+            } else {
+                method = getMethod(
+                        object.getClass(),
+                        methodName,
+                        Arrays.stream(args)
+                                .filter(Objects::nonNull)
+                                .map(Object::getClass)
+                                .toArray(Class[]::new)
+                );
+            }
+        }
+
+        if (method == null) {
+            return null;
+        }
+
+        return invokeMethod(method, object, args);
     }
 
     public static @Nullable Method getMethod(
@@ -335,39 +347,37 @@ public class ReflectionUtil {
     @Nullable
     public static Object invokeStaticMethod(
             Class<?> clazz, String methodName, @Nullable Object @Nullable ... args) {
-        try {
-            Method method;
-            if (args == null) {
-                method = getMethod(clazz, methodName, 1);
-            } else {
-                boolean containsNull = false;
-                for (Object arg : args) {
-                    if (arg == null) {
-                        containsNull = true;
-                        break;
-                    }
-                }
 
-                if (containsNull) {
-                    method = getMethod(clazz, methodName, args.length);
-                } else {
-                    method = getMethod(
-                            clazz,
-                            methodName,
-                            Arrays.stream(args)
-                                    .filter(Objects::nonNull)
-                                    .map(Object::getClass)
-                                    .toArray(Class[]::new)
-                    );
+        Method method;
+        if (args == null) {
+            method = getMethod(clazz, methodName, 1);
+        } else {
+            boolean containsNull = false;
+            for (Object arg : args) {
+                if (arg == null) {
+                    containsNull = true;
+                    break;
                 }
             }
-            if (method != null) {
-                method.setAccessible(true);
-                return method.invoke(null, args);
+
+            if (containsNull) {
+                method = getMethod(clazz, methodName, args.length);
+            } else {
+                method = getMethod(
+                        clazz,
+                        methodName,
+                        Arrays.stream(args)
+                                .filter(Objects::nonNull)
+                                .map(Object::getClass)
+                                .toArray(Class[]::new)
+                );
             }
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            Debug.trace(e);
         }
-        return null;
+
+        if (method == null) {
+            return null;
+        }
+
+        return invokeStaticMethod(method, args);
     }
 }
