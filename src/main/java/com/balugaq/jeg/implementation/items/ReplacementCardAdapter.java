@@ -165,7 +165,14 @@ public class ReplacementCardAdapter {
             var newSf = new SlimefunItem(GroupSetup.jegItemsGroup, new SlimefunItemStack(newId, sf.getItem()), sf.getRecipeType(), resultList.toArray(new ItemStack[0]), sf.getRecipeOutput());
             boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
             newSf.register(JustEnoughGuide.getInstance());
-            newSf.load();
+            try {
+                newSf.load();
+            } catch (IllegalStateException ex) {
+                if (ex.getMessage().equals("Asynchronous Recipe Add!")) {
+                    JustEnoughGuide.runNextTick(newSf::load);
+                }
+            } catch (Exception ignored) {
+            }
             newSf.setHidden(true);
             JustEnoughGuide.setAutomaticallyLoadItems(before);
             return;
