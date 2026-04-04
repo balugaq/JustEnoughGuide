@@ -29,6 +29,8 @@ package com.balugaq.jeg.implementation.items;
 
 import com.balugaq.jeg.api.groups.HiddenItemsGroup;
 import com.balugaq.jeg.api.groups.VanillaItemsGroup;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
+import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
@@ -45,6 +47,8 @@ public class GroupSetup {
     public static JEGGuideGroup guideGroup;
     public static HiddenItemsGroup hiddenItemsGroup;
     public static VanillaItemsGroup vanillaItemsGroup;
+    public static ItemGroup replacementCardsGroup;
+    public static RecipeCompletableGroup recipeCompletableGroup;
     public static ItemGroup jegItemsGroup;
 
     /**
@@ -59,8 +63,22 @@ public class GroupSetup {
         vanillaItemsGroup = new VanillaItemsGroup(KeyUtil.newKey("vanilla_items_group"), Models.VANILLA_ITEMS_GROUP);
         vanillaItemsGroup.register(JustEnoughGuide.getInstance());
 
-        jegItemsGroup = new ItemGroup(KeyUtil.newKey("jeg_items_group"), Models.JEG_ITEMS_GROUP);
+        replacementCardsGroup = new ItemGroup(KeyUtil.newKey("replacement_cards_group"), Models.REPLACEMENT_CARDS_GROUP);
+        // dont register this
+
+        recipeCompletableGroup = new RecipeCompletableGroup(KeyUtil.newKey("recipe_completable_group"), Models.RECIPE_COMPLETABLE_GROUP);
+        recipeCompletableGroup.setTier(Integer.MAX_VALUE);
+        recipeCompletableGroup.register(JustEnoughGuide.getInstance());
+
+        jegItemsGroup = new JEGMainGroup(KeyUtil.newKey("jeg_items_group"), Models.JEG_ITEMS_GROUP);
         jegItemsGroup.setTier(Integer.MAX_VALUE);
+        jegItemsGroup.register(JustEnoughGuide.getInstance());
+
+        IntegrationManager.scheduleRun(() ->
+            RecipeCompletableRegistry.getAllRecipeCompletableBlocks().forEach(block ->
+                recipeCompletableGroup.addItem(block.getItem())
+            )
+        );
     }
 
     /**

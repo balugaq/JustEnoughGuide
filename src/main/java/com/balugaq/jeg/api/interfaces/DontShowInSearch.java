@@ -25,26 +25,18 @@
  *
  */
 
-package com.balugaq.jeg.implementation.items;
+package com.balugaq.jeg.api.interfaces;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NullMarked;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
-@NullMarked
-public class RecipeCompleteGuide extends JEGSlimefunItem {
-    public RecipeCompleteGuide(
-            ItemGroup itemGroup,
-            SlimefunItemStack item,
-            RecipeType recipeType,
-            ItemStack[] recipe) {
-        super(itemGroup, item, recipeType, recipe);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface DontShowInSearch {
 }

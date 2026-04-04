@@ -27,24 +27,18 @@
 
 package com.balugaq.jeg.implementation.items;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import com.balugaq.jeg.api.groups.MixedGroup;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
 @NullMarked
-public class RecipeCompleteGuide extends JEGSlimefunItem {
-    public RecipeCompleteGuide(
-            ItemGroup itemGroup,
-            SlimefunItemStack item,
-            RecipeType recipeType,
-            ItemStack[] recipe) {
-        super(itemGroup, item, recipeType, recipe);
+public class JEGMainGroup extends MixedGroup<JEGMainGroup> {
+    public JEGMainGroup(final NamespacedKey key, final ItemStack icon) {
+        super(key, icon);
     }
 }

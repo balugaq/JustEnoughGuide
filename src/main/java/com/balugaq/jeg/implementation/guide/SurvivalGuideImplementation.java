@@ -267,7 +267,11 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         }
 
         if (itemGroup instanceof FlexItemGroup flexItemGroup) {
-            flexItemGroup.open(p, profile, getMode());
+            try {
+                flexItemGroup.open(p, profile, getMode());
+            } catch (Exception ignored) {
+                printErrorMessage0(p, null);
+            }
             return;
         }
 
@@ -863,7 +867,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             );
         }
 
-        // Search feature!
         for (int s : format.getChars('S')) {
             menu.addItem(s, PatchScope.Search.patch(profile, ChestMenuUtils.getSearchButton(p)));
             menu.addMenuClickHandler(
@@ -920,7 +923,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             );
         }
 
-        // Search feature!
         for (int s : Formats.main.getChars('S')) {
             menu.addItem(s, PatchScope.Search.patch(profile, ChestMenuUtils.getSearchButton(p)));
             menu.addMenuClickHandler(
@@ -1095,34 +1097,5 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             menu.replaceExistingItem(slot, PatchScope.RecipeDisplay.patch(profile, ItemStackUtil.getCleanItem(null)));
             menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
         }
-    }
-
-    @Override
-    public void printErrorMessage0(Player p, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
-        JustEnoughGuide.getInstance().getLogger().log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
-        JustEnoughGuide.getInstance().getLogger().warning("我们正在尝试恢复玩家 \"" + p.getName() + "\" 的指南...");
-        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
-        if (profile == null) {
-            return;
-        }
-        GuideUtil.removeLastEntry(profile.getGuideHistory());
-    }
-
-    @Override
-    public void printErrorMessage0(Player p, SlimefunItem item, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                              + "An internal server error has occurred. Please inform an admin, check the console for"
-                              + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
-        JustEnoughGuide.getInstance()
-                .getLogger()
-                .warning("We are trying to recover the player \"" + p.getName() + "\"'s guide...");
-        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
-        if (profile == null) {
-            return;
-        }
-        GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 }

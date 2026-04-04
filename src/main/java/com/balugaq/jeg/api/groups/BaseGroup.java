@@ -33,6 +33,8 @@ import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -47,6 +49,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup implements Cloneable {
     protected final Int2ObjectOpenHashMap<T> pageMap = new Int2ObjectOpenHashMap<>();
+    @Getter
+    @Setter
+    protected boolean hidden;
     protected int page;
 
     protected BaseGroup() {
@@ -66,7 +71,7 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
             final Player player,
             final PlayerProfile playerProfile,
             final SlimefunGuideMode slimefunGuideMode) {
-        return true;
+        return !isHidden();
     }
 
     @Override

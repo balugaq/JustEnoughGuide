@@ -65,8 +65,12 @@ public class Models {
             "JEG_NEXCAVATE_ITEMS_GROUP_ICON", Converter.getItem(Material.BLACKSTONE, "&b文明复兴物品")));
     public static final ItemStack VANILLA_ITEMS_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_VANILLA_ITEMS_GROUP", Converter.getItem(Material.CRAFTING_TABLE, "&7原版物品")));
+    public static final ItemStack RECIPE_COMPLETABLE_GROUP = Converter.getItem(
+            new SlimefunItemStack("JEG_RECIPE_COMPLETABLE_GROUP", Converter.getItem(Material.CRAFTING_TABLE, "&b支持配方补全的机器")));
     public static final ItemStack JEG_ITEMS_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, "&b配方补全书")));
+    public static final ItemStack REPLACEMENT_CARDS_GROUP = Converter.getItem(
+            new SlimefunItemStack("JEG_REPLACEMENT_CARDS_GROUP", Converter.getItem(Material.PAPER, "&b替换卡")));
     public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(
             Material.YELLOW_STAINED_GLASS_PANE, " ",
             " "

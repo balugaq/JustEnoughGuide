@@ -34,6 +34,8 @@ import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
+import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.ReflectionUtil;
@@ -65,6 +67,7 @@ import org.jspecify.annotations.NullMarked;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 /**
  * @author balugaq
@@ -271,9 +274,30 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             int index,
             int page);
 
-    void printErrorMessage0(Player p, Throwable x);
+    default void printErrorMessage0(Player p, Throwable x) {
+        p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
+        Debug.log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
+        Debug.warn("我们正在尝试恢复玩家 \"" + p.getName() + "\" 的指南...");
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
+    }
 
-    void printErrorMessage0(Player p, SlimefunItem item, Throwable x);
+    default void printErrorMessage0(Player p, SlimefunItem item, Throwable x) {
+        p.sendMessage(ChatColor.DARK_RED
+                              + "An internal server error has occurred. Please inform an admin, check the console for"
+                              + " further info.");
+        item.error(
+                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
+        Debug.warn("We are trying to recover the player \"" + p.getName() + "\"'s guide...");
+        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
+        if (profile == null) {
+            return;
+        }
+        GuideUtil.removeLastEntry(profile.getGuideHistory());
+    }
 
     @Override
     @ParametersAreNonnullByDefault

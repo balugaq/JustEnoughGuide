@@ -27,24 +27,39 @@
 
 package com.balugaq.jeg.implementation.items;
 
+import com.balugaq.jeg.utils.GuideUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
 @NullMarked
-public class RecipeCompleteGuide extends JEGSlimefunItem {
-    public RecipeCompleteGuide(
-            ItemGroup itemGroup,
-            SlimefunItemStack item,
-            RecipeType recipeType,
-            ItemStack[] recipe) {
+public class JEGSlimefunItem extends SlimefunItem {
+    public JEGSlimefunItem(final ItemGroup itemGroup, final SlimefunItemStack item, final RecipeType recipeType, final @Nullable ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
+    }
+
+    public JEGSlimefunItem(final ItemGroup itemGroup, final SlimefunItemStack item, final RecipeType recipeType, final @Nullable ItemStack[] recipe, @Nullable final ItemStack recipeOutput) {
+        super(itemGroup, item, recipeType, recipe, recipeOutput);
+    }
+
+    protected JEGSlimefunItem(final ItemGroup itemGroup, final ItemStack item, final String id, final RecipeType recipeType, final ItemStack[] recipe) {
+        super(itemGroup, item, id, recipeType, recipe);
+    }
+
+    @Override
+    public void load() {
+        if (!isHidden()) {
+            GuideUtil.addItemToGroup(getItemGroup(), this);
+        }
+
+        getRecipeType().register(getRecipe(), getRecipeOutput());
     }
 }

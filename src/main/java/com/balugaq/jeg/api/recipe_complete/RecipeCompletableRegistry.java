@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author balugaq
@@ -101,5 +102,10 @@ public class RecipeCompletableRegistry {
     @ApiStatus.Obsolete
     public static Collection<RecipeCompletableListener.PlayerInventoryItemSeeker> getPlayerInventoryItemGetters() {
         return RecipeCompletableListener.PLAYER_INVENTORY_ITEM_GETTERS.values();
+    }
+
+    @ApiStatus.Obsolete
+    public static Set<SlimefunItem> getAllRecipeCompletableBlocks() {
+        return RecipeCompletableListener.INGREDIENT_SLOTS.keySet();
     }
 }

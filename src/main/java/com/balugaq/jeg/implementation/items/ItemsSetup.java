@@ -65,7 +65,7 @@ public class ItemsSetup {
                 // @formatter:on
         );
 
-        USAGE_INFO = new SlimefunItem(
+        USAGE_INFO = new JEGSlimefunItem(
                 GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new @Nullable ItemStack[] {
                 null, null, null,
                 null, null, null,
@@ -73,7 +73,7 @@ public class ItemsSetup {
         }
         );
 
-        MECHANISM = new SlimefunItem(
+        MECHANISM = new JEGSlimefunItem(
                 GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[] {
                 null, null, null,
                 null, null, null,
@@ -81,7 +81,7 @@ public class ItemsSetup {
         }
         );
 
-        SUPPORTED_ADDONS_INFO = new SlimefunItem(
+        SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(
                 GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[] {
                 null, null, null,
                 null, null, null,
