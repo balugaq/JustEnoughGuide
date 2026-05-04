@@ -145,6 +145,7 @@ public class CustomGroupConfiguration implements IParsable {
     public List<Object> objects() {
         if (this.objects != null) return this.objects;
 
+        // ItemGroup first, SlimefunItem then.
         List<Object> objects = new ArrayList<>(
                 Arrays.stream(groups)
                         .map(s -> {

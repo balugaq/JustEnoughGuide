@@ -69,7 +69,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @NullMarked
 public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
     public final List<String> acitons = new ArrayList<>();
-    public final List<Object> objects; // ItemGroup first, SlimefunItem then.
+    public final List<Object> objects;
 
     public MixedGroup(NamespacedKey key, ItemStack icon, int tier) {
         super(key, icon, tier);

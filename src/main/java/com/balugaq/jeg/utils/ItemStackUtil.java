@@ -34,7 +34,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
-import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import net.Zrips.CMILib.Colors.CMIChatColor;
 import org.bukkit.Material;
@@ -115,7 +114,6 @@ public final class ItemStackUtil {
         }
     }
 
-    @SneakyThrows
     @Nullable
     @Author("lijinhong11 & balugaq")
     public static ItemStack readItem(char c, @Nullable ConfigurationSection section) {
@@ -169,7 +167,6 @@ public final class ItemStackUtil {
         }
     }
 
-    @SneakyThrows
     @Nullable
     @SuppressWarnings("deprecation")
     @Author("lijinhong11 & balugaq")

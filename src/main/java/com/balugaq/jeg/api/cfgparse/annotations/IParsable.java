@@ -27,7 +27,6 @@
 
 package com.balugaq.jeg.api.cfgparse.annotations;
 
-import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -41,7 +40,6 @@ import java.util.Arrays;
 @NullMarked
 @SuppressWarnings("unused")
 public interface IParsable {
-    @SneakyThrows
     static @Nullable String[] fieldNames(final Class<? extends IParsable> clazz) {
         try {
             clazz.getDeclaredConstructor();

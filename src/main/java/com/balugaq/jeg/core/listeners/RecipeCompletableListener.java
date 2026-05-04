@@ -50,7 +50,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
-import lombok.SneakyThrows;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -213,7 +212,6 @@ public class RecipeCompletableListener implements ItemPatchListener {
         }
     }
 
-    @SneakyThrows
     public static PlayerProfile getPlayerProfile(OfflinePlayer player) {
         // Shouldn't be null;
         return PlayerProfile.find(player).orElseThrow(() -> new RuntimeException("PlayerProfile not found"));

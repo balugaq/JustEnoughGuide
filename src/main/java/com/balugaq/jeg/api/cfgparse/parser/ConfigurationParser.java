@@ -30,7 +30,6 @@ package com.balugaq.jeg.api.cfgparse.parser;
 import com.balugaq.jeg.api.cfgparse.annotations.IDefaultValue;
 import com.balugaq.jeg.api.cfgparse.annotations.Key;
 import com.balugaq.jeg.utils.ReflectionUtil;
-import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.ApiStatus;
@@ -60,7 +59,6 @@ import java.util.Set;
 @NullMarked
 public class ConfigurationParser {
     @ApiStatus.Obsolete
-    @SneakyThrows
     public static <T> T parse(final ConfigurationSection section, final Class<T> clazz) {
         Method method;
         try {
@@ -121,7 +119,6 @@ public class ConfigurationParser {
     }
 
     @ApiStatus.Obsolete
-    @SneakyThrows
     public static <T> T consturctObject(final Class<T> clazz, final LinkedHashMap<Field, @Nullable Object> read) {
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
@@ -161,14 +158,17 @@ public class ConfigurationParser {
 
     @SuppressWarnings("rawtypes")
     @ApiStatus.Obsolete
-    @SneakyThrows
     public static <T> @Nullable T parseValue(final Class<T> clazz, final @Nullable Object value) {
         if (value == null) {
             Class<?>[] interfaces = clazz.getInterfaces();
             for (Class<?> interfaceClass : interfaces) {
                 if (interfaceClass == IDefaultValue.class) {
-                    Method defaultValueMethod = clazz.getDeclaredMethod("defaultValue0");
-                    return (T) defaultValueMethod.invoke(null);
+                    try {
+                        Method defaultValueMethod = clazz.getDeclaredMethod("defaultValue0");
+                        return (T) defaultValueMethod.invoke(null);
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("Error while invoking defaultValue method from " + clazz.getName(), e);
+                    }
                 }
             }
         }

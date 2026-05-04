@@ -59,7 +59,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import it.unimi.dsi.fastutil.ints.IntList;
-import lombok.SneakyThrows;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
@@ -124,7 +123,6 @@ public class CERCalculator {
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
-    @SneakyThrows
     private static double calc0(SlimefunItem sf, Predicate<ItemStack> predicate) {
         String className = sf.getClass().getName();
         double cost = ValueTable.getValue(sf);

@@ -34,7 +34,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import lombok.SneakyThrows;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,6 +43,7 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -175,10 +175,13 @@ public class GroupResorter {
         saveCfg();
     }
 
-    @SneakyThrows
     public static void saveCfg() {
         if (config == null) return;
-        config.save(tiersFile);
+        try {
+            config.save(tiersFile);
+        } catch (IOException e) {
+            Debug.severe(e);
+        }
     }
 
     public static boolean isSelecting(final Player player) {
