@@ -700,6 +700,13 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                             displayRecipes = rdi.getDisplayRecipes();
                         } catch (Exception ignored) {
                         }
+                    } else if (slimefunItem instanceof RecipeDisplayItem rdi) {
+                        // Catch-all for addons (e.g. SlimeAE) that implement RecipeDisplayItem
+                        // but do not extend AContainer or MultiBlockMachine.
+                        try {
+                            displayRecipes = rdi.getDisplayRecipes();
+                        } catch (Exception ignored) {
+                        }
                     }
                     if (displayRecipes != null) {
                         List<String> displayNames = new ArrayList<>();
