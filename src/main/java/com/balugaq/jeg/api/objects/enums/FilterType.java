@@ -29,15 +29,10 @@ package com.balugaq.jeg.api.objects.enums;
 
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.objects.collection.Pair;
-import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.LocalHelper;
-import com.balugaq.jeg.utils.SpecialMenuProvider;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import lombok.Getter;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -91,44 +86,18 @@ public enum FilterType {
     BY_DISPLAY_ITEM_NAME(
             Set.of("%", "产"),
             (player, item, lowerFilterValue, pinyin) -> {
-                List<ItemStack> display = null;
-                if (item instanceof AContainer ac) {
-                    // Fix: Cannot search item when SlimeCustomizer crashed
-                    try {
-                        display = ac.getDisplayRecipes();
-                    } catch (Exception ignored) {
-                    }
-                } else if (item instanceof MultiBlockMachine mb) {
-                    // Fix: NullPointerException occurred when searching items from SlimeFood
-                    try {
-                        display = mb.getDisplayRecipes();
-                    } catch (Exception ignored) {
-                    }
-                } else {
-                    try {
-                        if (SpecialMenuProvider.ENABLED_LogiTech
-                                && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null
-                                && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(item)
-                                && item instanceof RecipeDisplayItem rdi) {
-                            display = rdi.getDisplayRecipes();
-                        }
-                    } catch (Exception e) {
-                        Debug.trace(e, "searching");
-                        return false;
-                    }
-                }
-                if (display != null) {
-                    try {
-                        for (ItemStack itemStack : display) {
-                            if (SearchGroup.isSearchFilterApplicable(itemStack, lowerFilterValue, false)) {
-                                return true;
-                            }
-                        }
-                    } catch (Exception ignored) {
-                        return false;
+                // Use the pre-built name cache populated during SearchGroup.init().
+                // This avoids calling getDisplayRecipes() at search time, which would
+                // clone SlimefunItemStacks, construct CraftMetaSkull/CraftPlayerProfile
+                // objects, and ultimately fire Mojang sessionserver HTTP requests.
+                List<String> cached = SearchGroup.DISPLAY_ITEM_NAMES_CACHE.get(item.getId());
+                if (cached != null) {
+                    for (String name : cached) {
+                        if (name.contains(lowerFilterValue)) return true;
                     }
                 }
 
+                // SPECIAL_CACHE: addons may register extra searchable strings at runtime.
                 String id = item.getId();
                 Reference<Set<String>> ref = SearchGroup.SPECIAL_CACHE.get(id);
                 if (ref != null) {
