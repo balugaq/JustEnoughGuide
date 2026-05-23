@@ -113,6 +113,22 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             new Char2ObjectOpenHashMap<>(); // fast way for by display item name
     public static final Map<String, Reference<Set<String>>> SPECIAL_CACHE = new HashMap<>();
 
+    /**
+     * Pre-built cache of display item names per Slimefun item ID.
+     * Populated once during {@link #init()} alongside CACHE2.
+     * <p>
+     * Key: Slimefun item ID.<br>
+     * Value: unmodifiable list of lower-cased display names from
+     * {@code getDisplayRecipes()}. Uses a hard reference (not SoftReference)
+     * so the cache is never evicted under memory pressure — the strings are
+     * cheap compared to retaining the live ItemStack objects.
+     * <p>
+     * Consumed by {@link com.balugaq.jeg.api.objects.enums.FilterType#BY_DISPLAY_ITEM_NAME}
+     * to match display-item names without ever calling {@code getDisplayRecipes()}
+     * at search time.
+     */
+    public static final Map<String, List<String>> DISPLAY_ITEM_NAMES_CACHE = new ConcurrentHashMap<>(5000);
+
     public static final Boolean SHOW_HIDDEN_ITEM_GROUPS =
             Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch();
     public static final Integer DEFAULT_HASH_SIZE = 5000;
@@ -686,27 +702,36 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                         }
                     }
                     if (displayRecipes != null) {
+                        List<String> displayNames = new ArrayList<>();
                         for (ItemStack itemStack : displayRecipes) {
                             if (itemStack != null) {
                                 String name2 = ChatColor.stripColor(
                                         ItemStackHelper.getDisplayName(itemStack));
-                                for (char c : name2.toCharArray()) {
-                                    char d = Character.toLowerCase(c);
-                                    CACHE2.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
-                                    Reference<Set<SlimefunItem>> ref = CACHE2.get(d);
-                                    if (ref != null) {
-                                        Set<SlimefunItem> set = ref.get();
-                                        if (set == null) {
-                                            set = new HashSet<>();
-                                            CACHE2.put(d, new SoftReference<>(set));
-                                        }
-                                        if (!inBanlist(slimefunItem)
-                                                && !inBlacklist(slimefunItem)) {
-                                            set.add(slimefunItem);
+                                if (!name2.isEmpty()) {
+                                    // Populate DISPLAY_ITEM_NAMES_CACHE for fast string-only lookup.
+                                    displayNames.add(name2.toLowerCase(Locale.ROOT));
+                                    // Also populate the character-index CACHE2 as before.
+                                    for (char c : name2.toCharArray()) {
+                                        char d = Character.toLowerCase(c);
+                                        CACHE2.putIfAbsent(d, new SoftReference<>(new HashSet<>()));
+                                        Reference<Set<SlimefunItem>> ref = CACHE2.get(d);
+                                        if (ref != null) {
+                                            Set<SlimefunItem> set = ref.get();
+                                            if (set == null) {
+                                                set = new HashSet<>();
+                                                CACHE2.put(d, new SoftReference<>(set));
+                                            }
+                                            if (!inBanlist(slimefunItem)
+                                                    && !inBlacklist(slimefunItem)) {
+                                                set.add(slimefunItem);
+                                            }
                                         }
                                     }
                                 }
                             }
+                        }
+                        if (!displayNames.isEmpty()) {
+                            DISPLAY_ITEM_NAMES_CACHE.put(slimefunItem.getId(), List.copyOf(displayNames));
                         }
                     }
 
