@@ -394,6 +394,7 @@ public class LocalHelper {
         addonLocals.put("AeroDragonTech", "飞龙科技");
         addonLocals.put("REGS", "沐莱物语");
         addonLocals.put("FengQi_Tech", "风起科技");
+        addonLocals.put("PandaTech", "熊猫科技");
     }
 
     public static String getOfficialAddonName(ItemGroup itemGroup, String itemId) {

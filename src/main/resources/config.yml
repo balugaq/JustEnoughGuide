@@ -594,6 +594,7 @@ local-translate:
   REGS: "沐莱物语"
   FengQi_Tech: "风起科技"
   YINGMO: "樱沫科技"
+  PandaTech: "熊猫科技"
 
 # Do not change this value unless you know what you are doing.
 debug: false

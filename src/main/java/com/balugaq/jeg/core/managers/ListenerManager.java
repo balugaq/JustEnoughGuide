@@ -79,7 +79,8 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new GroupTierEditorListener());
         listeners.add(new GuideGUIFixListener());
         listeners.add(new MenuListener());
-        listeners.add(new SearchReloadListener());
+        // Disable it for now
+        // listeners.add(new SearchReloadListener());
         if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
             listeners.add(new SlimefunIdPatchListener());
         }
