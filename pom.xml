@@ -34,7 +34,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.balugaq.jeg</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>2.1.18</version>
+    <version>2.1.19</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -203,6 +203,13 @@
         <repository>
             <id>mvn-wesjd-net</id>
             <url>https://mvn.wesjd.net/</url>
+        </repository>
+        <repository>
+            <id>gugu-maven-repo</id>
+            <url>https://maven.norain.city/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
