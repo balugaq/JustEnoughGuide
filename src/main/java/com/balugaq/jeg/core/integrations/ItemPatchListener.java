@@ -56,7 +56,8 @@ public interface ItemPatchListener extends Listener, Keyed {
     }
 
     default void tagMeta(ItemMeta meta) {
-        meta.getPersistentDataContainer().set(getKey(), PersistentDataType.BOOLEAN, true);
+        // Fix https://github.com/balugaq/JustEnoughGuide/issues/93
+        // meta.getPersistentDataContainer().set(getKey(), PersistentDataType.BOOLEAN, true);
     }
 
     default NamespacedKey getKey() {
