@@ -596,6 +596,7 @@ local-translate:
   YINGMO: "樱沫科技"
   PandaTech: "熊猫科技"
   GLTC121: "GLTC联合协议"
+  SLTech: "SL科技"
 
 # Do not change this value unless you know what you are doing.
 debug: false
