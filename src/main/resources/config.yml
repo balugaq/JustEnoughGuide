@@ -597,6 +597,7 @@ local-translate:
   PandaTech: "熊猫科技"
   GLTC121: "GLTC联合协议"
   SLTech: "SL科技"
+  EpoTech_Branch: "EpoTech分支版"
 
 # Do not change this value unless you know what you are doing.
 debug: false
