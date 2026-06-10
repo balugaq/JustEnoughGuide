@@ -92,7 +92,7 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
         if (this.pageMap.containsKey(page)) {
             return this.pageMap.get(page);
         } else {
-            synchronized (this.pageMap.get(1)) {
+            synchronized (this.pageMap) {
                 if (this.pageMap.containsKey(page)) {
                     return this.pageMap.get(page);
                 }
