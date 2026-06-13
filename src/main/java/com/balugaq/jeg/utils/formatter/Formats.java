@@ -59,7 +59,7 @@ public class Formats {
     public static final KeybindFormat keybind = new KeybindFormat();
     public static final ActionSelectFormat actionSelect = new ActionSelectFormat();
 
-    static {
+    public static void load() {
         main.loadMapping();
         nested.loadMapping();
         sub.loadMapping();

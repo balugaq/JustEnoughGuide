@@ -75,6 +75,10 @@ shared-chars:
   - "竿杆"
   - "鱼渔"
   - "沙砂"
+  - "携捷"
+  - "红赤绯"
+  - "翡翠绿"
+  - "蓝青靛"
 
 # 是否注册配方补全书
 recipe-complete: true
@@ -593,11 +597,12 @@ local-translate:
   AeroDragonTech: "飞龙科技"
   REGS: "沐莱物语"
   FengQi_Tech: "风起科技"
-  YINGMO: "樱沫科技"
+  YINGMO: "樱沫科技" # Same as SakuraLoveTech
   PandaTech: "熊猫科技"
   GLTC121: "GLTC联合协议"
   SLTech: "SL科技"
   EpoTech_Branch: "EpoTech分支版"
+  SakuraLoveTech: "樱沫科技" # Same as YINGMO
 
 # Do not change this value unless you know what you are doing.
 debug: false

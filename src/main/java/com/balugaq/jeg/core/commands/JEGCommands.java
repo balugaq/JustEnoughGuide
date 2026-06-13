@@ -57,7 +57,7 @@ public class JEGCommands implements TabExecutor {
 
     public JEGCommands(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.defaultCommand = new HelpCommand(this.plugin);
+        this.defaultCommand = new HelpCommand();
     }
 
     public void addCommand(JEGCommand command) {

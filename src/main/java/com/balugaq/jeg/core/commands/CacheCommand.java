@@ -50,22 +50,10 @@ import java.util.Set;
  * @author balugaq
  * @since 1.5
  */
-@SuppressWarnings({"ClassCanBeRecord", "deprecation", "ConstantValue"})
+@SuppressWarnings({"deprecation", "ConstantValue"})
 @Getter
 @NullMarked
 public class CacheCommand implements JEGCommand {
-    private final Plugin plugin;
-
-    /**
-     * Constructs a new CacheCommand instance.
-     *
-     * @param plugin
-     *         The plugin instance.
-     */
-    public CacheCommand(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {

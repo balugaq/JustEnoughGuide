@@ -68,7 +68,7 @@ public abstract class Processor {
      * @param clickAction
      *         the click action
      * @param processedResult
-     *         the processed result, null if the {@link Processor#getStrategy()} is {@link Strategy#HEAD}.
+     *         the processed result, null if the {@link Processor#getStrategy()} is {@link Processor.Strategy#HEAD}.
      *
      * @return false if the process is handled successfully, true and handle other {@link Processor}s otherwise.
      */

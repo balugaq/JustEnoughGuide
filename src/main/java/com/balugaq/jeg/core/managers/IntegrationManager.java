@@ -54,6 +54,7 @@ import com.balugaq.jeg.core.integrations.networks.NetworksIntegrationMain;
 import com.balugaq.jeg.core.integrations.networksexpansion.NetworksExpansionIntegrationMain;
 import com.balugaq.jeg.core.integrations.nexcavate.NexcavateIntegrationMain;
 import com.balugaq.jeg.core.integrations.obsidianexpansion.ObsidianExpansionIntegrationMain;
+import com.balugaq.jeg.core.integrations.placeholderapi.PlaceholderAPIIntegrationMain;
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
@@ -89,7 +90,6 @@ import java.util.function.Supplier;
 @NullMarked
 public class IntegrationManager extends AbstractManager {
     private final List<Integration> integrations = new ArrayList<>();
-    private final JavaPlugin plugin;
 
     @Deprecated
     private final boolean hasRecipeCompletableWithGuide = false;
@@ -125,6 +125,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledNexcavate;
     private boolean enabledObsidianExpansion;
     private boolean enabledOreWorkshop;
+    private boolean enabledPlaceholderAPI;
     private boolean enabledRSCEditor;
     private boolean enabledRykenSlimefunCustomizer;
     private boolean enabledSimpleUtils;
@@ -140,7 +141,6 @@ public class IntegrationManager extends AbstractManager {
 
     // @formatter:off
     public IntegrationManager(JavaPlugin plugin) {
-        this.plugin = plugin;
         JustEnoughGuide.runLater(() -> {
             PluginManager pm = Bukkit.getPluginManager();
             this.enabledAlchimiaVitae = pm.isPluginEnabled("AlchimiaVitae");
@@ -176,6 +176,7 @@ public class IntegrationManager extends AbstractManager {
             this.enabledNexcavate = pm.isPluginEnabled("Nexcavate");
             this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
             this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
+            this.enabledPlaceholderAPI = pm.isPluginEnabled("PlaceholderAPI");
             this.enabledRSCEditor = pm.isPluginEnabled("RSCEditor");
             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
             this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
@@ -214,6 +215,7 @@ public class IntegrationManager extends AbstractManager {
             addIntegration(enabledNetworks, NetworksIntegrationMain::new);
             addIntegration(enabledNetworksExpansion, NetworksExpansionIntegrationMain::new);
             addIntegration(enabledObsidianExpansion, ObsidianExpansionIntegrationMain::new);
+            addIntegration(enabledPlaceholderAPI, PlaceholderAPIIntegrationMain::new);
             addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
             addIntegration(enabledSimpleUtils, SimpleUtilsIntegrationMain::new);
             addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
@@ -229,6 +231,11 @@ public class IntegrationManager extends AbstractManager {
         }, 1L);
     }
     // @formatter:on
+
+    @Override
+    public void unload() {
+        shutdownIntegrations();
+    }
 
     public static boolean classExists(String className) {
         try {
@@ -252,7 +259,7 @@ public class IntegrationManager extends AbstractManager {
 
     private void startupIntegrations() {
         for (Integration integration : integrations) {
-            plugin.getLogger().info("Hooking " + integration.getHookPlugin());
+            Debug.log("Hooking " + integration.getHookPlugin());
             try {
                 integration.onEnable();
             } catch (Throwable e) {
@@ -280,7 +287,7 @@ public class IntegrationManager extends AbstractManager {
 
     public void shutdownIntegrations() {
         for (Integration integration : integrations) {
-            plugin.getLogger().info("Unhooking " + integration.getHookPlugin());
+            Debug.log("Unhooking " + integration.getHookPlugin());
             try {
                 integration.onDisable();
             } catch (Throwable e) {

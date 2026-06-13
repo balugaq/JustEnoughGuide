@@ -316,7 +316,7 @@ public final class GuideUtil {
         throw new IllegalStateException("Unknown GuideHistory entry: " + content);
     }
 
-    public SlimefunGuideImplementation getLastGuide(Player player) {
+    public static SlimefunGuideImplementation getLastGuide(Player player) {
         var mode = GuideListener.guideModeMap.get(player);
         return GuideUtil.getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
     }
@@ -639,7 +639,7 @@ public final class GuideUtil {
         return forceHiddens.contains(group);
     }
 
-    public SlimefunGuideMode getLastGuideMode(Player player) {
+    public static SlimefunGuideMode getLastGuideMode(Player player) {
         return getLastGuide(player).getMode();
     }
 

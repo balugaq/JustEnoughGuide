@@ -55,6 +55,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
@@ -391,6 +392,10 @@ public class JEGGuideSettings {
     public static List<SlimefunGuideOption<?>> getOptions() {
         return (List<SlimefunGuideOption<?>>)
                 ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
+    }
+
+    public static @Nullable SlimefunGuideOption<?> getOption(String key) {
+        return getOptions().stream().filter(o -> o.getKey().getKey().equals(key)).findFirst().orElse(null);
     }
 
     public static void addOption(SlimefunGuideOption<?> option) {

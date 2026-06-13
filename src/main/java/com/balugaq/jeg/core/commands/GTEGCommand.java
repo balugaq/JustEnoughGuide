@@ -45,16 +45,10 @@ import java.util.List;
  * @author balugaq
  * @since 1.8
  */
-@SuppressWarnings({"ClassCanBeRecord", "SwitchStatementWithTooFewBranches"})
+@SuppressWarnings("SwitchStatementWithTooFewBranches")
 @Getter
 @NullMarked
 public class GTEGCommand implements JEGCommand {
-    private final Plugin plugin;
-
-    public GTEGCommand(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {

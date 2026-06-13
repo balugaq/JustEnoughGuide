@@ -25,41 +25,4 @@
  *
  */
 
-package com.balugaq.jeg.api.objects;
-
-import com.balugaq.jeg.utils.StackUtils;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-import org.jspecify.annotations.NullMarked;
-
-import java.util.List;
-
-/**
- * @author balugaq
- * @since 1.9
- */
-@SuppressWarnings("unused")
-@NullMarked
-public class SimpleRecipeChoice extends RecipeChoice.ExactChoice implements RecipeChoice {
-    public SimpleRecipeChoice(ItemStack choice) {
-        super(choice);
-    }
-
-    public SimpleRecipeChoice(ItemStack... choices) {
-        super(choices);
-    }
-
-    public SimpleRecipeChoice(List<ItemStack> choices) {
-        super(choices);
-    }
-
-    public boolean test(ItemStack other) {
-        for (ItemStack choice : this.getChoices()) {
-            if (StackUtils.itemsMatch(choice, other, true, false)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
+package com.balugaq.jeg.core.integrations.placeholderapi;

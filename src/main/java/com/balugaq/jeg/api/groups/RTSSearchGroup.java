@@ -42,6 +42,7 @@ import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -89,6 +90,7 @@ public class RTSSearchGroup extends FlexItemGroup {
             (player) -> ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单");
     // Cache AnvilView class for 1.21+ compatibility
     private static @UnknownNullability Class<?> anvilViewClass = null;
+    private static boolean rtsAvailable = true;
 
     static {
         try {
@@ -215,65 +217,76 @@ public class RTSSearchGroup extends FlexItemGroup {
         this.page = page;
     }
 
-    public static Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode) {
+    public static @Nullable Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode) {
         return newRTSInventoryFor(player, guideMode, null);
     }
 
-    public static Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode,
+    public static @Nullable Inventory newRTSInventoryFor(Player player, SlimefunGuideMode guideMode,
                                                @Nullable String presetSearchTerm) {
         return newRTSInventoryFor(player, guideMode, null, null, presetSearchTerm);
     }
 
-    public static Inventory newRTSInventoryFor(
+    public static @Nullable Inventory newRTSInventoryFor(
             Player player,
             SlimefunGuideMode guideMode,
             @Nullable BiConsumer<Integer, AnvilGUI.StateSnapshot> clickHandler,
             int @Nullable [] slots,
             @Nullable String presetSearchTerm) {
-        AnvilGUI.Builder builder = new AnvilGUI.Builder()
-                .plugin(SearchGroup.JAVA_PLUGIN)
-                .itemLeft(BACK_ICON.apply(player))
-                .itemRight(Models.INPUT_TEXT_ICON)
-                .itemOutput(ItemStackUtil.air())
-                .text("")
-                .title("在下方输入搜索内容")
-                .onClose((stateSnapshot) -> {
-                    RTSEvents.CloseRTSEvent event = new RTSEvents.CloseRTSEvent(player, stateSnapshot, guideMode);
-                    Bukkit.getPluginManager().callEvent(event);
-                });
-        if (clickHandler != null) {
-            builder.onClickAsync((slot, stateSnapshot) -> CompletableFuture.supplyAsync(() -> {
-                if (slots != null) {
-                    for (int s : slots) {
-                        if (s == slot) {
-                            return List.of(AnvilGUI.ResponseAction.run(() -> {
-                                RTSEvents.ClickAnvilItemEvent event =
-                                        new RTSEvents.ClickAnvilItemEvent(player, stateSnapshot, slot, guideMode);
-                                Bukkit.getPluginManager().callEvent(event);
-                                if (!event.isCancelled()) {
-                                    clickHandler.accept(s, stateSnapshot);
-                                }
-                            }));
+        if (!rtsAvailable) {
+            player.sendMessage(ChatColors.color("&c实时搜索在此版本不可用，请联系服主以寻求帮助。"));
+            return null;
+        }
+        try {
+            AnvilGUI.Builder builder = new AnvilGUI.Builder()
+                    .plugin(SearchGroup.JAVA_PLUGIN)
+                    .itemLeft(BACK_ICON.apply(player))
+                    .itemRight(Models.INPUT_TEXT_ICON)
+                    .itemOutput(ItemStackUtil.air())
+                    .text("")
+                    .title("在下方输入搜索内容")
+                    .onClose((stateSnapshot) -> {
+                        RTSEvents.CloseRTSEvent event = new RTSEvents.CloseRTSEvent(player, stateSnapshot, guideMode);
+                        Bukkit.getPluginManager().callEvent(event);
+                    });
+            if (clickHandler != null) {
+                builder.onClickAsync((slot, stateSnapshot) -> CompletableFuture.supplyAsync(() -> {
+                    if (slots != null) {
+                        for (int s : slots) {
+                            if (s == slot) {
+                                return List.of(AnvilGUI.ResponseAction.run(() -> {
+                                    RTSEvents.ClickAnvilItemEvent event =
+                                            new RTSEvents.ClickAnvilItemEvent(player, stateSnapshot, slot, guideMode);
+                                    Bukkit.getPluginManager().callEvent(event);
+                                    if (!event.isCancelled()) {
+                                        clickHandler.accept(s, stateSnapshot);
+                                    }
+                                }));
+                            }
                         }
                     }
-                }
-                return Collections.emptyList();
-            }));
-        } else {
-            builder.onClickAsync((slot, stateSnapshot) -> CompletableFuture.supplyAsync(Collections::emptyList));
-        }
+                    return Collections.emptyList();
+                }));
+            } else {
+                builder.onClickAsync((slot, stateSnapshot) -> CompletableFuture.supplyAsync(Collections::emptyList));
+            }
 
-        if (presetSearchTerm != null) {
-            builder.text(presetSearchTerm);
-        }
+            if (presetSearchTerm != null) {
+                builder.text(presetSearchTerm);
+            }
 
-        Inventory inventory = builder.open(player).getInventory();
-        if (inventory instanceof AnvilInventory anvilInventory) {
-            RTSEvents.OpenRTSEvent event =
-                    new RTSEvents.OpenRTSEvent(player, anvilInventory, guideMode, presetSearchTerm);
-            Bukkit.getPluginManager().callEvent(event);
+            Inventory inventory = builder.open(player).getInventory();
+            if (inventory instanceof AnvilInventory anvilInventory) {
+                RTSEvents.OpenRTSEvent event =
+                        new RTSEvents.OpenRTSEvent(player, anvilInventory, guideMode, presetSearchTerm);
+                Bukkit.getPluginManager().callEvent(event);
+            }
+            return inventory;
+        } catch (Exception | NoClassDefFoundError e) {
+            rtsAvailable = false;
+            Debug.trace(e);
+            player.sendMessage(ChatColors.color("&c实时搜索在此版本不可用，请联系服主以寻求帮助。"));
+            return null;
         }
-        return inventory;
     }
 
     @Override
