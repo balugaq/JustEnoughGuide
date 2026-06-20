@@ -159,6 +159,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private TaskScheduler scheduler = null;
 
     @Getter
+    @UnknownNullability
+    private JEGMetrics metrics = null;
+
+    @Getter
     private int javaVersion = 0;
 
     public JustEnoughGuide() {
@@ -358,6 +362,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             this.rtsBackpackManager.unload();
         }
 
+        if (this.metrics != null) {
+            this.metrics.shutdown();
+        }
+
         if (this.configManager != null) {
             this.configManager.unload();
         }
@@ -368,6 +376,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.integrationManager = null;
         this.commandManager = null;
         this.listenerManager = null;
+        this.rtsBackpackManager = null;
+        this.metrics = null;
         this.configManager = null;
         Debug.setPlugin(null);
 
@@ -496,6 +506,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         getLogger().info("尝试自动更新...");
         tryUpdate();
+
+        getLogger().info("正在加载 Metrics...");
+        metrics = new JEGMetrics();
 
         getLogger().info("成功启用此附属");
     }

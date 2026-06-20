@@ -163,6 +163,10 @@
                                     <pattern>com.jeff_media</pattern>
                                     <shadedPattern>com.balugaq.jeg.libraries.jeff_media</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>com.balugaq.jeg.libraries.bstats</shadedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>
