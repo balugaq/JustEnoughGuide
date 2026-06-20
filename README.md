@@ -1,5 +1,7 @@
 # JustEnoughGuide - Better Slimefun Guide
 
+<img src="https://builds.guizhanss.com/api/badge/balugaq/JustEnoughGuide/master/latest"> [Download](https://builds.guizhanss.com/balugaq/JustEnoughGuide/master/builds)
+
 JustEnoughGuide (JEG for short) is a Slimefun addon for Minecraft that significantly enhances the functionality and user experience of the original Slimefun guide book. This plugin aims to provide a more intuitive and efficient way to access Slimefun item recipes and information for Minecraft servers.
 
 ## Key Enhanced Features
