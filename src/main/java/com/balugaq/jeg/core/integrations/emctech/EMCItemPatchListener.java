@@ -55,8 +55,7 @@ public class EMCItemPatchListener implements ItemPatchListener {
             PatchScope.SlimefunItem,
             PatchScope.ItemMarkItem,
             PatchScope.BookMarkItem,
-            PatchScope.SearchItem,
-            PatchScope.ItemRecipeIngredient
+            PatchScope.SearchItem
     );
     public static final DecimalFormat EMCFormat = new DecimalFormat("#.###");
 
@@ -94,8 +93,7 @@ public class EMCItemPatchListener implements ItemPatchListener {
             return;
         }
 
-        if (scope == PatchScope.ItemRecipeIngredient
-                && StackUtils.itemsMatch(itemStack, new ItemStack(itemStack.getType()))) {
+        if (StackUtils.itemsMatch(itemStack, new ItemStack(itemStack.getType()))) {
             // Do not process vanilla item
             return;
         }

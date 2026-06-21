@@ -53,8 +53,7 @@ public class SlimefunIdPatchListener implements ItemPatchListener {
             PatchScope.SlimefunItem,
             PatchScope.ItemMarkItem,
             PatchScope.BookMarkItem,
-            PatchScope.SearchItem,
-            PatchScope.ItemRecipeIngredient
+            PatchScope.SearchItem
     );
 
     @EventHandler(priority = EventPriority.HIGHEST)
