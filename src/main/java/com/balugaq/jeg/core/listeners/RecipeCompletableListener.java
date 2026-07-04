@@ -137,7 +137,9 @@ public class RecipeCompletableListener implements ItemPatchListener {
                         }
 
                         for (var entry : map.entrySet()) {
-                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(entry.getKey()) + "&ax" + entry.getValue()));
+                            int stacks = entry.getValue() / Math.max(1, entry.getKey().getMaxStackSize());
+                            int left = entry.getValue() - stacks * Math.max(1, entry.getKey().getMaxStackSize());
+                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(entry.getKey()) + "&ax" + entry.getValue() + (entry.getValue() > entry.getKey().getMaxStackSize() ? (" &7(" + stacks + " 组 + " + left + ")" ) : "")));
                         }
                     }
                 }, 1L, 20L
