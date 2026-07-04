@@ -28,6 +28,9 @@ disable-bundle-interaction: true
 # 是否对来自不同附属的物品替换卡进行互通处理
 adapt-replacement-cards: true
 
+# 是否在配方补全适配的机器中自动添加配方补全按钮
+auto-add-recipe-complete-button: true
+
 # 禁止搜索非限定词时出现名字包含以下任意词的物品
 blacklist:
   - "快捷"

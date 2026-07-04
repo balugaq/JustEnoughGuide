@@ -47,6 +47,7 @@ public class ItemsSetup {
     public static final SlimefunItem USAGE_INFO;
     public static final SlimefunItem MECHANISM;
     public static final SlimefunItem SUPPORTED_ADDONS_INFO;
+    public static final SlimefunItem JEG_BUTTON;
 
     static {
         ItemStack craftingTable = new ItemStack(Material.CRAFTING_TABLE);
@@ -83,6 +84,14 @@ public class ItemsSetup {
 
         SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(
                 GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[] {
+                null, null, null,
+                null, null, null,
+                null, null, null
+        }
+        );
+
+        JEG_BUTTON = new JEGSlimefunItem(
+                GroupSetup.jegItemsGroup, Models.JEG_RECIPE_COMPLETE_BUTTON, RecipeType.NULL, new @Nullable ItemStack[] {
                 null, null, null,
                 null, null, null,
                 null, null, null

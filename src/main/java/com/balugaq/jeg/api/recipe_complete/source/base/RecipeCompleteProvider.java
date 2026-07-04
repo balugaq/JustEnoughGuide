@@ -28,6 +28,7 @@
 package com.balugaq.jeg.api.recipe_complete.source.base;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
+import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -155,5 +156,16 @@ public class RecipeCompleteProvider {
             }
         }
         return null;
+    }
+
+    public static void openSlimefun(RecipeCompleteSession session) {
+        RecipeCompleteProvider.getSlimefunSources().stream().findFirst().get().openGuide(session);
+    }
+
+    public static void openVanilla(RecipeCompleteSession session) {
+        RecipeCompleteProvider.getVanillaSources().stream().findFirst().ifPresent(source -> {
+            RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(session.getPlayer());
+            source.openGuide(session);
+        });
     }
 }

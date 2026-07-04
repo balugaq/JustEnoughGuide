@@ -30,7 +30,6 @@ package com.balugaq.jeg.core.listeners;
 import com.balugaq.jeg.api.objects.annotations.PatchCode;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.SlimefunGuideOpenEvent;
@@ -39,6 +38,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -65,9 +65,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 @NullMarked
 public class GuideListener implements Listener {
-    public static final int OPEN_GUIDE_DEFAULT_FATAL_ERROR_CODE = 12208;
-    public static final int OPEN_GUIDE_ASYNC_FATAL_ERROR_CODE = 12209;
-    public static final int OPEN_GUIDE_SYNC_FATAL_ERROR_CODE = 12210;
     public static final Map<Player, SlimefunGuideMode> guideModeMap = new ConcurrentHashMap<>();
     public final boolean giveOnFirstJoin;
 
@@ -84,24 +81,19 @@ public class GuideListener implements Listener {
         try {
             openGuide(p, mode);
         } catch (Exception ex) {
-            try {
-                openGuideAsync(p, mode);
-            } catch (Exception ex2) {
-                try {
-                    openGuideSync(p, mode);
-                } catch (Exception ex3) {
-                    Debug.traceExactly(ex, "opening guide", OPEN_GUIDE_DEFAULT_FATAL_ERROR_CODE);
-                    Debug.traceExactly(ex2, "opening guide asynchronously", OPEN_GUIDE_ASYNC_FATAL_ERROR_CODE);
-                    Debug.traceExactly(ex3, "opening guide synchronously", OPEN_GUIDE_SYNC_FATAL_ERROR_CODE);
-                    PlayerProfile.find(e.getPlayer())
-                            .ifPresent(profile -> GuideUtil.removeLastEntry(profile.getGuideHistory()));
-                }
-            }
+            PlayerProfile.find(e.getPlayer()).ifPresent(profile -> {
+                GuideUtil.removeLastEntry(profile.getGuideHistory());
+            });
         }
     }
 
     @Internal
     public static void openGuide(Player player, SlimefunGuideMode mode) {
+        if (!player.isOp() && !Slimefun.getWorldSettingsService().isWorldEnabled(player.getWorld())) {
+            player.sendMessage(ChatColors.color("&c你没有权限打开粘液科技指南书"));
+            return;
+        }
+
         Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
         if (optional.isPresent()) {

@@ -46,6 +46,7 @@ import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
@@ -340,9 +341,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
                         boolean unordered = isUnordered(sf);
                         var session = RecipeCompleteSession.create(blockMenu, player, clickAction, slots, unordered, 1);
                         if (session == null) return false;
-                        RecipeCompleteProvider.getSlimefunSources().stream().findFirst().ifPresent(source ->
-                            source.openGuide(session)
-                        );
+                        RecipeCompleteProvider.openSlimefun(session);
 
                         return false;
                     }
@@ -448,10 +447,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
         ClickAction clickAction = new ClickAction(event.isRightClick(), event.isShiftClick());
         var session = RecipeCompleteSession.create(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1);
         if (session == null) return;
-        RecipeCompleteProvider.getVanillaSources().stream().findFirst().ifPresent(source -> {
-            allowSelectingItemStackToRecipeComplete(player);
-            source.openGuide(session);
-        });
+        RecipeCompleteProvider.openVanilla(session);
 
         event.setCancelled(true);
     }
@@ -696,11 +692,17 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     public void exit(Player player) {
+        RecipeCompleteSession session = RecipeCompleteSession.getSession(player);
         RecipeCompleteSession.cancel(player);
         PlayerProfile profile = RecipeCompletableListener.getPlayerProfile(player);
         rollbackGuideHistory(profile);
         RecipeCompletableListener.PROFILE_CALLBACKS.remove(player);
-        player.closeInventory();
+        if (session != null) {
+            if (session.getMenu() != null) {
+                BlockMenu actualMenu = StorageCacheUtils.getMenu(session.getMenu().getLocation());
+                if (actualMenu != null) actualMenu.open(player);
+            }
+        }
     }
 
     @EventHandler

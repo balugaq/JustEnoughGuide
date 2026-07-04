@@ -158,6 +158,14 @@ public class Models {
                     "&7- &a迷狱生机"
             )
     );
+
+    public static final SlimefunItemStack JEG_RECIPE_COMPLETE_BUTTON = new SlimefunItemStack(
+            "JEG_RECIPE_COMPLETE_BUTTON",
+            Material.KNOWLEDGE_BOOK,
+            "&6配方补全",
+            "&7点击打开配方补全界面"
+    );
+
     public static final ItemStack ITEM_MARK_BACKGROUND = Converter.getItem(
             Material.GREEN_STAINED_GLASS_PANE,
             "&a&l添加收藏物",

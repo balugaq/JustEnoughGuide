@@ -33,6 +33,7 @@ package com.balugaq.jeg.core.integrations.justenoughguide;
 
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompletableAdapter;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
@@ -53,13 +54,26 @@ import com.balugaq.jeg.utils.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
+import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author balugaq
@@ -104,22 +118,42 @@ public class JustEnoughGuideIntegrationMain implements Integration {
             }
         }
 
+        Debug.log("正在加载指南选项...");
+        JEGGuideSettings.patchSlimefun();
+        if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
+            JEGGuideSettings.addOption(SlimefunIdDisplayGuideOption.instance());
+        }
+        JEGGuideSettings.addOption(KeybindsSettingsGuideOption.instance());
         if (JustEnoughGuide.getConfigManager().isBeginnerOption()) {
-            Debug.log("正在加载指南选项...");
-            JEGGuideSettings.patchSlimefun();
-            if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
-                JEGGuideSettings.addOption(SlimefunIdDisplayGuideOption.instance());
-            }
-            JEGGuideSettings.addOption(KeybindsSettingsGuideOption.instance());
             JEGGuideSettings.addOption(BeginnersGuideOption.instance());
-            JEGGuideSettings.addOption(CerPatchGuideOption.instance());
-            JEGGuideSettings.addOption(ShareInGuideOption.instance());
-            JEGGuideSettings.addOption(ShareOutGuideOption.instance());
-            JEGGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
-            JEGGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
-            JEGGuideSettings.addOption(RecipeFillingWithNearbyContainerGuideOption.instance());
-            JEGGuideSettings.addOption(RecipeCompleteOpenModeGuideOption.instance());
-            Debug.log("指南选项加载完毕！");
+        }
+        JEGGuideSettings.addOption(CerPatchGuideOption.instance());
+        JEGGuideSettings.addOption(ShareInGuideOption.instance());
+        JEGGuideSettings.addOption(ShareOutGuideOption.instance());
+        JEGGuideSettings.addOption(RecursiveRecipeFillingGuideOption.instance());
+        JEGGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
+        JEGGuideSettings.addOption(RecipeFillingWithNearbyContainerGuideOption.instance());
+        JEGGuideSettings.addOption(RecipeCompleteOpenModeGuideOption.instance());
+        Debug.log("指南选项加载完毕！");
+
+        if (JustEnoughGuide.getConfigManager().isAutoAddRecipeCompleteButton()) {
+            Debug.log("正在自动添加 JustEnoughGuide 配方补全按钮");
+            Debug.debug("Added RecipeComplete Buttons at: ");
+            int count = 0;
+            for (var entry : new HashMap<>(Slimefun.getRegistry().getMenuPresets()).entrySet()) {
+                BlockMenuPreset preset = entry.getValue();
+
+                SlimefunItem sf = SlimefunItem.getById((preset.getID()));
+                if (sf == null || !RecipeCompletableRegistry.getAllRecipeCompletableBlocks().contains(sf)) {
+                    continue;
+                }
+
+                new JEGBlockMenuPreset(preset);
+                Debug.debug(sf);
+
+                count++;
+            }
+            Debug.log("已为 " + count + " 个机器添加配方补全按钮");
         }
     }
 

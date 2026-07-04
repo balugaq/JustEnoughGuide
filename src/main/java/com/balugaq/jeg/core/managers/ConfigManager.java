@@ -97,6 +97,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean LOGITECH_MACHINE_STACKABLE_DISPLAY;
     private final boolean SLIMEFUN_ID_DISPLAY;
     private final boolean ADAPT_REPLACEMENT_CARDS;
+    private final boolean AUTO_ADD_RECIPE_COMPLETE_BUTTON;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -344,6 +345,7 @@ public class ConfigManager extends AbstractManager {
         this.LOGITECH_MACHINE_STACKABLE_DISPLAY = cfg.getBoolean("improvements.logitech-machine-stackable-display", true);
         this.SLIMEFUN_ID_DISPLAY = cfg.getBoolean("improvements.slimefun-id-display", true);
         this.ADAPT_REPLACEMENT_CARDS = cfg.getBoolean("adapt-replacement-cards", true);
+        this.AUTO_ADD_RECIPE_COMPLETE_BUTTON = cfg.getBoolean("auto-add-recipe-complete-button", true);
     }
 
     private void setupDefaultConfig() {
@@ -548,5 +550,9 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isAdaptReplacementCards() {
         return ADAPT_REPLACEMENT_CARDS;
+    }
+
+    public boolean isAutoAddRecipeCompleteButton() {
+        return AUTO_ADD_RECIPE_COMPLETE_BUTTON;
     }
 }
