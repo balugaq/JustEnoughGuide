@@ -34,6 +34,7 @@ import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
@@ -346,6 +347,7 @@ public interface Source {
             ItemGetter itemGetter,
             ItemFitter itemFitter,
             ItemPusher itemPusher) {
+        Debug.debug("handling " + session.toString() + " :completeRecipeWithGuide");
         var event = session.getEvent();
         var ingredientSlots = session.getIngredientSlots();
         var unordered = session.isUnordered();

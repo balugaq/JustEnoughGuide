@@ -30,6 +30,7 @@ package com.balugaq.jeg.api.recipe_complete.source.base;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.InventoryUtil;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -51,6 +52,7 @@ public interface VanillaSource extends Source {
     @SuppressWarnings({"deprecation", "UnusedReturnValue"})
     @Override
     default boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
+        Debug.debug(session + " open guide for " + session.getPlayer().getName());
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
 

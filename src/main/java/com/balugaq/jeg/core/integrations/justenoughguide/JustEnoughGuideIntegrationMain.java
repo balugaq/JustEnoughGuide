@@ -148,6 +148,11 @@ public class JustEnoughGuideIntegrationMain implements Integration {
                     continue;
                 }
 
+                if (JustEnoughGuide.getConfigManager().getNoAutoAddRecipeCompleteBlocks().contains(sf.getId())
+                || JustEnoughGuide.getConfigManager().getNoAutoAddRecipeCompleteAddons().contains(sf.getAddon().getName())) {
+                    continue;
+                }
+
                 new JEGBlockMenuPreset(preset);
                 Debug.debug(sf);
 

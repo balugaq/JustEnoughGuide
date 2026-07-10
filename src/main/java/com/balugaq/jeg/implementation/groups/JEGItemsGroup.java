@@ -25,41 +25,20 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.nexcavate;
+package com.balugaq.jeg.implementation.groups;
 
-import com.balugaq.jeg.implementation.groups.NexcavateItemsGroup;
-import com.balugaq.jeg.core.integrations.Integration;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.Models;
-import com.balugaq.jeg.utils.SlimefunRegistryUtil;
-import org.jetbrains.annotations.Nullable;
+import com.balugaq.jeg.api.groups.MixedGroup;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
 @NullMarked
-public class NexcavateIntegrationMain implements Integration {
-    public static @Nullable NexcavateItemsGroup nexcavateItemsGroup = null;
-
-    @Override
-    public String getHookPlugin() {
-        return "Nexcavate";
-    }
-
-    @Override
-    public void onEnable() {
-        nexcavateItemsGroup =
-                new NexcavateItemsGroup(KeyUtil.newKey("nexcavate_items_group"), Models.NEXCAVATE_ITEMS_GROUP);
-        nexcavateItemsGroup.register(JustEnoughGuide.getInstance());
-    }
-
-    @Override
-    public void onDisable() {
-        if (nexcavateItemsGroup != null) {
-            SlimefunRegistryUtil.unregisterItemGroup(nexcavateItemsGroup);
-        }
+public class JEGItemsGroup extends MixedGroup<JEGItemsGroup> {
+    public JEGItemsGroup(final NamespacedKey key, final ItemStack icon) {
+        super(key, icon);
     }
 }

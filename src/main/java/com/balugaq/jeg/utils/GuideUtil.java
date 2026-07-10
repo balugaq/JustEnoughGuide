@@ -29,14 +29,14 @@ package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
-import com.balugaq.jeg.api.groups.ActionSelectGroup;
+import com.balugaq.jeg.implementation.groups.ActionSelectGroup;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
-import com.balugaq.jeg.api.groups.KeybindItemsGroup;
-import com.balugaq.jeg.api.groups.KeybindsItemsGroup;
+import com.balugaq.jeg.implementation.groups.KeybindItemsGroup;
+import com.balugaq.jeg.implementation.groups.KeybindsItemsGroup;
 import com.balugaq.jeg.api.groups.MixedGroup;
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
-import com.balugaq.jeg.api.groups.SubKeybindsItemsGroup;
+import com.balugaq.jeg.implementation.groups.SubKeybindsItemsGroup;
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
 import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.DisplayInSurvivalMode;

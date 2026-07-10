@@ -25,7 +25,7 @@
  *
  */
 
-package com.balugaq.jeg.implementation.items;
+package com.balugaq.jeg.implementation.groups;
 
 import com.balugaq.jeg.api.groups.ClassicGuideGroup;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;

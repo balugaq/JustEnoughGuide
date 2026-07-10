@@ -28,19 +28,7 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
-import com.balugaq.jeg.core.listeners.BundleListener;
-import com.balugaq.jeg.core.listeners.CerPatchListener;
-import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
-import com.balugaq.jeg.core.listeners.GuideGUIFixListener;
-import com.balugaq.jeg.core.listeners.GuideListener;
-import com.balugaq.jeg.core.listeners.MenuListener;
-import com.balugaq.jeg.core.listeners.RTSListener;
-import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
-import com.balugaq.jeg.core.listeners.SearchReloadListener;
-import com.balugaq.jeg.core.listeners.SlimefunGuideOptionPatchFixListener;
-import com.balugaq.jeg.core.listeners.SlimefunIdPatchListener;
-import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
-import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
+import com.balugaq.jeg.core.listeners.*;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.WatchdogHandler;
 import com.balugaq.jeg.utils.MinecraftVersion;
@@ -94,12 +82,13 @@ public class ListenerManager extends AbstractManager {
         if (JustEnoughGuide.getConfigManager().isDebug()) {
             listeners.add(new WatchdogHandler());
         }
-        if (JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()
-                && MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17)) {
+        if (MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17)
+                && JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()) {
             listeners.add(new BundleListener());
         }
         listeners.add(new SlimefunGuideOptionPatchFixListener());
         listeners.add(new SlimefunRegistryFinalizeListener());
+        listeners.add(new ReplacementCardAdaptItemListener());
     }
 
     public void registerListener(Listener listener) {
@@ -129,7 +118,10 @@ public class ListenerManager extends AbstractManager {
     @Override
     public void unload() {
         unregisterListeners();
-        PlayerRightClickEvent.getHandlerList().register(slimefunGuideListener);
+        if (slimefunGuideListener != null) {
+            PlayerRightClickEvent.getHandlerList().register(slimefunGuideListener);
+            slimefunGuideListener = null;
+        }
     }
 
     private void unregisterListeners() {

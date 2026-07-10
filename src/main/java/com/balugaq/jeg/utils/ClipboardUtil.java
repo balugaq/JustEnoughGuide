@@ -31,6 +31,7 @@ import com.balugaq.jeg.utils.platform.PlatformUtil;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -60,6 +61,19 @@ public class ClipboardUtil {
         } else {
             player.spigot().sendMessage(makeComponent(display, hover, text));
         }
+    }
+
+    public static Component makeComponentPaper(Component display, String text) {
+        return makeComponentPaper(
+                display,
+                Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击复制")).build(),
+                text);
+    }
+
+    public static Component makeComponentPaper(Component display, Component hover, String text) {
+        return Component.text().append(display).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(hover))
+                .clickEvent(net.kyori.adventure.text.event.ClickEvent.copyToClipboard(text))
+                .build();
     }
 
     public static TextComponent makeComponent(String display, String hover, String text) {

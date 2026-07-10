@@ -30,6 +30,7 @@ package com.balugaq.jeg.implementation.items;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.groups.GroupSetup;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -44,11 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +56,7 @@ import java.util.stream.Collectors;
 @NullMarked
 public class ReplacementCardAdapter {
     private static final Map<String, List<ItemStack>> REPLACEMENT_CARDS = new HashMap<>();
+    private static final Map<SlimefunItem, Set<SlimefunItem>> ADAPTED_ITEMS = new HashMap<>();
     private static @Nullable Object replaceCard;
     private static @Nullable Method methodLogiTech_getReplaceCard_va;
     private static @Nullable Method methodLogiTech_getReplaceCard_sf;
@@ -111,17 +109,24 @@ public class ReplacementCardAdapter {
             }
         }
 
-        if (JustEnoughGuide.getConfigManager().isAdaptReplacementCards()) {
-            for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
-                for (ItemStack item : sf.getRecipe()) {
-                    if (item != null
-                            && item.getType() != Material.AIR
-                            && item.getMaxStackSize() == 1
-                            && !sf.getRecipeType().getKey().getNamespace().equals("logitech")
-                            && getReplacementCards(item) != null) {
-                        adaptItem(sf);
-                        break;
-                    }
+        if (!JustEnoughGuide.getConfigManager().isAdaptReplacementCards()) {
+            return;
+        }
+
+        for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
+            if (JustEnoughGuide.getConfigManager().getNoReplacementCardCompanionItemIds().contains(sf.getId())
+            || JustEnoughGuide.getConfigManager().getNoAutoAddRecipeCompleteAddons().contains(sf.getAddon().getName())) {
+                continue;
+            }
+
+            for (ItemStack item : sf.getRecipe()) {
+                if (item != null
+                        && item.getType() != Material.AIR
+                        && item.getMaxStackSize() == 1
+                        && !sf.getRecipeType().getKey().getNamespace().equals("logitech")
+                        && getReplacementCards(item) != null) {
+                    adaptItem(sf);
+                    break;
                 }
             }
         }
@@ -163,11 +168,12 @@ public class ReplacementCardAdapter {
     }
 
     private static void adaptItem(SlimefunItem sf, List<ItemStack> resultList) {
+        Set<SlimefunItem> adaptedItems = new HashSet<>();
         for (int retry = 0; retry < 128; retry++) {
             String newId = "JEG_" + sf.getId() + "_" + retry;
             if (SlimefunItem.getById(newId) != null) continue;
 
-            var newSf = new SlimefunItem(GroupSetup.replacementCardsGroup, new SlimefunItemStack(newId, sf.getItem()), sf.getRecipeType(), resultList.toArray(new ItemStack[0]), sf.getRecipeOutput());
+            var newSf = new CompanionItem(GroupSetup.replacementCardsGroup, new SlimefunItemStack(newId, sf.getItem()), sf.getRecipeType(), resultList.toArray(new ItemStack[0]), sf.getRecipeOutput());
             boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
             newSf.register(JustEnoughGuide.getInstance());
             try {
@@ -178,10 +184,15 @@ public class ReplacementCardAdapter {
                 }
             } catch (Exception ignored) {
             }
-            if (!(newSf.getItemGroup() instanceof FlexItemGroup)) {
+            if (newSf.getItemGroup() instanceof FlexItemGroup) {
                 newSf.setHidden(true);
             }
             JustEnoughGuide.setAutomaticallyLoadItems(before);
+            adaptedItems.add(newSf);
+            ADAPTED_ITEMS.put(sf, adaptedItems);
+            for (SlimefunItem sfi : adaptedItems) {
+                ADAPTED_ITEMS.put(sfi, adaptedItems);
+            }
             return;
         }
     }
@@ -214,7 +225,7 @@ public class ReplacementCardAdapter {
 
     public static void addCard(String itemId, String cardId) {
         SlimefunItem sf = SlimefunItem.getById(cardId);
-        if (sf != null) {
+        if (sf != null && !sf.isDisabled()) {
             addCard(itemId, sf.getItem());
         }
     }
@@ -255,5 +266,10 @@ public class ReplacementCardAdapter {
 
     public static Map<String, List<ItemStack>> getReplacementCards() {
         return REPLACEMENT_CARDS;
+    }
+
+    @Nullable
+    public static Set<SlimefunItem> getAdaptedItems(SlimefunItem sf) {
+        return ADAPTED_ITEMS.get(sf);
     }
 }

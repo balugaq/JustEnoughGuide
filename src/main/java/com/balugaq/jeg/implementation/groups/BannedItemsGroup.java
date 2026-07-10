@@ -25,8 +25,9 @@
  *
  */
 
-package com.balugaq.jeg.api.groups;
+package com.balugaq.jeg.implementation.groups;
 
+import com.balugaq.jeg.api.groups.BaseGroup;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
@@ -57,33 +58,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class used to create groups to display all the hidden items in the guide.
- *
  * @author balugaq
- * @since 1.1
+ * @since 2.1
  */
 @SuppressWarnings({"deprecation", "unused"})
 @NotDisplayInSurvivalMode
 @NullMarked
-public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
+public class BannedItemsGroup extends BaseGroup<BannedItemsGroup> {
     private final List<SlimefunItem> slimefunItemList;
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public HiddenItemsGroup(NamespacedKey key, ItemStack icon) {
+    public BannedItemsGroup(NamespacedKey key, ItemStack icon) {
         super(key, icon);
         this.page = 1;
         List<SlimefunItem> slimefunItemList = new ArrayList<>();
         for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
-            if (!item.isDisabled() && item.isHidden()) {
+            if (item.isDisabled()) {
                 slimefunItemList.add(item);
-            }
-            try {
-                // Intentionally provide a null value
-                //noinspection DataFlowIssue
-                if (!item.getItemGroup().isAccessible(null)) {
-                    slimefunItemList.add(item);
-                }
-            } catch (Exception ignored) {
             }
         }
         this.slimefunItemList = slimefunItemList;
@@ -95,7 +86,7 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
             final Player player,
             final PlayerProfile playerProfile,
             final SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("隐藏物品");
+        ChestMenu chestMenu = new ChestMenu("已禁用的物品");
 
         OnClick.preset(chestMenu);
 
@@ -168,7 +159,7 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
                                     ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                                HiddenItemsGroup hiddenItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
+                                BannedItemsGroup hiddenItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
                                 hiddenItemsGroup.open(player, playerProfile, slimefunGuideMode);
                                 return false;
                             })
@@ -197,7 +188,7 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
                                     ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                                HiddenItemsGroup hiddenItemsGroup = this.getByPage(Math.min(
+                                BannedItemsGroup hiddenItemsGroup = this.getByPage(Math.min(
                                         this.page + 1,
                                         (this.slimefunItemList.size() - 1)
                                                 / Formats.sub.getChars('i').size()

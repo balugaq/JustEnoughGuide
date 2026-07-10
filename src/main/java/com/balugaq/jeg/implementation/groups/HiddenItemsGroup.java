@@ -25,9 +25,9 @@
  *
  */
 
-package com.balugaq.jeg.api.groups;
+package com.balugaq.jeg.implementation.groups;
 
-import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
+import com.balugaq.jeg.api.groups.BaseGroup;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
@@ -36,7 +36,6 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -59,37 +58,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class used to create groups to display all the Nexcavate items in the guide.
+ * This class used to create groups to display all the hidden items in the guide.
  *
  * @author balugaq
  * @since 1.1
  */
 @SuppressWarnings({"deprecation", "unused"})
-@DisplayInCheatMode
 @NotDisplayInSurvivalMode
 @NullMarked
-public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
+public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
     private final List<SlimefunItem> slimefunItemList;
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public NexcavateItemsGroup(NamespacedKey key, ItemStack icon) {
+    public HiddenItemsGroup(NamespacedKey key, ItemStack icon) {
         super(key, icon);
         this.page = 1;
         List<SlimefunItem> slimefunItemList = new ArrayList<>();
         for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
-            if ("nexcavate".equalsIgnoreCase(item.getAddon().getName())) {
+            if (!item.isDisabled() && item.isHidden()) {
                 slimefunItemList.add(item);
+            }
+            try {
+                // Intentionally provide a null value
+                //noinspection DataFlowIssue
+                if (!item.getItemGroup().isAccessible(null)) {
+                    slimefunItemList.add(item);
+                }
+            } catch (Exception ignored) {
             }
         }
         this.slimefunItemList = slimefunItemList;
         this.pageMap.put(1, this);
-    }
-
-    protected NexcavateItemsGroup(NexcavateItemsGroup nexcavateItemsGroup, int page) {
-        super(nexcavateItemsGroup.key, Models.NEXCAVATE_ITEMS_GROUP);
-        this.page = page;
-        this.slimefunItemList = nexcavateItemsGroup.slimefunItemList;
-        this.pageMap.put(page, this);
     }
 
     @Override
@@ -97,11 +96,12 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
             final Player player,
             final PlayerProfile playerProfile,
             final SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("文明复兴物品");
+        ChestMenu chestMenu = new ChestMenu("隐藏物品");
 
         OnClick.preset(chestMenu);
 
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
+
         for (int ss : Formats.sub.getChars('b')) {
             chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
             chestMenu.addMenuClickHandler(
@@ -169,8 +169,8 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
                                     ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                                NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
-                                nexcavateItemsGroup.open(player, playerProfile, slimefunGuideMode);
+                                HiddenItemsGroup hiddenItemsGroup = this.getByPage(Math.max(this.page - 1, 1));
+                                hiddenItemsGroup.open(player, playerProfile, slimefunGuideMode);
                                 return false;
                             })
             );
@@ -198,13 +198,13 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
                                     ))
                             .ifSuccess(() -> {
                                 GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                                NexcavateItemsGroup nexcavateItemsGroup = this.getByPage(Math.min(
+                                HiddenItemsGroup hiddenItemsGroup = this.getByPage(Math.min(
                                         this.page + 1,
                                         (this.slimefunItemList.size() - 1)
                                                 / Formats.sub.getChars('i').size()
                                                 + 1
                                 ));
-                                nexcavateItemsGroup.open(player, playerProfile, slimefunGuideMode);
+                                hiddenItemsGroup.open(player, playerProfile, slimefunGuideMode);
                                 return false;
                             })
             );

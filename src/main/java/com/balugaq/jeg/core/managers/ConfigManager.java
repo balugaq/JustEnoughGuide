@@ -87,6 +87,10 @@ public class ConfigManager extends AbstractManager {
     private final List<String> ACTION_SELECT_FORMAT;
     private final Map<String, String> LOCAL_TRANSLATE;
     private final List<String> BANLIST;
+    private final List<String> NO_REPLACEMENT_CARD_COMPANION_ITEM_IDS;
+    private final List<String> NO_REPLACEMENT_CARD_COMPANION_ADDONS;
+    private final List<String> NO_AUTO_ADD_RECIPE_COMPLETE_BLOCKS;
+    private final List<String> NO_AUTO_ADD_RECIPE_COMPLETE_ADDONS;
     private final JavaPlugin plugin;
     private final boolean EMC_VALUE_DISPLAY;
     private final boolean FinalTech_VALUE_DISPLAY;
@@ -346,6 +350,10 @@ public class ConfigManager extends AbstractManager {
         this.SLIMEFUN_ID_DISPLAY = cfg.getBoolean("improvements.slimefun-id-display", true);
         this.ADAPT_REPLACEMENT_CARDS = cfg.getBoolean("adapt-replacement-cards", true);
         this.AUTO_ADD_RECIPE_COMPLETE_BUTTON = cfg.getBoolean("auto-add-recipe-complete-button", true);
+        this.NO_REPLACEMENT_CARD_COMPANION_ITEM_IDS = cfg.getStringList("no-replacement-card-companion-item-ids");
+        this.NO_REPLACEMENT_CARD_COMPANION_ADDONS = cfg.getStringList("no-replacement-card-companion-addons");
+        this.NO_AUTO_ADD_RECIPE_COMPLETE_BLOCKS = cfg.getStringList("no-replacement-card-companion-blocks");
+        this.NO_AUTO_ADD_RECIPE_COMPLETE_ADDONS = cfg.getStringList("no-replacement-card-companion-addons");
     }
 
     private void setupDefaultConfig() {
@@ -554,5 +562,21 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isAutoAddRecipeCompleteButton() {
         return AUTO_ADD_RECIPE_COMPLETE_BUTTON;
+    }
+
+    public List<String> getNoReplacementCardCompanionItemIds() {
+        return NO_REPLACEMENT_CARD_COMPANION_ITEM_IDS;
+    }
+
+    public List<String> getNoReplacementCardCompanionAddons() {
+        return NO_REPLACEMENT_CARD_COMPANION_ADDONS;
+    }
+
+    public List<String> getNoAutoAddRecipeCompleteBlocks() {
+        return NO_AUTO_ADD_RECIPE_COMPLETE_BLOCKS;
+    }
+
+    public List<String> getNoAutoAddRecipeCompleteAddons() {
+        return NO_AUTO_ADD_RECIPE_COMPLETE_ADDONS;
     }
 }

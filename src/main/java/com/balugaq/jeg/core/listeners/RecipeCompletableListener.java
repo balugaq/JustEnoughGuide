@@ -41,20 +41,22 @@ import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInvento
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
-import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.Models;
-import com.balugaq.jeg.utils.ReflectionUtil;
-import com.balugaq.jeg.utils.StackUtils;
+import com.balugaq.jeg.utils.*;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -138,9 +140,34 @@ public class RecipeCompletableListener implements ItemPatchListener {
                         }
 
                         for (var entry : map.entrySet()) {
-                            int stacks = entry.getValue() / Math.max(1, entry.getKey().getMaxStackSize());
-                            int left = entry.getValue() - stacks * Math.max(1, entry.getKey().getMaxStackSize());
-                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(entry.getKey()) + "&ax" + entry.getValue() + (entry.getValue() > entry.getKey().getMaxStackSize() ? (" &7(" + stacks + " 组 + " + left + ")" ) : "")));
+                            ItemStack itemStack = entry.getKey();
+                            int amount = entry.getValue();
+                            int stacks = amount / Math.max(1, itemStack.getMaxStackSize());
+                            int left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
+                            String amountString = "" + amount;
+                            if (amount > itemStack.getMaxStackSize()) {
+                                amountString += " &7( " + stacks + " 组";
+                                if (left > 0) {
+                                    amountString += " + " + left + " 个";
+                                }
+                                amountString += ")";
+                            }
+                            if (PaperLib.isPaper()) {
+                                var builder = Component.text().style(Style.style(NamedTextColor.RED)).append(Component.text("缺少"));
+                                var itemBuilder = Component
+                                        .text(ItemStackHelper.getDisplayName(itemStack));
+                                SlimefunItem sf = SlimefunItem.getByItem(itemStack);
+                                if (sf != null) {
+                                    itemBuilder = itemBuilder
+                                            .hoverEvent(HoverEvent.showText(Component.text().style(Style.style(NamedTextColor.YELLOW)).append(Component.text("点击查看"))))
+                                            .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
+                                }
+                                builder.style(Style.style(NamedTextColor.GRAY)).append(itemBuilder);
+                                builder.append(Component.text().style(Style.style(NamedTextColor.GREEN)).append(Component.text(amountString)));
+                                player.sendMessage(builder);
+                            } else {
+                                player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(itemStack) + " &r&ax" + amountString));
+                            }
                         }
                     }
                 }, 1L, 20L
@@ -213,6 +240,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
             saveOriginGuideHistory(profile);
             clearGuideHistory(profile);
         }
+        Debug.debug(player.getName() + " is tagged guide open");
     }
 
     public static PlayerProfile getPlayerProfile(OfflinePlayer player) {
@@ -387,6 +415,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     public static void allowSelectingItemStackToRecipeComplete(Player player) {
+        Debug.debug("Allow " + player.getName() + " to recipe complete");
         listening.add(player);
     }
 

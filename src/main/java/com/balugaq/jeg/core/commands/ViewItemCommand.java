@@ -28,32 +28,42 @@
 package com.balugaq.jeg.core.commands;
 
 import com.balugaq.jeg.api.interfaces.JEGCommand;
+import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.clickhandler.OnClick;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.Getter;
-import org.bukkit.ChatColor;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
- * This is the implementation of the "/jeg help" command. It shows the list of available commands and their usage.
- * <p>
- * This command is also the default command when no other command is specified.
+ * This is the implementation of the "/jeg viewitem" command.
  *
  * @author balugaq
- * @since 1.1
+ * @since 2.1
  */
-@SuppressWarnings({"deprecation", "SwitchStatementWithTooFewBranches"})
+@SuppressWarnings("SwitchStatementWithTooFewBranches")
 @Getter
 @NullMarked
-public class HelpCommand implements JEGCommand {
+public class ViewItemCommand implements JEGCommand {
     @Override
     public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {
             case 1 -> {
-                return List.of("help");
+                return List.of("viewitem");
+            }
+
+            case 2 -> {
+                return Slimefun.getRegistry().getEnabledSlimefunItems().stream().map(SlimefunItem::getId).toList();
             }
 
             default -> {
@@ -68,10 +78,8 @@ public class HelpCommand implements JEGCommand {
             final Command command,
             final String label,
             final String[] args) {
-        if (sender.isOp()) {
-            if (args.length == 1) {
-                return "help".equalsIgnoreCase(args[0]);
-            }
+        if (args.length == 1) {
+            return "viewitem".equalsIgnoreCase(args[0]);
         }
         return false;
     }
@@ -82,18 +90,20 @@ public class HelpCommand implements JEGCommand {
             Command command,
             String label,
             String[] args) {
-        onHelp(sender);
-    }
-
-    private void onHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.GREEN + "JEG Commands:");
-        sender.sendMessage(ChatColor.GREEN + "/jeg help - Show this help message");
-        sender.sendMessage(ChatColor.GREEN + "/jeg reload - Reload JEG plugin");
-        sender.sendMessage(ChatColor.GREEN + "/jeg cache <section> <key>");
-        sender.sendMessage(ChatColor.GREEN + "/jeg disable - Disable JEG plugin");
-        sender.sendMessage(ChatColor.GREEN + "/jeg gteg - Get Guide Tier Editor");
-        sender.sendMessage(ChatColor.GREEN + "/jeg categories - View all the groups");
-        sender.sendMessage(ChatColor.GREEN + "/jeg share - Share the item on your hand");
-        sender.sendMessage(ChatColor.GREEN + "/jeg viewitem <Slimefun Item> - View Slimefun item");
+        if (sender instanceof Player player) {
+            if (args.length >= 2) {
+                String id = args[1];
+                SlimefunItem slimefunItem = SlimefunItem.getById(id.toUpperCase());
+                if (slimefunItem == null || slimefunItem.isDisabledIn(player.getWorld())) {
+                    player.sendMessage(ChatColors.color("&c无法查看 ID 为 " + id + "物品"));
+                    return;
+                }
+                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                if (profile == null) return;
+                GuideUtil.getLastGuide(player).displayItem(profile, slimefunItem, true);
+            }
+        } else {
+            sender.sendMessage(Slimefun.getLocalization().getMessage("messages.only-players"));
+        }
     }
 }

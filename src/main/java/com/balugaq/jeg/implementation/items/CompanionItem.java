@@ -25,41 +25,32 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.nexcavate;
+package com.balugaq.jeg.implementation.items;
 
-import com.balugaq.jeg.implementation.groups.NexcavateItemsGroup;
-import com.balugaq.jeg.core.integrations.Integration;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.Models;
-import com.balugaq.jeg.utils.SlimefunRegistryUtil;
+import com.balugaq.jeg.utils.GuideUtil;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
 @NullMarked
-public class NexcavateIntegrationMain implements Integration {
-    public static @Nullable NexcavateItemsGroup nexcavateItemsGroup = null;
-
-    @Override
-    public String getHookPlugin() {
-        return "Nexcavate";
+public class CompanionItem extends JEGSlimefunItem {
+    public CompanionItem(final ItemGroup itemGroup, final SlimefunItemStack item, final RecipeType recipeType, final @Nullable ItemStack[] recipe) {
+        super(itemGroup, item, recipeType, recipe);
     }
 
-    @Override
-    public void onEnable() {
-        nexcavateItemsGroup =
-                new NexcavateItemsGroup(KeyUtil.newKey("nexcavate_items_group"), Models.NEXCAVATE_ITEMS_GROUP);
-        nexcavateItemsGroup.register(JustEnoughGuide.getInstance());
+    public CompanionItem(final ItemGroup itemGroup, final SlimefunItemStack item, final RecipeType recipeType, final @Nullable ItemStack[] recipe, @Nullable final ItemStack recipeOutput) {
+        super(itemGroup, item, recipeType, recipe, recipeOutput);
     }
 
-    @Override
-    public void onDisable() {
-        if (nexcavateItemsGroup != null) {
-            SlimefunRegistryUtil.unregisterItemGroup(nexcavateItemsGroup);
-        }
+    protected CompanionItem(final ItemGroup itemGroup, final ItemStack item, final String id, final RecipeType recipeType, final ItemStack[] recipe) {
+        super(itemGroup, item, id, recipeType, recipe);
     }
 }

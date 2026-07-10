@@ -25,20 +25,20 @@
  *
  */
 
-package com.balugaq.jeg.implementation.items;
+package com.balugaq.jeg.implementation.groups;
 
-import com.balugaq.jeg.api.groups.MixedGroup;
+import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
  * @since 2.1
  */
-@NullMarked
-public class JEGMainGroup extends MixedGroup<JEGMainGroup> {
-    public JEGMainGroup(final NamespacedKey key, final ItemStack icon) {
-        super(key, icon);
+@NotDisplayInSurvivalMode
+public class ReplacementCardsGroup extends ItemGroup {
+    public ReplacementCardsGroup(NamespacedKey key, ItemStack item) {
+        super(key, item);
     }
 }

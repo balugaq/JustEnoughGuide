@@ -31,7 +31,7 @@ import com.balugaq.jeg.api.CustomGroupConfigurations;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.SearchGroup;
-import com.balugaq.jeg.api.groups.VanillaItemsGroup;
+import com.balugaq.jeg.implementation.groups.VanillaItemsGroup;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
@@ -44,7 +44,7 @@ import com.balugaq.jeg.core.managers.ListenerManager;
 import com.balugaq.jeg.core.managers.RTSBackpackManager;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
-import com.balugaq.jeg.implementation.items.GroupSetup;
+import com.balugaq.jeg.implementation.groups.GroupSetup;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.Debug;
@@ -410,14 +410,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         PlatformUtil.initialize();
         this.scheduler = TaskScheduler.create();
 
+        getLogger().info("正在加载前置...");
+        loadLibraries();
+
         getLogger().info("正在加载配置文件...");
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.load();
         Formats.load();
-
-//        getLogger().info("正在加载前置...");
-//        loadLibraries();
 
         getLogger().info("正在注册监听器...");
         this.listenerManager = new ListenerManager(this);
@@ -578,14 +578,30 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private void loadLibraries() {
         LibraryManager libraryManager = new BukkitLibraryManager(this);
         libraryManager.addMavenCentral();
-        libraryManager.addRepository("https://mvn.wesjd.net/");
+//        libraryManager.addRepository("https://mvn.wesjd.net/");
 
-        getLogger().info("正在加载 AnvilGUI");
-        Library anvilgui = Library.builder()
-                .groupId("net{}wesjd")
-                .artifactId("anvilgui")
-                .version("1.10.12-SNAPSHOT")
+//        getLogger().info("正在加载 AnvilGUI");
+//        Library anvilgui = Library.builder()
+//                .groupId("net{}wesjd")
+//                .artifactId("anvilgui")
+//                .version("1.10.10-SNAPSHOT")
+//                .build();
+//        libraryManager.loadLibrary(anvilgui);
+
+        getLogger().info("正在加载 Pinyin");
+        Library pinyin = Library.builder()
+                .groupId("com{}github{}houbb")
+                .artifactId("pinyin")
+                .version("0.4.0")
                 .build();
-        libraryManager.loadLibrary(anvilgui);
+        libraryManager.loadLibrary(pinyin);
+
+        getLogger().info("正在加载 opencc4j");
+        Library opencc4j = Library.builder()
+                .groupId("com{}github{}houbb")
+                .artifactId("opencc4j")
+                .version("1.14.0")
+                .build();
+        libraryManager.loadLibrary(opencc4j);
     }
 }

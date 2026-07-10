@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.BlockMenuUtil;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -55,6 +56,7 @@ public interface SlimefunSource extends Source {
     default boolean openGuide(
             RecipeCompleteSession session,
             @Nullable Runnable callback) {
+        Debug.debug(session + " open guide for " + session.getPlayer().getName());
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
 

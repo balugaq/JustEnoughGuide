@@ -34,7 +34,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.balugaq</groupId>
     <artifactId>JustEnoughGuide</artifactId>
-    <version>2.1.26</version>
+    <version>2.1.27</version>
 
     <pluginRepositories>
         <pluginRepository>
@@ -154,10 +154,6 @@
                                 <relocation>
                                     <pattern>net.byteflux.libby</pattern>
                                     <shadedPattern>com.balugaq.jeg.libraries.libby</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.github.houbb</pattern>
-                                    <shadedPattern>com.balugaq.jeg.libraries.houbb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.jeff_media</pattern>
@@ -372,14 +368,14 @@
             <groupId>com.github.houbb</groupId>
             <artifactId>pinyin</artifactId>
             <version>0.4.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.houbb</groupId>
             <artifactId>opencc4j</artifactId>
             <version>1.14.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

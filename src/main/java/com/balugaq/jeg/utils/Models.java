@@ -70,7 +70,9 @@ public class Models {
     public static final ItemStack JEG_ITEMS_GROUP = Converter.getItem(
             new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, "&b配方补全书")));
     public static final ItemStack REPLACEMENT_CARDS_GROUP = Converter.getItem(
-            new SlimefunItemStack("JEG_REPLACEMENT_CARDS_GROUP", Converter.getItem(Material.PAPER, "&b替换卡")));
+            new SlimefunItemStack("JEG_REPLACEMENT_CARDS_GROUP", Converter.getItem(Material.PAPER, "&b替换卡 - 伴生物品")));
+    public static final ItemStack BANNED_ITEMS_GROUP = Converter.getItem(
+            new SlimefunItemStack("JEG_BANNED_ITEMS_GROUP", Converter.getItem(Material.COMMAND_BLOCK, "&c已禁用的物品")));
     public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(
             Material.YELLOW_STAINED_GLASS_PANE, " ",
             " "

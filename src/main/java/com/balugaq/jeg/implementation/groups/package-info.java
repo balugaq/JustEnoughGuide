@@ -25,24 +25,4 @@
  *
  */
 
-package com.balugaq.jeg.implementation.items;
-
-import com.balugaq.jeg.api.groups.MixedGroup;
-import com.balugaq.jeg.api.interfaces.DontShowInSearch;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NullMarked;
-
-
-/**
- * @author balugaq
- * @since 2.1
- */
-@DontShowInSearch
-@NullMarked
-public class RecipeCompletableGroup extends MixedGroup<RecipeCompletableGroup> {
-    public RecipeCompletableGroup(final NamespacedKey key, final ItemStack icon) {
-        super(key, icon);
-        this.pageMap.put(1, this);
-    }
-}
+package com.balugaq.jeg.implementation.groups;
