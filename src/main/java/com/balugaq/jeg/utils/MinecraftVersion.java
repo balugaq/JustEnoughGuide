@@ -49,6 +49,7 @@ public record MinecraftVersion(int major, int minor, int patch) implements Compa
     public static final MinecraftVersion V1_20_1 = MinecraftVersion.of(1, 20, 1);
     public static final MinecraftVersion V1_20_5 = MinecraftVersion.of(1, 20, 5);
     public static final MinecraftVersion V1_21 = MinecraftVersion.of(1, 21);
+    public static final MinecraftVersion V26_1 = MinecraftVersion.of(26, 1);
 
     public MinecraftVersion() {
         this(999, 999, 999);
@@ -95,6 +96,22 @@ public record MinecraftVersion(int major, int minor, int patch) implements Compa
 
     public boolean isBefore(MinecraftVersion version) {
         return !isAtLeast(version) && this != version;
+    }
+
+    public static MinecraftVersion max(MinecraftVersion a, MinecraftVersion b) {
+        if (a.isAtLeast(b)) {
+            return a;
+        }
+
+        return b;
+    }
+
+    public static MinecraftVersion min(MinecraftVersion a, MinecraftVersion b) {
+        if (a.isAtLeast(b)) {
+            return b;
+        }
+
+        return a;
     }
 
     @Override

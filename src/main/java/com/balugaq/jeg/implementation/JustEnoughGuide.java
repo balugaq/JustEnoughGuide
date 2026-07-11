@@ -603,5 +603,21 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 .version("1.14.0")
                 .build();
         libraryManager.loadLibrary(opencc4j);
+
+        getLogger().info("正在加载 heaven");
+        Library heaven = Library.builder()
+                .groupId("com{}github{}houbb")
+                .artifactId("heaven")
+                .version("0.13.0")
+                .build();
+        libraryManager.loadLibrary(heaven);
+
+        getLogger().info("正在加载 nlp-common");
+        Library nlp = Library.builder()
+                .groupId("com{}github{}houbb")
+                .artifactId("nlp-common")
+                .version("0.0.5")
+                .build();
+        libraryManager.loadLibrary(nlp);
     }
 }

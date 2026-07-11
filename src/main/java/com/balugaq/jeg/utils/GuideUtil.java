@@ -74,6 +74,7 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.experimental.UtilityClass;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.wesjd.anvilgui.AnvilGUI;
+import net.wesjd.anvilgui.version.VersionMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -87,6 +88,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -118,6 +120,8 @@ public final class GuideUtil {
                     "JEG_CER_BUTTON", Material.EMERALD,
                     "&e&l性价比界面（仅供参考）"
             )));
+    private static boolean rtsLoad = false;
+    private static boolean rtsLoadSuccess = false;
 
     public static void openMainMenuAsync(Player player) {
         openMainMenuAsync(player, getLastGuide(player).getMode());
@@ -170,6 +174,40 @@ public final class GuideUtil {
         }
     }
 
+    public boolean checkRTS(Player pl) {
+        try {
+            if (!rtsLoad) {
+                try {
+                    rtsLoad = true;
+                    new VersionMatcher().match();
+                    rtsLoadSuccess = true;
+                } catch (Exception e) {
+                    rtsLoadSuccess = false;
+                }
+            }
+
+            if (!rtsLoadSuccess) {
+                MinecraftVersion maxVersion = MinecraftVersion.of(0, 0, 0);
+                Map<String, String> v2r = ReflectionUtil.getStaticValue(VersionMatcher.class, "VERSION_TO_REVISION", Map.class);
+                if (v2r != null) {
+                    for (MinecraftVersion v : v2r.keySet().stream().map(MinecraftVersion::of).toList()) {
+                        maxVersion = MinecraftVersion.max(maxVersion, v);
+                    }
+                } else {
+                    maxVersion = MinecraftVersion.UNKNOWN;
+                }
+                pl.sendMessage(ChatColors.color("&c实时搜索在当前服务器版本 " + MinecraftVersion.current().humanize() + " 无法使用，实时搜索支持库最高支持版本为 " + maxVersion));
+                return false;
+            }
+        } catch (Exception e) {
+            Debug.trace(e);
+            pl.sendMessage(ChatColors.color("&c无法检查实时搜索，相关功能已禁用"));
+            return false;
+        }
+
+        return true;
+    }
+
     @SuppressWarnings("deprecation")
     public static void addRTSButton(
             ChestMenu menu,
@@ -186,6 +224,11 @@ public final class GuideUtil {
                         (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.RTSButtonClickEvent(
                                         pl, itemstack, slot, action, menu, implementation))
                                 .ifSuccess(() -> {
+                                    // check version
+                                    if (!checkRTS(pl)) {
+                                        return false;
+                                    }
+
                                     try {
                                         RTSSearchGroup.newRTSInventoryFor(
                                                 pl,
