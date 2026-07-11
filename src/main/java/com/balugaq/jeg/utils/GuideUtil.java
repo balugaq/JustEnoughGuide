@@ -121,7 +121,6 @@ public final class GuideUtil {
                     "&e&l性价比界面（仅供参考）"
             )));
     private static boolean rtsLoad = false;
-    private static boolean rtsLoadSuccess = false;
 
     public static void openMainMenuAsync(Player player) {
         openMainMenuAsync(player, getLastGuide(player).getMode());
@@ -180,13 +179,13 @@ public final class GuideUtil {
                 try {
                     rtsLoad = true;
                     new VersionMatcher().match();
-                    rtsLoadSuccess = true;
+                    RTSSearchGroup.setRtsAvailable(true);
                 } catch (Exception e) {
-                    rtsLoadSuccess = false;
+                    RTSSearchGroup.setRtsAvailable(false);
                 }
             }
 
-            if (!rtsLoadSuccess) {
+            if (!RTSSearchGroup.isRtsAvailable()) {
                 MinecraftVersion maxVersion = MinecraftVersion.of(0, 0, 0);
                 Map<String, String> v2r = ReflectionUtil.getStaticValue(VersionMatcher.class, "VERSION_TO_REVISION", Map.class);
                 if (v2r != null) {

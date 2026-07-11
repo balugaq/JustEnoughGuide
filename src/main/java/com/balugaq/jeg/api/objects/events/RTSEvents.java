@@ -29,6 +29,7 @@ package com.balugaq.jeg.api.objects.events;
 
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import lombok.Getter;
+import lombok.Setter;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -106,13 +107,13 @@ public class RTSEvents {
     @SuppressWarnings("unused")
     @Getter
     @NullMarked
-    public static class OpenRTSEvent extends Event {
+    public static class OpenRTSEvent extends Event implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
         private final AnvilInventory openingInventory;
         private final SlimefunGuideMode guideMode;
-        private @Nullable
-        final String presetSearchTerm;
+        private @Nullable final String presetSearchTerm;
+        private @Setter boolean cancelled = false;
 
         /**
          * Constructs a new OpenRTSEvent.
