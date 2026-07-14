@@ -34,6 +34,7 @@ import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
@@ -760,6 +761,8 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
 
         GuideUtil.addCerButton(menu, p, profile, item, this, format);
 
+        GuideUtil.addSlimefunRecipeEditButton(menu, p, profile, item, format);
+
         format.renderCustom(menu);
 
         menu.open(p);
@@ -798,8 +801,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
             addBackButton0(menu, s, p, profile);
         }
 
-        boolean isSlimefunRecipe = item instanceof SlimefunItem && !(item instanceof VanillaItemShade);
-
         List<Integer> recipeSlots = format.getChars('r');
         for (int i = 0; i < 9; i++) {
             ItemStack recipeItem = recipe[i];
@@ -817,11 +818,6 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         }
 
         for (int s : format.getChars('t')) {
-            menu.addItem(
-                    s,
-                    PatchScope.ItemRecipeType.patch(profile, recipeType.getItem(p)),
-                    (pl, slot, itemStack, action) -> EventUtil.callEvent(new GuideEvents.RecipeTypeButtonClickEvent(pl, itemStack, slot, action, menu, this)).ifSuccess(false)
-            );
             OnDisplay.RecipeType.display(
                             p, recipeType, PatchScope.ItemRecipeType.patch(
                                     profile,

@@ -174,4 +174,11 @@ public class Models {
             "",
             "&7左键物品添加到收藏中"
     );
+
+    public static final ItemStack SLIMEFUN_RECIPE_EDIT = Converter.getItem(
+            Material.DIAMOND,
+            "&a&lSlimeFunRecipe 配方编辑器",
+            "",
+            "&e点击打开配方编辑器"
+    );
 }

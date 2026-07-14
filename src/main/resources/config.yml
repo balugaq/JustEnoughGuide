@@ -161,8 +161,9 @@ custom-format:
   # t = 配方类型
   # i = 输出物品
   # E = 超大配方
+  # K = SlimeFunRecipe 配方编辑（若有）
   recipe:
-    - "b  rrr  w"
+    - "bK rrr  w"
     - " t rrr i "
     - "m  rrr  E"
   # 配方展示 - 原版物品
@@ -198,8 +199,9 @@ custom-format:
   # N = 下一页
   # d = 配方展示
   # m = 性价比（无性价比信息则为空气显示）
+  # K = SlimeFunRecipe 配方编辑（若有）
   recipe-display:
-    - "b  rrr  w"
+    - "bK rrr  w"
     - " t rrr i "
     - "m  rrr  E"
     - "BPBBBBBNB"
@@ -622,3 +624,7 @@ local-translate:
 
 # Do not change this value unless you know what you are doing.
 debug: false
+
+data:
+  # Do not change this value unless you know what you are doing.
+  config-version: 20260714

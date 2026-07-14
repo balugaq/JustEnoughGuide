@@ -848,9 +848,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
             }
         }
 
-        format.renderCustom(menu);
-
         GuideUtil.addCerButton(menu, p, profile, item, this, format);
+
+        GuideUtil.addSlimefunRecipeEditButton(menu, p, profile, item, format);
+
+        format.renderCustom(menu);
 
         menu.open(p);
 

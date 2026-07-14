@@ -25,79 +25,40 @@
  *
  */
 
-package com.balugaq.jeg.api.objects.enums;
+package com.balugaq.jeg.core.integrations.slimefunrecipe;
 
-import com.balugaq.jeg.api.objects.events.PatchEvent;
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
+import com.balugaq.jeg.core.integrations.Integration;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
+import pers.xanadu.slimefunrecipe.manager.GuiManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
-@SuppressWarnings("unused")
 @NullMarked
-public enum PatchScope {
-    Background,
-    Back,
-    Settings,
-    RealTimeSearch,
-    Search,
-    BookMark,
-    ItemMark,
-    ItemGroup,
-    PreviousPage,
-    NextPage,
-    SlimefunItem,
-    VanillaItem,
-    ItemRecipeIngredient,
-    ItemWiki,
-    ItemRecipeType,
-    ItemRecipeOut,
-    BigRecipe,
-    RecipeDisplay,
-    FeatureDisplay,
-    SettingsContributors,
-    SlimefunVersion,
-    SlimefunSourceCode,
-    SlimefunWiki,
-    GuideOption,
-    AddonCount,
-    UnofficialTips,
-    UnknownFeature,
-    Contributor,
-    LockedItemGroup,
-    NoPermission,
-    LockedItem,
-    BookMarkItem,
-    ItemMarkItem,
-    SearchItem,
-    Cer,
-    CerRecipe,
-    CerRecipeInput,
-    CerRecipeOutput,
-    CerRecipeBorderInput,
-    CerRecipeBorderOutput,
-    CerRecipeBorderInputOutput,
-    Research,
-    KeybindsSet,
-    SubKeybindsSet,
-    Keybind,
-    KeybindActionBorder,
-    Action,
-    SlimefunRecipeEdit;
-
-    public ItemStack patch(PlayerProfile profile, ItemStack itemStack) {
-        Player player = profile.getPlayer();
-        if (player == null) {
-            return itemStack;
-        }
-        return patch(player, itemStack);
+public class SlimeFunRecipeIntegrationMain implements Integration {
+    @Override
+    public String getHookPlugin() {
+        return "SlimeFunRecipe";
     }
 
-    public ItemStack patch(Player player, ItemStack itemStack) {
-        return PatchEvent.patch(this, player, itemStack);
+    public static void openGui(Player player, SlimefunItem sf) {
+        GuiManager.openSlimeInv(player, sf);
+    }
+
+    @Override
+    public void onEnable() {
+
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 }

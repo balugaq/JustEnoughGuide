@@ -29,6 +29,7 @@ package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
+import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.implementation.groups.ActionSelectGroup;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.implementation.groups.KeybindItemsGroup;
@@ -484,6 +485,17 @@ public final class GuideUtil {
                             (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode()))
                     );
                 }
+            }
+        }
+    }
+
+    public static void addSlimefunRecipeEditButton(ChestMenu menu, Player p, PlayerProfile profile, SlimefunItem item, Format format) {
+        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimeFunRecipe() && p.isOp()) {
+            for (int s : format.getChars('K')) {
+                menu.addItem(s, PatchScope.SlimefunRecipeEdit.patch(profile, Models.SLIMEFUN_RECIPE_EDIT), (player, slot, itemStack, action) -> {
+                    SlimeFunRecipeIntegrationMain.openGui(player, item);
+                    return false;
+                });
             }
         }
     }

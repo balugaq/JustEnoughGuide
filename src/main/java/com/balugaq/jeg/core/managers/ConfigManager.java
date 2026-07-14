@@ -102,6 +102,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean SLIMEFUN_ID_DISPLAY;
     private final boolean ADAPT_REPLACEMENT_CARDS;
     private final boolean AUTO_ADD_RECIPE_COMPLETE_BUTTON;
+    private final int CONFIG_VERSION;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -354,12 +355,19 @@ public class ConfigManager extends AbstractManager {
         this.NO_REPLACEMENT_CARD_COMPANION_ADDONS = cfg.getStringList("no-replacement-card-companion-addons");
         this.NO_AUTO_ADD_RECIPE_COMPLETE_BLOCKS = cfg.getStringList("no-replacement-card-companion-blocks");
         this.NO_AUTO_ADD_RECIPE_COMPLETE_ADDONS = cfg.getStringList("no-replacement-card-companion-addons");
+        this.CONFIG_VERSION = cfg.getInt("data.config-version", 0);
+
+        configUpdate();
+    }
+
+    private File getConfigFile() {
+        return new File(plugin.getDataFolder(), "config.yml");
     }
 
     private void setupDefaultConfig() {
         // config.yml
         final InputStream inputStream = plugin.getResource("config.yml");
-        final File existingFile = new File(plugin.getDataFolder(), "config.yml");
+        final File existingFile = getConfigFile();
 
         if (inputStream == null) {
             return;
@@ -389,6 +397,42 @@ public class ConfigManager extends AbstractManager {
             }
         } else if (currentValue == null) {
             existingConfig.set(key, newValue);
+        }
+    }
+
+    private void configUpdate() {
+        if (getConfigVersion() <= 20260714) {
+            if (getRecipeFormat().equals(List.of(
+                    "b  rrr  w",
+                    " t rrr i ",
+                    "m  rrr  E"
+            ))) {
+                getRecipeFormat().clear();
+                getRecipeFormat().addAll(List.of(
+                        "bK rrr  w",
+                        " t rrr i ",
+                        "m  rrr  E"
+                ));
+            }
+
+            if (getRecipeDisplayFormat().equals(List.of(
+                    "b  rrr  w",
+                    " t rrr i ",
+                    "m  rrr  E",
+                    "BPBBBBBNB",
+                    "ddddddddd",
+                    "ddddddddd"
+            ))) {
+                getRecipeDisplayFormat().clear();
+                getRecipeDisplayFormat().addAll(List.of(
+                        "bK rrr  w",
+                        " t rrr i ",
+                        "m  rrr  E",
+                        "BPBBBBBNB",
+                        "ddddddddd",
+                        "ddddddddd"
+                ));
+            }
         }
     }
 
@@ -578,5 +622,9 @@ public class ConfigManager extends AbstractManager {
 
     public List<String> getNoAutoAddRecipeCompleteAddons() {
         return NO_AUTO_ADD_RECIPE_COMPLETE_ADDONS;
+    }
+
+    public int getConfigVersion() {
+        return CONFIG_VERSION;
     }
 }

@@ -58,6 +58,7 @@ import com.balugaq.jeg.core.integrations.placeholderapi.PlaceholderAPIIntegratio
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimefun.SlimefunIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimehud.SlimeHUDIntegrationMain;
@@ -135,6 +136,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledSlimeHUD;
     private boolean enabledSlimeHUDPlus;
     private boolean enabledSlimeTinker;
+    private boolean enabledSlimeFunRecipe;
     private boolean enabledTsingshanTechnology;
     private boolean enabledTsingshanTechnology_Fixed;
     private boolean enabledWilderNether;
@@ -183,6 +185,7 @@ public class IntegrationManager extends AbstractManager {
             this.enabledSlimeAEPlugin = pm.isPluginEnabled("SlimeAEPlugin");
             this.enabledSlimeFrame = pm.isPluginEnabled("SlimeFrame");
             this.enabledSlimefunTranslation = pm.isPluginEnabled("SlimefunTranslation");
+            this.enabledSlimeFunRecipe = pm.isPluginEnabled("SlimeFunRecipe");
             this.enabledSlimeHUDPlus = pm.isPluginEnabled("SlimeHUDPlus");
             this.enabledSlimeHUD = enabledSlimeHUD || pm.isPluginEnabled("SlimeHUD");
             this.enabledSlimeTinker = pm.isPluginEnabled("SlimeTinker");
@@ -219,6 +222,7 @@ public class IntegrationManager extends AbstractManager {
             addIntegration(enabledRykenSlimefunCustomizer, RykenSlimefunCustomizerIntegrationMain::new);
             addIntegration(enabledSimpleUtils, SimpleUtilsIntegrationMain::new);
             addIntegration(enabledSlimeAEPlugin, SlimeAEPluginIntegrationMain::new);
+            addIntegration(enabledSlimeFunRecipe, SlimeFunRecipeIntegrationMain::new);
             addIntegration(enabledSlimefunTranslation, SlimefunTranslationIntegrationMain::new);
             addIntegration(enabledSlimeHUD, SlimeHUDIntegrationMain::new);
             addIntegration(enabledSlimeTinker, SlimeTinkerIntegrationMain::new);
