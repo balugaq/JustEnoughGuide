@@ -177,7 +177,12 @@ public final class GuideUtil {
                             pl, itemstack, slot, action, menu, implementation))
                         .ifSuccess(() -> {
                             try {
-                                RTSSearchGroup.openRTSInventoryFor(pl);
+                                if (true) {
+                                    // todo: test
+                                    p.sendMessage(ChatColor.RED + "实时搜索功能代码维护中，暂时不可用。");
+                                } else {
+                                    RTSSearchGroup.openRTSInventoryFor(pl);
+                                }
                             } catch (Exception e) {
                                 Debug.trace(e);
                                 p.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
