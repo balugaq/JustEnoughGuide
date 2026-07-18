@@ -54,17 +54,17 @@ public class ShareInGuideOption extends AbstractBooleanGuideOption {
     @Override
     public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
         return Converter.getItem(
-                Converter.getItem(
-                        Material.WRITTEN_BOOK,
-                        meta -> meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP)
-                ),
-                "&b接收分享的物品: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择",
-                "&7当他人分享一个物品时",
-                "&7是否接收那个玩家发送的推送消息",
-                "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 接收分享的物品"
+            Converter.getItem(
+                Material.WRITTEN_BOOK,
+                meta -> meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP)
+            ),
+            "&b接收分享的物品: &" + (enabled ? "a启用" : "4禁用"),
+            "",
+            "&7你现在可以选择",
+            "&7当他人分享一个物品时",
+            "&7是否接收那个玩家发送的推送消息",
+            "",
+            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 接收分享的物品"
         );
     }
 }

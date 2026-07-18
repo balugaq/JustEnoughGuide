@@ -46,9 +46,7 @@ import java.util.Set;
 @NullMarked
 public class RecipeCompletableRegistry {
     /**
-     * @param slimefunItem
-     *         the {@link SlimefunItem} to add
-     *
+     * @param slimefunItem the {@link SlimefunItem} to add
      * @see RecipeCompletableListener.NotApplicable
      */
     @ApiStatus.Obsolete
@@ -57,9 +55,7 @@ public class RecipeCompletableRegistry {
     }
 
     /**
-     * @param slimefunItem
-     *         the {@link SlimefunItem} to remove
-     *
+     * @param slimefunItem the {@link SlimefunItem} to remove
      * @see RecipeCompletableListener.NotApplicable
      */
     @ApiStatus.Obsolete
@@ -69,13 +65,13 @@ public class RecipeCompletableRegistry {
 
     @ApiStatus.Obsolete
     public static void registerRecipeCompletable(
-            SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots) {
+        SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots) {
         RecipeCompletableListener.registerRecipeCompletable(slimefunItem, slots);
     }
 
     @ApiStatus.Obsolete
     public static void registerRecipeCompletable(
-            SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots, boolean unordered) {
         RecipeCompletableListener.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 

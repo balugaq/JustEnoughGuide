@@ -54,11 +54,11 @@ import java.util.Set;
 @Getter
 public enum FilterType {
     BY_FULL_NAME(
-            "!!",
-            SearchGroup::isFullNameApplicable
+        "!!",
+        SearchGroup::isFullNameApplicable
     ),
     BY_RECIPE_ITEM_NAME(
-            Set.of("#", "能做"), (player, item, lowerFilterValue, pinyin) -> {
+        Set.of("#", "能做"), (player, item, lowerFilterValue, pinyin) -> {
         ItemStack[] recipe = item.getRecipe();
         if (recipe == null) {
             return false;
@@ -74,7 +74,7 @@ public enum FilterType {
     }
     ),
     BY_RECIPE_TYPE_NAME(
-            "$", (player, item, lowerFilterValue, pinyin) -> {
+        "$", (player, item, lowerFilterValue, pinyin) -> {
         ItemStack recipeTypeIcon = item.getRecipeType().getItem(player);
         if (recipeTypeIcon == null) {
             return false;
@@ -84,38 +84,38 @@ public enum FilterType {
     }
     ),
     BY_DISPLAY_ITEM_NAME(
-            Set.of("%", "产"),
-            (player, item, lowerFilterValue, pinyin) -> {
-                // Use the pre-built name cache populated during SearchGroup.init().
-                // This avoids calling getDisplayRecipes() at search time, which would
-                // clone SlimefunItemStacks, construct CraftMetaSkull/CraftPlayerProfile
-                // objects, and ultimately fire Mojang sessionserver HTTP requests.
-                List<String> cached = SearchGroup.DISPLAY_ITEM_NAMES_CACHE.get(item.getId());
-                if (cached != null) {
-                    for (String name : cached) {
-                        if (name.contains(lowerFilterValue)) return true;
-                    }
+        Set.of("%", "产"),
+        (player, item, lowerFilterValue, pinyin) -> {
+            // Use the pre-built name cache populated during SearchGroup.init().
+            // This avoids calling getDisplayRecipes() at search time, which would
+            // clone SlimefunItemStacks, construct CraftMetaSkull/CraftPlayerProfile
+            // objects, and ultimately fire Mojang sessionserver HTTP requests.
+            List<String> cached = SearchGroup.DISPLAY_ITEM_NAMES_CACHE.get(item.getId());
+            if (cached != null) {
+                for (String name : cached) {
+                    if (name.contains(lowerFilterValue)) return true;
                 }
+            }
 
-                // SPECIAL_CACHE: addons may register extra searchable strings at runtime.
-                String id = item.getId();
-                Reference<Set<String>> ref = SearchGroup.SPECIAL_CACHE.get(id);
-                if (ref != null) {
-                    Set<String> cache = ref.get();
-                    if (cache != null) {
-                        for (String s : cache) {
-                            if (SearchGroup.isSearchFilterApplicable(s, lowerFilterValue, false)) {
-                                return true;
-                            }
+            // SPECIAL_CACHE: addons may register extra searchable strings at runtime.
+            String id = item.getId();
+            Reference<Set<String>> ref = SearchGroup.SPECIAL_CACHE.get(id);
+            if (ref != null) {
+                Set<String> cache = ref.get();
+                if (cache != null) {
+                    for (String s : cache) {
+                        if (SearchGroup.isSearchFilterApplicable(s, lowerFilterValue, false)) {
+                            return true;
                         }
                     }
                 }
-
-                return false;
             }
+
+            return false;
+        }
     ),
     BY_ADDON_NAME(
-            "@", (player, item, lowerFilterValue, pinyin) -> {
+        "@", (player, item, lowerFilterValue, pinyin) -> {
         SlimefunAddon addon = item.getAddon();
         String localAddonName = LocalHelper.getAddonName(addon, item.getId()).toLowerCase();
         String originModName = (addon == null ? "Slimefun" : addon.getName()).toLowerCase();
@@ -123,10 +123,10 @@ public enum FilterType {
     }
     ),
     BY_ITEM_NAME(
-            "!", SearchGroup::isSearchFilterApplicable
+        "!", SearchGroup::isSearchFilterApplicable
     ),
     BY_ITEM_LORE(
-            "^", (player, item, lowerFilterValue, pinyin) -> {
+        "^", (player, item, lowerFilterValue, pinyin) -> {
         ItemMeta meta = item.getItem().getItemMeta();
         if (meta == null) return false;
         List<String> s = meta.getLore();
@@ -140,8 +140,8 @@ public enum FilterType {
     }
     ),
     BY_MATERIAL_NAME(
-            "~",
-            (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue)
+        "~",
+        (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue)
     );
 
     @Unmodifiable
@@ -149,17 +149,17 @@ public enum FilterType {
 
     static {
         lengthSortedValues = Arrays.stream(values())
-                .map(type -> {
-                    List<Pair<String, FilterType>> list = new ArrayList<>();
-                    for (var symbol : type.getSymbols()) {
-                        list.add(new Pair<>(symbol, type));
-                    }
-                    return list;
-                })
-                .flatMap(Collection::stream)
-                .sorted(Comparator.comparingInt(e -> -e.first.length()))
-                .map(type -> type.second)
-                .toList();
+            .map(type -> {
+                List<Pair<String, FilterType>> list = new ArrayList<>();
+                for (var symbol : type.getSymbols()) {
+                    list.add(new Pair<>(symbol, type));
+                }
+                return list;
+            })
+            .flatMap(Collection::stream)
+            .sorted(Comparator.comparingInt(e -> -e.first.length()))
+            .map(type -> type.second)
+            .toList();
     }
 
     private final Set<String> symbols;
@@ -172,10 +172,8 @@ public enum FilterType {
     /**
      * Constructs a new FilterType instance with the specified flag and filter function.
      *
-     * @param symbols
-     *         The string symbols that represent the filter type.
-     * @param filter
-     *         The filter function to determine whether an item matches the filter.
+     * @param symbols The string symbols that represent the filter type.
+     * @param filter  The filter function to determine whether an item matches the filter.
      */
     FilterType(Set<String> symbols, DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
         this.symbols = symbols;

@@ -121,13 +121,13 @@ public class SpecialMenuProvider {
         // FinalTECH | FinalTECH-Changed
         try {
             Method method = ReflectionUtil.getMethod(
-                    Class.forName("io.taraxacum.finaltech.core.group.RecipeItemGroup"),
-                    "getBySlimefunItem",
-                    Player.class,
-                    PlayerProfile.class,
-                    SlimefunGuideMode.class,
-                    SlimefunItem.class,
-                    int.class
+                Class.forName("io.taraxacum.finaltech.core.group.RecipeItemGroup"),
+                "getBySlimefunItem",
+                Player.class,
+                PlayerProfile.class,
+                SlimefunGuideMode.class,
+                SlimefunItem.class,
+                int.class
             );
             if (method != null) {
                 method.setAccessible(true);
@@ -138,7 +138,7 @@ public class SpecialMenuProvider {
         // Nexcavate
         try {
             Method method = ReflectionUtil.getMethod(
-                    Class.forName("me.char321.nexcavate.research.progress.PlayerProgress"), "get", Player.class);
+                Class.forName("me.char321.nexcavate.research.progress.PlayerProgress"), "get", Player.class);
             if (method != null) {
                 method.setAccessible(true);
                 methodPlayerProgress_get = method;
@@ -155,7 +155,7 @@ public class SpecialMenuProvider {
         }
         try {
             Method method =
-                    ReflectionUtil.getMethod(Class.forName("me.char321.nexcavate.gui.NEGUI"), "openResearchScreen");
+                ReflectionUtil.getMethod(Class.forName("me.char321.nexcavate.gui.NEGUI"), "openResearchScreen");
             if (method != null) {
                 method.setAccessible(true);
                 methodNEGUI_openResearchScreen = method;
@@ -164,7 +164,7 @@ public class SpecialMenuProvider {
         }
         try {
             Method method =
-                    ReflectionUtil.getMethod(Class.forName("me.char321.nexcavate.NexcavateRegistry"), "getResearchMap");
+                ReflectionUtil.getMethod(Class.forName("me.char321.nexcavate.NexcavateRegistry"), "getResearchMap");
             if (method != null) {
                 method.setAccessible(true);
                 methodNexcavateRegistry_getResearchMap = method;
@@ -173,7 +173,7 @@ public class SpecialMenuProvider {
         }
         try {
             Object instance =
-                    ReflectionUtil.getStaticValue(Class.forName("me.char321.nexcavate.Nexcavate"), "instance");
+                ReflectionUtil.getStaticValue(Class.forName("me.char321.nexcavate.Nexcavate"), "instance");
             if (instance != null) {
                 objectNexcavate_registry = ReflectionUtil.getValue(instance, "registry");
             }
@@ -182,7 +182,7 @@ public class SpecialMenuProvider {
         // LogiTech
         try {
             Method method = ReflectionUtil.getMethod(
-                    Class.forName("me.matl114.logitech.Utils.MenuUtils"), "createItemRecipeDisplay", 3);
+                Class.forName("me.matl114.logitech.Utils.MenuUtils"), "createItemRecipeDisplay", 3);
             if (method != null) {
                 method.setAccessible(true);
                 methodMenuUtils_createItemRecipeDisplay = method;
@@ -190,7 +190,7 @@ public class SpecialMenuProvider {
         } catch (ClassNotFoundException ignored) {
             try {
                 Method method = ReflectionUtil.getMethod(
-                        Class.forName("me.matl114.logitech.utils.MenuUtils"), "createItemRecipeDisplay", 3);
+                    Class.forName("me.matl114.logitech.utils.MenuUtils"), "createItemRecipeDisplay", 3);
                 if (method != null) {
                     method.setAccessible(true);
                     methodMenuUtils_createItemRecipeDisplay = method;
@@ -200,7 +200,7 @@ public class SpecialMenuProvider {
         }
         try {
             Method method = ReflectionUtil.getMethod(
-                    Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.MenuFactory"), "buildGuide");
+                Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.MenuFactory"), "buildGuide");
             if (method != null) {
                 method.setAccessible(true);
                 methodMenuFactory_buildGuide = method;
@@ -208,7 +208,7 @@ public class SpecialMenuProvider {
         } catch (ClassNotFoundException ignored) {
             try {
                 Method method = ReflectionUtil.getMethod(
-                        Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.MenuFactory"), "buildGuide");
+                    Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.MenuFactory"), "buildGuide");
                 if (method != null) {
                     method.setAccessible(true);
                     methodMenuFactory_buildGuide = method;
@@ -216,7 +216,7 @@ public class SpecialMenuProvider {
             } catch (ClassNotFoundException ignored2) {
                 try {
                     Method method = ReflectionUtil.getMethod(
-                            Class.forName("me.matl114.logitech.utils.util_class.MenuClass.MenuFactory"), "buildGuide");
+                        Class.forName("me.matl114.logitech.utils.util_class.MenuClass.MenuFactory"), "buildGuide");
                     if (method != null) {
                         method.setAccessible(true);
                         methodMenuFactory_buildGuide = method;
@@ -224,8 +224,8 @@ public class SpecialMenuProvider {
                 } catch (ClassNotFoundException ignored3) {
                     try {
                         Method method = ReflectionUtil.getMethod(
-                                Class.forName("me.matl114.logitech.utils.util_class.menu_class.MenuFactory"),
-                                "buildGuide"
+                            Class.forName("me.matl114.logitech.utils.util_class.menu_class.MenuFactory"),
+                            "buildGuide"
                         );
                         if (method != null) {
                             method.setAccessible(true);
@@ -238,7 +238,7 @@ public class SpecialMenuProvider {
         }
         try {
             Method method = ReflectionUtil.getMethod(
-                    Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu"), "open");
+                Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu"), "open");
             if (method != null) {
                 method.setAccessible(true);
                 methodCustomMenu_open = method;
@@ -246,7 +246,7 @@ public class SpecialMenuProvider {
         } catch (ClassNotFoundException ignored) {
             try {
                 Method method = ReflectionUtil.getMethod(
-                        Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu"), "open");
+                    Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu"), "open");
                 if (method != null) {
                     method.setAccessible(true);
                     methodCustomMenu_open = method;
@@ -254,7 +254,7 @@ public class SpecialMenuProvider {
             } catch (ClassNotFoundException ignored2) {
                 try {
                     Method method = ReflectionUtil.getMethod(
-                            Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenu"), "open");
+                        Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenu"), "open");
                     if (method != null) {
                         method.setAccessible(true);
                         methodCustomMenu_open = method;
@@ -262,7 +262,7 @@ public class SpecialMenuProvider {
                 } catch (ClassNotFoundException ignored3) {
                     try {
                         Method method = ReflectionUtil.getMethod(
-                                Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenu"), "open");
+                            Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenu"), "open");
                         if (method != null) {
                             method.setAccessible(true);
                             methodCustomMenu_open = method;
@@ -275,11 +275,11 @@ public class SpecialMenuProvider {
 
         try {
             classLogiTech_CustomSlimefunItem = (Class<? extends RecipeDisplayItem>)
-                    Class.forName("me.matl114.logitech.SlimefunItem.CustomSlimefunItem");
+                Class.forName("me.matl114.logitech.SlimefunItem.CustomSlimefunItem");
         } catch (ClassNotFoundException | ClassCastException ignored) {
             try {
                 classLogiTech_CustomSlimefunItem = (Class<? extends RecipeDisplayItem>)
-                        Class.forName("me.matl114.logitech.core.CustomSlimefunItem");
+                    Class.forName("me.matl114.logitech.core.CustomSlimefunItem");
             } catch (ClassNotFoundException | ClassCastException ignored2) {
             }
         }
@@ -292,11 +292,11 @@ public class SpecialMenuProvider {
             } catch (ClassNotFoundException ignored2) {
                 try {
                     classLogitech_CustomMenu =
-                            Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenu");
+                        Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenu");
                 } catch (ClassNotFoundException ignored3) {
                     try {
                         classLogitech_CustomMenu =
-                                Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenu");
+                            Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenu");
                     } catch (ClassNotFoundException ignored4) {
                     }
                 }
@@ -305,19 +305,19 @@ public class SpecialMenuProvider {
 
         try {
             interfaceLogitech_CustomMenuHandler =
-                    Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler");
+                Class.forName("me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler");
         } catch (ClassNotFoundException ignored) {
             try {
                 interfaceLogitech_CustomMenuHandler =
-                        Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenuHandler");
+                    Class.forName("me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenuHandler");
             } catch (ClassNotFoundException ignored2) {
                 try {
                     interfaceLogitech_CustomMenuHandler =
-                            Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenuHandler");
+                        Class.forName("me.matl114.logitech.utils.util_class.MenuClass.CustomMenuHandler");
                 } catch (ClassNotFoundException ignored3) {
                     try {
                         interfaceLogitech_CustomMenuHandler =
-                                Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenuHandler");
+                            Class.forName("me.matl114.logitech.utils.util_class.menu_class.CustomMenuHandler");
                     } catch (ClassNotFoundException ignored4) {
                     }
                 }
@@ -327,10 +327,10 @@ public class SpecialMenuProvider {
         // InfinityExpansion
         try {
             Constructor<?> constructor = ReflectionUtil.getConstructor(
-                    Class.forName("io.github.mooy1.infinityexpansion.categories.InfinityGroup$BackEntry"),
-                    BlockMenu.class,
-                    PlayerProfile.class,
-                    SlimefunGuideImplementation.class
+                Class.forName("io.github.mooy1.infinityexpansion.categories.InfinityGroup$BackEntry"),
+                BlockMenu.class,
+                PlayerProfile.class,
+                SlimefunGuideImplementation.class
             );
             if (constructor != null) {
                 constructor.setAccessible(true);
@@ -340,7 +340,7 @@ public class SpecialMenuProvider {
         }
         try {
             Object object = ReflectionUtil.getStaticValue(
-                    Class.forName("io.github.mooy1.infinityexpansion.categories.Groups"), "INFINITY");
+                Class.forName("io.github.mooy1.infinityexpansion.categories.Groups"), "INFINITY");
             if (object != null) {
                 objectInfinityExpansion_INFINITY = object;
             }
@@ -348,7 +348,7 @@ public class SpecialMenuProvider {
         }
         try {
             Method method = ReflectionUtil.getMethod(
-                    Class.forName("io.github.mooy1.infinityexpansion.categories.InfinityGroup"), "openInfinityRecipe");
+                Class.forName("io.github.mooy1.infinityexpansion.categories.InfinityGroup"), "openInfinityRecipe");
             if (method != null) {
                 method.setAccessible(true);
                 methodInfinityGroup_openInfinityRecipe = method;
@@ -366,10 +366,10 @@ public class SpecialMenuProvider {
         // ObsidianExpansion
         try {
             Constructor<?> constructor = ReflectionUtil.getConstructor(
-                    Class.forName("me.lucasgithuber.obsidianexpansion.utils.ObsidianForgeGroup$BackEntry"),
-                    BlockMenu.class,
-                    PlayerProfile.class,
-                    SlimefunGuideImplementation.class
+                Class.forName("me.lucasgithuber.obsidianexpansion.utils.ObsidianForgeGroup$BackEntry"),
+                BlockMenu.class,
+                PlayerProfile.class,
+                SlimefunGuideImplementation.class
             );
             if (constructor != null) {
                 constructor.setAccessible(true);
@@ -379,7 +379,7 @@ public class SpecialMenuProvider {
         }
         try {
             Method method = ReflectionUtil.getMethod(
-                    Class.forName("me.lucasgithuber.obsidianexpansion.utils.ObsidianForgeGroup"), "openFORGERecipe");
+                Class.forName("me.lucasgithuber.obsidianexpansion.utils.ObsidianForgeGroup"), "openFORGERecipe");
             if (method != null) {
                 method.setAccessible(true);
                 methodObsidianExpansion_openFORGERecipe = method;
@@ -436,11 +436,11 @@ public class SpecialMenuProvider {
 
     public static boolean isSpecialItem(SlimefunItem slimefunItem) {
         return isFinalTECHItem(slimefunItem)
-                || isNexcavateItem(slimefunItem)
-                || isLogiTechItem(slimefunItem)
-                || isInfinityItem(slimefunItem)
-                || isObsidianForgeItem(slimefunItem)
-                || isGalactifunItem(slimefunItem);
+            || isNexcavateItem(slimefunItem)
+            || isLogiTechItem(slimefunItem)
+            || isInfinityItem(slimefunItem)
+            || isObsidianForgeItem(slimefunItem)
+            || isGalactifunItem(slimefunItem);
     }
 
     public static boolean isFinalTECHItem(SlimefunItem slimefunItem) {
@@ -523,17 +523,17 @@ public class SpecialMenuProvider {
 
     @SuppressWarnings("RedundantThrows")
     public static boolean open(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode,
-            SlimefunItem slimefunItem)
-            throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunGuideMode slimefunGuideMode,
+        SlimefunItem slimefunItem)
+        throws IllegalAccessException, InstantiationException, InvocationTargetException {
         if (player == null) {
             return false;
         }
         if (isFinalTECHItem(slimefunItem)) {
             FlexItemGroup flexItemGroup =
-                    getFinalTECHRecipeItemGroup(player, playerProfile, slimefunGuideMode, slimefunItem);
+                getFinalTECHRecipeItemGroup(player, playerProfile, slimefunGuideMode, slimefunItem);
             if (flexItemGroup != null) {
                 flexItemGroup.open(player, playerProfile, slimefunGuideMode);
                 Debug.debug("Opened FinalTECH special menu");
@@ -569,11 +569,11 @@ public class SpecialMenuProvider {
 
     @Nullable
     public static FlexItemGroup getFinalTECHRecipeItemGroup(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode,
-            SlimefunItem slimefunItem)
-            throws InvocationTargetException, IllegalAccessException {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunGuideMode slimefunGuideMode,
+        SlimefunItem slimefunItem)
+        throws InvocationTargetException, IllegalAccessException {
         if (!ENABLED_FinalTECH) {
             return null;
         }
@@ -583,11 +583,11 @@ public class SpecialMenuProvider {
         }
         methodRecipeItemGroup_getBySlimefunItem.setAccessible(true);
         return (FlexItemGroup) methodRecipeItemGroup_getBySlimefunItem.invoke(
-                null, player, playerProfile, slimefunGuideMode, slimefunItem, 1);
+            null, player, playerProfile, slimefunGuideMode, slimefunItem, 1);
     }
 
     public static void openNexcavateGuide(Player player, SlimefunItem slimefunItem)
-            throws IllegalAccessException, InvocationTargetException {
+        throws IllegalAccessException, InvocationTargetException {
         if (!isNexcavateItem(slimefunItem)) {
             return;
         }
@@ -602,7 +602,7 @@ public class SpecialMenuProvider {
             return;
         }
         Map<NamespacedKey, Object> researchMap =
-                (Map<NamespacedKey, Object>) methodNexcavateRegistry_getResearchMap.invoke(objectNexcavate_registry);
+            (Map<NamespacedKey, Object>) methodNexcavateRegistry_getResearchMap.invoke(objectNexcavate_registry);
         for (Object lresearch : researchMap.values()) {
             SlimefunItem NEItem = (SlimefunItem) ReflectionUtil.getValue(lresearch, "item");
             if (NEItem == null) {
@@ -633,8 +633,8 @@ public class SpecialMenuProvider {
     }
 
     public static void openLogiTechMenu(
-            Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
-            throws InvocationTargetException, IllegalAccessException {
+        Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
+        throws InvocationTargetException, IllegalAccessException {
         if (methodMenuUtils_createItemRecipeDisplay == null) {
             return;
         }
@@ -642,11 +642,11 @@ public class SpecialMenuProvider {
         Object menuFactory;
         try {
             menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(
-                    null, slimefunItem, new CustomMenuHandlerImpl_Utils(), null);
+                null, slimefunItem, new CustomMenuHandlerImpl_Utils(), null);
         } catch (Throwable ignored) {
             try {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(
-                        null, slimefunItem, new CustomMenuHandlerImpl_utils(), null); // Why catch Throwable failed,
+                    null, slimefunItem, new CustomMenuHandlerImpl_utils(), null); // Why catch Throwable failed,
                 // fuck Logitech
             } catch (Throwable ignored2) {
                 menuFactory = methodMenuUtils_createItemRecipeDisplay.invoke(null, slimefunItem, null, null);
@@ -675,12 +675,12 @@ public class SpecialMenuProvider {
 
     public static boolean isInfinityExpansionSingularityItem(SlimefunItem slimefunItem) {
         return classInfinityExpansion_Singularity != null
-                && slimefunItem.getClass() == classInfinityExpansion_Singularity;
+            && slimefunItem.getClass() == classInfinityExpansion_Singularity;
     }
 
     public static void openInfinityExpansionSingularityMenu(
-            Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
-            throws InvocationTargetException, IllegalAccessException {
+        Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
+        throws InvocationTargetException, IllegalAccessException {
         if (!ENABLED_InfinityExpansion || !ENABLED_LogiTech) {
             return;
         }
@@ -691,11 +691,11 @@ public class SpecialMenuProvider {
     }
 
     public static void openInfinityMenu(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunItem slimefunItem,
-            SlimefunGuideMode slimefunGuideMode)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunItem slimefunItem,
+        SlimefunGuideMode slimefunGuideMode)
+        throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (!ENABLED_InfinityExpansion) {
             return;
         }
@@ -706,7 +706,7 @@ public class SpecialMenuProvider {
                     return;
                 }
                 Object backEntry = constructorInfinityExpansion_BackEntry.newInstance(
-                        null, playerProfile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
+                    null, playerProfile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
                 methodInfinityGroup_openInfinityRecipe.invoke(null, player, slimefunItem.getId(), backEntry);
                 /**
                  * Intentionally insert useless history twice to fix Back Button of InfinityGroup
@@ -725,11 +725,11 @@ public class SpecialMenuProvider {
     }
 
     public static void openObsidianForgeMenu(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunItem slimefunItem,
-            SlimefunGuideMode slimefunGuideMode)
-            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunItem slimefunItem,
+        SlimefunGuideMode slimefunGuideMode)
+        throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (!ENABLED_ObsidianExpansion) {
             return;
         }
@@ -738,17 +738,17 @@ public class SpecialMenuProvider {
                 return;
             }
             Object backEntry = constructorObsidianExpansion_BackEntry.newInstance(
-                    null, playerProfile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
+                null, playerProfile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
             methodObsidianExpansion_openFORGERecipe.invoke(null, player, slimefunItem.getId(), backEntry);
             insertUselessHistory(playerProfile);
         }
     }
 
     public static void openGalactifunMenu(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunItem slimefunItem,
-            SlimefunGuideMode slimefunGuideMode) throws InvocationTargetException, IllegalAccessException {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunItem slimefunItem,
+        SlimefunGuideMode slimefunGuideMode) throws InvocationTargetException, IllegalAccessException {
         if (!ENABLED_Galactifun) {
             return;
         }
@@ -764,15 +764,15 @@ public class SpecialMenuProvider {
                 sfis = new SlimefunItemStack(slimefunItem.getId(), slimefunItem.getItem());
             }
             Map.Entry<SlimefunItemStack, ItemStack[]> entry = Map.entry(
-                    sfis,
-                    slimefunItem.getRecipe()
+                sfis,
+                slimefunItem.getRecipe()
             );
             methodGalactifun_displayItem.invoke(objectGalactifun_ASSEMBLY_CATEGORY, player, playerProfile, entry);
         }
     }
 
     public static boolean isPlayerResearchedNexcavate(Player player, Object research)
-            throws InvocationTargetException, IllegalAccessException {
+        throws InvocationTargetException, IllegalAccessException {
         if (!ENABLED_Nexcavate) {
             return false;
         }
@@ -799,9 +799,7 @@ public class SpecialMenuProvider {
      * This method is used to insert useless history into the player profile. It is used to fix the bug of the special
      * menu not working in some cases.
      *
-     * @param playerProfile
-     *         The player profile to insert useless history
-     *
+     * @param playerProfile The player profile to insert useless history
      * @author balugaq
      * @see SpecialMenuFixListener
      * @since 1.3
@@ -811,7 +809,7 @@ public class SpecialMenuProvider {
     }
 
     public static boolean isPlayerResearchedInfinity(
-            Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem) {
+        Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem) {
         if (!ENABLED_InfinityExpansion) {
             return false;
         }
@@ -829,10 +827,10 @@ public class SpecialMenuProvider {
     }
 
     public static void fallbackOpen(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode,
-            SlimefunItem slimefunItem) {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunGuideMode slimefunGuideMode,
+        SlimefunItem slimefunItem) {
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
         if (implementation instanceof JEGSlimefunGuideImplementation jeg) {
             jeg.displayItem(playerProfile, slimefunItem, false);
@@ -850,10 +848,10 @@ public class SpecialMenuProvider {
      */
     // todo: rewrite it with bytebuddy
     public class CustomMenuHandlerImpl_Utils
-            implements me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler {
+        implements me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler {
         @Override
         public ChestMenu.MenuClickHandler getInstance(
-                me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu menu) {
+            me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenu menu) {
             return (p, s, i, a) -> {
                 PlayerProfile.find(p).ifPresent(GuideUtil::goBack);
                 return false;
@@ -870,10 +868,10 @@ public class SpecialMenuProvider {
      */
     // todo: rewrite it with bytebuddy
     public class CustomMenuHandlerImpl_utils
-            implements me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenuHandler {
+        implements me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenuHandler {
         @Override
         public ChestMenu.MenuClickHandler getInstance(
-                me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu menu) {
+            me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenu menu) {
             return (p, s, i, a) -> {
                 PlayerProfile.find(p).ifPresent(GuideUtil::goBack);
                 return false;

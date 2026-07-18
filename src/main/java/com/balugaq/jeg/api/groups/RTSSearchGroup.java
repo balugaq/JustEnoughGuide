@@ -74,15 +74,15 @@ import java.util.function.Function;
 @NullMarked
 public class RTSSearchGroup extends FlexItemGroup {
     public static final ItemStack PLACEHOLDER = Converter.getItem(
-            Converter.getItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&a", "&a", "&a"),
-            meta -> meta.getPersistentDataContainer()
-                    .set(RTSListener.FAKE_ITEM_KEY, PersistentDataType.STRING, "____JEG_FAKE_ITEM____")
+        Converter.getItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&a", "&a", "&a"),
+        meta -> meta.getPersistentDataContainer()
+            .set(RTSListener.FAKE_ITEM_KEY, PersistentDataType.STRING, "____JEG_FAKE_ITEM____")
     );
     public static final Map<Player, SearchGroup> RTS_SEARCH_GROUPS = new ConcurrentHashMap<>();
     public static final Map<Player, Integer> RTS_PAGES = new ConcurrentHashMap<>();
     public static final Map<Player, AnvilInventory> RTS_ANVIL_INVENTORIES = new ConcurrentHashMap<>();
     public static final Function<Player, ItemStack> BACK_ICON =
-            (player) -> ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单");
+        (player) -> ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单");
     private final AnvilInventory anvilInventory;
     private final int page;
 
@@ -106,8 +106,8 @@ public class RTSSearchGroup extends FlexItemGroup {
             GuideHistory history = profile.getGuideHistory();
             if (action.isShiftClicked()) {
                 GuideUtil.getLastGuide(player).openMainMenu(
-                        profile,
-                        history.getMainMenuPage()
+                    profile,
+                    history.getMainMenuPage()
                 );
             } else {
                 GuideUtil.goBack(history);
@@ -129,7 +129,7 @@ public class RTSSearchGroup extends FlexItemGroup {
             if (rts != null) {
                 int oldPage = RTS_PAGES.getOrDefault(player, 1);
                 int newPage = Math.min(
-                        (rts.slimefunItemList.size() - 1) / RTSListener.FILL_ORDER.length + 1, oldPage + 1);
+                    (rts.slimefunItemList.size() - 1) / RTSListener.FILL_ORDER.length + 1, oldPage + 1);
                 callPageChangeEvent(player, oldPage, newPage);
             }
             return false;
@@ -155,8 +155,8 @@ public class RTSSearchGroup extends FlexItemGroup {
 
             if (mode == SlimefunGuideMode.SURVIVAL_MODE) {
                 RTSSearchGroup back = new RTSSearchGroup(
-                        RTSSearchGroup.RTS_ANVIL_INVENTORIES.get(player),
-                        RTSSearchGroup.RTS_PAGES.get(player)
+                    RTSSearchGroup.RTS_ANVIL_INVENTORIES.get(player),
+                    RTSSearchGroup.RTS_PAGES.get(player)
                 );
                 profile.getGuideHistory().add(back, 1);
                 implementation.displayItem(profile, slimefunItem, true);
@@ -164,7 +164,7 @@ public class RTSSearchGroup extends FlexItemGroup {
                 return false;
             }
 
-            if (!player.isOp() && !player.hasPermission("slimefun.cheat.items")){
+            if (!player.isOp() && !player.hasPermission("slimefun.cheat.items")) {
                 Slimefun.getLocalization().sendMessage(player, "messages.no-permission", true);
                 return false;
             }
@@ -184,12 +184,12 @@ public class RTSSearchGroup extends FlexItemGroup {
 
             ItemMeta meta = itemStack.getItemMeta();
             int originalAmount = meta.getPersistentDataContainer()
-                    .getOrDefault(RTSListener.CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, 0);
+                .getOrDefault(RTSListener.CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, 0);
             int totalAmount = originalAmount + addAmount;
             meta.getPersistentDataContainer()
-                    .set(RTSListener.CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, totalAmount);
+                .set(RTSListener.CHEAT_AMOUNT_KEY, PersistentDataType.INTEGER, totalAmount);
             meta.setDisplayName(ChatColors.color(
-                    ItemStackHelper.getDisplayName(clonedItem) + " &c已拿取物品 x" + totalAmount));
+                ItemStackHelper.getDisplayName(clonedItem) + " &c已拿取物品 x" + totalAmount));
             itemStack.setItemMeta(meta);
 
             return false;
@@ -203,7 +203,7 @@ public class RTSSearchGroup extends FlexItemGroup {
 
     private static void callPageChangeEvent(Player player, int oldPage, int newPage) {
         RTSEvents.PageChangeEvent event = new RTSEvents.PageChangeEvent(
-                player, RTS_ANVIL_INVENTORIES.get(player), oldPage, newPage, GuideUtil.getLastGuideMode(player));
+            player, RTS_ANVIL_INVENTORIES.get(player), oldPage, newPage, GuideUtil.getLastGuideMode(player));
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             RTS_PAGES.put(player, newPage);
@@ -212,23 +212,23 @@ public class RTSSearchGroup extends FlexItemGroup {
 
     @Override
     public boolean isVisible(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode) {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunGuideMode slimefunGuideMode) {
         return false;
     }
 
     @Override
     public void open(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode) {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunGuideMode slimefunGuideMode) {
         GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
         openRTSInventoryFor(player);
 
         RTS_PAGES.put(player, this.page);
         RTSEvents.PageChangeEvent event =
-                new RTSEvents.PageChangeEvent(player, RTS_ANVIL_INVENTORIES.get(player), page, page, slimefunGuideMode);
+            new RTSEvents.PageChangeEvent(player, RTS_ANVIL_INVENTORIES.get(player), page, page, slimefunGuideMode);
         Bukkit.getPluginManager().callEvent(event);
     }
 }

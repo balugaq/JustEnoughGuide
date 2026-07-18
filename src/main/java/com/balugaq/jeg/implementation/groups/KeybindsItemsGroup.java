@@ -62,9 +62,9 @@ public class KeybindsItemsGroup extends BaseGroup<KeybindsItemsGroup> {
 
     @Override
     public ChestMenu generateMenu(
-            final Player player,
-            final PlayerProfile playerProfile,
-            final SlimefunGuideMode slimefunGuideMode) {
+        final Player player,
+        final PlayerProfile playerProfile,
+        final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu menu = new ChestMenu("&6选择你要编辑的按键控制集");
 
         OnClick.preset(menu);
@@ -79,18 +79,18 @@ public class KeybindsItemsGroup extends BaseGroup<KeybindsItemsGroup> {
         for (int ss : Formats.keybinds.getChars('b')) {
             menu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
             menu.addMenuClickHandler(
-                    ss, (pl, s, is, action) -> EventUtil.callEvent(
-                                    new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, implementation))
-                            .ifSuccess(() -> {
-                                GuideHistory guideHistory = playerProfile.getGuideHistory();
-                                if (action.isShiftClicked()) {
-                                    SlimefunGuide.openMainMenu(
-                                            playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                                } else {
-                                    GuideUtil.goBack(guideHistory);
-                                }
-                                return false;
-                            })
+                ss, (pl, s, is, action) -> EventUtil.callEvent(
+                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, implementation))
+                    .ifSuccess(() -> {
+                        GuideHistory guideHistory = playerProfile.getGuideHistory();
+                        if (action.isShiftClicked()) {
+                            SlimefunGuide.openMainMenu(
+                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                        } else {
+                            GuideUtil.goBack(guideHistory);
+                        }
+                        return false;
+                    })
             );
         }
 
@@ -102,62 +102,62 @@ public class KeybindsItemsGroup extends BaseGroup<KeybindsItemsGroup> {
                 OnClick keybinds = OnClick.keybindSets().get(k);
                 menu.addItem(s, PatchScope.KeybindsSet.patch(player, GuideUtil.getKeybindIcon(keybinds)));
                 menu.addMenuClickHandler(
-                        s,
-                        (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.KeybindsButtonClickEvent(
-                                pl,
-                                item
-                                , slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                        )).ifSuccess(() -> {
-                            GuideUtil.openSubKeybindsGui(player, keybinds);
-                            return false;
-                        })
+                    s,
+                    (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.KeybindsButtonClickEvent(
+                        pl,
+                        item
+                        , slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                    )).ifSuccess(() -> {
+                        GuideUtil.openSubKeybindsGui(player, keybinds);
+                        return false;
+                    })
                 );
             }
         }
 
         for (int s : Formats.keybinds.getChars('P')) {
             menu.addItem(
-                    s, PatchScope.PreviousPage.patch(
-                            player, ChestMenuUtils.getPreviousButton(
-                                    player, page,
-                                    pages
-                            )
+                s, PatchScope.PreviousPage.patch(
+                    player, ChestMenuUtils.getPreviousButton(
+                        player, page,
+                        pages
                     )
+                )
             );
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
-                            pl,
-                            item,
-                            slot,
-                            action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                    )).ifSuccess(() -> {
-                        if (page - 1 > 0) {
-                            getByPage(page - 1).open(pl, playerProfile, slimefunGuideMode);
-                        }
+                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                    pl,
+                    item,
+                    slot,
+                    action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                )).ifSuccess(() -> {
+                    if (page - 1 > 0) {
+                        getByPage(page - 1).open(pl, playerProfile, slimefunGuideMode);
+                    }
 
-                        return false;
-                    })
+                    return false;
+                })
             );
         }
 
         for (int s : Formats.keybinds.getChars('N')) {
             menu.addItem(s, PatchScope.NextPage.patch(player, ChestMenuUtils.getNextButton(player, page, pages)));
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
-                            pl, item,
-                            slot,
-                            action,
-                            menu,
-                            GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                    )).ifSuccess(() -> {
-                        int next = page + 1;
+                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                    pl, item,
+                    slot,
+                    action,
+                    menu,
+                    GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                )).ifSuccess(() -> {
+                    int next = page + 1;
 
-                        if (page + 1 <= pages) {
-                            getByPage(page + 1).open(pl, playerProfile, slimefunGuideMode);
-                        }
+                    if (page + 1 <= pages) {
+                        getByPage(page + 1).open(pl, playerProfile, slimefunGuideMode);
+                    }
 
-                        return false;
-                    })
+                    return false;
+                })
             );
         }
         Formats.keybinds.renderCustom(menu);

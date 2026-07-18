@@ -45,7 +45,13 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -115,16 +121,16 @@ public class ReplacementCardAdapter {
 
         for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
             if (JustEnoughGuide.getConfigManager().getNoReplacementCardCompanionItemIds().contains(sf.getId())
-            || JustEnoughGuide.getConfigManager().getNoAutoAddRecipeCompleteAddons().contains(sf.getAddon().getName())) {
+                || JustEnoughGuide.getConfigManager().getNoAutoAddRecipeCompleteAddons().contains(sf.getAddon().getName())) {
                 continue;
             }
 
             for (ItemStack item : sf.getRecipe()) {
                 if (item != null
-                        && item.getType() != Material.AIR
-                        && item.getMaxStackSize() == 1
-                        && !sf.getRecipeType().getKey().getNamespace().equals("logitech")
-                        && getReplacementCards(item) != null) {
+                    && item.getType() != Material.AIR
+                    && item.getMaxStackSize() == 1
+                    && !sf.getRecipeType().getKey().getNamespace().equals("logitech")
+                    && getReplacementCards(item) != null) {
                     adaptItem(sf);
                     break;
                 }
@@ -160,8 +166,8 @@ public class ReplacementCardAdapter {
         for (Map<ItemStack, ItemStack> replaceMap : replacementMaps) {
             if (replaceMap.isEmpty()) continue;
             List<ItemStack> newRecipe = origin.stream()
-                    .map(item -> replaceMap.getOrDefault(item, item))
-                    .collect(Collectors.toList());
+                .map(item -> replaceMap.getOrDefault(item, item))
+                .collect(Collectors.toList());
             adaptItem(sf, newRecipe);
         }
         Debug.debug("Added " + (replacementMaps.size() - 1) + " adaptional recipes for " + ItemStackHelper.getDisplayName(sf.getItem()));
@@ -196,7 +202,7 @@ public class ReplacementCardAdapter {
             return;
         }
     }
-    
+
     @Nullable
     public static ItemStack getLogiTechReplacementCard(Material material) {
         if (methodLogiTech_getReplaceCard_va == null) return null;

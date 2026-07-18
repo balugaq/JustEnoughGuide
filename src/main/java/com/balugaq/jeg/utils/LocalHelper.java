@@ -62,7 +62,7 @@ public class LocalHelper {
     static {
         loadDefault();
         for (Map.Entry<String, String> entry :
-                JustEnoughGuide.getConfigManager().getLocalTranslate().entrySet()) {
+            JustEnoughGuide.getConfigManager().getLocalTranslate().entrySet()) {
             addonLocals.put(entry.getKey(), ChatColors.color(entry.getValue()));
         }
     }
@@ -185,16 +185,16 @@ public class LocalHelper {
         addonLocals.put("Drugfun", "自定义医药用品");
         addonLocals.put("SlimefunNukes", "粘液核弹");
         addonLocals.put(
-                "SlimeCustomizer",
-                "自定义粘液附属"
+            "SlimeCustomizer",
+            "自定义粘液附属"
         ); // Avoid conflict with RaySlimefunAddon, RykenSlimefunCustomizer, RykenSlimeCustomizer
         addonLocals.put(
-                "RykenSlimeCustomizer",
-                "Ryken自定义附属"
+            "RykenSlimeCustomizer",
+            "Ryken自定义附属"
         ); // Same as RykenSlimefunCustomizer, avoid conflict with RaySlimefunAddon
         addonLocals.put(
-                "RykenSlimefunCustomizer",
-                "Ryken自定义附属"
+            "RykenSlimefunCustomizer",
+            "Ryken自定义附属"
         ); // Same as RykenSlimeCustomizer, avoid conflict with RaySlimefunAddon
         addonLocals.put("FinalTECH-Changed", "乱序技艺-改版");
         addonLocals.put("BloodAlchemy", "血炼金工艺"); // Same as BloodyAlchemy
@@ -221,8 +221,8 @@ public class LocalHelper {
         addonLocals.put("SlimeHUD", "方块信息显示"); // Same as SlimeHUDPlus
         addonLocals.put("SlimeHUDPlus", "方块信息显示"); // Same as SlimeHUD
         addonLocals.put(
-                "RaySlimefunAddon",
-                "高级自定义粘液附属"
+            "RaySlimefunAddon",
+            "高级自定义粘液附属"
         ); // Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
         addonLocals.put("SCrafter", "SC科技"); // Same as SlimefunZT
         addonLocals.put("CrispyMachines", "酥脆机器");
@@ -407,12 +407,12 @@ public class LocalHelper {
     }
 
     public static String getOfficialAddonName(
-            @Nullable SlimefunAddon addon, String itemId, String callback) {
+        @Nullable SlimefunAddon addon, String itemId, String callback) {
         return getOfficialAddonName(addon == null ? "Slimefun" : addon.getName(), itemId, callback);
     }
 
     public static String getOfficialAddonName(
-            String addonName, String itemId, String callback) {
+        String addonName, String itemId, String callback) {
         return getAddonName(addonName, itemId, callback) + " (" + addonName + ")";
     }
 
@@ -422,7 +422,7 @@ public class LocalHelper {
         }
 
         if ("RykenSlimefunCustomizer".equalsIgnoreCase(addonName)
-                || "RykenSlimeCustomizer".equalsIgnoreCase(addonName)) {
+            || "RykenSlimeCustomizer".equalsIgnoreCase(addonName)) {
             return getRSCLocalName(itemId);
         }
         String localName = addonLocals.get(addonName);
@@ -501,7 +501,7 @@ public class LocalHelper {
     }
 
     public static String getOfficialAddonName(
-            ItemGroup itemGroup, String itemId, String callback) {
+        ItemGroup itemGroup, String itemId, String callback) {
         return itemGroup.getAddon() == null ? def : getOfficialAddonName(itemGroup.getAddon(), itemId, callback);
     }
 
@@ -519,8 +519,8 @@ public class LocalHelper {
 
     public static String getAddonName(ItemGroup itemGroup, String itemId, String callback) {
         return itemGroup.getAddon() == null
-                ? def
-                : getAddonName(itemGroup.getAddon().getName(), itemId, callback);
+            ? def
+            : getAddonName(itemGroup.getAddon().getName(), itemId, callback);
     }
 
     public static String getAddonName(@Nullable SlimefunAddon addon) {

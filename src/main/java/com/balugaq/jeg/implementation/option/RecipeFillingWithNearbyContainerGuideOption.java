@@ -52,11 +52,19 @@ import java.util.Optional;
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
 public class RecipeFillingWithNearbyContainerGuideOption implements SlimefunGuideOption<Integer> {
-    private static final RecipeFillingWithNearbyContainerGuideOption instance = new RecipeFillingWithNearbyContainerGuideOption();
     public static final int MAX_REACH_LENGTH = 2; // 2*2+1=5, 5*5*5=125 blocks
+    private static final RecipeFillingWithNearbyContainerGuideOption instance = new RecipeFillingWithNearbyContainerGuideOption();
 
     public static RecipeFillingWithNearbyContainerGuideOption instance() {
         return instance;
+    }
+
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("recipe_filling_with_nearby_container");
+    }
+
+    public static int getRadiusDistance(Player p) {
+        return PersistentDataAPI.getInt(p, key0(), 2);
     }
 
     @Override
@@ -73,23 +81,15 @@ public class RecipeFillingWithNearbyContainerGuideOption implements SlimefunGuid
         }
 
         ItemStack item = Converter.getItem(
-                Material.ENDER_CHEST,
-                "&a配方补全自动抓取",
-                "&7配方补全自动抓取，即在配方补全获取材料时",
-                "&7从周围的粘液容器中获取原材料",
-                "&e仅支持粘液容器",
-                "&7当前半径范围: " + value + " (限制范围: 0~" + MAX_REACH_LENGTH + ")",
-                "&7\u21E8 &e点击设置配方补全自动抓取范围"
+            Material.ENDER_CHEST,
+            "&a配方补全自动抓取",
+            "&7配方补全自动抓取，即在配方补全获取材料时",
+            "&7从周围的粘液容器中获取原材料",
+            "&e仅支持粘液容器",
+            "&7当前半径范围: " + value + " (限制范围: 0~" + MAX_REACH_LENGTH + ")",
+            "&7\u21E8 &e点击设置配方补全自动抓取范围"
         );
         return Optional.of(item);
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("recipe_filling_with_nearby_container");
-    }
-
-    public static int getRadiusDistance(Player p) {
-        return PersistentDataAPI.getInt(p, key0(), 2);
     }
 
     @Override
@@ -97,20 +97,20 @@ public class RecipeFillingWithNearbyContainerGuideOption implements SlimefunGuid
         p.closeInventory();
         p.sendMessage(ChatColors.color("&a请输入配方补全自动抓取范围"));
         ChatInput.waitForPlayer(
-                JustEnoughGuide.getInstance(), p, s -> {
-                    try {
-                        int value = Calculator.calculate(s).intValue();
-                        if (value < 0 || value > MAX_REACH_LENGTH) {
-                            p.sendMessage("请输入 0 ~ " + MAX_REACH_LENGTH + " 之间的正整数");
-                            return;
-                        }
-
-                        setSelectedOption(p, guide, value);
-                        JEGGuideSettings.openSettings(p, guide);
-                    } catch (NumberFormatException ignored) {
+            JustEnoughGuide.getInstance(), p, s -> {
+                try {
+                    int value = Calculator.calculate(s).intValue();
+                    if (value < 0 || value > MAX_REACH_LENGTH) {
                         p.sendMessage("请输入 0 ~ " + MAX_REACH_LENGTH + " 之间的正整数");
+                        return;
                     }
+
+                    setSelectedOption(p, guide, value);
+                    JEGGuideSettings.openSettings(p, guide);
+                } catch (NumberFormatException ignored) {
+                    p.sendMessage("请输入 0 ~ " + MAX_REACH_LENGTH + " 之间的正整数");
                 }
+            }
         );
     }
 

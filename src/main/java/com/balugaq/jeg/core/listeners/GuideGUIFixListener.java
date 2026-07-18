@@ -28,7 +28,6 @@
 package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.objects.events.PatchEvent;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

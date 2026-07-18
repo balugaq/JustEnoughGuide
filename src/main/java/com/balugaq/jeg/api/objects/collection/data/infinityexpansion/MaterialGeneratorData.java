@@ -52,10 +52,10 @@ public class MaterialGeneratorData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
-                null,
-                new ItemStack[] {new ItemStack(material)},
-                1,
-                (long) energyPerTick / speed
+            null,
+            new ItemStack[]{new ItemStack(material)},
+            1,
+            (long) energyPerTick / speed
         ));
     }
 }

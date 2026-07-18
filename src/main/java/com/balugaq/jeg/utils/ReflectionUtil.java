@@ -108,7 +108,7 @@ public class ReflectionUtil {
     }
 
     public static <T> @Nullable T getStaticValue(
-            Class<?> clazz, String field, Class<T> cast) {
+        Class<?> clazz, String field, Class<T> cast) {
         try {
             Field declaredField = getField(clazz, field);
             if (declaredField == null) {
@@ -188,7 +188,7 @@ public class ReflectionUtil {
     }
 
     public static <T, V> @Nullable T getProperty(Object o, Class<V> clazz, String fieldName)
-            throws IllegalAccessException {
+        throws IllegalAccessException {
         Field field = getField(clazz, fieldName);
         if (field != null) {
             boolean b = field.canAccess(o);
@@ -202,7 +202,7 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Pair<Field, Class<?>> getDeclaredFieldsRecursively(
-            Class<?> clazz, String fieldName) {
+        Class<?> clazz, String fieldName) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -218,7 +218,7 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Constructor<?> getConstructor(
-            Class<?> clazz, @Nullable Class<?> @Nullable ... parameterTypes) {
+        Class<?> clazz, @Nullable Class<?> @Nullable ... parameterTypes) {
         try {
             return clazz.getDeclaredConstructor(parameterTypes);
         } catch (NoSuchMethodException e) {
@@ -245,7 +245,7 @@ public class ReflectionUtil {
 
     @Nullable
     public static Object invokeMethod(
-            Object object, String methodName, @Nullable Object @Nullable ... args) {
+        Object object, String methodName, @Nullable Object @Nullable ... args) {
         Method method;
         if (args == null) {
             method = getMethod(object.getClass(), methodName, 1);
@@ -262,12 +262,12 @@ public class ReflectionUtil {
                 method = getMethod(object.getClass(), methodName, args.length);
             } else {
                 method = getMethod(
-                        object.getClass(),
-                        methodName,
-                        Arrays.stream(args)
-                                .filter(Objects::nonNull)
-                                .map(Object::getClass)
-                                .toArray(Class[]::new)
+                    object.getClass(),
+                    methodName,
+                    Arrays.stream(args)
+                        .filter(Objects::nonNull)
+                        .map(Object::getClass)
+                        .toArray(Class[]::new)
                 );
             }
         }
@@ -280,9 +280,9 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Method getMethod(
-            Class<?> clazz,
-            String methodName,
-            @Range(from = 0, to = Short.MAX_VALUE) int parameterCount) {
+        Class<?> clazz,
+        String methodName,
+        @Range(from = 0, to = Short.MAX_VALUE) int parameterCount) {
         while (clazz != Object.class) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterCount) {
@@ -295,7 +295,7 @@ public class ReflectionUtil {
     }
 
     public static @Nullable Method getMethod(
-            Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+        Class<?> clazz, String methodName, Class<?>... parameterTypes) {
         while (clazz != Object.class) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName) && method.getParameterTypes().length == parameterTypes.length) {
@@ -330,8 +330,8 @@ public class ReflectionUtil {
 
     public static Class<?> wrapClass(Class<?> clazz) {
         return !clazz.isPrimitive()
-                ? clazz
-                : switch (clazz.getName()) {
+            ? clazz
+            : switch (clazz.getName()) {
             case "boolean" -> Boolean.class;
             case "byte" -> Byte.class;
             case "char" -> Character.class;
@@ -346,7 +346,7 @@ public class ReflectionUtil {
 
     @Nullable
     public static Object invokeStaticMethod(
-            Class<?> clazz, String methodName, @Nullable Object @Nullable ... args) {
+        Class<?> clazz, String methodName, @Nullable Object @Nullable ... args) {
 
         Method method;
         if (args == null) {
@@ -364,12 +364,12 @@ public class ReflectionUtil {
                 method = getMethod(clazz, methodName, args.length);
             } else {
                 method = getMethod(
-                        clazz,
-                        methodName,
-                        Arrays.stream(args)
-                                .filter(Objects::nonNull)
-                                .map(Object::getClass)
-                                .toArray(Class[]::new)
+                    clazz,
+                    methodName,
+                    Arrays.stream(args)
+                        .filter(Objects::nonNull)
+                        .map(Object::getClass)
+                        .toArray(Class[]::new)
                 );
             }
         }

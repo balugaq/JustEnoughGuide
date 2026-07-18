@@ -46,6 +46,8 @@ import java.util.List;
 @SuppressWarnings({"unchecked", "unused"})
 @NullMarked
 public class RykenSlimefunCustomizerIntegrationMain implements Integration {
+    // @formatter:on
+    public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     // @formatter:off
     private static final int[] FVV_FAST_DEVINE_ALTAR_SLOTS = new int[] {
             0,  1,  2,  3,  4,  5,  6,  7,  8,
@@ -63,8 +65,6 @@ public class RykenSlimefunCustomizerIntegrationMain implements Integration {
             36, 37, 38,             42, 43, 44,
             45, 46, 47,             51, 52, 53
     };
-    // @formatter:on
-    public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
     public static @Nullable Class<? extends SlimefunItem> classCustomWorkbench = null;
     public static @Nullable Class<? extends SlimefunItem> classCustomLinkedRecipeMachine = null;
     public static @Nullable Class<? extends SlimefunItem> classCustomRecipeMachine = null;

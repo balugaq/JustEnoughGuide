@@ -42,6 +42,15 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 public class BundleListener implements Listener {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isBundle(@Nullable ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
+        return item.getType().name().endsWith("BUNDLE");
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBundleClick(InventoryClickEvent event) {
         if (!(event.getInventory().getHolder() instanceof SlimefunInventoryHolder)) {
@@ -57,14 +66,5 @@ public class BundleListener implements Listener {
         }
 
         event.setCancelled(true);
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean isBundle(@Nullable ItemStack item) {
-        if (item == null) {
-            return false;
-        }
-
-        return item.getType().name().endsWith("BUNDLE");
     }
 }

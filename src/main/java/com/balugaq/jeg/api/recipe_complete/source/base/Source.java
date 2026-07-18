@@ -89,6 +89,16 @@ public interface Source {
         return depth <= RecursiveRecipeFillingGuideOption.getDepth(player) && depth <= RECIPE_DEPTH_THRESHOLD;
     }
 
+    static List<ItemStack> trimItems(List<@Nullable ItemStack> origin) {
+        List<ItemStack> list = new ArrayList<>();
+        for (ItemStack item : origin) {
+            if (item != null && item.getType() != Material.AIR) {
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
     JavaPlugin plugin();
 
     boolean handleable(RecipeCompleteSession session);
@@ -130,9 +140,9 @@ public interface Source {
         if (r != null) return r;
         if (sf != null) {
             List<@Nullable RecipeChoice> raw = new ArrayList<>(
-                    Arrays.stream(sf.getRecipe())
-                            .map(item -> item == null ? null : new RecipeChoice.ExactChoice(item))
-                            .toList()
+                Arrays.stream(sf.getRecipe())
+                    .map(item -> item == null ? null : new RecipeChoice.ExactChoice(item))
+                    .toList()
             );
             for (int i = raw.size(); i < 9; i++) {
                 raw.add(null);
@@ -225,16 +235,6 @@ public interface Source {
         return null;
     }
 
-    static List<ItemStack> trimItems(List<@Nullable ItemStack> origin) {
-        List<ItemStack> list = new ArrayList<>();
-        for (ItemStack item : origin) {
-            if (item != null && item.getType() != Material.AIR) {
-                list.add(item);
-            }
-        }
-        return list;
-    }
-
     default @Nullable ItemStack getItemStackFromNearbyContainer(Player player, Location target, ItemStack itemStack) {
         return getItemStackFromNearbyContainer(player, target, itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
     }
@@ -270,8 +270,8 @@ public interface Source {
                         }
                     }
                     int[] slots = mergeSlots(
-                            menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.WITHDRAW, itemStack),
-                            menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.INSERT, itemStack)
+                        menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.WITHDRAW, itemStack),
+                        menu.getPreset().getSlotsAccessedByItemTransport(menu, ItemTransportFlow.INSERT, itemStack)
                     );
                     if (slots.length == 0) {
                         try {
@@ -291,8 +291,8 @@ public interface Source {
                         ItemStack itemStack1 = menu.getItemInSlot(slot);
 
                         if (itemStack1 != null
-                                && itemStack1.getType() != Material.AIR
-                                && StackUtils.itemsMatch(itemStack1, itemStack)) {
+                            && itemStack1.getType() != Material.AIR
+                            && StackUtils.itemsMatch(itemStack1, itemStack)) {
 
                             int existing = itemStack1.getAmount();
 
@@ -343,10 +343,10 @@ public interface Source {
     }
 
     default boolean completeRecipeWithGuide(
-            RecipeCompleteSession session,
-            ItemGetter itemGetter,
-            ItemFitter itemFitter,
-            ItemPusher itemPusher) {
+        RecipeCompleteSession session,
+        ItemGetter itemGetter,
+        ItemFitter itemFitter,
+        ItemPusher itemPusher) {
         Debug.debug("handling " + session.toString() + " :completeRecipeWithGuide");
         var event = session.getEvent();
         var ingredientSlots = session.getIngredientSlots();
@@ -395,7 +395,7 @@ public interface Source {
 
                 if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
                     List<ItemStack> itemStacks =
-                            materialChoice.getChoices().stream().map(ItemStack::new).toList();
+                        materialChoice.getChoices().stream().map(ItemStack::new).toList();
                     for (ItemStack itemStack : itemStacks) {
                         // Issue #64
                         if (!itemFitter.fits(itemStack, i)) {
@@ -409,8 +409,8 @@ public interface Source {
                             if (!session.isExpired()) {
                                 session.setRecipeDepth(recipeDepth + 1);
                                 completeRecipeWithGuide(
-                                        session,
-                                        itemGetter, itemFitter, itemPusher
+                                    session,
+                                    itemGetter, itemFitter, itemPusher
                                 );
                             } else {
                                 sendMissingMaterial(player, itemStack);
@@ -431,8 +431,8 @@ public interface Source {
                             if (!session.isExpired()) {
                                 session.setRecipeDepth(recipeDepth + 1);
                                 completeRecipeWithGuide(
-                                        session,
-                                        itemGetter, itemFitter, itemPusher
+                                    session,
+                                    itemGetter, itemFitter, itemPusher
                                 );
                             } else {
                                 sendMissingMaterial(player, itemStack);

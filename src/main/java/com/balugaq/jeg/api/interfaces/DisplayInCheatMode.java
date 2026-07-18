@@ -59,9 +59,7 @@ public @interface DisplayInCheatMode {
         /**
          * Check if the {@link ItemGroup} should be forced to display
          *
-         * @param group
-         *         The {@link ItemGroup} to check
-         *
+         * @param group The {@link ItemGroup} to check
          * @return true if the {@link ItemGroup} should be forced to display, false otherwise
          */
         public static boolean contains(ItemGroup group) {
@@ -79,9 +77,7 @@ public @interface DisplayInCheatMode {
         /**
          * Check if the {@link ItemGroup} should be put to the last
          *
-         * @param group
-         *         The {@link ItemGroup} to check
-         *
+         * @param group The {@link ItemGroup} to check
          * @return true if the {@link ItemGroup} should be put to the last, false otherwise
          */
         public static boolean isSpecial(ItemGroup group) {

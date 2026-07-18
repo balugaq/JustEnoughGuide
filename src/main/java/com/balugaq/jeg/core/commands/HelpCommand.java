@@ -32,7 +32,6 @@ import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
@@ -64,10 +63,10 @@ public class HelpCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
                 return "help".equalsIgnoreCase(args[0]);
@@ -78,10 +77,10 @@ public class HelpCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         onHelp(sender);
     }
 

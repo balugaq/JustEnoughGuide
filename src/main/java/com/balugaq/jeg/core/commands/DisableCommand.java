@@ -70,10 +70,10 @@ public class DisableCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
                 return "disable".equalsIgnoreCase(args[0]);
@@ -84,10 +84,10 @@ public class DisableCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         onReload(sender);
     }
 

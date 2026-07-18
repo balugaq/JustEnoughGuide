@@ -116,9 +116,9 @@ public class RTSEvents {
         private final String newSearchTerm;
 
         public SearchTermChangeEvent(
-                Player player,
-                @Nullable String oldSearchTerm,
-                String newSearchTerm) {
+            Player player,
+            @Nullable String oldSearchTerm,
+            String newSearchTerm) {
             super(player);
             this.oldSearchTerm = oldSearchTerm;
             this.newSearchTerm = newSearchTerm;
@@ -152,15 +152,12 @@ public class RTSEvents {
         /**
          * Constructs a new ClickAnvilItemEvent.
          *
-         * @param player
-         *         The player who clicked the anvil item.
-         * @param slot
-         *         The slot that was clicked.
-         * @param guideMode
-         *         The guide mode.
+         * @param player    The player who clicked the anvil item.
+         * @param slot      The slot that was clicked.
+         * @param guideMode The guide mode.
          */
         public ClickAnvilItemEvent(
-                Player player, int slot, SlimefunGuideMode guideMode) {
+            Player player, int slot, SlimefunGuideMode guideMode) {
             super(!Bukkit.isPrimaryThread());
             this.player = player;
             this.slot = slot;
@@ -198,8 +195,7 @@ public class RTSEvents {
         /**
          * Sets the cancellation state of the event.
          *
-         * @param cancelled
-         *         the cancellation state
+         * @param cancelled the cancellation state
          */
         @Override
         public void setCancelled(boolean cancelled) {
@@ -228,19 +224,14 @@ public class RTSEvents {
         /**
          * Constructs a new PageChangeEvent.
          *
-         * @param player
-         *         The player who changed the page.
-         * @param openingInventory
-         *         The opening inventory.
-         * @param oldPage
-         *         The old page number.
-         * @param newPage
-         *         The new page number.
-         * @param guideMode
-         *         The guide mode.
+         * @param player           The player who changed the page.
+         * @param openingInventory The opening inventory.
+         * @param oldPage          The old page number.
+         * @param newPage          The new page number.
+         * @param guideMode        The guide mode.
          */
         public PageChangeEvent(
-                Player player, AnvilInventory openingInventory, int oldPage, int newPage, SlimefunGuideMode guideMode) {
+            Player player, AnvilInventory openingInventory, int oldPage, int newPage, SlimefunGuideMode guideMode) {
             super(!Bukkit.isPrimaryThread());
             this.player = player;
             this.openingInventory = openingInventory;
@@ -271,8 +262,7 @@ public class RTSEvents {
         /**
          * Sets the cancellation state of the event.
          *
-         * @param cancelled
-         *         the cancellation state
+         * @param cancelled the cancellation state
          */
         @Override
         public void setCancelled(boolean cancelled) {

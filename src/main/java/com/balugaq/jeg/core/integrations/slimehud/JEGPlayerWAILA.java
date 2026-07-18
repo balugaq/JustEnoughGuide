@@ -72,7 +72,7 @@ import java.util.logging.Level;
 @NullMarked
 public class JEGPlayerWAILA extends PlayerWAILA {
     public static final boolean IS_1_20_1 =
-            MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20_1);
+        MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20_1);
     public static final long TICK_RATE = SlimeHUD.getInstance().getConfig().getLong("waila.tick-rate");
     public final Supplier<BossBar> kyoriBossBarSupplier;
     public boolean visible;
@@ -86,10 +86,10 @@ public class JEGPlayerWAILA extends PlayerWAILA {
             if (kyoriBossBar == null) {
                 if (PlatformUtil.isPaper() && IS_1_20_1) {
                     String bossbarColor =
-                            SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase();
+                        SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase();
                     kyoriBossBar = BossBar.bossBar(
-                            Component.text(""), 1.0f, toBossBarColor(bossbarColor),
-                            BossBar.Overlay.PROGRESS, new HashSet<>()
+                        Component.text(""), 1.0f, toBossBarColor(bossbarColor),
+                        BossBar.Overlay.PROGRESS, new HashSet<>()
                     );
                     return (BossBar) kyoriBossBar;
                 } else {
@@ -111,41 +111,25 @@ public class JEGPlayerWAILA extends PlayerWAILA {
     public static BossBar.Color toBossBarColor(String color) {
         return switch (color.trim().toLowerCase()) {
             case "red", "yellow", "green", "blue", "purple", "pink", "white" ->
-                    BossBar.Color.valueOf(color.toUpperCase());
+                BossBar.Color.valueOf(color.toUpperCase());
             case "default", "inherit" -> BossBar.Color.WHITE;
             default -> {
                 SlimeHUD.log(
-                        Level.WARNING, "[SlimeHUD] Invalid bossbar color: " + color, "[SlimeHUD] Setting color " +
-                                "to white..."
+                    Level.WARNING, "[SlimeHUD] Invalid bossbar color: " + color, "[SlimeHUD] Setting color " +
+                        "to white..."
                 );
                 yield BossBar.Color.WHITE;
             }
         };
     }
 
-    public void setColor(BarColor color) {
-        getWAILABar().setColor(color);
-        if (kyoriBossBarSupplier.get() != null) {
-            kyoriBossBarSupplier.get().color(BossBar.Color.valueOf(color.name()));
-        }
-    }
-
-    public void setTitle(Component title) {
-        if (title instanceof net.kyori.adventure.text.TextComponent tc) {
-            getWAILABar().setTitle(tc.content());
-        }
-        if (kyoriBossBarSupplier.get() != null) {
-            kyoriBossBarSupplier.get().name(title);
-        }
-    }
-
     public static void wrap(Player player) {
         synchronized (getWailaMap()) {
             getWailaMap().compute(
-                    player.getUniqueId(), (k, waila) -> runTaskAsync(
-                            JustEnoughGuide.getInstance(),
-                            JEGPlayerWAILA.wrap(player, waila)
-                    )
+                player.getUniqueId(), (k, waila) -> runTaskAsync(
+                    JustEnoughGuide.getInstance(),
+                    JEGPlayerWAILA.wrap(player, waila)
+                )
             );
         }
     }
@@ -182,10 +166,10 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         synchronized (getWailaMap()) {
             for (Map.Entry<UUID, PlayerWAILA> entry : getWailaMap().entrySet()) {
                 getWailaMap().compute(
-                        entry.getKey(), (k, waila) -> runTaskAsync(
-                                SlimeHUD.getInstance(),
-                                JEGPlayerWAILA.unwrap(waila)
-                        )
+                    entry.getKey(), (k, waila) -> runTaskAsync(
+                        SlimeHUD.getInstance(),
+                        JEGPlayerWAILA.unwrap(waila)
+                    )
                 );
             }
         }
@@ -199,8 +183,8 @@ public class JEGPlayerWAILA extends PlayerWAILA {
 
         if (waila.getClass().getSimpleName().equals("JEGPlayerWAILA")) {
             Supplier<BossBar> kyoriBossBarSupplier = ReflectionUtil.getValue(
-                    waila, "kyoriBossBarSupplier",
-                    Supplier.class
+                waila, "kyoriBossBarSupplier",
+                Supplier.class
             );
             for (BossBarViewer bbv : kyoriBossBarSupplier.get().viewers()) {
                 if (bbv instanceof Audience adn) {
@@ -213,6 +197,26 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         }
 
         return waila;
+    }
+
+    public static BarColor toBarColor(BossBar.Color color) {
+        return BarColor.valueOf(color.name());
+    }
+
+    public void setColor(BarColor color) {
+        getWAILABar().setColor(color);
+        if (kyoriBossBarSupplier.get() != null) {
+            kyoriBossBarSupplier.get().color(BossBar.Color.valueOf(color.name()));
+        }
+    }
+
+    public void setTitle(Component title) {
+        if (title instanceof net.kyori.adventure.text.TextComponent tc) {
+            getWAILABar().setTitle(tc.content());
+        }
+        if (kyoriBossBarSupplier.get() != null) {
+            kyoriBossBarSupplier.get().name(title);
+        }
     }
 
     @Override
@@ -261,10 +265,10 @@ public class JEGPlayerWAILA extends PlayerWAILA {
                 ReflectionUtil.setValue(this, "facingBlock", SlimeHUDIntegrationMain.getVanillaBlockName(getPlayer(), targetBlock));
                 ReflectionUtil.setValue(this, "facingBlockInfo", "");
                 ReflectionUtil.setValue(
-                        this, "facing", ChatColor.translateAlternateColorCodes(
-                                '&',
-                                getFacingBlock() + (getFacingBlockInfo().isEmpty() ? "" : " &7| " + getFacingBlockInfo())
-                        )
+                    this, "facing", ChatColor.translateAlternateColorCodes(
+                        '&',
+                        getFacingBlock() + (getFacingBlockInfo().isEmpty() ? "" : " &7| " + getFacingBlockInfo())
+                    )
                 );
                 return;
             } else {
@@ -278,10 +282,10 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         ReflectionUtil.setValue(this, "facingBlock", SlimeHUD.getTranslationManager().getItemName(getPlayer(), item));
         ReflectionUtil.setValue(this, "facingBlockInfo", SlimeHUD.getHudController().processRequest(request));
         ReflectionUtil.setValue(
-                this, "facing", ChatColor.translateAlternateColorCodes(
-                        '&',
-                        getFacingBlock() + (getFacingBlockInfo().isEmpty() ? "" : " &7| " + getFacingBlockInfo())
-                )
+            this, "facing", ChatColor.translateAlternateColorCodes(
+                '&',
+                getFacingBlock() + (getFacingBlockInfo().isEmpty() ? "" : " &7| " + getFacingBlockInfo())
+            )
         );
     }
 
@@ -295,7 +299,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         } else {
             setVisible(true);
             setTitle(keepTextColors0() ? LegacyComponentSerializer.legacySection().deserialize(facing) :
-                             Component.text(ChatColor.stripColor(facing)));
+                Component.text(ChatColor.stripColor(facing)));
             if (useAutoBossBarColor0()) {
                 setColor(Util.pickBarColorFromName(facing));
             }
@@ -357,10 +361,6 @@ public class JEGPlayerWAILA extends PlayerWAILA {
         if (kyoriBossBarSupplier.get() != null) {
             kyoriBossBarSupplier.get().color(BossBar.Color.valueOf(color.name()));
         }
-    }
-
-    public static BarColor toBarColor(BossBar.Color color) {
-        return BarColor.valueOf(color.name());
     }
 
     /**

@@ -44,9 +44,7 @@ public class EMCTechIntegrationMain implements Integration {
     /**
      * Get EMC value of itemStack
      *
-     * @param itemStack
-     *         The itemStack
-     *
+     * @param itemStack The itemStack
      * @return 0.0D if no EMC value, or EMC value
      */
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -57,9 +55,7 @@ public class EMCTechIntegrationMain implements Integration {
     /**
      * Get EMC value of itemStack
      *
-     * @param itemStack
-     *         The itemStack
-     *
+     * @param itemStack The itemStack
      * @return 0.0D if no EMC value, or EMC value
      */
     @Range(from = 0, to = Long.MAX_VALUE)

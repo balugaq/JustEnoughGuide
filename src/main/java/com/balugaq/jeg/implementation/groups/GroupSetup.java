@@ -33,7 +33,6 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 
 /**
  * This class is responsible for registering all the JEG groups.

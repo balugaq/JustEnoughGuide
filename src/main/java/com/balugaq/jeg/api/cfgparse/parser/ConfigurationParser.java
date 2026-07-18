@@ -88,9 +88,9 @@ public class ConfigurationParser {
                         List<@Nullable Object> arg = new ArrayList<>();
                         for (String subKey : subKeys) {
                             if (List.class.isAssignableFrom(field.getType())
-                                    && field.getType().getTypeParameters().length > 0
-                                    && field.getGenericType() instanceof ParameterizedType parameterizedType
-                                    && parameterizedType.getActualTypeArguments()[0] instanceof Class<?> genericType) {
+                                && field.getType().getTypeParameters().length > 0
+                                && field.getGenericType() instanceof ParameterizedType parameterizedType
+                                && parameterizedType.getActualTypeArguments()[0] instanceof Class<?> genericType) {
                                 Object value = parseValue(genericType, section.get(subKey));
                                 arg.add(value);
                             } else {
@@ -101,9 +101,9 @@ public class ConfigurationParser {
                         read.put(field, arg);
                     } else {
                         if (!List.class.isAssignableFrom(field.getType())
-                                && field.getType().getTypeParameters().length > 0
-                                && field.getGenericType() instanceof ParameterizedType parameterizedType
-                                && parameterizedType.getActualTypeArguments()[0] instanceof Class<?> genericType) {
+                            && field.getType().getTypeParameters().length > 0
+                            && field.getGenericType() instanceof ParameterizedType parameterizedType
+                            && parameterizedType.getActualTypeArguments()[0] instanceof Class<?> genericType) {
                             Object value = parseValue(genericType, section.get(key));
                             read.put(field, value);
                         } else {
@@ -131,7 +131,7 @@ public class ConfigurationParser {
                 // setterName2: query
                 Field field = entry.getKey();
                 String setterName = "set" + field.getName().substring(0, 1).toUpperCase(Locale.ROOT)
-                        + field.getName().substring(1);
+                    + field.getName().substring(1);
                 Method setter = ReflectionUtil.getMethod(clazz, setterName, field.getType());
                 if (setter != null) {
                     Object arg = entry.getValue();

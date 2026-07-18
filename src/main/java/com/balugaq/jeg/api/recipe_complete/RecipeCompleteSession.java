@@ -156,6 +156,23 @@ public class RecipeCompleteSession {
     }
 
     @Nullable
+    public static RecipeCompleteSession getSession(Player player) {
+        return SESSIONS.get(player);
+    }
+
+    public static boolean canStart(RecipeCompleteSession session) {
+        var event = new RecipeCompleteEvents.SessionStartEvent(session);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled() || session.isExpired()) {
+            String reason = event.getCancelReason();
+            Debug.debug(session + " cannot start for the reason: " + reason);
+            cancel(session);
+            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
+        }
+        return !event.isCancelled() && !session.isExpired();
+    }
+
+    @Nullable
     public <T> T getCache(Source source, Class<T> clazz) {
         var obj = cache.get(source);
         return clazz.isInstance(obj) ? clazz.cast(obj) : null;
@@ -185,11 +202,6 @@ public class RecipeCompleteSession {
     public static void setExpired(Player player) {
         var session = getSession(player);
         if (session != null) session.setExpired(true);
-    }
-
-    @Nullable
-    public static RecipeCompleteSession getSession(Player player) {
-        return SESSIONS.get(player);
     }
 
     public void setExpired(boolean expired) {
@@ -240,18 +252,6 @@ public class RecipeCompleteSession {
             itemNotIn.put(itemStack, new HashSet<>());
         }
         itemNotIn.get(itemStack).add(source);
-    }
-
-    public static boolean canStart(RecipeCompleteSession session) {
-        var event = new RecipeCompleteEvents.SessionStartEvent(session);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled() || session.isExpired()) {
-            String reason = event.getCancelReason();
-            Debug.debug(session + " cannot start for the reason: " + reason);
-            cancel(session);
-            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
-        }
-        return !event.isCancelled() && !session.isExpired();
     }
 
     @Override

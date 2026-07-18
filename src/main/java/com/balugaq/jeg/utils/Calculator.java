@@ -110,37 +110,32 @@ public class Calculator {
 
                 numStack.push(num);
                 i = j;
-            }
-            else if (c == '(') {
+            } else if (c == '(') {
                 opStack.push(String.valueOf(c));
                 i++;
-            }
-            else if (c == ')') {
+            } else if (c == ')') {
                 String pk = opStack.peek();
                 if (pk == null) {
                     throw new NumberFormatException("Brackets doesn't match: " + expression);
                 }
-                
+
                 while (!pk.equals("(")) {
                     calculateTop(numStack, opStack);
                 }
                 opStack.pop();
                 i++;
-            }
-            else if ((c == '<' || c == '>') && i + 1 < n && expr.charAt(i + 1) == c) {
+            } else if ((c == '<' || c == '>') && i + 1 < n && expr.charAt(i + 1) == c) {
                 String op = expr.substring(i, i + 2);
                 while (!opStack.isEmpty() && getPriority(opStack.peek()) >= getPriority(op)) {
                     calculateTop(numStack, opStack);
                 }
                 opStack.push(op);
                 i += 2;
-            }
-            else if (c == '~' || c == '!') {
+            } else if (c == '~' || c == '!') {
                 String op = String.valueOf(c);
                 opStack.push(op);
                 i++;
-            }
-            else if (isOperator(String.valueOf(c))) {
+            } else if (isOperator(String.valueOf(c))) {
                 if (c == '+' && (i == 0 || expr.charAt(i - 1) == '(' || isOperator(String.valueOf(expr.charAt(i - 1))))) {
                     if (i + 1 >= n || (!Character.isDigit(expr.charAt(i + 1)) && expr.charAt(i + 1) != '.')) {
                         throw new NumberFormatException("Invalid positive signature: " + expression);
@@ -166,8 +161,7 @@ public class Calculator {
 
                     numStack.push(num);
                     i = j;
-                }
-                else if (c == '-' && (i == 0 || expr.charAt(i - 1) == '(' || isOperator(String.valueOf(expr.charAt(i - 1))))) {
+                } else if (c == '-' && (i == 0 || expr.charAt(i - 1) == '(' || isOperator(String.valueOf(expr.charAt(i - 1))))) {
                     if (i + 1 >= n || (!Character.isDigit(expr.charAt(i + 1)) && expr.charAt(i + 1) != '.')) {
                         throw new NumberFormatException("Invalid negative signature: " + expression);
                     }
@@ -200,8 +194,7 @@ public class Calculator {
                     opStack.push(op);
                     i++;
                 }
-            }
-            else {
+            } else {
                 throw new NumberFormatException("Invalid character: " + c);
             }
         }
@@ -251,8 +244,7 @@ public class Calculator {
 
         if (diff > 0) {
             expr = expr + ")".repeat(diff);
-        }
-        else if (diff < 0) {
+        } else if (diff < 0) {
             expr = "(".repeat(Math.max(0, -diff)) + expr;
         }
 
@@ -284,8 +276,8 @@ public class Calculator {
             BigDecimal a = numStack.pop();
             long aLong = a.longValue();
             long resultLong = switch (op) {
-                case "~" ->                    ~aLong;
-                case "!" ->                    (aLong == 0) ? 1 : 0;
+                case "~" -> ~aLong;
+                case "!" -> (aLong == 0) ? 1 : 0;
                 default -> throw new NumberFormatException("Invalid symbol: " + op);
             };
 

@@ -72,21 +72,6 @@ public class GuideListener implements Listener {
         this.giveOnFirstJoin = Slimefun.getConfigManager().getPluginConfig().getBoolean("guide.receive-on-first-join");
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onGuideOpen(SlimefunGuideOpenEvent e) {
-        e.setCancelled(true);
-
-        Player p = e.getPlayer();
-        SlimefunGuideMode mode = e.getGuideLayout();
-        try {
-            openGuide(p, mode);
-        } catch (Exception ex) {
-            PlayerProfile.find(e.getPlayer()).ifPresent(profile -> {
-                GuideUtil.removeLastEntry(profile.getGuideHistory());
-            });
-        }
-    }
-
     @Internal
     public static void openGuide(Player player, SlimefunGuideMode mode) {
         if (!player.isOp() && !Slimefun.getWorldSettingsService().isWorldEnabled(player.getWorld())) {
@@ -116,61 +101,8 @@ public class GuideListener implements Listener {
         JustEnoughGuide.runLaterAsync(() -> openGuide(player, mode), 1L);
     }
 
-    @Internal
-    public void openGuideSync(Player player, SlimefunGuideMode mode) {
-        JustEnoughGuide.runLater(
-                () -> {
-                    Optional<PlayerProfile> optional = PlayerProfile.find(player);
-
-                    if (optional.isPresent()) {
-                        PlayerProfile profile = optional.get();
-                        SlimefunGuideImplementation guide = GuideUtil.getGuide(player, mode);
-                        SlimefunGuideMode lastMode = guideModeMap.get(player);
-                        guideModeMap.put(player, mode);
-                        if (lastMode != mode) {
-                            GuideUtil.openMainMenu(player, profile, mode, 1);
-                        } else {
-                            profile.getGuideHistory().openLastEntry(guide);
-                        }
-                    } else {
-                        GuideUtil.openMainMenuAsync(player, mode, 1);
-                    }
-                }, 1L
-        );
-    }
-
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract" +
-            "(PlayerRightClickEvent)")
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onInteract(PlayerRightClickEvent e) {
-        Player p = e.getPlayer();
-
-        if (tryOpenGuide(p, e, SlimefunGuideMode.SURVIVAL_MODE) == Event.Result.ALLOW) {
-            if (p.isSneaking()) {
-                JEGGuideSettings.openSettings(p, e.getItem());
-            } else {
-                SlimefunGuideOpenEvent event = new SlimefunGuideOpenEvent(
-                        p, e.getItem(),
-                        SlimefunGuideMode.SURVIVAL_MODE
-                );
-                Bukkit.getPluginManager().callEvent(event);
-            }
-        } else if (tryOpenGuide(p, e, SlimefunGuideMode.CHEAT_MODE) == Event.Result.ALLOW) {
-            if (p.isSneaking()) {
-                JEGGuideSettings.openSettings(
-                        p,
-                        p.hasPermission("slimefun.cheat.items")
-                                ? e.getItem()
-                                : SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE)
-                );
-            } else {
-                p.chat("/sf cheat");
-            }
-        }
-    }
-
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide" +
-            "(Player, PlayerRightClickEvent, SlimefunGuideMode)")
+        "(Player, PlayerRightClickEvent, SlimefunGuideMode)")
     @Internal
     public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
         ItemStack item = e.getItem();
@@ -186,8 +118,76 @@ public class GuideListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onGuideOpen(SlimefunGuideOpenEvent e) {
+        e.setCancelled(true);
+
+        Player p = e.getPlayer();
+        SlimefunGuideMode mode = e.getGuideLayout();
+        try {
+            openGuide(p, mode);
+        } catch (Exception ex) {
+            PlayerProfile.find(e.getPlayer()).ifPresent(profile -> {
+                GuideUtil.removeLastEntry(profile.getGuideHistory());
+            });
+        }
+    }
+
+    @Internal
+    public void openGuideSync(Player player, SlimefunGuideMode mode) {
+        JustEnoughGuide.runLater(
+            () -> {
+                Optional<PlayerProfile> optional = PlayerProfile.find(player);
+
+                if (optional.isPresent()) {
+                    PlayerProfile profile = optional.get();
+                    SlimefunGuideImplementation guide = GuideUtil.getGuide(player, mode);
+                    SlimefunGuideMode lastMode = guideModeMap.get(player);
+                    guideModeMap.put(player, mode);
+                    if (lastMode != mode) {
+                        GuideUtil.openMainMenu(player, profile, mode, 1);
+                    } else {
+                        profile.getGuideHistory().openLastEntry(guide);
+                    }
+                } else {
+                    GuideUtil.openMainMenuAsync(player, mode, 1);
+                }
+            }, 1L
+        );
+    }
+
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract" +
+        "(PlayerRightClickEvent)")
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onInteract(PlayerRightClickEvent e) {
+        Player p = e.getPlayer();
+
+        if (tryOpenGuide(p, e, SlimefunGuideMode.SURVIVAL_MODE) == Event.Result.ALLOW) {
+            if (p.isSneaking()) {
+                JEGGuideSettings.openSettings(p, e.getItem());
+            } else {
+                SlimefunGuideOpenEvent event = new SlimefunGuideOpenEvent(
+                    p, e.getItem(),
+                    SlimefunGuideMode.SURVIVAL_MODE
+                );
+                Bukkit.getPluginManager().callEvent(event);
+            }
+        } else if (tryOpenGuide(p, e, SlimefunGuideMode.CHEAT_MODE) == Event.Result.ALLOW) {
+            if (p.isSneaking()) {
+                JEGGuideSettings.openSettings(
+                    p,
+                    p.hasPermission("slimefun.cheat.items")
+                        ? e.getItem()
+                        : SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE)
+                );
+            } else {
+                p.chat("/sf cheat");
+            }
+        }
+    }
+
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onJoin" +
-            "(PlayerJoinEvent)")
+        "(PlayerJoinEvent)")
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (this.giveOnFirstJoin && !e.getPlayer().hasPlayedBefore()) {

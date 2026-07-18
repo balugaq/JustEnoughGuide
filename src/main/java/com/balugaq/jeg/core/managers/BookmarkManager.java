@@ -29,7 +29,6 @@ package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.ProfileDataController;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -71,7 +70,7 @@ public class BookmarkManager extends AbstractManager {
     private static final int DATA_ITEM_SLOT = 0;
     private static final String BACKPACK_NAME = "JEGBookmarkBackpack";
     private static final @Nullable ProfileDataController controller =
-            Slimefun.getDatabaseManager().getProfileDataController();
+        Slimefun.getDatabaseManager().getProfileDataController();
     private final NamespacedKey BOOKMARKS_KEY;
     private final Plugin plugin;
 
@@ -100,23 +99,23 @@ public class BookmarkManager extends AbstractManager {
     }
 
     private void addBookmark0(
-            final Player player, PlayerBackpack backpack, SlimefunItem slimefunItem) {
+        final Player player, PlayerBackpack backpack, SlimefunItem slimefunItem) {
         ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
         if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
             bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
         }
 
         ItemStack itemStack = Converter.getItem(
-                bookmarksItem, itemMeta -> {
-                    List<String> lore = itemMeta.getLore();
-                    if (lore == null) {
-                        lore = new ArrayList<>();
-                    }
-                    String id = slimefunItem.getId();
-                    lore.remove(id);
-                    lore.add(id);
-                    itemMeta.setLore(lore);
+            bookmarksItem, itemMeta -> {
+                List<String> lore = itemMeta.getLore();
+                if (lore == null) {
+                    lore = new ArrayList<>();
                 }
+                String id = slimefunItem.getId();
+                lore.remove(id);
+                lore.add(id);
+                itemMeta.setLore(lore);
+            }
         );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
@@ -196,12 +195,12 @@ public class BookmarkManager extends AbstractManager {
 
     public ItemStack markItemAsBookmarksItem(ItemStack itemStack, Player player) {
         return Converter.getItem(
-                itemStack, itemMeta -> itemMeta.getPersistentDataContainer()
-                        .set(
-                                BOOKMARKS_KEY,
-                                PersistentDataType.STRING,
-                                player.getUniqueId().toString()
-                        )
+            itemStack, itemMeta -> itemMeta.getPersistentDataContainer()
+                .set(
+                    BOOKMARKS_KEY,
+                    PersistentDataType.STRING,
+                    player.getUniqueId().toString()
+                )
         );
     }
 
@@ -239,23 +238,23 @@ public class BookmarkManager extends AbstractManager {
     }
 
     private void addBookmark0(
-            final Player player, PlayerBackpack backpack, ItemGroup itemGroup) {
+        final Player player, PlayerBackpack backpack, ItemGroup itemGroup) {
         ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
         if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
             bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
         }
 
         ItemStack itemStack = Converter.getItem(
-                bookmarksItem, itemMeta -> {
-                    List<String> lore = itemMeta.getLore();
-                    if (lore == null) {
-                        lore = new ArrayList<>();
-                    }
-                    String id = "itemgroup:" + itemGroup.getKey();
-                    lore.remove(id);
-                    lore.add(id);
-                    itemMeta.setLore(lore);
+            bookmarksItem, itemMeta -> {
+                List<String> lore = itemMeta.getLore();
+                if (lore == null) {
+                    lore = new ArrayList<>();
                 }
+                String id = "itemgroup:" + itemGroup.getKey();
+                lore.remove(id);
+                lore.add(id);
+                itemMeta.setLore(lore);
+            }
         );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
@@ -324,14 +323,14 @@ public class BookmarkManager extends AbstractManager {
         }
 
         ItemStack itemStack = Converter.getItem(
-                bookmarksItem, itemMeta -> {
-                    List<String> lore = itemMeta.getLore();
-                    if (lore == null) {
-                        return;
-                    }
-                    lore.remove(slimefunItem.getId());
-                    itemMeta.setLore(lore);
+            bookmarksItem, itemMeta -> {
+                List<String> lore = itemMeta.getLore();
+                if (lore == null) {
+                    return;
                 }
+                lore.remove(slimefunItem.getId());
+                itemMeta.setLore(lore);
+            }
         );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
@@ -356,14 +355,14 @@ public class BookmarkManager extends AbstractManager {
         }
 
         ItemStack itemStack = Converter.getItem(
-                bookmarksItem, itemMeta -> {
-                    List<String> lore = itemMeta.getLore();
-                    if (lore == null) {
-                        return;
-                    }
-                    lore.remove("itemgroup:" + itemGroup.getKey());
-                    itemMeta.setLore(lore);
+            bookmarksItem, itemMeta -> {
+                List<String> lore = itemMeta.getLore();
+                if (lore == null) {
+                    return;
                 }
+                lore.remove("itemgroup:" + itemGroup.getKey());
+                itemMeta.setLore(lore);
+            }
         );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);

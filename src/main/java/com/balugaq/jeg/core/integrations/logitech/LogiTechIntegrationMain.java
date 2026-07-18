@@ -125,14 +125,50 @@ public class LogiTechIntegrationMain implements Integration {
     public static boolean isGeneratorStackable(SlimefunItem sf) {
         var className = sf.getClass().getName();
         return sf instanceof EnergyNetProvider
-                && !"me.matl114.logitech.core.Machines.Electrics.EnergyAmplifier".equals(className)
-                && !"me.matl114.logitech.SlimefunItem.Machines.Electrics.EnergyAmplifier".equals(className)
-                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.SlimefunItem.Machines.Electrics.AbstractEnergyMachine")
-                && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.core.Machines.Abstracts.AbstractEnergyMachine");
+            && !"me.matl114.logitech.core.Machines.Electrics.EnergyAmplifier".equals(className)
+            && !"me.matl114.logitech.SlimefunItem.Machines.Electrics.EnergyAmplifier".equals(className)
+            && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.SlimefunItem.Machines.Electrics.AbstractEnergyMachine")
+            && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.core.Machines.Abstracts.AbstractEnergyMachine");
     }
 
     public static boolean isMaterialGeneratorStackable(SlimefunItem sf) {
         return stackableMaterialGenerators.contains(sf);
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, true);
+    }
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
+
+    public static List<RecipeChoice> getLogicReactorRecipe(String s) {
+        List<RecipeChoice> list = new ArrayList<>();
+        var t = SlimefunItem.getById("LOGITECH_TRUE_").getItem();
+        var f = SlimefunItem.getById("LOGITECH_FALSE_").getItem();
+        var g = SlimefunItem.getById("LOGITECH_LOGIGATE").getItem();
+        RecipeChoice tf = new RecipeChoice.ExactChoice(t, f);
+        RecipeChoice ft = new RecipeChoice.ExactChoice(f, t);
+        RecipeChoice gg = new RecipeChoice.ExactChoice(g);
+        for (int i = 0; i < s.length(); i++) {
+            var c = s.charAt(i);
+            switch (c) {
+                case 't' -> list.add(tf);
+                case 'f' -> list.add(ft);
+                case 'g' -> list.add(gg);
+            }
+        }
+        return list;
     }
 
     @Override
@@ -189,15 +225,15 @@ public class LogiTechIntegrationMain implements Integration {
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ARMOR_FORGE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.COMPRESSOR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(
-                        me.matl114.logitech.SlimefunItem.AddSlimefunItems.ENHANCED_CRAFT_MANUAL,
-                        MANUAL_CRAFTER_INPUT_SLOTS
+                    me.matl114.logitech.SlimefunItem.AddSlimefunItems.ENHANCED_CRAFT_MANUAL,
+                    MANUAL_CRAFTER_INPUT_SLOTS
                 );
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.FURNACE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.GOLD_PAN_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.GRIND_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(
-                        me.matl114.logitech.SlimefunItem.AddSlimefunItems.MAGIC_WORKBENCH_MANUAL,
-                        MANUAL_CRAFTER_INPUT_SLOTS
+                    me.matl114.logitech.SlimefunItem.AddSlimefunItems.MAGIC_WORKBENCH_MANUAL,
+                    MANUAL_CRAFTER_INPUT_SLOTS
                 );
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ORE_CRUSHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ORE_WASHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
@@ -205,8 +241,8 @@ public class LogiTechIntegrationMain implements Integration {
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.SMELTERY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.TABLESAW_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
                 rrc(
-                        me.matl114.logitech.SlimefunItem.AddSlimefunItems.MULTICRAFTTABLE_MANUAL,
-                        MANUAL_CRAFTER_INPUT_SLOTS
+                    me.matl114.logitech.SlimefunItem.AddSlimefunItems.MULTICRAFTTABLE_MANUAL,
+                    MANUAL_CRAFTER_INPUT_SLOTS
                 );
                 if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
                     try {
@@ -221,8 +257,8 @@ public class LogiTechIntegrationMain implements Integration {
                 if (JustEnoughGuide.getIntegrationManager().isEnabledNetworks()) {
                     try {
                         rrc(
-                                me.matl114.logitech.SlimefunItem.AddDepends.NTWWORKBENCH_MANUAL,
-                                MANUAL_CRAFTER_INPUT_SLOTS
+                            me.matl114.logitech.SlimefunItem.AddDepends.NTWWORKBENCH_MANUAL,
+                            MANUAL_CRAFTER_INPUT_SLOTS
                         );
                     } catch (Exception ignored2) {
                     }
@@ -267,9 +303,9 @@ public class LogiTechIntegrationMain implements Integration {
 
             return switch (s.getId()) {
                 case "LOGITECH_TRUE_" ->
-                        AbstractItemSettingsGuideOption.generateChoices(LogiTechTrueRecipeSettingsGuideOption.getItem(p), 1, 1, 1, 1);
+                    AbstractItemSettingsGuideOption.generateChoices(LogiTechTrueRecipeSettingsGuideOption.getItem(p), 1, 1, 1, 1);
                 case "LOGITECH_FALSE_" ->
-                        AbstractItemSettingsGuideOption.generateChoices(LogiTechFalseRecipeSettingsGuideOption.getItems(p), 1, 1, 1, 1);
+                    AbstractItemSettingsGuideOption.generateChoices(LogiTechFalseRecipeSettingsGuideOption.getItems(p), 1, 1, 1, 1);
                 case "LOGITECH_LOGIC" -> LOGIC_ITEMS;
                 case "LOGITECH_NOLOGIC" -> NOLOGIC_ITEMS;
                 case "LOGITECH_UNIQUE" -> UNIQUE_ITEMS;
@@ -281,46 +317,10 @@ public class LogiTechIntegrationMain implements Integration {
         SlimefunGuideSettings.addOption(LogiTechFalseRecipeSettingsGuideOption.instance());
     }
 
-    public static void rrc(SlimefunItem slimefunItem, int[] slots) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, true);
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
-    }
-
     @Override
     public void onDisable() {
         for (SlimefunItem slimefunItem : handledSlimefunItems) {
             RecipeCompletableRegistry.unregisterRecipeCompletable(slimefunItem);
         }
-    }
-
-    public static List<RecipeChoice> getLogicReactorRecipe(String s) {
-        List<RecipeChoice> list = new ArrayList<>();
-        var t = SlimefunItem.getById("LOGITECH_TRUE_").getItem();
-        var f = SlimefunItem.getById("LOGITECH_FALSE_").getItem();
-        var g = SlimefunItem.getById("LOGITECH_LOGIGATE").getItem();
-        RecipeChoice tf = new RecipeChoice.ExactChoice(t, f);
-        RecipeChoice ft = new RecipeChoice.ExactChoice(f, t);
-        RecipeChoice gg = new RecipeChoice.ExactChoice(g);
-        for (int i = 0; i < s.length(); i ++) {
-            var c = s.charAt(i);
-            switch (c) {
-                case 't' -> list.add(tf);
-                case 'f' -> list.add(ft);
-                case 'g' -> list.add(gg);
-            }
-        }
-        return list;
     }
 }

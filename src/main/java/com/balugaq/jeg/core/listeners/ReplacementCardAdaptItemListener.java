@@ -72,9 +72,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
     public void preprocessEvent(Cancellable event, CommandSender sender, String command) {
         if (command.startsWith("sf banitem") || command.startsWith("slimefun banitem")) {
             banitem(sender, command);
-        }
-
-        else if (command.startsWith("sf unbanitem") || command.startsWith("slimefun unbanitem")) {
+        } else if (command.startsWith("sf unbanitem") || command.startsWith("slimefun unbanitem")) {
             unbanitem(sender, command);
         }
     }
@@ -120,10 +118,10 @@ public class ReplacementCardAdaptItemListener implements Listener {
             SlimefunItem item = SlimefunItem.getById(args[2]);
             if (item == null) {
                 Slimefun.getLocalization().sendMessage(
-                        sender,
-                        "messages.invalid-item",
-                        true,
-                        msg -> msg.replace("%item%", args[1]));
+                    sender,
+                    "messages.invalid-item",
+                    true,
+                    msg -> msg.replace("%item%", args[1]));
                 return;
             }
             unbanitem(sender, item);
@@ -169,10 +167,10 @@ public class ReplacementCardAdaptItemListener implements Listener {
             SlimefunItem item = SlimefunItem.getById(args[2]);
             if (item == null) {
                 Slimefun.getLocalization().sendMessage(
-                        sender,
-                        "messages.invalid-item",
-                        true,
-                        msg -> msg.replace("%item%", args[1]));
+                    sender,
+                    "messages.invalid-item",
+                    true,
+                    msg -> msg.replace("%item%", args[1]));
                 return;
             }
             banitem(sender, item);
@@ -204,13 +202,13 @@ public class ReplacementCardAdaptItemListener implements Listener {
                     unbanitem(sf2);
                     if (PaperLib.isPaper()) {
                         sender.sendMessage(Component.text().color(NamedTextColor.GREEN)
-                                .append(Component.text("[JustEnoughGuide] 已解禁配方补全伴生物品 "))
-                                .append(ClipboardUtil.makeComponentPaper(
-                                        Component.text(sf2.getId()),
-                                        sf2.getId()
-                                ))
-                                .append(Component.text(".")
-                        ));
+                            .append(Component.text("[JustEnoughGuide] 已解禁配方补全伴生物品 "))
+                            .append(ClipboardUtil.makeComponentPaper(
+                                Component.text(sf2.getId()),
+                                sf2.getId()
+                            ))
+                            .append(Component.text(".")
+                            ));
                     } else {
                         sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已解禁配方补全伴生物品 " + sf2.getId() + "."));
                     }
@@ -230,15 +228,15 @@ public class ReplacementCardAdaptItemListener implements Listener {
         if (!item.isDisabled()) {
             if (PaperLib.isPaper()) {
                 sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("[JustEnoughGuide] 物品 "))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(item.getItemName()),
-                                ChatColor.stripColor(item.getItemName())
-                        ))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(" (" + item.getId() + ") "),
-                                item.getId()
-                        ))
-                        .append(Component.text(" 已是解禁状态."))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(item.getItemName()),
+                        ChatColor.stripColor(item.getItemName())
+                    ))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(" (" + item.getId() + ") "),
+                        item.getId()
+                    ))
+                    .append(Component.text(" 已是解禁状态."))
                 );
             } else {
                 sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] 物品 " + formattedName + " 已是解禁状态."));
@@ -248,15 +246,15 @@ public class ReplacementCardAdaptItemListener implements Listener {
             unbanitem(item);
             if (PaperLib.isPaper()) {
                 sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("[JustEnoughGuide] 已解禁物品 "))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(item.getItemName()),
-                                ChatColor.stripColor(item.getItemName())
-                        ))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(" (" + item.getId() + ") "),
-                                item.getId()
-                        ))
-                        .append(Component.text("."))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(item.getItemName()),
+                        ChatColor.stripColor(item.getItemName())
+                    ))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(" (" + item.getId() + ") "),
+                        item.getId()
+                    ))
+                    .append(Component.text("."))
                 );
             } else {
                 sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已解禁物品 " + formattedName + "."));
@@ -275,12 +273,12 @@ public class ReplacementCardAdaptItemListener implements Listener {
                     banitem(sf2);
                     if (PaperLib.isPaper()) {
                         sender.sendMessage(Component.text().color(NamedTextColor.GREEN)
-                                .append(Component.text("[JustEnoughGuide] 已禁用配方补全伴生物品 "))
-                                .append(ClipboardUtil.makeComponentPaper(
-                                        Component.text(sf2.getId()),
-                                        sf2.getId()
-                                ))
-                                .append(Component.text("."))
+                            .append(Component.text("[JustEnoughGuide] 已禁用配方补全伴生物品 "))
+                            .append(ClipboardUtil.makeComponentPaper(
+                                Component.text(sf2.getId()),
+                                sf2.getId()
+                            ))
+                            .append(Component.text("."))
                         );
                     } else {
                         sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已禁用配方补全伴生物品 " + sf2.getId() + "."));
@@ -301,15 +299,15 @@ public class ReplacementCardAdaptItemListener implements Listener {
         if (item.isDisabled()) {
             if (PaperLib.isPaper()) {
                 sender.sendMessage(Component.text().color(NamedTextColor.RED).append(Component.text("[JustEnoughGuide] 物品 "))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(item.getItemName()),
-                                ChatColor.stripColor(item.getItemName())
-                        ))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(" (" + item.getId() + ") "),
-                                item.getId()
-                        ))
-                        .append(Component.text(" 已经是禁用状态."))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(item.getItemName()),
+                        ChatColor.stripColor(item.getItemName())
+                    ))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(" (" + item.getId() + ") "),
+                        item.getId()
+                    ))
+                    .append(Component.text(" 已经是禁用状态."))
                 );
             } else {
                 sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] 物品 " + formattedName + " 已经是禁用状态."));
@@ -319,15 +317,15 @@ public class ReplacementCardAdaptItemListener implements Listener {
             banitem(item);
             if (PaperLib.isPaper()) {
                 sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("[JustEnoughGuide] 已禁用物品 "))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(item.getItemName()),
-                                ChatColor.stripColor(item.getItemName())
-                        ))
-                        .append(ClipboardUtil.makeComponentPaper(
-                                Component.text(" (" + item.getId() + ") "),
-                                item.getId()
-                        ))
-                        .append(Component.text("."))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(item.getItemName()),
+                        ChatColor.stripColor(item.getItemName())
+                    ))
+                    .append(ClipboardUtil.makeComponentPaper(
+                        Component.text(" (" + item.getId() + ") "),
+                        item.getId()
+                    ))
+                    .append(Component.text("."))
                 );
             } else {
                 sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已禁用物品 " + formattedName + "."));
@@ -337,10 +335,10 @@ public class ReplacementCardAdaptItemListener implements Listener {
 
     public void sendUsage(CommandSender sender, String command) {
         Slimefun.getLocalization().sendMessage(
-                sender,
-                "messages.usage",
-                true,
-                msg -> msg.replace("%usage%", "/sf " + command +" <Slimefun Item ID>")
+            sender,
+            "messages.usage",
+            true,
+            msg -> msg.replace("%usage%", "/sf " + command + " <Slimefun Item ID>")
         );
     }
 }

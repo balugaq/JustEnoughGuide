@@ -54,8 +54,8 @@ public interface SlimefunSource extends Source {
     @SuppressWarnings("deprecation")
     @Override
     default boolean openGuide(
-            RecipeCompleteSession session,
-            @Nullable Runnable callback) {
+        RecipeCompleteSession session,
+        @Nullable Runnable callback) {
         Debug.debug(session + " open guide for " + session.getPlayer().getName());
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
@@ -71,9 +71,9 @@ public interface SlimefunSource extends Source {
 
         GuideUtil.openGuide(player);
         RecipeCompletableListener.addCallback(
-                player.getUniqueId(), ((event, profile) ->
-                        handleSession(session, event, event.getClickAction(), true, callback)
-                )
+            player.getUniqueId(), ((event, profile) ->
+                handleSession(session, event, event.getClickAction(), true, callback)
+            )
         );
         RecipeCompletableListener.tagGuideOpen(player);
         return true;
@@ -81,22 +81,22 @@ public interface SlimefunSource extends Source {
 
     @CanIgnoreReturnValue
     default boolean completeRecipeWithGuide(
-            RecipeCompleteSession session) {
+        RecipeCompleteSession session) {
         BlockMenu blockMenu = session.getMenu();
         boolean unordered = session.isUnordered();
         int[] ingredientSlots = session.getIngredientSlots();
         return completeRecipeWithGuide(
-                session,
-                (slot) -> {
-                    if (slot < blockMenu.getSize()) {
-                        return blockMenu.getItemInSlot(slot);
-                    }
-                    return null;
-                },
-                (template, i) ->
-                        BlockMenuUtil.fits(blockMenu, template, unordered ? ingredientSlots : new int[] {ingredientSlots[i]}),
-                (received, i) ->
-                        BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]})
+            session,
+            (slot) -> {
+                if (slot < blockMenu.getSize()) {
+                    return blockMenu.getItemInSlot(slot);
+                }
+                return null;
+            },
+            (template, i) ->
+                BlockMenuUtil.fits(blockMenu, template, unordered ? ingredientSlots : new int[]{ingredientSlots[i]}),
+            (received, i) ->
+                BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})
         );
     }
 

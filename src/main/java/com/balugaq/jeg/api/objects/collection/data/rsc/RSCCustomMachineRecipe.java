@@ -51,14 +51,14 @@ public class RSCCustomMachineRecipe extends MachineRecipe {
     private final boolean hide;
 
     public RSCCustomMachineRecipe(
-            int seconds,
-            ItemStack[] input,
-            ItemStack[] output,
-            List<Integer> chances,
-            boolean chooseOneIfHas,
-            boolean forDisplay,
-            boolean hide,
-            @Nullable IntList noConsumeIndexes) {
+        int seconds,
+        ItemStack[] input,
+        ItemStack[] output,
+        List<Integer> chances,
+        boolean chooseOneIfHas,
+        boolean forDisplay,
+        boolean hide,
+        @Nullable IntList noConsumeIndexes) {
         super(seconds, input.clone(), output.clone());
 
         this.chances = chances;

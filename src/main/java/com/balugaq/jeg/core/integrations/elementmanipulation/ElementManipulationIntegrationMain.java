@@ -41,25 +41,15 @@ import java.util.List;
  */
 @NullMarked
 public class ElementManipulationIntegrationMain implements Integration {
-    public static final int[] EM_JUNCTION_TABLE_INPUT_SLOTS = new int[] {
-            0, 1, 2, 3, 4, 5,
-            9, 10, 11, 12, 13, 14,
-            18, 19, 20, 21, 22, 23,
-            27, 28, 29, 30, 31, 32,
-            36, 37, 38, 39, 40, 41,
-            45, 46, 47, 48, 49, 50
+    public static final int[] EM_JUNCTION_TABLE_INPUT_SLOTS = new int[]{
+        0, 1, 2, 3, 4, 5,
+        9, 10, 11, 12, 13, 14,
+        18, 19, 20, 21, 22, 23,
+        27, 28, 29, 30, 31, 32,
+        36, 37, 38, 39, 40, 41,
+        45, 46, 47, 48, 49, 50
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
-
-    @Override
-    public String getHookPlugin() {
-        return "ElementManipulation";
-    }
-
-    @Override
-    public void onEnable() {
-        rrc("EM_JUNCTION_TABLE", EM_JUNCTION_TABLE_INPUT_SLOTS, false);
-    }
 
     public static void rrc(String id, int[] slots, boolean unordered) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id);
@@ -71,6 +61,16 @@ public class ElementManipulationIntegrationMain implements Integration {
     public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
         handledSlimefunItems.add(slimefunItem);
         RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
+
+    @Override
+    public String getHookPlugin() {
+        return "ElementManipulation";
+    }
+
+    @Override
+    public void onEnable() {
+        rrc("EM_JUNCTION_TABLE", EM_JUNCTION_TABLE_INPUT_SLOTS, false);
     }
 
     @Override

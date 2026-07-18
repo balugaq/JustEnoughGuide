@@ -46,7 +46,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class Sounds {
     public static final Sound GUIDE_BUTTON_CLICK_SOUND =
-            byKeyOrDefault("item.book.page_turn", byName("ITEM_BOOK_PAGE_TURN"));
+        byKeyOrDefault("item.book.page_turn", byName("ITEM_BOOK_PAGE_TURN"));
     public static final Sound COLLECTED_ITEM = byKeyOrDefault("entity.player.levelup", byName("ENTITY_PLAYER_LEVELUP"));
 
     public static @Nullable Sound byName(String name) {

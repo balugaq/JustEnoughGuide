@@ -65,8 +65,6 @@ import java.util.Objects;
 @Data
 @NullMarked
 public class CustomGroupConfiguration implements IParsable {
-    private Format format;
-    private List<Object> objects;
     @Required
     @Key("enabled")
     boolean enabled;
@@ -89,6 +87,8 @@ public class CustomGroupConfiguration implements IParsable {
     @Required
     @Key("formats")
     String[] formats;
+    private Format format;
+    private List<Object> objects;
 
     @UnknownNullability
     public static String[] fieldNames() {
@@ -147,22 +147,22 @@ public class CustomGroupConfiguration implements IParsable {
 
         // ItemGroup first, SlimefunItem then.
         List<Object> objects = new ArrayList<>(
-                Arrays.stream(groups)
-                        .map(s -> {
-                            for (ItemGroup itemGroup :
-                                    new ArrayList<>(Slimefun.getRegistry().getAllItemGroups()))
-                                if (itemGroup.getKey().toString().equals(s))
-                                    return itemGroup;
-                            return null;
-                        })
-                        .filter(Objects::nonNull)
-                        .map(s -> (Object) s)
-                        .toList());
+            Arrays.stream(groups)
+                .map(s -> {
+                    for (ItemGroup itemGroup :
+                        new ArrayList<>(Slimefun.getRegistry().getAllItemGroups()))
+                        if (itemGroup.getKey().toString().equals(s))
+                            return itemGroup;
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .map(s -> (Object) s)
+                .toList());
         objects.addAll(Arrays.stream(items)
-                               .map(s -> SlimefunItem.getById(s.toUpperCase()))
-                               .filter(Objects::nonNull)
-                               .map(s -> (Object) s)
-                               .toList());
+            .map(s -> SlimefunItem.getById(s.toUpperCase()))
+            .filter(Objects::nonNull)
+            .map(s -> (Object) s)
+            .toList());
         this.objects = objects;
         return objects;
     }
@@ -276,13 +276,13 @@ public class CustomGroupConfiguration implements IParsable {
 
         public boolean isBase64Like(String value) {
             return value.length() > 32
-                    && value.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
+                && value.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
         }
 
         public boolean isURLLike(String value) {
             return value.matches(
-                    "^https?://(?:[-\\w]+\\.)?[-\\w]+(?:\\.[a-zA-Z]{2,5}|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})" +
-                            "(?::\\d{1,5})?(/[-\\w./]*)*(\\?[-\\w.&=]*)?(#[-\\w]*)?$");
+                "^https?://(?:[-\\w]+\\.)?[-\\w]+(?:\\.[a-zA-Z]{2,5}|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})" +
+                    "(?::\\d{1,5})?(/[-\\w./]*)*(\\?[-\\w.&=]*)?(#[-\\w]*)?$");
         }
     }
 }

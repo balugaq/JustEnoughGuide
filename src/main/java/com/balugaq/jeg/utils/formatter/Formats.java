@@ -44,7 +44,7 @@ import java.util.Set;
 public class Formats {
     public static final String FILE_NAME = "custom-icons.yml";
     public static final File fileCustomIcons =
-            new File(JustEnoughGuide.getInstance().getDataFolder(), FILE_NAME);
+        new File(JustEnoughGuide.getInstance().getDataFolder(), FILE_NAME);
     public static final Map<String, Format> customFormats = new HashMap<>();
     public static final MainFormat main = new MainFormat();
     public static final NestedGroupFormat nested = new NestedGroupFormat();

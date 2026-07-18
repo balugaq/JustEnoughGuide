@@ -47,8 +47,8 @@ public class JEGVersionedItemFlag {
 
     static {
         HIDE_ADDITIONAL_TOOLTIP = MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20_5)
-                ? getKey("HIDE_ADDITIONAL_TOOLTIP")
-                : getKey("HIDE_POTION_EFFECTS");
+            ? getKey("HIDE_ADDITIONAL_TOOLTIP")
+            : getKey("HIDE_POTION_EFFECTS");
     }
 
     @SuppressWarnings("DataFlowIssue")

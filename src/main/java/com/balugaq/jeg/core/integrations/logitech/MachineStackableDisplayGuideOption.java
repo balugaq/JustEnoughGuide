@@ -54,6 +54,18 @@ public class MachineStackableDisplayGuideOption implements SlimefunGuideOption<B
         return instance;
     }
 
+    public static boolean isEnabled(Player p) {
+        return getSelectedOption(p);
+    }
+
+    public static boolean getSelectedOption(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
+    }
+
+    public static NamespacedKey key0() {
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "logitech_machine_stackable");
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -63,33 +75,21 @@ public class MachineStackableDisplayGuideOption implements SlimefunGuideOption<B
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.BLAST_FURNACE : Material.FURNACE,
-                "&b逻辑工艺-堆叠显示: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择是否",
-                "&7在查阅一个物品的时候",
-                "&7显示它是否能被逻辑工艺的堆叠机器堆叠",
-                "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 逻辑工艺-堆叠显示"
+            isEnabled(p) ? Material.BLAST_FURNACE : Material.FURNACE,
+            "&b逻辑工艺-堆叠显示: &" + (enabled ? "a启用" : "4禁用"),
+            "",
+            "&7你现在可以选择是否",
+            "&7在查阅一个物品的时候",
+            "&7显示它是否能被逻辑工艺的堆叠机器堆叠",
+            "",
+            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 逻辑工艺-堆叠显示"
         );
         return Optional.of(item);
-    }
-
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
     }
 
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
-
-    public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "logitech_machine_stackable");
     }
 
     @Override

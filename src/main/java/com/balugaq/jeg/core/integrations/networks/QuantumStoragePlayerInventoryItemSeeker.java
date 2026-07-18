@@ -57,8 +57,10 @@ public class QuantumStoragePlayerInventoryItemSeeker implements RecipeCompletabl
 
         var meta = item.getItemMeta();
         var instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE);
-        if (instance == null) instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE2, PersistentQuantumStorageType.TYPE);
-        if (instance == null) instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE3, PersistentQuantumStorageType.TYPE);
+        if (instance == null)
+            instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE2, PersistentQuantumStorageType.TYPE);
+        if (instance == null)
+            instance = DataTypeMethods.getCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE3, PersistentQuantumStorageType.TYPE);
         if (instance == null) return 0;
 
         ItemStack innerItem = instance.getItemStack();

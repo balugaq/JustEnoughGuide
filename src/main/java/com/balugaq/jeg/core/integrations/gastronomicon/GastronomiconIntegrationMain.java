@@ -41,9 +41,21 @@ import java.util.List;
  */
 @NullMarked
 public class GastronomiconIntegrationMain implements Integration {
-    public static final int[] BASIC_MACHINE_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30};
-    public static final int[] ELECTRIC_KITCHEN_INPUT_SLOTS = new int[] {10, 11, 12, 19, 20, 21, 28, 29, 30, 37, 38, 39};
+    public static final int[] BASIC_MACHINE_INPUT_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30};
+    public static final int[] ELECTRIC_KITCHEN_INPUT_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30, 37, 38, 39};
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
 
     @Override
     public String getHookPlugin() {
@@ -61,18 +73,6 @@ public class GastronomiconIntegrationMain implements Integration {
         rrc("GN_ELECTRIC_KITCHEN_I", ELECTRIC_KITCHEN_INPUT_SLOTS, false);
         rrc("GN_ELECTRIC_KITCHEN_II", ELECTRIC_KITCHEN_INPUT_SLOTS, false);
         rrc("GN_ELECTRIC_KITCHEN_III", ELECTRIC_KITCHEN_INPUT_SLOTS, false);
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

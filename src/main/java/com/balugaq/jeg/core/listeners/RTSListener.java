@@ -32,7 +32,11 @@ import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.*;
+import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.JEGVersionedItemFlag;
+import com.balugaq.jeg.utils.KeyUtil;
+import com.balugaq.jeg.utils.LocalHelper;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
@@ -40,7 +44,11 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -72,7 +80,10 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -94,97 +105,15 @@ public class RTSListener implements Listener {
     public static final Set<Player> openingPlayers = ConcurrentHashMap.newKeySet();
     public static final Map<Player, List<ItemStack>> cheatItems = new HashMap<>();
     public static final Integer[] FILL_ORDER = {
-            9,  10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35
+        9, 10, 11, 12, 13, 14, 15, 16, 17,
+        18, 19, 20, 21, 22, 23, 24, 25, 26,
+        27, 28, 29, 30, 31, 32, 33, 34, 35
     };
-
-    /**
-     * Handles the event when an RTS is opened for a player.
-     *
-     * @param event
-     *         the OpenRTSEvent to handle
-     */
-    @EventHandler(ignoreCancelled = true)
-    public void onOpenRTS(RTSEvents.OpenRTSEvent event) {
-        Player player = event.getPlayer();
-        Debug.debug("[RTS] Opening for " + player.getName());
-        openingPlayers.add(player);
-        RTSSearchGroup.RTS_ANVIL_INVENTORIES.put(player, event.getOpeningInventory());
-        RTSSearchGroup.RTS_PAGES.put(player, 1);
-        JustEnoughGuide.getInstance().getRtsBackpackManager().saveInventoryBackupFor(player);
-        JustEnoughGuide.getInstance().getRtsBackpackManager().clearInventoryFor(player);
-        ItemStack[] itemStacks = new ItemStack[36];
-        for (int i = 0; i < 36; i++) {
-            itemStacks[i] = RTSSearchGroup.PLACEHOLDER.clone();
-        }
-        player.getInventory().setStorageContents(itemStacks);
-    }
-
-    /**
-     * Handles the event when the search term changes in the RTS system.
-     *
-     * @param event
-     *         the SearchTermChangeEvent to handle
-     */
-    @EventHandler
-    public void onRTS(RTSEvents.SearchTermChangeEvent event) {
-        Player player = event.getPlayer();
-        Debug.debug("[RTS] Searching for " + player.getName());
-        SlimefunGuideImplementation implementation = GuideUtil.getLastGuide(player);
-        SearchGroup searchGroup = new SearchGroup(
-                implementation,
-                player,
-                event.getNewSearchTerm(),
-                JustEnoughGuide.getConfigManager().isPinyinSearch(),
-                true
-        );
-        if (!isRTSPlayer(player)) {
-            tryQuitRTS(player);
-            return;
-        }
-
-        RTSSearchGroup.RTS_SEARCH_GROUPS.put(player, searchGroup);
-        RTSSearchGroup.RTS_PAGES.put(player, 1);
-
-        int page = RTSSearchGroup.RTS_PAGES.get(player);
-        for (int i = 0; i < FILL_ORDER.length; i++) {
-            int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
-            if (index < searchGroup.slimefunItemList.size()) {
-                SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
-                ItemStack fake = getFakeItem(slimefunItem, player);
-                player.getInventory().setItem(FILL_ORDER[i], fake);
-            } else {
-                player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
-            }
-        }
-        /*
-         * Page buttons' icons.
-         * For page buttons' click handler see RTSSearchGroup
-         */
-        AnvilMenu anvilMenu = AnvilMenu.getMenu(player);
-        if (anvilMenu == null) {
-            tryQuitRTS(player);
-            return;
-        }
-        anvilMenu.setGuiItem(
-                1,
-                ChestMenuUtils.getPreviousButton(
-                        player, page, (searchGroup.slimefunItemList.size() - 1) / FILL_ORDER.length + 1)
-        );
-        anvilMenu.setGuiItem(
-                2,
-                ChestMenuUtils.getNextButton(
-                        player, page, (searchGroup.slimefunItemList.size() - 1) / FILL_ORDER.length + 1)
-        );
-    }
 
     /**
      * Checks if a player is currently in the RTS mode.
      *
-     * @param player
-     *         the player to check
-     *
+     * @param player the player to check
      * @return true if the player is in RTS mode, false otherwise
      */
     public static boolean isRTSPlayer(Player player) {
@@ -192,75 +121,9 @@ public class RTSListener implements Listener {
     }
 
     /**
-     * Creates a fake ItemStack for a SlimefunItem to display in the RTS inventory.
-     *
-     * @param slimefunItem
-     *         the SlimefunItem to create a fake item for
-     * @param player
-     *         the player for whom the fake item is created
-     *
-     * @return the fake ItemStack, or null if the SlimefunItem or player is null
-     */
-    @Contract("null, _ -> null; _, null -> null; !null, !null -> !null")
-    @Nullable
-    public ItemStack getFakeItem(@Nullable SlimefunItem slimefunItem, @Nullable Player player) {
-        if (slimefunItem == null || player == null) {
-            return null;
-        }
-
-        ItemStack legacy = slimefunItem.getItem();
-        Material material = legacy.getType();
-        ItemStack itemStack;
-        if (material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD) {
-            String hash = getHash(legacy);
-            if (hash != null) {
-                itemStack = PlayerHead.getItemStack(PlayerSkin.fromHashCode(hash));
-            } else {
-                itemStack = new ItemStack(material);
-            }
-        } else {
-            itemStack = new ItemStack(material);
-        }
-        itemStack.setAmount(legacy.getAmount());
-
-        ItemMeta legacyMeta = legacy.getItemMeta();
-        ItemMeta meta = itemStack.getItemMeta();
-
-        ItemGroup itemGroup = slimefunItem.getItemGroup();
-        List<String> additionLore = List.of(
-                "",
-                ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
-                        + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                        + LocalHelper.getDisplayName(itemGroup, player)
-        );
-        if (legacyMeta.hasLore() && legacyMeta.getLore() != null) {
-            List<String> lore = legacyMeta.getLore();
-            lore.addAll(additionLore);
-            meta.setLore(lore);
-        } else {
-            meta.setLore(additionLore);
-        }
-
-        meta.addItemFlags(
-                ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-
-        meta.getPersistentDataContainer().set(FAKE_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId());
-
-        if (legacyMeta.hasDisplayName()) {
-            String name = legacyMeta.getDisplayName();
-            meta.setDisplayName(" " + name + " ");
-        }
-
-        itemStack.setItemMeta(meta);
-        return itemStack;
-    }
-
-    /**
      * Get a unique hash for a player head ItemStack.
      *
-     * @param item
-     *         the ItemStack to generate a hash for
-     *
+     * @param item the ItemStack to generate a hash for
      * @return the hash of the player head, or null if the item is not a player head
      * @author m1919810
      */
@@ -279,31 +142,6 @@ public class RTSListener implements Listener {
             }
         }
         return null;
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onRTSPageChange(RTSEvents.PageChangeEvent event) {
-        Player player = event.getPlayer();
-        Debug.debug("[RTS] Changing page for " + player.getName());
-        int page = event.getNewPage();
-        SearchGroup searchGroup = RTSSearchGroup.RTS_SEARCH_GROUPS.get(player);
-        if (searchGroup == null) return;
-
-        for (int i = 0; i < FILL_ORDER.length; i++) {
-            int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
-            if (index < searchGroup.slimefunItemList.size()) {
-                SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
-                ItemStack fake = getFakeItem(slimefunItem, player);
-
-                player.getInventory().setItem(FILL_ORDER[i], fake);
-            } else {
-                player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
-            }
-        }
-        int pages = (searchGroup.slimefunItemList.size() - 1) / FILL_ORDER.length + 1;
-        AnvilInventory anvilInventory = event.getOpeningInventory();
-        anvilInventory.setItem(1, ChestMenuUtils.getPreviousButton(player, page, pages));
-        anvilInventory.setItem(2, ChestMenuUtils.getNextButton(player, page, pages));
     }
 
     /**
@@ -334,17 +172,8 @@ public class RTSListener implements Listener {
         Bukkit.getPluginManager().callEvent(new RTSEvents.CloseRTSEvent(player));
     }
 
-    /**
-     * Restores the player's inventory when they join the server.
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void restore(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        tryQuitRTS(player);
-    }
-
     @Contract(pure = true, value = "null -> null; !null -> !null")
-    public static @Nullable ItemStack @Nullable [] trimItems(@Nullable ItemStack @Nullable[] itemStacks) {
+    public static @Nullable ItemStack @Nullable [] trimItems(@Nullable ItemStack @Nullable [] itemStacks) {
         if (itemStacks == null) return null;
         @Nullable ItemStack[] copy = new ItemStack[itemStacks.length];
         System.arraycopy(itemStacks, 0, copy, 0, itemStacks.length);
@@ -368,9 +197,182 @@ public class RTSListener implements Listener {
     public static boolean isFakeItem(@Nullable ItemStack itemStack) {
         if (itemStack != null && itemStack.getType() != Material.AIR) {
             return itemStack.getItemMeta().getPersistentDataContainer()
-                    .get(FAKE_ITEM_KEY, PersistentDataType.STRING) != null;
+                .get(FAKE_ITEM_KEY, PersistentDataType.STRING) != null;
         }
         return false;
+    }
+
+    /**
+     * Handles the event when an RTS is opened for a player.
+     *
+     * @param event the OpenRTSEvent to handle
+     */
+    @EventHandler(ignoreCancelled = true)
+    public void onOpenRTS(RTSEvents.OpenRTSEvent event) {
+        Player player = event.getPlayer();
+        Debug.debug("[RTS] Opening for " + player.getName());
+        openingPlayers.add(player);
+        RTSSearchGroup.RTS_ANVIL_INVENTORIES.put(player, event.getOpeningInventory());
+        RTSSearchGroup.RTS_PAGES.put(player, 1);
+        JustEnoughGuide.getInstance().getRtsBackpackManager().saveInventoryBackupFor(player);
+        JustEnoughGuide.getInstance().getRtsBackpackManager().clearInventoryFor(player);
+        ItemStack[] itemStacks = new ItemStack[36];
+        for (int i = 0; i < 36; i++) {
+            itemStacks[i] = RTSSearchGroup.PLACEHOLDER.clone();
+        }
+        player.getInventory().setStorageContents(itemStacks);
+    }
+
+    /**
+     * Handles the event when the search term changes in the RTS system.
+     *
+     * @param event the SearchTermChangeEvent to handle
+     */
+    @EventHandler
+    public void onRTS(RTSEvents.SearchTermChangeEvent event) {
+        Player player = event.getPlayer();
+        Debug.debug("[RTS] Searching for " + player.getName());
+        SlimefunGuideImplementation implementation = GuideUtil.getLastGuide(player);
+        SearchGroup searchGroup = new SearchGroup(
+            implementation,
+            player,
+            event.getNewSearchTerm(),
+            JustEnoughGuide.getConfigManager().isPinyinSearch(),
+            true
+        );
+        if (!isRTSPlayer(player)) {
+            tryQuitRTS(player);
+            return;
+        }
+
+        RTSSearchGroup.RTS_SEARCH_GROUPS.put(player, searchGroup);
+        RTSSearchGroup.RTS_PAGES.put(player, 1);
+
+        int page = RTSSearchGroup.RTS_PAGES.get(player);
+        for (int i = 0; i < FILL_ORDER.length; i++) {
+            int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
+            if (index < searchGroup.slimefunItemList.size()) {
+                SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
+                ItemStack fake = getFakeItem(slimefunItem, player);
+                player.getInventory().setItem(FILL_ORDER[i], fake);
+            } else {
+                player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
+            }
+        }
+        /*
+         * Page buttons' icons.
+         * For page buttons' click handler see RTSSearchGroup
+         */
+        AnvilMenu anvilMenu = AnvilMenu.getMenu(player);
+        if (anvilMenu == null) {
+            tryQuitRTS(player);
+            return;
+        }
+        anvilMenu.setGuiItem(
+            1,
+            ChestMenuUtils.getPreviousButton(
+                player, page, (searchGroup.slimefunItemList.size() - 1) / FILL_ORDER.length + 1)
+        );
+        anvilMenu.setGuiItem(
+            2,
+            ChestMenuUtils.getNextButton(
+                player, page, (searchGroup.slimefunItemList.size() - 1) / FILL_ORDER.length + 1)
+        );
+    }
+
+    /**
+     * Creates a fake ItemStack for a SlimefunItem to display in the RTS inventory.
+     *
+     * @param slimefunItem the SlimefunItem to create a fake item for
+     * @param player       the player for whom the fake item is created
+     * @return the fake ItemStack, or null if the SlimefunItem or player is null
+     */
+    @Contract("null, _ -> null; _, null -> null; !null, !null -> !null")
+    @Nullable
+    public ItemStack getFakeItem(@Nullable SlimefunItem slimefunItem, @Nullable Player player) {
+        if (slimefunItem == null || player == null) {
+            return null;
+        }
+
+        ItemStack legacy = slimefunItem.getItem();
+        Material material = legacy.getType();
+        ItemStack itemStack;
+        if (material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD) {
+            String hash = getHash(legacy);
+            if (hash != null) {
+                itemStack = PlayerHead.getItemStack(PlayerSkin.fromHashCode(hash));
+            } else {
+                itemStack = new ItemStack(material);
+            }
+        } else {
+            itemStack = new ItemStack(material);
+        }
+        itemStack.setAmount(legacy.getAmount());
+
+        ItemMeta legacyMeta = legacy.getItemMeta();
+        ItemMeta meta = itemStack.getItemMeta();
+
+        ItemGroup itemGroup = slimefunItem.getItemGroup();
+        List<String> additionLore = List.of(
+            "",
+            ChatColor.DARK_GRAY + "\u21E8 " + ChatColor.WHITE
+                + (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
+                + LocalHelper.getDisplayName(itemGroup, player)
+        );
+        if (legacyMeta.hasLore() && legacyMeta.getLore() != null) {
+            List<String> lore = legacyMeta.getLore();
+            lore.addAll(additionLore);
+            meta.setLore(lore);
+        } else {
+            meta.setLore(additionLore);
+        }
+
+        meta.addItemFlags(
+            ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+
+        meta.getPersistentDataContainer().set(FAKE_ITEM_KEY, PersistentDataType.STRING, slimefunItem.getId());
+
+        if (legacyMeta.hasDisplayName()) {
+            String name = legacyMeta.getDisplayName();
+            meta.setDisplayName(" " + name + " ");
+        }
+
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onRTSPageChange(RTSEvents.PageChangeEvent event) {
+        Player player = event.getPlayer();
+        Debug.debug("[RTS] Changing page for " + player.getName());
+        int page = event.getNewPage();
+        SearchGroup searchGroup = RTSSearchGroup.RTS_SEARCH_GROUPS.get(player);
+        if (searchGroup == null) return;
+
+        for (int i = 0; i < FILL_ORDER.length; i++) {
+            int index = i + page * FILL_ORDER.length - FILL_ORDER.length;
+            if (index < searchGroup.slimefunItemList.size()) {
+                SlimefunItem slimefunItem = searchGroup.slimefunItemList.get(index);
+                ItemStack fake = getFakeItem(slimefunItem, player);
+
+                player.getInventory().setItem(FILL_ORDER[i], fake);
+            } else {
+                player.getInventory().setItem(FILL_ORDER[i], RTSSearchGroup.PLACEHOLDER.clone());
+            }
+        }
+        int pages = (searchGroup.slimefunItemList.size() - 1) / FILL_ORDER.length + 1;
+        AnvilInventory anvilInventory = event.getOpeningInventory();
+        anvilInventory.setItem(1, ChestMenuUtils.getPreviousButton(player, page, pages));
+        anvilInventory.setItem(2, ChestMenuUtils.getNextButton(player, page, pages));
+    }
+
+    /**
+     * Restores the player's inventory when they join the server.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void restore(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        tryQuitRTS(player);
     }
 
     /**

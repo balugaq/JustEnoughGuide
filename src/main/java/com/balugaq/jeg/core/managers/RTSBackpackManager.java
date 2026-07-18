@@ -71,11 +71,19 @@ public class RTSBackpackManager extends AbstractManager {
         this.OWNER_KEY = new NamespacedKey(plugin, "owner");
     }
 
+    public static ItemStack[] getStorageContents(PlayerInventory inventory) {
+        ItemStack[] contents = new ItemStack[36];
+        for (int i = 0; i < 36; i++) {
+            ItemStack itemStack = inventory.getItem(i);
+            contents[i] = itemStack;
+        }
+        return contents;
+    }
+
     /**
      * Saves the player's inventory backup to a backpack.
      *
-     * @param player
-     *         the player whose inventory to back up
+     * @param player the player whose inventory to back up
      */
     public void saveInventoryBackupFor(Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -86,8 +94,8 @@ public class RTSBackpackManager extends AbstractManager {
         PlayerBackpack b = null;
         // find an existing backpack
         Set<PlayerBackpack> backpacks = Slimefun.getDatabaseManager()
-                .getProfileDataController()
-                .getBackpacks(player.getUniqueId().toString());
+            .getProfileDataController()
+            .getBackpacks(player.getUniqueId().toString());
         if (backpacks != null && !backpacks.isEmpty()) {
             for (PlayerBackpack backpack : backpacks) {
                 if (backpack.getName().equals(BACKPACK_NAME)) {
@@ -109,8 +117,8 @@ public class RTSBackpackManager extends AbstractManager {
         // create a new backpack
         if (b == null) {
             b = Slimefun.getDatabaseManager()
-                    .getProfileDataController()
-                    .createBackpack(player, BACKPACK_NAME, profile.nextBackpackNum(), 54);
+                .getProfileDataController()
+                .createBackpack(player, BACKPACK_NAME, profile.nextBackpackNum(), 54);
         }
         Inventory inventory = b.getInventory();
         setIdentifier(player, inventory, IDENTIFIER_SLOT, true);
@@ -130,11 +138,8 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Checks if the item is a valid identifier for the player.
      *
-     * @param item
-     *         the item to check
-     * @param player
-     *         the player
-     *
+     * @param item   the item to check
+     * @param player the player
      * @return true if the item is a valid identifier, false otherwise
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -163,75 +168,58 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Sets the identifier item in the inventory.
      *
-     * @param player
-     *         the player
-     * @param inventory
-     *         the inventory
-     * @param slot
-     *         the slot to set the identifier item
-     * @param open
-     *         whether the identifier item should indicate an open status
+     * @param player    the player
+     * @param inventory the inventory
+     * @param slot      the slot to set the identifier item
+     * @param open      whether the identifier item should indicate an open status
      */
     public void setIdentifier(Player player, Inventory inventory, int slot, boolean open) {
         inventory.setItem(slot, getIdentifierItem(player, open));
     }
 
-    public static ItemStack[] getStorageContents(PlayerInventory inventory) {
-        ItemStack[] contents = new ItemStack[36];
-        for (int i = 0; i < 36; i++) {
-            ItemStack itemStack = inventory.getItem(i);
-            contents[i] = itemStack;
-        }
-        return contents;
-    }
-
     /**
      * Creates and returns the identifier item.
      *
-     * @param player
-     *         the player
-     * @param open
-     *         whether the identifier item should indicate an open status
-     *
+     * @param player the player
+     * @param open   whether the identifier item should indicate an open status
      * @return the identifier item
      */
     public ItemStack getIdentifierItem(Player player, boolean open) {
         return Converter.getItem(
-                Converter.getItem(
-                        Material.DIRT,
-                        "[RTS]",
-                        "[RTS]",
-                        "[RTS]",
-                        "[RTS]",
-                        UUID.randomUUID().toString()
-                ),
-                meta -> {
-                    meta.getPersistentDataContainer()
-                            .set(
-                                    OWNER_KEY,
-                                    PersistentDataType.STRING,
-                                    player.getUniqueId().toString()
-                            );
-                    meta.getPersistentDataContainer()
-                            .set(
-                                    SERVER_KEY,
-                                    PersistentDataType.STRING,
-                                    JustEnoughGuide.getServerUUID().toString()
-                            );
-                    if (open) {
-                        meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, OPEN_STATUS);
-                    } else {
-                        meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, CLOSE_STATUS);
-                    }
+            Converter.getItem(
+                Material.DIRT,
+                "[RTS]",
+                "[RTS]",
+                "[RTS]",
+                "[RTS]",
+                UUID.randomUUID().toString()
+            ),
+            meta -> {
+                meta.getPersistentDataContainer()
+                    .set(
+                        OWNER_KEY,
+                        PersistentDataType.STRING,
+                        player.getUniqueId().toString()
+                    );
+                meta.getPersistentDataContainer()
+                    .set(
+                        SERVER_KEY,
+                        PersistentDataType.STRING,
+                        JustEnoughGuide.getServerUUID().toString()
+                    );
+                if (open) {
+                    meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, OPEN_STATUS);
+                } else {
+                    meta.getPersistentDataContainer().set(STATUS_KEY, PersistentDataType.STRING, CLOSE_STATUS);
                 }
+            }
         );
     }
 
     /**
      * Clears the player's inventory.
      *
-     * @param player
-     *         the player whose inventory to clear
+     * @param player the player whose inventory to clear
      */
     public void clearInventoryFor(Player player) {
         ItemStack[] newContents = new ItemStack[player.getInventory().getStorageContents().length];
@@ -244,8 +232,7 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Restores the player's inventory from a backpack.
      *
-     * @param player
-     *         the player whose inventory to restore
+     * @param player the player whose inventory to restore
      */
     public void restoreInventoryFor(Player player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -254,8 +241,8 @@ public class RTSBackpackManager extends AbstractManager {
         }
 
         Set<PlayerBackpack> backpacks = Slimefun.getDatabaseManager()
-                .getProfileDataController()
-                .getBackpacks(profile.getUUID().toString());
+            .getProfileDataController()
+            .getBackpacks(profile.getUUID().toString());
         if (backpacks == null || backpacks.isEmpty()) {
             return;
         }
@@ -297,8 +284,8 @@ public class RTSBackpackManager extends AbstractManager {
                 }
                 setIdentifier(player, backpack.getInventory(), IDENTIFIER_SLOT, false);
                 Slimefun.getDatabaseManager()
-                        .getProfileDataController()
-                        .saveBackpackInventory(backpack, IDENTIFIER_SLOT);
+                    .getProfileDataController()
+                    .saveBackpackInventory(backpack, IDENTIFIER_SLOT);
 
                 break;
             }
@@ -308,9 +295,7 @@ public class RTSBackpackManager extends AbstractManager {
     /**
      * Checks if the identifier item indicates an open status.
      *
-     * @param item
-     *         the identifier item to check
-     *
+     * @param item the identifier item to check
      * @return true if the identifier item indicates an open status, false otherwise
      */
     public boolean isOpenIdentifier(@Nullable ItemStack item) {

@@ -58,8 +58,8 @@ import com.balugaq.jeg.core.integrations.placeholderapi.PlaceholderAPIIntegratio
 import com.balugaq.jeg.core.integrations.rykenslimefuncustomizer.RykenSlimefunCustomizerIntegrationMain;
 import com.balugaq.jeg.core.integrations.simpleutils.SimpleUtilsIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimeaeplugin.SlimeAEPluginIntegrationMain;
-import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimefun.SlimefunIntegrationMain;
+import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimehud.SlimeHUDIntegrationMain;
 import com.balugaq.jeg.core.integrations.slimetinker.SlimeTinkerIntegrationMain;
@@ -236,11 +236,6 @@ public class IntegrationManager extends AbstractManager {
     }
     // @formatter:on
 
-    @Override
-    public void unload() {
-        shutdownIntegrations();
-    }
-
     public static boolean classExists(String className) {
         try {
             Class.forName(className);
@@ -248,6 +243,23 @@ public class IntegrationManager extends AbstractManager {
         } catch (ClassNotFoundException e) {
             return false;
         }
+    }
+
+    public static void scheduleRun(Runnable runnable) {
+        JustEnoughGuide.runLater(runnable, 2L);
+    }
+
+    public static void scheduleRunAsync(Runnable runnable) {
+        JustEnoughGuide.runLaterAsync(runnable, 2L);
+    }
+
+    public static void scheduleRunPostRegistryFinalized(Runnable runnable) {
+        SlimefunRegistryFinalizeListener.addTask(runnable);
+    }
+
+    @Override
+    public void unload() {
+        shutdownIntegrations();
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -270,18 +282,6 @@ public class IntegrationManager extends AbstractManager {
                 Debug.trace(e);
             }
         }
-    }
-
-    public static void scheduleRun(Runnable runnable) {
-        JustEnoughGuide.runLater(runnable, 2L);
-    }
-
-    public static void scheduleRunAsync(Runnable runnable) {
-        JustEnoughGuide.runLaterAsync(runnable, 2L);
-    }
-
-    public static void scheduleRunPostRegistryFinalized(Runnable runnable) {
-        SlimefunRegistryFinalizeListener.addTask(runnable);
     }
 
     @Deprecated
@@ -327,6 +327,10 @@ public class IntegrationManager extends AbstractManager {
             return SUCCESS.clone();
         }
 
+        public static Run failure() {
+            return FAILURE.clone();
+        }
+
         @Override
         public Run clone() {
             try {
@@ -334,10 +338,6 @@ public class IntegrationManager extends AbstractManager {
             } catch (CloneNotSupportedException e) {
                 throw new AssertionError();
             }
-        }
-
-        public static Run failure() {
-            return FAILURE.clone();
         }
 
         public Run or(Supplier<Run> callable) {

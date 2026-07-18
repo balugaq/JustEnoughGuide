@@ -55,10 +55,10 @@ public class QuarryData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
-                null,
-                outputs == null ? null : Arrays.stream(outputs).map(ItemStack::new).toList().toArray(new ItemStack[0]),
-                INTERVAL / speed,
-                (long) energyPerTick * INTERVAL / speed
+            null,
+            outputs == null ? null : Arrays.stream(outputs).map(ItemStack::new).toList().toArray(new ItemStack[0]),
+            INTERVAL / speed,
+            (long) energyPerTick * INTERVAL / speed
         ));
     }
 }

@@ -108,9 +108,9 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final ConcurrentHashMap<UUID, String> searchTerms = new ConcurrentHashMap<>();
 
     public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE =
-            new Char2ObjectOpenHashMap<>(); // fast way for by item name
+        new Char2ObjectOpenHashMap<>(); // fast way for by item name
     public static final Char2ObjectOpenHashMap<Reference<Set<SlimefunItem>>> CACHE2 =
-            new Char2ObjectOpenHashMap<>(); // fast way for by display item name
+        new Char2ObjectOpenHashMap<>(); // fast way for by display item name
     public static final Map<String, Reference<Set<String>>> SPECIAL_CACHE = new HashMap<>();
 
     /**
@@ -130,7 +130,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final Map<String, List<String>> DISPLAY_ITEM_NAMES_CACHE = new ConcurrentHashMap<>(5000);
 
     public static final Boolean SHOW_HIDDEN_ITEM_GROUPS =
-            Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch();
+        Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch();
     public static final Integer DEFAULT_HASH_SIZE = 5000;
     public static final Map<SlimefunItem, Integer> ENABLED_ITEMS = new HashMap<>(DEFAULT_HASH_SIZE);
     public static final Set<SlimefunItem> AVAILABLE_ITEMS = new HashSet<>(DEFAULT_HASH_SIZE);
@@ -146,19 +146,19 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     public final boolean re_search_when_cache_failed;
 
     public SearchGroup(
-            SlimefunGuideImplementation implementation,
-            final Player player,
-            final String searchTerm,
-            boolean pinyin) {
+        SlimefunGuideImplementation implementation,
+        final Player player,
+        final String searchTerm,
+        boolean pinyin) {
         this(implementation, player, searchTerm, pinyin, true);
     }
 
     public SearchGroup(
-            SlimefunGuideImplementation implementation,
-            final Player player,
-            final String searchTerm,
-            boolean pinyin,
-            boolean re_search_when_cache_failed) {
+        SlimefunGuideImplementation implementation,
+        final Player player,
+        final String searchTerm,
+        boolean pinyin,
+        boolean re_search_when_cache_failed) {
         super();
         if (!LOADED) {
             init();
@@ -247,32 +247,32 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             return false;
         }
         String itemName =
-                ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack)).toLowerCase(Locale.ROOT);
+            ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack)).toLowerCase(Locale.ROOT);
         return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
     }
 
     public static List<SlimefunItem> filterItems(
-            Player player,
-            FilterType filterType,
-            String filterValue,
-            boolean pinyin,
-            List<SlimefunItem> items) {
+        Player player,
+        FilterType filterType,
+        String filterValue,
+        boolean pinyin,
+        List<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .toList();
+            .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
+            .toList();
     }
 
     public static Set<SlimefunItem> filterItems(
-            Player player,
-            FilterType filterType,
-            String filterValue,
-            boolean pinyin,
-            Set<SlimefunItem> items) {
+        Player player,
+        FilterType filterType,
+        String filterValue,
+        boolean pinyin,
+        Set<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .collect(Collectors.toSet());
+            .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
+            .collect(Collectors.toSet());
     }
 
     // @formatter:off
@@ -952,11 +952,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     /**
      * Calculates the name fit score between two strings.
      *
-     * @param name
-     *         The name to calculate the name fit score for.
-     * @param searchTerm
-     *         The search term
-     *
+     * @param name       The name to calculate the name fit score for.
+     * @param searchTerm The search term
      * @return The name fit score. Non-negative integer.
      */
     public static int nameFit(String name, String searchTerm) {
@@ -974,155 +971,155 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     }
 
     public static List<SlimefunItem> sortByNameFit(
-            Set<SlimefunItem> origin, String searchTerm) {
+        Set<SlimefunItem> origin, String searchTerm) {
         return origin.stream()
-                .sorted(Comparator.comparingInt(item ->
-                                                        /* Intentionally negative */
-                                                        -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
-                .toList();
+            .sorted(Comparator.comparingInt(item ->
+                /* Intentionally negative */
+                -nameFit(ChatColor.stripColor(item.getItemName()), searchTerm)))
+            .toList();
     }
 
     public static List<SlimefunItem> sortByPinyinContinuity(
-            Set<SlimefunItem> origin, String searchTerm) {
+        Set<SlimefunItem> origin, String searchTerm) {
         return origin.stream()
-                .sorted(Comparator.comparingInt(item ->
-                                                        /* Intentionally negative */
-                                                        -nameFit(
-                                                                getPinyin(ChatColor.stripColor(item.getItemName())),
-                                                                searchTerm
-                                                        )))
-                .toList();
+            .sorted(Comparator.comparingInt(item ->
+                /* Intentionally negative */
+                -nameFit(
+                    getPinyin(ChatColor.stripColor(item.getItemName())),
+                    searchTerm
+                )))
+            .toList();
     }
 
     @Override
     public boolean isVisible(
-            final Player player,
-            final PlayerProfile playerProfile,
-            final SlimefunGuideMode slimefunGuideMode) {
+        final Player player,
+        final PlayerProfile playerProfile,
+        final SlimefunGuideMode slimefunGuideMode) {
         return false;
     }
 
     @Override
     public ChestMenu generateMenu(
-            final Player player,
-            final PlayerProfile playerProfile,
-            final SlimefunGuideMode slimefunGuideMode) {
+        final Player player,
+        final PlayerProfile playerProfile,
+        final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu =
-                new ChestMenu("你正在搜索: %item%".replace("%item%", ChatUtils.crop(ChatColor.WHITE, searchTerm)));
+            new ChestMenu("你正在搜索: %item%".replace("%item%", ChatUtils.crop(ChatColor.WHITE, searchTerm)));
 
         OnClick.preset(chestMenu);
 
         for (int ss : Formats.sub.getChars('b')) {
             chestMenu.addItem(
-                    ss,
-                    PatchScope.Back.patch(
-                            player,
-                            ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单")
-                    )
+                ss,
+                PatchScope.Back.patch(
+                    player,
+                    ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单")
+                )
             );
             chestMenu.addMenuClickHandler(
-                    ss, (pl, s, is, action) -> EventUtil.callEvent(
-                                    new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
-                            .ifSuccess(() -> {
-                                GuideHistory guideHistory = playerProfile.getGuideHistory();
-                                if (action.isShiftClicked()) {
-                                    SlimefunGuide.openMainMenu(
-                                            playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                                } else {
-                                    GuideUtil.goBack(guideHistory);
-                                }
-                                return false;
-                            })
+                ss, (pl, s, is, action) -> EventUtil.callEvent(
+                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
+                    .ifSuccess(() -> {
+                        GuideHistory guideHistory = playerProfile.getGuideHistory();
+                        if (action.isShiftClicked()) {
+                            SlimefunGuide.openMainMenu(
+                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                        } else {
+                            GuideUtil.goBack(guideHistory);
+                        }
+                        return false;
+                    })
             );
         }
 
         for (int ss : Formats.sub.getChars('S')) {
             chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
             chestMenu.addMenuClickHandler(
-                    ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.SearchButtonClickEvent(
-                                            pl, item, slot, action, chestMenu,
-                                            implementation
-                                    ))
-                            .ifSuccess(() -> {
-                                pl.closeInventory();
+                ss, (pl, slot, item, action) -> EventUtil.callEvent(
+                        new GuideEvents.SearchButtonClickEvent(
+                            pl, item, slot, action, chestMenu,
+                            implementation
+                        ))
+                    .ifSuccess(() -> {
+                        pl.closeInventory();
 
-                                Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                                ChatInput.waitForPlayer(
-                                        JAVA_PLUGIN,
-                                        pl,
-                                        msg -> implementation.openSearch(
-                                                playerProfile,
-                                                msg,
-                                                true
-                                        )
-                                );
+                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                        ChatInput.waitForPlayer(
+                            JAVA_PLUGIN,
+                            pl,
+                            msg -> implementation.openSearch(
+                                playerProfile,
+                                msg,
+                                true
+                            )
+                        );
 
-                                return false;
-                            })
+                        return false;
+                    })
             );
         }
 
         for (int ss : Formats.sub.getChars('P')) {
             chestMenu.addItem(
-                    ss,
-                    PatchScope.PreviousPage.patch(
-                            player,
-                            ChestMenuUtils.getPreviousButton(
-                                    player,
-                                    this.page,
-                                    (this.slimefunItemList.size() - 1)
-                                            / Formats.sub.getChars('i').size()
-                                            + 1
-                            )
+                ss,
+                PatchScope.PreviousPage.patch(
+                    player,
+                    ChestMenuUtils.getPreviousButton(
+                        player,
+                        this.page,
+                        (this.slimefunItemList.size() - 1)
+                            / Formats.sub.getChars('i').size()
+                            + 1
                     )
+                )
             );
             chestMenu.addMenuClickHandler(
-                    ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.PreviousButtonClickEvent(
-                                            p, item, slot, action, chestMenu,
-                                            implementation
-                                    ))
-                            .ifSuccess(() -> {
-                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                                SearchGroup searchGroup = this.getByPage(Math.max(this.page - 1, 1));
-                                searchGroup.open(player, playerProfile, slimefunGuideMode);
-                                return false;
-                            })
+                ss, (p, slot, item, action) -> EventUtil.callEvent(
+                        new GuideEvents.PreviousButtonClickEvent(
+                            p, item, slot, action, chestMenu,
+                            implementation
+                        ))
+                    .ifSuccess(() -> {
+                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                        SearchGroup searchGroup = this.getByPage(Math.max(this.page - 1, 1));
+                        searchGroup.open(player, playerProfile, slimefunGuideMode);
+                        return false;
+                    })
             );
         }
 
         for (int ss : Formats.sub.getChars('N')) {
             chestMenu.addItem(
-                    ss,
-                    PatchScope.NextPage.patch(
-                            player,
-                            ChestMenuUtils.getNextButton(
-                                    player,
-                                    this.page,
-                                    (this.slimefunItemList.size() - 1)
-                                            / Formats.sub.getChars('i').size()
-                                            + 1
-                            )
+                ss,
+                PatchScope.NextPage.patch(
+                    player,
+                    ChestMenuUtils.getNextButton(
+                        player,
+                        this.page,
+                        (this.slimefunItemList.size() - 1)
+                            / Formats.sub.getChars('i').size()
+                            + 1
                     )
+                )
             );
             chestMenu.addMenuClickHandler(
-                    ss, (p, slot, item, action) -> EventUtil.callEvent(
-                                    new GuideEvents.NextButtonClickEvent(
-                                            p, item, slot, action, chestMenu,
-                                            implementation
-                                    ))
-                            .ifSuccess(() -> {
-                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                                SearchGroup searchGroup = this.getByPage(Math.min(
-                                        this.page + 1,
-                                        (this.slimefunItemList.size() - 1)
-                                                / Formats.sub.getChars('i').size()
-                                                + 1
-                                ));
-                                searchGroup.open(player, playerProfile, slimefunGuideMode);
-                                return false;
-                            })
+                ss, (p, slot, item, action) -> EventUtil.callEvent(
+                        new GuideEvents.NextButtonClickEvent(
+                            p, item, slot, action, chestMenu,
+                            implementation
+                        ))
+                    .ifSuccess(() -> {
+                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                        SearchGroup searchGroup = this.getByPage(Math.min(
+                            this.page + 1,
+                            (this.slimefunItemList.size() - 1)
+                                / Formats.sub.getChars('i').size()
+                                + 1
+                        ));
+                        searchGroup.open(player, playerProfile, slimefunGuideMode);
+                        return false;
+                    })
             );
         }
 
@@ -1138,7 +1135,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             if (index < this.slimefunItemList.size()) {
                 SlimefunItem slimefunItem = slimefunItemList.get(index);
                 OnDisplay.Item.display(player, slimefunItem, OnDisplay.Item.Search, implementation)
-                        .at(chestMenu, contentSlots.get(i), page);
+                    .at(chestMenu, contentSlots.get(i), page);
             }
         }
 
@@ -1154,7 +1151,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
 
     @Deprecated
     public List<SlimefunItem> getAllMatchedItems(
-            Player p, String searchTerm, boolean pinyin) {
+        Player p, String searchTerm, boolean pinyin) {
         return filterItems(p, searchTerm, pinyin);
     }
 
@@ -1197,8 +1194,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         Set<SlimefunItem> merge = new HashSet<>(36 * 4);
         // The unfiltered items
         Set<SlimefunItem> items = new HashSet<>(AVAILABLE_ITEMS.stream()
-                                                        .filter(item -> item.getItemGroup().isAccessible(player))
-                                                        .toList());
+            .filter(item -> item.getItemGroup().isAccessible(player))
+            .toList());
 
         if (!actualSearchTerm.isBlank()) {
             Set<SlimefunItem> nameMatched = new HashSet<>();
@@ -1260,7 +1257,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     Debug.debug("Re-searching display item name by filters (Normal search)");
                     Set<SlimefunItem> clone = new HashSet<>(items);
                     Set<SlimefunItem> result =
-                            filterItems(FilterType.BY_DISPLAY_ITEM_NAME, actualSearchTerm, pinyin, clone);
+                        filterItems(FilterType.BY_DISPLAY_ITEM_NAME, actualSearchTerm, pinyin, clone);
                     merge.addAll(result);
                 }
             }
@@ -1283,24 +1280,24 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     }
 
     public List<SlimefunItem> filterItems(
-            FilterType filterType,
-            String filterValue,
-            boolean pinyin,
-            List<SlimefunItem> items) {
+        FilterType filterType,
+        String filterValue,
+        boolean pinyin,
+        List<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .toList();
+            .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
+            .toList();
     }
 
     public Set<SlimefunItem> filterItems(
-            FilterType filterType,
-            String filterValue,
-            boolean pinyin,
-            Set<SlimefunItem> items) {
+        FilterType filterType,
+        String filterValue,
+        boolean pinyin,
+        Set<SlimefunItem> items) {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
-                .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
-                .collect(Collectors.toSet());
+            .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
+            .collect(Collectors.toSet());
     }
 }

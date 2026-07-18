@@ -66,9 +66,9 @@ public interface VanillaSource extends Source {
 
         GuideUtil.openGuide(player);
         RecipeCompletableListener.addCallback(
-                player.getUniqueId(), ((event, profile) ->
-                        handleSession(session, event, event.getClickAction(), true, callback)
-                )
+            player.getUniqueId(), ((event, profile) ->
+                handleSession(session, event, event.getClickAction(), true, callback)
+            )
         );
         RecipeCompletableListener.tagGuideOpen(player);
         return true;
@@ -80,17 +80,17 @@ public interface VanillaSource extends Source {
         int[] ingredientSlots = session.getIngredientSlots();
         boolean unordered = session.isUnordered();
         return completeRecipeWithGuide(
-                session,
-                (slot) -> {
-                    if (slot < inventory.getSize()) {
-                        return inventory.getItem(slot);
-                    }
-                    return null;
-                },
-                (received, i) ->
-                        InventoryUtil.fits(inventory, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]}),
-                (received, i) ->
-                        InventoryUtil.pushItem(inventory, received, unordered ? ingredientSlots : new int[] {ingredientSlots[i]})
+            session,
+            (slot) -> {
+                if (slot < inventory.getSize()) {
+                    return inventory.getItem(slot);
+                }
+                return null;
+            },
+            (received, i) ->
+                InventoryUtil.fits(inventory, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]}),
+            (received, i) ->
+                InventoryUtil.pushItem(inventory, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})
         );
     }
 

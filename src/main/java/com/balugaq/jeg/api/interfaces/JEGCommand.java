@@ -47,11 +47,8 @@ public interface JEGCommand {
     /**
      * This method is used to define a tab complete for a command.
      *
-     * @param sender
-     *         The sender of the command.
-     * @param args
-     *         The arguments of the command.
-     *
+     * @param sender The sender of the command.
+     * @param args   The arguments of the command.
      * @return The tab complete of the command.
      */
     default List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
@@ -61,40 +58,31 @@ public interface JEGCommand {
     /**
      * This method is used to define if a command can be executed by a player.
      *
-     * @param sender
-     *         The sender of the command.
-     * @param command
-     *         The command that is being executed.
-     * @param label
-     *         The label of the command.
-     * @param args
-     *         The arguments of the command.
-     *
+     * @param sender  The sender of the command.
+     * @param command The command that is being executed.
+     * @param label   The label of the command.
+     * @param args    The arguments of the command.
      * @return If the command can be executed.
      */
     default boolean canCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         return false;
     }
 
     /**
      * This method is used to define what happens when a command is executed.
      *
-     * @param sender
-     *         The sender of the command.
-     * @param command
-     *         The command that is being executed.
-     * @param label
-     *         The label of the command.
-     * @param args
-     *         The arguments of the command.
+     * @param sender  The sender of the command.
+     * @param command The command that is being executed.
+     * @param label   The label of the command.
+     * @param args    The arguments of the command.
      */
     void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args);
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args);
 }

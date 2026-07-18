@@ -51,7 +51,7 @@ import java.util.Optional;
 public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, GuideClickHandler {
 
     static JEGClickHandler of(
-            final SlimefunGuideImplementation guide, final ChestMenu menu, final @Range(from = 0, to = 53) int slot) {
+        final SlimefunGuideImplementation guide, final ChestMenu menu, final @Range(from = 0, to = 53) int slot) {
         ChestMenu.MenuClickHandler current = menu.getMenuClickHandler(slot);
         if (current instanceof JEGClickHandler ech) {
             return ech;
@@ -88,11 +88,11 @@ public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, Gui
     // Our implement
     @Override
     default boolean onClick(
-            final InventoryClickEvent event,
-            final Player player,
-            final @Range(from = 0, to = 53) int clickedSlot,
-            final ItemStack cursor,
-            final ClickAction clickAction) {
+        final InventoryClickEvent event,
+        final Player player,
+        final @Range(from = 0, to = 53) int clickedSlot,
+        final ItemStack cursor,
+        final ClickAction clickAction) {
         ItemStack itemStack = getMenu().getItemInSlot(clickedSlot);
         for (Processor processor : getProcessor(Processor.Strategy.HEAD)) {
             if (!processor.process(getGuide(), getMenu(), event, player, clickedSlot, itemStack, clickAction, null)) {
@@ -119,8 +119,8 @@ public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, Gui
 
     default Collection<Processor> getProcessor(final Processor.Strategy strategy) {
         return getProcessors().values().stream()
-                .filter(processor -> processor.getStrategy() == strategy)
-                .toList();
+            .filter(processor -> processor.getStrategy() == strategy)
+            .toList();
     }
 
     SlimefunGuideImplementation getGuide();
@@ -132,10 +132,10 @@ public interface JEGClickHandler extends ChestMenu.AdvancedMenuClickHandler, Gui
     // Fallback
     @Override
     default boolean onClick(
-            final Player player,
-            final @Range(from = 0, to = 53) int clickedSlot,
-            final ItemStack itemStack,
-            final ClickAction clickAction) {
+        final Player player,
+        final @Range(from = 0, to = 53) int clickedSlot,
+        final ItemStack itemStack,
+        final ClickAction clickAction) {
         return getOrigin().onClick(player, clickedSlot, itemStack, clickAction);
     }
 }

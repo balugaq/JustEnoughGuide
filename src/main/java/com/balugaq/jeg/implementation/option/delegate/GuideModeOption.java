@@ -110,7 +110,7 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
     private SlimefunGuideMode getNextMode(Player p, SlimefunGuideMode mode) {
         if (p.hasPermission("slimefun.cheat.items")) {
             return mode == SlimefunGuideMode.SURVIVAL_MODE ? SlimefunGuideMode.CHEAT_MODE :
-                    SlimefunGuideMode.SURVIVAL_MODE;
+                SlimefunGuideMode.SURVIVAL_MODE;
         } else {
             return SlimefunGuideMode.SURVIVAL_MODE;
         }
@@ -118,7 +118,7 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
 
     public Optional<SlimefunGuideMode> getSelectedOption(Player p, ItemStack guide) {
         return SlimefunUtils.isItemSimilar(guide, SlimefunGuide.getItem(SlimefunGuideMode.CHEAT_MODE), true, false) ?
-                Optional.of(SlimefunGuideMode.CHEAT_MODE) : Optional.of(SlimefunGuideMode.SURVIVAL_MODE);
+            Optional.of(SlimefunGuideMode.CHEAT_MODE) : Optional.of(SlimefunGuideMode.SURVIVAL_MODE);
     }
 
     public void setSelectedOption(Player p, ItemStack guide, SlimefunGuideMode value) {

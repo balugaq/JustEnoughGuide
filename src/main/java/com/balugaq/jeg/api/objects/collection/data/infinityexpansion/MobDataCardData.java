@@ -54,10 +54,10 @@ public class MobDataCardData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
-                null,
-                itemStackDoubleMap.keySet().toArray(new ItemStack[0]),
-                chamberInterval,
-                (long) chamberEnergy * chamberInterval
+            null,
+            itemStackDoubleMap.keySet().toArray(new ItemStack[0]),
+            chamberInterval,
+            (long) chamberEnergy * chamberInterval
         ));
     }
 }

@@ -55,6 +55,18 @@ public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boo
         return instance;
     }
 
+    public static boolean isEnabled(Player p) {
+        return getSelectedOption(p);
+    }
+
+    public static boolean getSelectedOption(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
+    }
+
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("notice_missing_material");
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -64,36 +76,24 @@ public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boo
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(false);
         ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK,
-                "&b告知缺失的材料: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择",
-                "&7当你使用配方补全时",
-                "&7如果材料不足",
-                "&7是否告知缺失的材料",
-                "&e&l此功能为实验性功能，谨慎使用",
-                "&c&l此功能容易误报",
-                "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 告知缺失的材料"
+            isEnabled(p) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK,
+            "&b告知缺失的材料: &" + (enabled ? "a启用" : "4禁用"),
+            "",
+            "&7你现在可以选择",
+            "&7当你使用配方补全时",
+            "&7如果材料不足",
+            "&7是否告知缺失的材料",
+            "&e&l此功能为实验性功能，谨慎使用",
+            "&c&l此功能容易误报",
+            "",
+            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 告知缺失的材料"
         );
         return Optional.of(item);
-    }
-
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
     }
 
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("notice_missing_material");
     }
 
     @Override

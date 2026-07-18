@@ -41,27 +41,39 @@ import java.util.List;
  */
 @NullMarked
 public class ClayTechIntegrationMain implements Integration {
-    public static final int[] CLAYTECH_FUSION_MACHINE_INPUT_SLOTS = new int[] {
-            19, 20, 21,
-            28, 29, 30,
-            37, 38, 39
+    public static final int[] CLAYTECH_FUSION_MACHINE_INPUT_SLOTS = new int[]{
+        19, 20, 21,
+        28, 29, 30,
+        37, 38, 39
     };
-    public static final int[] CLAYTECH_ROCKET_ASSEMBLING_MACHINE_INPUT_SLOTS = new int[] {
-            19, 20, 21,
-            28, 29, 30,
-            37, 38, 39
+    public static final int[] CLAYTECH_ROCKET_ASSEMBLING_MACHINE_INPUT_SLOTS = new int[]{
+        19, 20, 21,
+        28, 29, 30,
+        37, 38, 39
     };
-    public static final int[] CLAYTECH_ROCKET_FUEL_GENERATOR_INPUT_SLOTS = new int[] {
-            19, 20, 21,
-            28, 29, 30,
-            37, 38, 39
+    public static final int[] CLAYTECH_ROCKET_FUEL_GENERATOR_INPUT_SLOTS = new int[]{
+        19, 20, 21,
+        28, 29, 30,
+        37, 38, 39
     };
-    public static final int[] CLAYTECH_FOOD_CAULDRON_INPUT_SLOTS = new int[] {
-            19, 20, 21,
-            28, 29, 30,
-            37, 38, 39
+    public static final int[] CLAYTECH_FOOD_CAULDRON_INPUT_SLOTS = new int[]{
+        19, 20, 21,
+        28, 29, 30,
+        37, 38, 39
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
 
     @Override
     public String getHookPlugin() {
@@ -74,18 +86,6 @@ public class ClayTechIntegrationMain implements Integration {
         rrc("CLAYTECH_ROCKET_ASSEMBLING_MACHINE", CLAYTECH_ROCKET_ASSEMBLING_MACHINE_INPUT_SLOTS, false);
         rrc("CLAYTECH_ROCKET_FUEL_GENERATOR", CLAYTECH_ROCKET_FUEL_GENERATOR_INPUT_SLOTS, false);
         rrc("CLAYTECH_FOOD_CAULDRON", CLAYTECH_FOOD_CAULDRON_INPUT_SLOTS, false);
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

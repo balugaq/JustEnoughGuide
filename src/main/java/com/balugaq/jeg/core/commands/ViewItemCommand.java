@@ -29,21 +29,17 @@ package com.balugaq.jeg.core.commands;
 
 import com.balugaq.jeg.api.interfaces.JEGCommand;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.clickhandler.OnClick;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.Getter;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * This is the implementation of the "/jeg viewitem" command.
@@ -74,10 +70,10 @@ public class ViewItemCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (args.length == 1) {
             return "viewitem".equalsIgnoreCase(args[0]);
         }
@@ -86,10 +82,10 @@ public class ViewItemCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         if (sender instanceof Player player) {
             if (args.length >= 2) {
                 String id = args[1];

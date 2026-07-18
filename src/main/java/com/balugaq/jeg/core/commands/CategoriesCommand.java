@@ -62,18 +62,14 @@ public class CategoriesCommand implements JEGCommand {
     /**
      * Populates the category gui. 45 items per page.
      *
-     * @param menu
-     *         the SCMenu to populate
-     * @param groups
-     *         the List of itemgroups
-     * @param page
-     *         the page number
-     * @param p
-     *         the player that will be viewing this menu
+     * @param menu   the SCMenu to populate
+     * @param groups the List of itemgroups
+     * @param page   the page number
+     * @param p      the player that will be viewing this menu
      */
     @SuppressWarnings("deprecation")
     private static void populateCategoryMenu(
-            ChestMenu menu, List<ItemGroup> groups, @Range(from = 1, to = Integer.MAX_VALUE) int page, Player p) {
+        ChestMenu menu, List<ItemGroup> groups, @Range(from = 1, to = Integer.MAX_VALUE) int page, Player p) {
         for (int i = 0; i < 54; i++) {
             menu.addMenuClickHandler(i, ChestMenuUtils.getEmptyClickHandler());
         }
@@ -96,18 +92,18 @@ public class CategoriesCommand implements JEGCommand {
                     categoryLore = new ArrayList<>(2);
                 }
                 categoryLore.set(
-                        categoryLore.size() - 1, ChatColors.color("&6ID: " + id)); // Replaces the "Click to Open" line
+                    categoryLore.size() - 1, ChatColors.color("&6ID: " + id)); // Replaces the "Click to Open" line
                 categoryLore.add(ChatColors.color("&6class: " + className));
                 categoryLore.add(ChatColors.color("&a点击复制到聊天栏"));
                 catMeta.setLore(categoryLore);
                 catItem.setItemMeta(catMeta);
                 menu.replaceExistingItem(i, catItem);
                 menu.addMenuClickHandler(
-                        i, (p1, s1, i1, a1) -> {
-                            ClipboardUtil.send(p1, "&d点击复制: " + id, "&d点击复制", id);
-                            ClipboardUtil.send(p1, "&d点击复制: " + className, "&d点击复制", className);
-                            return false;
-                        }
+                    i, (p1, s1, i1, a1) -> {
+                        ClipboardUtil.send(p1, "&d点击复制: " + id, "&d点击复制", id);
+                        ClipboardUtil.send(p1, "&d点击复制: " + className, "&d点击复制", className);
+                        return false;
+                    }
                 );
             } else {
                 menu.replaceExistingItem(i, Converter.getItem());
@@ -117,20 +113,20 @@ public class CategoriesCommand implements JEGCommand {
         if (page > 1) {
             menu.replaceExistingItem(46, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a上一页"));
             menu.addMenuClickHandler(
-                    46, (pl, s, is, action) -> {
-                        populateCategoryMenu(menu, groups, page - 1, p);
-                        return false;
-                    }
+                46, (pl, s, is, action) -> {
+                    populateCategoryMenu(menu, groups, page - 1, p);
+                    return false;
+                }
             );
         }
 
         if (getItemGroupOrNull(groups, 45 * page + 1) != null) {
             menu.replaceExistingItem(52, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a下一页"));
             menu.addMenuClickHandler(
-                    52, (pl, s, is, action) -> {
-                        populateCategoryMenu(menu, groups, page + 1, p);
-                        return false;
-                    }
+                52, (pl, s, is, action) -> {
+                    populateCategoryMenu(menu, groups, page + 1, p);
+                    return false;
+                }
             );
         }
     }
@@ -154,10 +150,10 @@ public class CategoriesCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
                 return "categories".equalsIgnoreCase(args[0]);
@@ -169,10 +165,10 @@ public class CategoriesCommand implements JEGCommand {
     @Override
     @SuppressWarnings("deprecation")
     public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         if (sender instanceof Player player) {
             ChestMenu menu = new ChestMenu("&6物品组大全");
             menu.setSize(54);

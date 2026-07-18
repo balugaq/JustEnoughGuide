@@ -116,21 +116,21 @@ public class VanillaInventoryWrapper extends BlockMenu {
             } else {
                 // insert
                 if (itemStack.getType() == Material.BLAZE_POWDER) {
-                    return new int[] {4, 3}; // fuel and ingredient slot
+                    return new int[]{4, 3}; // fuel and ingredient slot
                 } else if (itemStack.getType() == Material.POTION || itemStack.getType() == Material.SPLASH_POTION || itemStack.getType() == Material.LINGERING_POTION) {
                     return generateArray(3); // potion slots
                 } else {
-                    return new int[] {4}; // ingredient slot
+                    return new int[]{4}; // ingredient slot
                 }
             }
         } else if (inv instanceof FurnaceInventory) {
             if (flow == ItemTransportFlow.WITHDRAW) {
-                return new int[] {2}; // result slot
+                return new int[]{2}; // result slot
             } else {
                 if (itemStack.getType().isFuel()) {
-                    return new int[] {1, 0}; // fuel and smelting slot
+                    return new int[]{1, 0}; // fuel and smelting slot
                 } else {
-                    return new int[] {0, 1}; // smelting and fuel slot
+                    return new int[]{0, 1}; // smelting and fuel slot
                 }
             }
         } else if (inv instanceof PlayerInventory) {

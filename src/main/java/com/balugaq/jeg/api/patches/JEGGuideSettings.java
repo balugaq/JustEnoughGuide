@@ -93,9 +93,9 @@ public class JEGGuideSettings {
     }
 
     public static void openSettings(
-            final Player p,
-            final ItemStack guide,
-            @Range(from = 1, to = Integer.MAX_VALUE) int page) {
+        final Player p,
+        final ItemStack guide,
+        @Range(from = 1, to = Integer.MAX_VALUE) int page) {
         setLastPage(p, page);
         ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "guide.title.settings"));
 
@@ -103,7 +103,7 @@ public class JEGGuideSettings {
         menu.addMenuOpeningHandler(SoundEffect.GUIDE_OPEN_SETTING_SOUND::playFor);
 
         ChestMenuUtils.drawBackground(
-                menu, Formats.settings.getChars('B').stream().mapToInt(i -> i).toArray());
+            menu, Formats.settings.getChars('B').stream().mapToInt(i -> i).toArray());
 
         addHeader(p, menu);
         addConfigurableOptions(p, menu, guide, page);
@@ -113,7 +113,7 @@ public class JEGGuideSettings {
     }
 
     private static void addHeader(
-            final Player p, final ChestMenu menu) {
+        final Player p, final ChestMenu menu) {
         LocalizationService locale = Slimefun.getLocalization();
 
         // @formatter:off
@@ -138,12 +138,12 @@ public class JEGGuideSettings {
         List<String> contributorsLore = new ArrayList<>();
         contributorsLore.add("");
         contributorsLore.addAll(locale.getMessages(
-                p,
-                "guide.credits.description",
-                msg -> msg.replace(
-                        "%contributors%",
-                        String.valueOf(github.getContributors().size())
-                )
+            p,
+            "guide.credits.description",
+            msg -> msg.replace(
+                "%contributors%",
+                String.valueOf(github.getContributors().size())
+            )
         ));
         contributorsLore.add("");
         contributorsLore.add("&7\u21E8 &e" + locale.getMessage(p, "guide.credits.open"));
@@ -275,11 +275,11 @@ public class JEGGuideSettings {
                 // @formatter:on
 
                 menu.addMenuClickHandler(
-                        ss, (pl, slot, item, action) -> {
-                            pl.closeInventory();
-                            ChatUtils.sendURL(pl, "https://github.com/SlimefunGuguProject/Slimefun4/issues");
-                            return false;
-                        }
+                    ss, (pl, slot, item, action) -> {
+                        pl.closeInventory();
+                        ChatUtils.sendURL(pl, "https://github.com/SlimefunGuguProject/Slimefun4/issues");
+                        return false;
+                    }
                 );
             } else {
                 menu.addItem(ss, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
@@ -288,34 +288,34 @@ public class JEGGuideSettings {
 
         for (int ss : Formats.settings.getChars('U')) {
             menu.addItem(
-                    ss,
-                    PatchScope.UnknownFeature.patch(
-                            p,
-                            Converter.getItem(
-                                    Material.TOTEM_OF_UNDYING,
-                                    ChatColor.RED + locale.getMessage(p, "guide.work-in-progress")
-                            )
-                    ),
-                    (pl, slot, item, action) -> {
-                        // Add something here
-                        return false;
-                    }
+                ss,
+                PatchScope.UnknownFeature.patch(
+                    p,
+                    Converter.getItem(
+                        Material.TOTEM_OF_UNDYING,
+                        ChatColor.RED + locale.getMessage(p, "guide.work-in-progress")
+                    )
+                ),
+                (pl, slot, item, action) -> {
+                    // Add something here
+                    return false;
+                }
             );
         }
     }
 
     private static void addConfigurableOptions(
-            final Player p,
-            final ChestMenu menu,
-            final ItemStack guide,
-            @Range(from = 1, to = Integer.MAX_VALUE) int page) {
+        final Player p,
+        final ChestMenu menu,
+        final ItemStack guide,
+        @Range(from = 1, to = Integer.MAX_VALUE) int page) {
         List<Integer> slots = Formats.settings.getChars('o');
         List<SlimefunGuideOption<?>> options = new ArrayList<>(getOptions());
         int maxPage = (int) Math.ceil(options.size() / (double) slots.size());
         List<SlimefunGuideOption<?>> split = options.stream()
-                .skip((long) (page - 1) * slots.size())
-                .limit(slots.size())
-                .toList();
+            .skip((long) (page - 1) * slots.size())
+            .limit(slots.size())
+            .toList();
         int fail = 0;
         for (int i = 0; i < split.size(); i++) {
             SlimefunGuideOption<?> option = split.get(i);
@@ -331,10 +331,10 @@ public class JEGGuideSettings {
             if (item.isPresent()) {
                 menu.addItem(slot, PatchScope.GuideOption.patch(p, item.get()));
                 menu.addMenuClickHandler(
-                        slot, (pl, s, stack, action) -> {
-                            option.onClick(p, guide);
-                            return false;
-                        }
+                    slot, (pl, s, stack, action) -> {
+                        option.onClick(p, guide);
+                        return false;
+                    }
                 );
             } else {
                 fail++;
@@ -344,26 +344,26 @@ public class JEGGuideSettings {
         for (int ss : Formats.settings.getChars('P')) {
             menu.addItem(ss, ChestMenuUtils.getPreviousButton(p, page, maxPage));
             menu.addMenuClickHandler(
-                    ss, (pl, slot, item, action) -> {
-                        if (page > 1) {
-                            openSettings(pl, guide, page - 1);
-                        }
-
-                        return false;
+                ss, (pl, slot, item, action) -> {
+                    if (page > 1) {
+                        openSettings(pl, guide, page - 1);
                     }
+
+                    return false;
+                }
             );
         }
 
         for (int ss : Formats.settings.getChars('N')) {
             menu.addItem(ss, ChestMenuUtils.getNextButton(p, page, maxPage));
             menu.addMenuClickHandler(
-                    ss, (pl, slot, item, action) -> {
-                        if (page + 1 <= maxPage) {
-                            openSettings(pl, guide, page + 1);
-                        }
-
-                        return false;
+                ss, (pl, slot, item, action) -> {
+                    if (page + 1 <= maxPage) {
+                        openSettings(pl, guide, page + 1);
                     }
+
+                    return false;
+                }
             );
         }
     }
@@ -391,7 +391,7 @@ public class JEGGuideSettings {
     @SuppressWarnings({"unchecked", "DataFlowIssue"})
     public static List<SlimefunGuideOption<?>> getOptions() {
         return (List<SlimefunGuideOption<?>>)
-                ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
+            ReflectionUtil.getStaticValue(SlimefunGuideSettings.class, "options", List.class);
     }
 
     public static @Nullable SlimefunGuideOption<?> getOption(String key) {

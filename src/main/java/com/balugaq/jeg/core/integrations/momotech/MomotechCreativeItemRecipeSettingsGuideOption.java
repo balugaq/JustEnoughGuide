@@ -58,11 +58,15 @@ public class MomotechCreativeItemRecipeSettingsGuideOption extends AbstractItemS
         return itemStack;
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("momotech_creative_item_recipe_settings");
+    }
+
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
-                Material.END_CRYSTAL,
-                "&a单击打开" + getTitle()
+            Material.END_CRYSTAL,
+            "&a单击打开" + getTitle()
         );
         return Optional.of(item);
     }
@@ -70,10 +74,6 @@ public class MomotechCreativeItemRecipeSettingsGuideOption extends AbstractItemS
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("momotech_creative_item_recipe_settings");
     }
 
     @Override
@@ -88,6 +88,6 @@ public class MomotechCreativeItemRecipeSettingsGuideOption extends AbstractItemS
 
     @Override
     public int[] getItemSlots() {
-        return new int[] {13};
+        return new int[]{13};
     }
 }

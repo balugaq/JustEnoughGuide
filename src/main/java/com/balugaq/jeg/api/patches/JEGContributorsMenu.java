@@ -67,29 +67,29 @@ public class JEGContributorsMenu {
         menu.addMenuOpeningHandler(SoundEffect.GUIDE_CONTRIBUTORS_OPEN_SOUND::playFor);
 
         ChestMenuUtils.drawBackground(
-                menu,
-                Formats.contributors.getChars('B').stream().mapToInt(i -> i).toArray()
+            menu,
+            Formats.contributors.getChars('B').stream().mapToInt(i -> i).toArray()
         );
 
         for (int ss : Formats.contributors.getChars('b')) {
             menu.addItem(
-                    ss,
-                    PatchScope.Back.patch(
-                            p,
-                            Converter.getItem(ChestMenuUtils.getBackButton(
-                                    p, "", "&7" + Slimefun.getLocalization().getMessage(p, "guide.back.settings")))
-                    )
+                ss,
+                PatchScope.Back.patch(
+                    p,
+                    Converter.getItem(ChestMenuUtils.getBackButton(
+                        p, "", "&7" + Slimefun.getLocalization().getMessage(p, "guide.back.settings")))
+                )
             );
             menu.addMenuClickHandler(
-                    ss, (pl, slot, item, action) -> {
-                        JEGGuideSettings.openSettings(pl, p.getInventory().getItemInMainHand());
-                        return false;
-                    }
+                ss, (pl, slot, item, action) -> {
+                    JEGGuideSettings.openSettings(pl, p.getInventory().getItemInMainHand());
+                    return false;
+                }
             );
         }
 
         List<Contributor> contributors =
-                new ArrayList<>(Slimefun.getGitHubService().getContributors().values());
+            new ArrayList<>(Slimefun.getGitHubService().getContributors().values());
         contributors.sort(Comparator.comparingInt(Contributor::getPosition));
 
         List<Integer> slots = Formats.contributors.getChars('p');
@@ -101,13 +101,13 @@ public class JEGContributorsMenu {
 
             menu.addItem(ss, PatchScope.Contributor.patch(p, skull));
             menu.addMenuClickHandler(
-                    ss, (pl, slot, item, action) -> {
-                        if (contributor.getProfile() != null) {
-                            pl.closeInventory();
-                            ChatUtils.sendURL(pl, contributor.getProfile());
-                        }
-                        return false;
+                ss, (pl, slot, item, action) -> {
+                    if (contributor.getProfile() != null) {
+                        pl.closeInventory();
+                        ChatUtils.sendURL(pl, contributor.getProfile());
                     }
+                    return false;
+                }
             );
         }
 
@@ -116,26 +116,26 @@ public class JEGContributorsMenu {
         for (int ss : Formats.contributors.getChars('P')) {
             menu.addItem(ss, PatchScope.PreviousPage.patch(p, ChestMenuUtils.getPreviousButton(p, page + 1, pages)));
             menu.addMenuClickHandler(
-                    ss, (pl, slot, item, action) -> {
-                        if (page > 0) {
-                            open(pl, page - 1);
-                        }
-
-                        return false;
+                ss, (pl, slot, item, action) -> {
+                    if (page > 0) {
+                        open(pl, page - 1);
                     }
+
+                    return false;
+                }
             );
         }
 
         for (int ss : Formats.contributors.getChars('N')) {
             menu.addItem(ss, PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, page + 1, pages)));
             menu.addMenuClickHandler(
-                    ss, (pl, slot, item, action) -> {
-                        if (page + 1 < pages) {
-                            open(pl, page + 1);
-                        }
-
-                        return false;
+                ss, (pl, slot, item, action) -> {
+                    if (page + 1 < pages) {
+                        open(pl, page + 1);
                     }
+
+                    return false;
+                }
             );
         }
 
@@ -166,7 +166,7 @@ public class JEGContributorsMenu {
 
             if (entry.getValue() > 0) {
                 String commits = Slimefun.getLocalization()
-                        .getMessage(p, "guide.credits." + (entry.getValue() > 1 ? "commits" : "commit"));
+                    .getMessage(p, "guide.credits." + (entry.getValue() > 1 ? "commits" : "commit"));
 
                 info += " &7(" + entry.getValue() + ' ' + commits + ')';
             }
@@ -177,7 +177,7 @@ public class JEGContributorsMenu {
         if (contributor.getProfile() != null) {
             lore.add("");
             lore.add(ChatColors.color("&7\u21E8 &e")
-                             + Slimefun.getLocalization().getMessage(p, "guide.credits.profile-link"));
+                + Slimefun.getLocalization().getMessage(p, "guide.credits.profile-link"));
         }
 
         meta.setLore(lore);

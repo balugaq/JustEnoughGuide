@@ -52,14 +52,14 @@ public class RSCCustomLinkedRecipeMachineData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
-                .map(recipe -> new CERRecipeGroup.RecipeWrapper(
-                        recipe.getLinkedInput().values().toArray(new ItemStack[0]),
-                        new ArrayList<>(recipe.getLinkedOutput().linkedOutput().values()) {{
-                            addAll(List.of(recipe.getLinkedOutput().freeOutput()));
-                        }}.toArray(new ItemStack[0]),
-                        recipe.getTicks() / speed,
-                        (long) energyConsumption * recipe.getTicks() / speed
-                ))
-                .toList();
+            .map(recipe -> new CERRecipeGroup.RecipeWrapper(
+                recipe.getLinkedInput().values().toArray(new ItemStack[0]),
+                new ArrayList<>(recipe.getLinkedOutput().linkedOutput().values()) {{
+                    addAll(List.of(recipe.getLinkedOutput().freeOutput()));
+                }}.toArray(new ItemStack[0]),
+                recipe.getTicks() / speed,
+                (long) energyConsumption * recipe.getTicks() / speed
+            ))
+            .toList();
     }
 }

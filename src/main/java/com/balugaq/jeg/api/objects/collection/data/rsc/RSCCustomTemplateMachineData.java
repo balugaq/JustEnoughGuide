@@ -57,12 +57,12 @@ public class RSCCustomTemplateMachineData extends MachineData {
         for (RSCMachineTemplate template : templates) {
             for (RSCCustomMachineRecipe recipe : template.recipes()) {
                 wrappers.add(new CERRecipeGroup.RecipeWrapper(
-                        new ArrayList<>(List.of(recipe.getInput())) {{
-                            add(template.template());
-                        }}.toArray(new ItemStack[0]),
-                        recipe.getOutput(),
-                        recipe.getTicks(),
-                        (long) recipe.getTicks() * consumption
+                    new ArrayList<>(List.of(recipe.getInput())) {{
+                        add(template.template());
+                    }}.toArray(new ItemStack[0]),
+                    recipe.getOutput(),
+                    recipe.getTicks(),
+                    (long) recipe.getTicks() * consumption
                 ));
             }
         }

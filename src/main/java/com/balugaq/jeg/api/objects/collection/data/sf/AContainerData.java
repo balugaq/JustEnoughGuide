@@ -52,12 +52,12 @@ public class AContainerData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
-                .map(recipe -> new CERRecipeGroup.RecipeWrapper(
-                        recipe.getInput(),
-                        recipe.getOutput(),
-                        recipe.getTicks() / speed,
-                        (long) energyConsumption * recipe.getTicks() / speed
-                ))
-                .toList();
+            .map(recipe -> new CERRecipeGroup.RecipeWrapper(
+                recipe.getInput(),
+                recipe.getOutput(),
+                recipe.getTicks() / speed,
+                (long) energyConsumption * recipe.getTicks() / speed
+            ))
+            .toList();
     }
 }

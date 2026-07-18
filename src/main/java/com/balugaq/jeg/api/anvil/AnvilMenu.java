@@ -56,6 +56,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class AnvilMenu implements InventoryHolder {
     private static @Nullable Class<?> anvilViewClass;
+
     static {
         try {
             // Paper 1.21+ API
@@ -70,6 +71,7 @@ public class AnvilMenu implements InventoryHolder {
             anvilViewClass = null;
         }
     }
+
     private final Int2ObjectOpenHashMap<@Nullable ItemStack> guiItems = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectOpenHashMap<ChestMenu.@Nullable MenuClickHandler> guiClickHandlers = new Int2ObjectOpenHashMap<>();
     private @Nullable String title;
@@ -83,6 +85,27 @@ public class AnvilMenu implements InventoryHolder {
 
     public static AnvilMenu create() {
         return new AnvilMenu();
+    }
+
+    @Nullable
+    public static String getRenameText(Player player) {
+        if (anvilViewClass != null && anvilViewClass.isInstance(player.getOpenInventory())) {
+            return (String) ReflectionUtil.invokeMethod(player.getOpenInventory(), "getRenameText");
+        }
+
+        Inventory topInventory = (Inventory) ReflectionUtil.invokeMethod(player.getOpenInventory(), "getTopInventory", Inventory.class);
+        if (!(topInventory instanceof AnvilInventory anvilInventory)) {
+            return null;
+        }
+
+        return anvilInventory.getRenameText();
+    }
+
+    @Nullable
+    public static AnvilMenu getMenu(Player player) {
+        Inventory topInventory = (Inventory) ReflectionUtil.invokeMethod(player.getOpenInventory(), "getTopInventory", Inventory.class);
+        if (topInventory != null && topInventory.getHolder() instanceof AnvilMenu menu) return menu;
+        return null;
     }
 
     public AnvilMenu setPlayerInventoryClickable(boolean clickable) {
@@ -167,27 +190,6 @@ public class AnvilMenu implements InventoryHolder {
                 view.bypassEnchantmentLevelRestriction(true);
             }
         }
-    }
-
-    @Nullable
-    public static String getRenameText(Player player) {
-        if (anvilViewClass != null && anvilViewClass.isInstance(player.getOpenInventory())) {
-            return (String) ReflectionUtil.invokeMethod(player.getOpenInventory(), "getRenameText");
-        }
-
-        Inventory topInventory = (Inventory) ReflectionUtil.invokeMethod(player.getOpenInventory(), "getTopInventory", Inventory.class);
-        if (!(topInventory instanceof AnvilInventory anvilInventory)) {
-            return null;
-        }
-
-        return anvilInventory.getRenameText();
-    }
-
-    @Nullable
-    public static AnvilMenu getMenu(Player player) {
-        Inventory topInventory = (Inventory) ReflectionUtil.invokeMethod(player.getOpenInventory(), "getTopInventory", Inventory.class);
-        if (topInventory != null && topInventory.getHolder() instanceof AnvilMenu menu) return menu;
-        return null;
     }
 
     /**

@@ -62,15 +62,19 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
         return items;
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("momotech_none_recipe_settings");
+    }
+
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         var sf = SlimefunItem.getById("MOMOTECH_NONE");
         ItemStack item = sf != null ? Converter.getItem(
-                sf.getItem(),
-                "&a单击打开" + getTitle()
+            sf.getItem(),
+            "&a单击打开" + getTitle()
         ) : Converter.getItem(
-                Material.BLACK_WOOL,
-                "&a单击打开" + getTitle()
+            Material.BLACK_WOOL,
+            "&a单击打开" + getTitle()
         );
         return Optional.of(item);
     }
@@ -78,10 +82,6 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("momotech_none_recipe_settings");
     }
 
     @Override
@@ -96,6 +96,6 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
 
     @Override
     public int[] getItemSlots() {
-        return new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
+        return new int[]{9, 10, 11, 12, 13, 14, 15, 16, 17};
     }
 }

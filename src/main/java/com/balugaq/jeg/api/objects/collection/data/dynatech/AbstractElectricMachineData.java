@@ -51,12 +51,12 @@ public class AbstractElectricMachineData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
-                .map(recipe -> new CERRecipeGroup.RecipeWrapper(
-                        recipe.getInput(),
-                        recipe.getOutput(),
-                        recipe.getTicks(),
-                        (long) energyConsumedPerTick * recipe.getTicks()
-                ))
-                .toList();
+            .map(recipe -> new CERRecipeGroup.RecipeWrapper(
+                recipe.getInput(),
+                recipe.getOutput(),
+                recipe.getTicks(),
+                (long) energyConsumedPerTick * recipe.getTicks()
+            ))
+            .toList();
     }
 }

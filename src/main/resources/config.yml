@@ -29,19 +29,19 @@ disable-bundle-interaction: true
 adapt-replacement-cards: true
 
 # 禁止产生伴生物品的物品 ID
-no-replacement-card-companion-item-ids: []
+no-replacement-card-companion-item-ids: [ ]
 
 # 禁止产生伴生物品的附属
-no-replacement-card-companion-addons: []
+no-replacement-card-companion-addons: [ ]
 
 # 是否在配方补全适配的机器中自动添加配方补全按钮
 auto-add-recipe-complete-button: true
 
 # 禁止自动添加配方补全按钮的粘液方块
-no-auto-add-recipe-complete-blocks: []
+no-auto-add-recipe-complete-blocks: [ ]
 
 # 禁止自动添加配方补全按钮的粘液附属
-no-auto-add-recipe-complete-addons: []
+no-auto-add-recipe-complete-addons: [ ]
 
 # 禁止搜索非限定词时出现名字包含以下任意词的物品
 blacklist:

@@ -63,9 +63,9 @@ import java.util.Optional;
 @NullMarked
 public abstract class AbstractItemSettingsGuideOption implements SlimefunGuideOption<Boolean> {
     public static final ItemStack DEFAULT_ICON = Converter.getItem(
-            Material.BARRIER,
-            "&c未设置物品",
-            "&c手持物品点击设置"
+        Material.BARRIER,
+        "&c未设置物品",
+        "&c手持物品点击设置"
     );
 
     private static NamespacedKey getKey(NamespacedKey key, int index) {
@@ -110,7 +110,7 @@ public abstract class AbstractItemSettingsGuideOption implements SlimefunGuideOp
     }
 
     public static List<RecipeChoice> generateChoices(ItemStack itemStack, int... amounts) {
-        return generateChoices(new ItemStack[] {itemStack}, amounts);
+        return generateChoices(new ItemStack[]{itemStack}, amounts);
     }
 
     public static List<RecipeChoice> generateChoices(@Nullable ItemStack[] itemStacks, int... amounts) {
@@ -157,11 +157,11 @@ public abstract class AbstractItemSettingsGuideOption implements SlimefunGuideOp
             menu.addItem(i, PatchScope.Background.patch(p, ChestMenuUtils.getBackground()), ChestMenuUtils.getEmptyClickHandler());
         }
         menu.addItem(
-                1, ChestMenuUtils.getBackButton(p), (pl, s, is, action) -> EventUtil.callEvent(
-                                new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, GuideUtil.getLastGuide(pl)))
-                        .ifSuccess(() ->
-                            JEGGuideSettings.openSettings(pl, GuideUtil.getLastGuide(pl).getItem())
-                        )
+            1, ChestMenuUtils.getBackButton(p), (pl, s, is, action) -> EventUtil.callEvent(
+                    new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, GuideUtil.getLastGuide(pl)))
+                .ifSuccess(() ->
+                    JEGGuideSettings.openSettings(pl, GuideUtil.getLastGuide(pl).getItem())
+                )
         );
         return menu;
     }
@@ -172,17 +172,17 @@ public abstract class AbstractItemSettingsGuideOption implements SlimefunGuideOp
 
         for (int slot : getItemSlots()) {
             menu.addItem(
-                    slot, getIconOrDefault(p, getKey(), slot), ((player, i, itemStack, clickAction) -> {
-                        ItemStack cursor = player.getItemOnCursor();
-                        if (cursor == null || cursor.getType() == Material.AIR) {
-                            return false;
-                        }
-
-                        setItemStack(p, getKey(), i, cursor);
-                        openItemSettingsGui(player);
-
+                slot, getIconOrDefault(p, getKey(), slot), ((player, i, itemStack, clickAction) -> {
+                    ItemStack cursor = player.getItemOnCursor();
+                    if (cursor == null || cursor.getType() == Material.AIR) {
                         return false;
-                    })
+                    }
+
+                    setItemStack(p, getKey(), i, cursor);
+                    openItemSettingsGui(player);
+
+                    return false;
+                })
             );
         }
 

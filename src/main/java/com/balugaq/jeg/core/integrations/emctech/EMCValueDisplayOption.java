@@ -54,6 +54,18 @@ public class EMCValueDisplayOption implements SlimefunGuideOption<Boolean> {
         return instance;
     }
 
+    public static boolean isEnabled(Player p) {
+        return getSelectedOption(p);
+    }
+
+    public static boolean getSelectedOption(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
+    }
+
+    public static NamespacedKey key0() {
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "emc_item");
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -63,35 +75,23 @@ public class EMCValueDisplayOption implements SlimefunGuideOption<Boolean> {
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.CARTOGRAPHY_TABLE : Material.CRAFTING_TABLE,
-                "&bEMC值显示: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择是否",
-                "&7在查阅一个新物品的时候",
-                "&7显示它的EMC数值",
-                "",
-                "&7注: 此EMC数值为EMCTech中的数值",
-                "&7不等同于乱序等附属的数值",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " EMC值显示"
+            isEnabled(p) ? Material.CARTOGRAPHY_TABLE : Material.CRAFTING_TABLE,
+            "&bEMC值显示: &" + (enabled ? "a启用" : "4禁用"),
+            "",
+            "&7你现在可以选择是否",
+            "&7在查阅一个新物品的时候",
+            "&7显示它的EMC数值",
+            "",
+            "&7注: 此EMC数值为EMCTech中的数值",
+            "&7不等同于乱序等附属的数值",
+            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " EMC值显示"
         );
         return Optional.of(item);
-    }
-
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
     }
 
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
-
-    public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "emc_item");
     }
 
     @Override

@@ -54,9 +54,9 @@ public class ClipboardUtil {
     public static void send(Player player, String display, String hover, String text) {
         if (PlatformUtil.isPaper()) {
             Component base =
-                    Component.text(ChatColors.color(display) + ": ", TextColor.color(0x00FF00)).append(Component.text(text, TextColor.color(0xFFFF00))).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text(ChatColors.color(hover), TextColor.color(0xFFFF00))));
+                Component.text(ChatColors.color(display) + ": ", TextColor.color(0x00FF00)).append(Component.text(text, TextColor.color(0xFFFF00))).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text(ChatColors.color(hover), TextColor.color(0xFFFF00))));
             Component clickToCopy =
-                    base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, text));
+                base.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD, text));
             player.sendMessage(clickToCopy);
         } else {
             player.spigot().sendMessage(makeComponent(display, hover, text));
@@ -65,15 +65,15 @@ public class ClipboardUtil {
 
     public static Component makeComponentPaper(Component display, String text) {
         return makeComponentPaper(
-                display,
-                Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击复制")).build(),
-                text);
+            display,
+            Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击复制")).build(),
+            text);
     }
 
     public static Component makeComponentPaper(Component display, Component hover, String text) {
         return Component.text().append(display).hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(hover))
-                .clickEvent(net.kyori.adventure.text.event.ClickEvent.copyToClipboard(text))
-                .build();
+            .clickEvent(net.kyori.adventure.text.event.ClickEvent.copyToClipboard(text))
+            .build();
     }
 
     public static TextComponent makeComponent(String display, String hover, String text) {
@@ -81,7 +81,7 @@ public class ClipboardUtil {
     }
 
     public static TextComponent makeComponent(
-            String display, String hover, String text, @Nullable Consumer<TextComponent> consumer) {
+        String display, String hover, String text, @Nullable Consumer<TextComponent> consumer) {
         TextComponent msg = new TextComponent(ChatColors.color(display));
         msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColors.color(hover))));
         msg.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, text));

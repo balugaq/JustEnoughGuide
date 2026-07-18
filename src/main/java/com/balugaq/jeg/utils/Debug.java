@@ -54,7 +54,7 @@ import java.util.UUID;
 @NullMarked
 public class Debug {
     private static final File errorsFolder =
-            new File(JustEnoughGuide.getInstance().getDataFolder(), "error-reports");
+        new File(JustEnoughGuide.getInstance().getDataFolder(), "error-reports");
     private static final String debugPrefix = " Debug | ";
     @Setter
     private static @Nullable JavaPlugin plugin = null;
@@ -75,8 +75,8 @@ public class Debug {
 
     public static void log(String message) {
         Bukkit.getServer()
-                .getConsoleSender()
-                .sendMessage("[" + JustEnoughGuide.getInstance().getName() + "] " + ChatColors.color(message));
+            .getConsoleSender()
+            .sendMessage("[" + JustEnoughGuide.getInstance().getName() + "] " + ChatColors.color(message));
     }
 
     public static void severe(Throwable e) {
@@ -95,17 +95,17 @@ public class Debug {
     public static void trace(Throwable e, @Nullable String doing, @Nullable Integer code) {
         try {
             getPlugin()
-                    .getLogger()
-                    .severe(
-                            "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
-                                    "BUG!");
+                .getLogger()
+                .severe(
+                    "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
+                        "BUG!");
             if (code != null) {
                 getPlugin().getLogger().severe("Error code: " + code);
             }
             getPlugin()
-                    .getLogger()
-                    .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
-                                    + JustEnoughGuide.getInstance().getBugTrackerURL());
+                .getLogger()
+                .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
+                    + JustEnoughGuide.getInstance().getBugTrackerURL());
             if (doing != null) {
                 getPlugin().getLogger().severe("An unexpected error occurred while " + doing);
             } else {
@@ -130,7 +130,7 @@ public class Debug {
     public static void dumpToFile(Throwable e, @Nullable Integer code) {
         // Format as: yyyy-MM-dd-HH-mm-ss-e.getClass().getSimpleName()-uuid
         String fileName = "error-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
-                + "-" + e.getClass().getSimpleName() + "-" + UUID.randomUUID() + ".txt";
+            + "-" + e.getClass().getSimpleName() + "-" + UUID.randomUUID() + ".txt";
 
         File file = new File(errorsFolder, fileName);
         try {
@@ -138,15 +138,15 @@ public class Debug {
             try (PrintStream stream = new PrintStream(file, StandardCharsets.UTF_8)) {
                 stream.println("====================AN FATAL OCCURRED====================");
                 stream.println(
-                        "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
+                    "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
                 stream.println("If you are sure that this is a JustEnoughGuide bug, please report to "
-                                       + JustEnoughGuide.getInstance().getBugTrackerURL());
+                    + JustEnoughGuide.getInstance().getBugTrackerURL());
                 stream.println("An unexpected error occurred.");
                 stream.println("JustEnoughGuide version: "
-                                       + JustEnoughGuide.getInstance().getDescription().getVersion());
+                    + JustEnoughGuide.getInstance().getDescription().getVersion());
                 stream.println("Java version: " + System.getProperty("java.version"));
                 stream.println("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " "
-                                       + System.getProperty("os.arch"));
+                    + System.getProperty("os.arch"));
                 stream.println("Minecraft version: " + MinecraftVersion.current().humanize());
                 stream.println("Slimefun version: " + Slimefun.getVersion());
                 if (code != null) {
@@ -280,21 +280,21 @@ public class Debug {
     public static void traceExactly(Throwable e, @Nullable String doing, @Nullable Integer code) {
         try {
             getPlugin()
-                    .getLogger()
-                    .severe("====================AN FATAL OCCURRED"
-                                    + (doing != null ? (" WHEN " + doing.toUpperCase()) : "") + "====================");
+                .getLogger()
+                .severe("====================AN FATAL OCCURRED"
+                    + (doing != null ? (" WHEN " + doing.toUpperCase()) : "") + "====================");
             getPlugin()
-                    .getLogger()
-                    .severe(
-                            "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
-                                    "BUG!");
+                .getLogger()
+                .severe(
+                    "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
+                        "BUG!");
             if (code != null) {
                 getPlugin().getLogger().severe("Error code: " + code);
             }
             getPlugin()
-                    .getLogger()
-                    .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
-                                    + JustEnoughGuide.getInstance().getBugTrackerURL());
+                .getLogger()
+                .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
+                    + JustEnoughGuide.getInstance().getBugTrackerURL());
             if (doing != null) {
                 getPlugin().getLogger().severe("An unexpected error occurred while " + doing);
             } else {

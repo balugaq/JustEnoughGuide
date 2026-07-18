@@ -62,8 +62,8 @@ public class KeybindsSettingsGuideOption implements SlimefunGuideOption<Boolean>
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
-                Material.COMPASS,
-                "&a单击打开指南书按键控制界面"
+            Material.COMPASS,
+            "&a单击打开指南书按键控制界面"
         );
         return Optional.of(item);
     }

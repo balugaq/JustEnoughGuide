@@ -51,12 +51,12 @@ public interface RecipeCompletableAdapter {
     static void tryAutoAddJEGButton(@NotNull SlimefunItem slimefunItem, @NotNull BlockMenu blockMenu) {
         // find slot
         int[] slots = {
-                4,  13, 22, 31, 40, 49, 3,  5,  2,
-                6,  1,  7,  0,  8,  9,  17, 18, 26,
-                27, 35, 36, 44, 45, 53, 46, 52, 47,
-                51, 48, 50, 37, 38, 39, 41, 42, 43,
-                28, 29, 30, 32, 33, 34, 19, 20, 21,
-                23, 24, 25, 10, 11, 12, 14, 15, 16
+            4, 13, 22, 31, 40, 49, 3, 5, 2,
+            6, 1, 7, 0, 8, 9, 17, 18, 26,
+            27, 35, 36, 44, 45, 53, 46, 52, 47,
+            51, 48, 50, 37, 38, 39, 41, 42, 43,
+            28, 29, 30, 32, 33, 34, 19, 20, 21,
+            23, 24, 25, 10, 11, 12, 14, 15, 16
         };
 
         for (int slot : slots) {

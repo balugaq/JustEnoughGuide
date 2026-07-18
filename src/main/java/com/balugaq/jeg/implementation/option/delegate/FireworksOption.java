@@ -57,6 +57,14 @@ import java.util.Optional;
 @SuppressWarnings("DataFlowIssue")
 @NullMarked
 public class FireworksOption implements SlimefunGuideOption<Boolean> {
+    public static NamespacedKey key0() {
+        return new NamespacedKey(Slimefun.instance(), "research_fireworks");
+    }
+
+    public static boolean isEnabled(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == 1;
+    }
+
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
@@ -66,9 +74,9 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
         if (cfgManager.isResearchingEnabled() && cfgManager.isResearchFireworkEnabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
             ItemStack item = new CustomItemStack(
-                    Material.FIREWORK_ROCKET, "&b烟花特效: &" + (enabled ? "a启用" : "4禁用"),
-                    "", "&7你现在可以选择是否", "&7在解锁一个新物品的时候", "&7展示烟花特效.", "",
-                    "&7⇨ &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效"
+                Material.FIREWORK_ROCKET, "&b烟花特效: &" + (enabled ? "a启用" : "4禁用"),
+                "", "&7你现在可以选择是否", "&7在解锁一个新物品的时候", "&7展示烟花特效.", "",
+                "&7⇨ &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效"
             );
             var meta = item.getItemMeta();
             meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -77,14 +85,6 @@ public class FireworksOption implements SlimefunGuideOption<Boolean> {
         } else {
             return Optional.empty();
         }
-    }
-
-    public static NamespacedKey key0() {
-        return new NamespacedKey(Slimefun.instance(), "research_fireworks");
-    }
-
-    public static boolean isEnabled(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == 1;
     }
 
     public NamespacedKey getKey() {

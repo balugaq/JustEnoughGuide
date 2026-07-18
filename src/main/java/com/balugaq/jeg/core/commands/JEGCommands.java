@@ -66,10 +66,10 @@ public class JEGCommands implements TabExecutor {
 
     @Override
     public boolean onCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (!sender.isOp()) {
             sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
             return false;
@@ -95,10 +95,10 @@ public class JEGCommands implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (sender.isOp()) {
             List<String> raw = onTabCompleteRaw(sender, args);
             return StringUtil.copyPartialMatches(args[args.length - 1], raw, new ArrayList<>());

@@ -51,8 +51,7 @@ public class SpecialMenuFixListener implements Listener {
     /**
      * Fixes the bug where the special menu is not closed properly.
      *
-     * @param event
-     *         The event.
+     * @param event The event.
      */
     @EventHandler
     public void onSpecialMenuClose(InventoryCloseEvent event) {

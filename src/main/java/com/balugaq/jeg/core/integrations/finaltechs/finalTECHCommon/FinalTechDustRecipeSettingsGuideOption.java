@@ -63,11 +63,15 @@ public class FinalTechDustRecipeSettingsGuideOption extends AbstractItemSettings
         return itemStack;
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("finaltech_dust_recipe_settings");
+    }
+
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
-                Material.SLIME_BALL,
-                "&a单击打开无序/有序尘埃配方补全配置界面"
+            Material.SLIME_BALL,
+            "&a单击打开无序/有序尘埃配方补全配置界面"
         );
         return Optional.of(item);
     }
@@ -75,10 +79,6 @@ public class FinalTechDustRecipeSettingsGuideOption extends AbstractItemSettings
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("finaltech_dust_recipe_settings");
     }
 
     @Override
@@ -93,6 +93,6 @@ public class FinalTechDustRecipeSettingsGuideOption extends AbstractItemSettings
 
     @Override
     public int[] getItemSlots() {
-        return new int[] {13};
+        return new int[]{13};
     }
 }

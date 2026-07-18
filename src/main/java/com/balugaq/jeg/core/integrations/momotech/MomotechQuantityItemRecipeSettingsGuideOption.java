@@ -58,11 +58,15 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends AbstractItemS
         return itemStack;
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("momotech_quantity_item_recipe_settings");
+    }
+
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
-                Material.PURPLE_DYE,
-                "&a单击打开量化插件配方补全配置界面"
+            Material.PURPLE_DYE,
+            "&a单击打开量化插件配方补全配置界面"
         );
         return Optional.of(item);
     }
@@ -70,10 +74,6 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends AbstractItemS
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("momotech_quantity_item_recipe_settings");
     }
 
     @Override
@@ -88,6 +88,6 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends AbstractItemS
 
     @Override
     public int[] getItemSlots() {
-        return new int[] {13};
+        return new int[]{13};
     }
 }

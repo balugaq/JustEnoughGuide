@@ -80,24 +80,6 @@ public record MinecraftVersion(int major, int minor, int patch) implements Compa
         return of(major, minor, 0);
     }
 
-    public boolean isAtLeast(String version) {
-        return isAtLeast(of(version));
-    }
-
-    public boolean isAtLeast(MinecraftVersion version) {
-        return this.major > version.major ||
-                this.major == version.major && this.minor > version.minor ||
-                this.major == version.major && this.minor == version.minor && this.patch >= version.patch;
-    }
-
-    public boolean isBefore(String version) {
-        return isBefore(of(version));
-    }
-
-    public boolean isBefore(MinecraftVersion version) {
-        return !isAtLeast(version) && this != version;
-    }
-
     public static MinecraftVersion max(MinecraftVersion a, MinecraftVersion b) {
         if (a.isAtLeast(b)) {
             return a;
@@ -112,6 +94,24 @@ public record MinecraftVersion(int major, int minor, int patch) implements Compa
         }
 
         return a;
+    }
+
+    public boolean isAtLeast(String version) {
+        return isAtLeast(of(version));
+    }
+
+    public boolean isAtLeast(MinecraftVersion version) {
+        return this.major > version.major ||
+            this.major == version.major && this.minor > version.minor ||
+            this.major == version.major && this.minor == version.minor && this.patch >= version.patch;
+    }
+
+    public boolean isBefore(String version) {
+        return isBefore(of(version));
+    }
+
+    public boolean isBefore(MinecraftVersion version) {
+        return !isAtLeast(version) && this != version;
     }
 
     @Override

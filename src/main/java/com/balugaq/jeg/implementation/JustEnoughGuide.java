@@ -31,7 +31,6 @@ import com.balugaq.jeg.api.CustomGroupConfigurations;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.SearchGroup;
-import com.balugaq.jeg.implementation.groups.VanillaItemsGroup;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
@@ -42,9 +41,10 @@ import com.balugaq.jeg.core.managers.ConfigManager;
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.core.managers.ListenerManager;
 import com.balugaq.jeg.core.managers.RTSBackpackManager;
+import com.balugaq.jeg.implementation.groups.GroupSetup;
+import com.balugaq.jeg.implementation.groups.VanillaItemsGroup;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
-import com.balugaq.jeg.implementation.groups.GroupSetup;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.Debug;
@@ -264,6 +264,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
     }
 
+    public static ConfigManager getConfigManager() {
+        return getInstance().configManager;
+    }
+
     /**
      * Returns the JavaPlugin instance.
      *
@@ -288,8 +292,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     /**
      * Logs a debug message if debugging is enabled.
      *
-     * @param message
-     *         the debug message to log
+     * @param message the debug message to log
      */
     public void debug(String message) {
         Debug.debug(message);
@@ -438,12 +441,12 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().info("正在替换指南...");
             Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
             newGuides.put(
-                    SlimefunGuideMode.SURVIVAL_MODE,
-                    survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide()
+                SlimefunGuideMode.SURVIVAL_MODE,
+                survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide()
             );
             newGuides.put(
-                    SlimefunGuideMode.CHEAT_MODE,
-                    cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide()
+                SlimefunGuideMode.CHEAT_MODE,
+                cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide()
             );
 
             try {
@@ -522,10 +525,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         return getConfigManager().isDebug();
     }
 
-    public static ConfigManager getConfigManager() {
-        return getInstance().configManager;
-    }
-
     /**
      * Checks the environment compatibility for the plugin.
      *
@@ -543,8 +542,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().warning("无法识别当前的 Minecraft 版本! (" + javaVersion + ")");
         } else if (!minecraftVersion.isAtLeast(LEAST_MC_VERSION)) {
             getLogger()
-                    .warning("当前 Minecraft 版本过低(" + minecraftVersion.humanize() + "), 请使用 Minecraft "
-                                     + RECOMMENDED_MC_VERSION.humanize() + " 或以上版本!");
+                .warning("当前 Minecraft 版本过低(" + minecraftVersion.humanize() + "), 请使用 Minecraft "
+                    + RECOMMENDED_MC_VERSION.humanize() + " 或以上版本!");
         }
 
         if (javaVersion < LEAST_JAVA_VERSION) {
@@ -590,34 +589,34 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         getLogger().info("正在加载 Pinyin");
         Library pinyin = Library.builder()
-                .groupId("com{}github{}houbb")
-                .artifactId("pinyin")
-                .version("0.4.0")
-                .build();
+            .groupId("com{}github{}houbb")
+            .artifactId("pinyin")
+            .version("0.4.0")
+            .build();
         libraryManager.loadLibrary(pinyin);
 
         getLogger().info("正在加载 opencc4j");
         Library opencc4j = Library.builder()
-                .groupId("com{}github{}houbb")
-                .artifactId("opencc4j")
-                .version("1.14.0")
-                .build();
+            .groupId("com{}github{}houbb")
+            .artifactId("opencc4j")
+            .version("1.14.0")
+            .build();
         libraryManager.loadLibrary(opencc4j);
 
         getLogger().info("正在加载 heaven");
         Library heaven = Library.builder()
-                .groupId("com{}github{}houbb")
-                .artifactId("heaven")
-                .version("0.13.0")
-                .build();
+            .groupId("com{}github{}houbb")
+            .artifactId("heaven")
+            .version("0.13.0")
+            .build();
         libraryManager.loadLibrary(heaven);
 
         getLogger().info("正在加载 nlp-common");
         Library nlp = Library.builder()
-                .groupId("com{}github{}houbb")
-                .artifactId("nlp-common")
-                .version("0.0.5")
-                .build();
+            .groupId("com{}github{}houbb")
+            .artifactId("nlp-common")
+            .version("0.0.5")
+            .build();
         libraryManager.loadLibrary(nlp);
     }
 }

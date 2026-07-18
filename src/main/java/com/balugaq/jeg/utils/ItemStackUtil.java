@@ -68,10 +68,10 @@ public final class ItemStackUtil {
     private static final ItemStack BARRIER = new ItemStack(Material.BARRIER);
     @Author("lijinhong11")
     private static final Map<String, String> materialMappings = Map.of(
-            "GRASS", "SHORT_GRASS",
-            "SHORT_GRASS", "GRASS",
-            "SCUTE", "TURTLE_SCUTE",
-            "TURTLE_SCUTE", "SCUTE"
+        "GRASS", "SHORT_GRASS",
+        "SHORT_GRASS", "GRASS",
+        "SCUTE", "TURTLE_SCUTE",
+        "TURTLE_SCUTE", "SCUTE"
     );
 
     public static ItemStack air() {
@@ -85,9 +85,7 @@ public final class ItemStackUtil {
     /**
      * This method is used to convert an {@code MyItemStack extends ItemStack} to a pure {@code ItemStack}.
      *
-     * @param item
-     *         The MyItemStack to be converted.
-     *
+     * @param item The MyItemStack to be converted.
      * @return A pure ItemStack.
      */
     public static ItemStack getCleanItem(@Nullable ItemStack item) {
@@ -153,7 +151,7 @@ public final class ItemStackUtil {
             String[] split = material.split("\\|");
             for (String mat : split) {
                 ItemStack item =
-                        readItem(c, section, type, mat.trim(), name, lore, glow, hasEnchantment, modelId, amount, true);
+                    readItem(c, section, type, mat.trim(), name, lore, glow, hasEnchantment, modelId, amount, true);
                 if (item != null) {
                     return item;
                 }
@@ -163,7 +161,7 @@ public final class ItemStackUtil {
             return null;
         } else {
             return readItem(
-                    c, section, type, material.trim(), name, lore, glow, hasEnchantment, modelId, amount, false);
+                c, section, type, material.trim(), name, lore, glow, hasEnchantment, modelId, amount, false);
         }
     }
 
@@ -171,17 +169,17 @@ public final class ItemStackUtil {
     @SuppressWarnings("deprecation")
     @Author("lijinhong11 & balugaq")
     public static ItemStack readItem(
-            char c,
-            final ConfigurationSection section,
-            String type,
-            final String material,
-            final String name,
-            final List<String> lore,
-            boolean glow,
-            boolean hasEnchantment,
-            int modelId,
-            int amount,
-            boolean isBranch) {
+        char c,
+        final ConfigurationSection section,
+        String type,
+        final String material,
+        final String name,
+        final List<String> lore,
+        boolean glow,
+        boolean hasEnchantment,
+        int modelId,
+        int amount,
+        boolean isBranch) {
 
         if (material.startsWith("ey") || material.startsWith("ew")) {
             type = "skull";
@@ -321,11 +319,8 @@ public final class ItemStackUtil {
     /**
      * Checks if the given Slimefun item is an instance of the specified class.
      *
-     * @param item
-     *         The Slimefun item.
-     * @param classSimpleName
-     *         The simple name of the class to check against.
-     *
+     * @param item            The Slimefun item.
+     * @param classSimpleName The simple name of the class to check against.
      * @return True if the item is an instance of the specified class, false otherwise.
      */
     public static <T extends SlimefunItem> boolean isInstanceSimple(T item, String classSimpleName) {

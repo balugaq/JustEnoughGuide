@@ -117,9 +117,9 @@ public class ConfigManager extends AbstractManager {
         this.PINYIN_SEARCH = cfg.getBoolean("improvements.pinyin-search", true);
         this.BOOKMARK = cfg.getBoolean("improvements.bookmark", true);
         this.SURVIVAL_GUIDE_TITLE = cfg
-                .getString("guide.survival-guide-title", "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide");
+            .getString("guide.survival-guide-title", "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide");
         this.CHEAT_GUIDE_TITLE = cfg
-                .getString("guide.cheat-guide-title", "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide");
+            .getString("guide.cheat-guide-title", "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide");
         this.SETTINGS_GUIDE_TITLE = cfg.getString("guide.settings-guide-title", "设置 & 详情");
         this.CREDITS_GUIDE_TITLE = cfg.getString("guide.credits-guide-title", "Slimefun4 贡献者");
         this.RTS_SEARCH = cfg.getBoolean("improvements.rts-search", true);
@@ -403,34 +403,34 @@ public class ConfigManager extends AbstractManager {
     private void configUpdate() {
         if (getConfigVersion() <= 20260714) {
             if (getRecipeFormat().equals(List.of(
-                    "b  rrr  w",
-                    " t rrr i ",
-                    "m  rrr  E"
+                "b  rrr  w",
+                " t rrr i ",
+                "m  rrr  E"
             ))) {
                 getRecipeFormat().clear();
                 getRecipeFormat().addAll(List.of(
-                        "bK rrr  w",
-                        " t rrr i ",
-                        "m  rrr  E"
+                    "bK rrr  w",
+                    " t rrr i ",
+                    "m  rrr  E"
                 ));
             }
 
             if (getRecipeDisplayFormat().equals(List.of(
-                    "b  rrr  w",
+                "b  rrr  w",
+                " t rrr i ",
+                "m  rrr  E",
+                "BPBBBBBNB",
+                "ddddddddd",
+                "ddddddddd"
+            ))) {
+                getRecipeDisplayFormat().clear();
+                getRecipeDisplayFormat().addAll(List.of(
+                    "bK rrr  w",
                     " t rrr i ",
                     "m  rrr  E",
                     "BPBBBBBNB",
                     "ddddddddd",
                     "ddddddddd"
-            ))) {
-                getRecipeDisplayFormat().clear();
-                getRecipeDisplayFormat().addAll(List.of(
-                        "bK rrr  w",
-                        " t rrr i ",
-                        "m  rrr  E",
-                        "BPBBBBBNB",
-                        "ddddddddd",
-                        "ddddddddd"
                 ));
             }
         }

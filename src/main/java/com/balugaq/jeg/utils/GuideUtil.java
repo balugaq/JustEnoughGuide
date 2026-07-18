@@ -32,7 +32,12 @@ import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.groups.MixedGroup;
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
-import com.balugaq.jeg.api.interfaces.*;
+import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
+import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
+import com.balugaq.jeg.api.interfaces.DisplayInSurvivalMode;
+import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
+import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
+import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
@@ -96,20 +101,20 @@ import java.util.logging.Logger;
 public final class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON =
-            Converter.getItem(new SlimefunItemStack(
-                    "JEG_BOOK_MARK_BUTTON",
-                    Material.NETHER_STAR, "&e&l收藏物列表"
-            ));
+        Converter.getItem(new SlimefunItemStack(
+            "JEG_BOOK_MARK_BUTTON",
+            Material.NETHER_STAR, "&e&l收藏物列表"
+        ));
     private static final ItemStack ITEM_MARK_MENU_BUTTON =
-            Converter.getItem(new SlimefunItemStack(
-                    "JEG_ITEM_MARK_BUTTON",
-                    Material.WRITABLE_BOOK, "&e&l收藏物品"
-            ));
+        Converter.getItem(new SlimefunItemStack(
+            "JEG_ITEM_MARK_BUTTON",
+            Material.WRITABLE_BOOK, "&e&l收藏物品"
+        ));
     private static final ItemStack CER_MENU_BUTTON =
-            Converter.getItem(new SlimefunItemStack(
-                    "JEG_CER_BUTTON", Material.EMERALD,
-                    "&e&l性价比界面（仅供参考）"
-            ));
+        Converter.getItem(new SlimefunItemStack(
+            "JEG_CER_BUTTON", Material.EMERALD,
+            "&e&l性价比界面（仅供参考）"
+        ));
 
     public static void openMainMenuAsync(Player player) {
         openMainMenuAsync(player, getLastGuide(player).getMode());
@@ -122,16 +127,13 @@ public final class GuideUtil {
     /**
      * Open the main menu of the guide for the given player and mode.
      *
-     * @param player
-     *         The player to open the guide for.
-     * @param mode
-     *         The mode to open the guide for.
-     * @param selectedPage
-     *         The page to open the guide to.
+     * @param player       The player to open the guide for.
+     * @param mode         The mode to open the guide for.
+     * @param selectedPage The page to open the guide to.
      */
     public static void openMainMenuAsync(Player player, SlimefunGuideMode mode, int selectedPage) {
         if (!PlayerProfile.get(
-                player, profile -> Slimefun.runSync(() -> openMainMenu(player, profile, mode, selectedPage)))) {
+            player, profile -> Slimefun.runSync(() -> openMainMenu(player, profile, mode, selectedPage)))) {
             Slimefun.getLocalization().sendMessage(player, "messages.opening-guide");
         }
     }
@@ -139,14 +141,10 @@ public final class GuideUtil {
     /**
      * Open the main menu of the guide for the given player and mode.
      *
-     * @param player
-     *         The player to open the guide for.
-     * @param profile
-     *         The player's profile.
-     * @param mode
-     *         The mode to open the guide for.
-     * @param selectedPage
-     *         The page to open the guide to.
+     * @param player       The player to open the guide for.
+     * @param profile      The player's profile.
+     * @param mode         The mode to open the guide for.
+     * @param selectedPage The page to open the guide to.
      */
     public static void openMainMenu(Player player, PlayerProfile profile, SlimefunGuideMode mode, int selectedPage) {
         getGuide(player, mode).openMainMenu(profile, selectedPage);
@@ -164,28 +162,28 @@ public final class GuideUtil {
 
     @SuppressWarnings("deprecation")
     public static void addRTSButton(
-            ChestMenu menu,
-            Player p,
-            PlayerProfile profile,
-            Format format,
-            SlimefunGuideMode mode,
-            SlimefunGuideImplementation implementation) {
+        ChestMenu menu,
+        Player p,
+        PlayerProfile profile,
+        Format format,
+        SlimefunGuideMode mode,
+        SlimefunGuideImplementation implementation) {
         if (JustEnoughGuide.getConfigManager().isRTSSearch()) {
             for (int ss : format.getChars('R')) {
                 menu.addItem(
-                        ss,
-                        PatchScope.RealTimeSearch.patch(p, Models.RTS_ITEM),
-                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.RTSButtonClickEvent(
-                                        pl, itemstack, slot, action, menu, implementation))
-                                .ifSuccess(() -> {
-                                    try {
-                                        RTSSearchGroup.openRTSInventoryFor(pl);
-                                    } catch (Exception e) {
-                                        Debug.trace(e);
-                                        p.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
-                                    }
-                                    return false;
-                                })
+                    ss,
+                    PatchScope.RealTimeSearch.patch(p, Models.RTS_ITEM),
+                    (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.RTSButtonClickEvent(
+                            pl, itemstack, slot, action, menu, implementation))
+                        .ifSuccess(() -> {
+                            try {
+                                RTSSearchGroup.openRTSInventoryFor(pl);
+                            } catch (Exception e) {
+                                Debug.trace(e);
+                                p.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
+                            }
+                            return false;
+                        })
                 );
             }
         } else {
@@ -245,11 +243,8 @@ public final class GuideUtil {
     /**
      * Get the guide implementation for the given player and mode.
      *
-     * @param player
-     *         The player to get the guide for.
-     * @param mode
-     *         The mode to get the guide for.
-     *
+     * @param player The player to get the guide for.
+     * @param mode   The mode to get the guide for.
      * @return The guide implementation for the given player and mode.
      */
     public static SlimefunGuideImplementation getGuide(Player player, SlimefunGuideMode mode) {
@@ -273,25 +268,25 @@ public final class GuideUtil {
 
     @SuppressWarnings("deprecation")
     public static void addBookMarkButton(
-            ChestMenu menu,
-            Player p,
-            PlayerProfile profile,
-            Format format,
-            JEGSlimefunGuideImplementation implementation,
-            @Nullable ItemGroup itemGroup) {
+        ChestMenu menu,
+        Player p,
+        PlayerProfile profile,
+        Format format,
+        JEGSlimefunGuideImplementation implementation,
+        @Nullable ItemGroup itemGroup) {
         if (JustEnoughGuide.getConfigManager().isBookmark()) {
             BookmarkRelocation b =
-                    itemGroup instanceof BookmarkRelocation bookmarkRelocation ? bookmarkRelocation : null;
+                itemGroup instanceof BookmarkRelocation bookmarkRelocation ? bookmarkRelocation : null;
             for (int s : b != null ? b.getBookMark(implementation, p) : format.getChars('C')) {
                 menu.addItem(
-                        s,
-                        PatchScope.BookMark.patch(p, getBookMarkMenuButton()),
-                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.BookMarkButtonClickEvent(
-                                        pl, itemstack, slot, action, menu, implementation))
-                                .ifSuccess(() -> {
-                                    implementation.openBookMarkGroup(pl, profile);
-                                    return false;
-                                })
+                    s,
+                    PatchScope.BookMark.patch(p, getBookMarkMenuButton()),
+                    (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.BookMarkButtonClickEvent(
+                            pl, itemstack, slot, action, menu, implementation))
+                        .ifSuccess(() -> {
+                            implementation.openBookMarkGroup(pl, profile);
+                            return false;
+                        })
                 );
             }
         } else {
@@ -307,24 +302,24 @@ public final class GuideUtil {
 
     @SuppressWarnings("deprecation")
     public static void addItemMarkButton(
-            ChestMenu menu,
-            Player p,
-            PlayerProfile profile,
-            Format format,
-            JEGSlimefunGuideImplementation implementation,
-            @Nullable ItemGroup itemGroup) {
+        ChestMenu menu,
+        Player p,
+        PlayerProfile profile,
+        Format format,
+        JEGSlimefunGuideImplementation implementation,
+        @Nullable ItemGroup itemGroup) {
         if (itemGroup != null && JustEnoughGuide.getConfigManager().isBookmark() && isTaggedGroupType(itemGroup)) {
             BookmarkRelocation b = itemGroup instanceof BookmarkRelocation relocation ? relocation : null;
             for (int ss : b != null ? b.getItemMark(implementation, p) : format.getChars('c')) {
                 menu.addItem(
-                        ss,
-                        PatchScope.ItemMark.patch(p, getItemMarkMenuButton()),
-                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.ItemMarkButtonClickEvent(
-                                        pl, itemstack, slot, action, menu, implementation))
-                                .ifSuccess(() -> {
-                                    implementation.openItemMarkGroup(itemGroup, pl, profile);
-                                    return false;
-                                })
+                    ss,
+                    PatchScope.ItemMark.patch(p, getItemMarkMenuButton()),
+                    (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.ItemMarkButtonClickEvent(
+                            pl, itemstack, slot, action, menu, implementation))
+                        .ifSuccess(() -> {
+                            implementation.openItemMarkGroup(itemGroup, pl, profile);
+                            return false;
+                        })
                 );
             }
         } else {
@@ -337,14 +332,14 @@ public final class GuideUtil {
     public static boolean isTaggedGroupType(ItemGroup itemGroup) {
         Class<?> clazz = itemGroup.getClass();
         return !(itemGroup instanceof FlexItemGroup)
-                && (clazz == ItemGroup.class
-                || clazz == SubItemGroup.class
-                || clazz == LockedItemGroup.class
-                || clazz == SeasonalItemGroup.class
-                || itemGroup instanceof BookmarkRelocation
-                || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
-                || clazz.getName().endsWith("DummyItemGroup")
-                || clazz.getName().endsWith("SubGroup"));
+            && (clazz == ItemGroup.class
+            || clazz == SubItemGroup.class
+            || clazz == LockedItemGroup.class
+            || clazz == SeasonalItemGroup.class
+            || itemGroup instanceof BookmarkRelocation
+            || clazz.getName().equalsIgnoreCase("me.voper.slimeframe.implementation.groups.ChildGroup")
+            || clazz.getName().endsWith("DummyItemGroup")
+            || clazz.getName().endsWith("SubGroup"));
     }
 
     public static ItemStack getItemMarkMenuButton() {
@@ -359,8 +354,8 @@ public final class GuideUtil {
             if (JustEnoughGuide.getConfigManager().isCerPatch()) {
                 if (CERCalculator.cerable(machine)) {
                     menu.addItem(
-                            ss, PatchScope.Cer.patch(p, getCerMenuButton()),
-                            (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode()))
+                        ss, PatchScope.Cer.patch(p, getCerMenuButton()),
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(implementation, pl, machine, MachineData.get(machine).wrap()).open(pl, profile, implementation.getMode()))
                     );
                 }
             }
@@ -400,15 +395,15 @@ public final class GuideUtil {
 
     public static void openKeybindsGui(Player player) {
         PlayerProfile.get(
-                player, prf ->
-                        new KeybindsItemsGroup().open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+            player, prf ->
+                new KeybindsItemsGroup().open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
     public static void openSubKeybindsGui(Player player, OnClick keybindsSet) {
         PlayerProfile.get(
-                player, prf ->
-                        new SubKeybindsItemsGroup(keybindsSet).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+            player, prf ->
+                new SubKeybindsItemsGroup(keybindsSet).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
@@ -418,15 +413,15 @@ public final class GuideUtil {
 
     public static void openKeybindGui(Player player, OnClick keybind) {
         PlayerProfile.get(
-                player, prf ->
-                        new KeybindItemsGroup(player, keybind).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+            player, prf ->
+                new KeybindItemsGroup(player, keybind).open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
     public static void openActionSelectGui(Player player, OnClick keybind, BaseAction action) {
         PlayerProfile.get(
-                player, prf -> new ActionSelectGroup(player, keybind, action)
-                        .open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
+            player, prf -> new ActionSelectGroup(player, keybind, action)
+                .open(player, prf, SlimefunGuideMode.SURVIVAL_MODE)
         );
     }
 
@@ -436,8 +431,8 @@ public final class GuideUtil {
 
     public static ItemStack getLeftActionIcon(BaseAction action) {
         return Converter.getItem(
-                action.material(),
-                ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")")
+            action.material(),
+            ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")")
         );
     }
 
@@ -507,8 +502,8 @@ public final class GuideUtil {
             } catch (Exception | LinkageError x) {
                 SlimefunAddon addon = group.getAddon();
                 Logger logger = addon != null
-                        ? addon.getLogger()
-                        : JustEnoughGuide.getInstance().getLogger();
+                    ? addon.getLogger()
+                    : JustEnoughGuide.getInstance().getLogger();
                 logger.log(Level.SEVERE, x, () -> "Could not display item group: " + group);
             }
         }
@@ -550,8 +545,8 @@ public final class GuideUtil {
                     addon.getLogger().log(Level.SEVERE, x, () -> "Could not display item group: " + group);
                 } else {
                     JustEnoughGuide.getInstance()
-                            .getLogger()
-                            .log(Level.SEVERE, x, () -> "Could not display item group: " + group);
+                        .getLogger()
+                        .log(Level.SEVERE, x, () -> "Could not display item group: " + group);
                 }
             }
         }
@@ -562,7 +557,7 @@ public final class GuideUtil {
 
     public static void openGuide(Player player) {
         SlimefunGuideOpenEvent event = new SlimefunGuideOpenEvent(
-                player, getLastGuide(player).getItem(), getLastGuideMode(player)
+            player, getLastGuide(player).getItem(), getLastGuideMode(player)
         );
         Bukkit.getPluginManager().callEvent(event);
     }

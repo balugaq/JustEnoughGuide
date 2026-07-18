@@ -41,12 +41,24 @@ import java.util.List;
  */
 @NullMarked
 public class MagicExpansionIntegrationMain implements Integration {
-    public static final int[] QUICK_MACHINE_INPUT_SLOTS = new int[] {
-            1, 2, 3, 4, 5, 6, 7, 8,
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
+    public static final int[] QUICK_MACHINE_INPUT_SLOTS = new int[]{
+        1, 2, 3, 4, 5, 6, 7, 8,
+        9, 10, 11, 12, 13, 14, 15, 16, 17,
+        18, 19, 20, 21, 22, 23, 24, 25, 26,
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
 
     @Override
     public String getHookPlugin() {
@@ -67,18 +79,6 @@ public class MagicExpansionIntegrationMain implements Integration {
         rrc("MAGIC_EXPANSION_QUICK_AUTOMATED_ANCIENT_ALTAR_BV", QUICK_MACHINE_INPUT_SLOTS, true);
         rrc("MAGIC_EXPANSION_QUICK_ELECTRIC_ORE_GRINDER_BV", QUICK_MACHINE_INPUT_SLOTS, true);
         rrc("MAGIC_EXPANSION_QUICK_HEATED_PRESSURE_CHAMBER_BV", QUICK_MACHINE_INPUT_SLOTS, true);
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

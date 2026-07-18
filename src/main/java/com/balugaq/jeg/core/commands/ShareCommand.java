@@ -37,7 +37,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
@@ -67,10 +66,10 @@ public class ShareCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (args.length == 1) {
             return "share".equalsIgnoreCase(args[0]);
         }
@@ -79,10 +78,10 @@ public class ShareCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         onShare(sender);
     }
 

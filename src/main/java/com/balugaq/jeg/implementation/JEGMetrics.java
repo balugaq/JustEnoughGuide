@@ -42,7 +42,7 @@ public class JEGMetrics {
     public JEGMetrics() {
         this.metrics = new Metrics(JustEnoughGuide.getInstance(), 32108);
         metrics.addCustomChart(
-                new SimplePie("chart_id", () -> "My value")
+            new SimplePie("chart_id", () -> "My value")
         );
     }
 

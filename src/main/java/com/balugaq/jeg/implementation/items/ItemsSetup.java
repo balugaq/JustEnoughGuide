@@ -55,10 +55,10 @@ public class ItemsSetup {
         ItemStack book = new ItemStack(Material.BOOK);
 
         RECIPE_COMPLETE_GUIDE = new RecipeCompleteGuide(
-                GroupSetup.jegItemsGroup,
-                Models.RECIPE_COMPLETE_GUIDE,
-                RecipeType.ENHANCED_CRAFTING_TABLE,
-                // @formatter:off
+            GroupSetup.jegItemsGroup,
+            Models.RECIPE_COMPLETE_GUIDE,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            // @formatter:off
                 new ItemStack[] {
                     craftingTable, craftingTable, craftingTable,
                     craftingTable, book, craftingTable,
@@ -68,34 +68,34 @@ public class ItemsSetup {
         );
 
         USAGE_INFO = new JEGSlimefunItem(
-                GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new @Nullable ItemStack[] {
-                null, null, null,
-                null, null, null,
-                null, null, null
+            GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
+            null, null, null,
+            null, null, null,
+            null, null, null
         }
         );
 
         MECHANISM = new JEGSlimefunItem(
-                GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[] {
-                null, null, null,
-                null, null, null,
-                null, null, null
+            GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[]{
+            null, null, null,
+            null, null, null,
+            null, null, null
         }
         );
 
         SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(
-                GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[] {
-                null, null, null,
-                null, null, null,
-                null, null, null
+            GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
+            null, null, null,
+            null, null, null,
+            null, null, null
         }
         );
 
         JEG_BUTTON = new JEGSlimefunItem(
-                GroupSetup.jegItemsGroup, Models.JEG_RECIPE_COMPLETE_BUTTON, RecipeType.NULL, new @Nullable ItemStack[] {
-                null, null, null,
-                null, null, null,
-                null, null, null
+            GroupSetup.jegItemsGroup, Models.JEG_RECIPE_COMPLETE_BUTTON, RecipeType.NULL, new @Nullable ItemStack[]{
+            null, null, null,
+            null, null, null,
+            null, null, null
         }
         );
     }

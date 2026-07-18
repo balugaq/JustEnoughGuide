@@ -63,6 +63,14 @@ public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
         return PersistentDataAPI.getInt(p, key0(), 5);
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("hud_reach_block");
+    }
+
+    public static int getDepth(Player p) {
+        return PersistentDataAPI.getInt(p, key0(), 5);
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -77,21 +85,13 @@ public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
         }
 
         ItemStack item = Converter.getItem(
-                Material.REDSTONE_LAMP,
-                "&a粘液HUD显示距离",
-                "",
-                "&7当前距离: " + value + " (限制范围: 1~" + MAX_REACH_BLOCK + ")",
-                "&7\u21E8 &e点击设置距离"
+            Material.REDSTONE_LAMP,
+            "&a粘液HUD显示距离",
+            "",
+            "&7当前距离: " + value + " (限制范围: 1~" + MAX_REACH_BLOCK + ")",
+            "&7\u21E8 &e点击设置距离"
         );
         return Optional.of(item);
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("hud_reach_block");
-    }
-
-    public static int getDepth(Player p) {
-        return PersistentDataAPI.getInt(p, key0(), 5);
     }
 
     @Override
@@ -99,20 +99,20 @@ public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
         p.closeInventory();
         p.sendMessage(ChatColors.color("&a请输入粘液HUD显示距离"));
         ChatInput.waitForPlayer(
-                JustEnoughGuide.getInstance(), p, s -> {
-                    try {
-                        int value = Calculator.calculate(s).intValue();
-                        if (value < 1 || value > MAX_REACH_BLOCK) {
-                            p.sendMessage("请输入 1 ~ " + MAX_REACH_BLOCK + " 之间的正整数");
-                            return;
-                        }
-
-                        setSelectedOption(p, guide, value);
-                        JEGGuideSettings.openSettings(p, guide);
-                    } catch (NumberFormatException ignored) {
+            JustEnoughGuide.getInstance(), p, s -> {
+                try {
+                    int value = Calculator.calculate(s).intValue();
+                    if (value < 1 || value > MAX_REACH_BLOCK) {
                         p.sendMessage("请输入 1 ~ " + MAX_REACH_BLOCK + " 之间的正整数");
+                        return;
                     }
+
+                    setSelectedOption(p, guide, value);
+                    JEGGuideSettings.openSettings(p, guide);
+                } catch (NumberFormatException ignored) {
+                    p.sendMessage("请输入 1 ~ " + MAX_REACH_BLOCK + " 之间的正整数");
                 }
+            }
         );
     }
 

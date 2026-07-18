@@ -50,10 +50,10 @@ import java.util.List;
  */
 public class SlimefunIdPatchListener implements ItemPatchListener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
-            PatchScope.SlimefunItem,
-            PatchScope.ItemMarkItem,
-            PatchScope.BookMarkItem,
-            PatchScope.SearchItem
+        PatchScope.SlimefunItem,
+        PatchScope.ItemMarkItem,
+        PatchScope.BookMarkItem,
+        PatchScope.SearchItem
     );
 
     @EventHandler(priority = EventPriority.HIGHEST)

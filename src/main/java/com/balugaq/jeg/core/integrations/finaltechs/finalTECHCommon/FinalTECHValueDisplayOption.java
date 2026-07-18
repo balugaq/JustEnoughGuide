@@ -59,6 +59,18 @@ public class FinalTECHValueDisplayOption implements SlimefunGuideOption<Boolean>
         return instance;
     }
 
+    public static boolean isEnabled(Player p) {
+        return getSelectedOption(p);
+    }
+
+    public static boolean getSelectedOption(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
+    }
+
+    public static NamespacedKey key0() {
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "finaltechv2_emc_item");
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -68,36 +80,24 @@ public class FinalTECHValueDisplayOption implements SlimefunGuideOption<Boolean>
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.RESPAWN_ANCHOR : Material.REDSTONE_LAMP,
-                "&b新乱序EMC值显示: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择是否",
-                "&7在查阅一个新物品的时候",
-                "&7显示它的新乱序EMC数值",
-                "",
-                "&7注: 此EMC数值为",
-                "&7新乱序中的数值",
-                "&7不等同于旧乱序, EMCTech等附属的数值",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 新乱序EMC值显示"
+            isEnabled(p) ? Material.RESPAWN_ANCHOR : Material.REDSTONE_LAMP,
+            "&b新乱序EMC值显示: &" + (enabled ? "a启用" : "4禁用"),
+            "",
+            "&7你现在可以选择是否",
+            "&7在查阅一个新物品的时候",
+            "&7显示它的新乱序EMC数值",
+            "",
+            "&7注: 此EMC数值为",
+            "&7新乱序中的数值",
+            "&7不等同于旧乱序, EMCTech等附属的数值",
+            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 新乱序EMC值显示"
         );
         return Optional.of(item);
-    }
-
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
     }
 
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
-
-    public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "finaltechv2_emc_item");
     }
 
     @Override

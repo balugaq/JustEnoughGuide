@@ -40,7 +40,6 @@ import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -249,6 +248,20 @@ public interface OnClick {
 
         ObjectImmutableList<ItemGroup> subKeybinds = ObjectImmutableList.of(Normal, Bookmark);
 
+        static ClickHandler withGroup(io.github.thebusybiscuit.slimefun4.api.items.ItemGroup group, BaseClickHandler base) {
+            return new ClickHandler() {
+                @Override
+                public io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup() {
+                    return group;
+                }
+
+                @Override
+                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
+                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
+                }
+            };
+        }
+
         @Override
         default String name() {
             return "物品组";
@@ -447,6 +460,15 @@ public interface OnClick {
 
         /**
          * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        interface ClickHandler extends BaseClickHandler {
+            @SuppressWarnings("unused") io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup();
+        }
+
+        /**
+         * @author balugaq
          * @since 2.0
          */
         @NullMarked
@@ -630,29 +652,6 @@ public interface OnClick {
                 }));
             }
         }
-
-        /**
-         * @author balugaq
-         * @since 2.1
-         */
-        @NullMarked
-        interface ClickHandler extends BaseClickHandler {
-            @SuppressWarnings("unused") io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup();
-        }
-
-        static ClickHandler withGroup(io.github.thebusybiscuit.slimefun4.api.items.ItemGroup group, BaseClickHandler base) {
-            return new ClickHandler() {
-                @Override
-                public io.github.thebusybiscuit.slimefun4.api.items.ItemGroup getItemGroup() {
-                    return group;
-                }
-
-                @Override
-                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
-                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
-                }
-            };
-        }
     }
 
     /**
@@ -672,6 +671,20 @@ public interface OnClick {
         RecipeType Normal = new Normal();
 
         ObjectImmutableList<RecipeType> subKeybinds = ObjectImmutableList.of(Normal);
+
+        static ClickHandler withType(io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType type, BaseClickHandler base) {
+            return new ClickHandler() {
+                @Override
+                public io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType() {
+                    return type;
+                }
+
+                @Override
+                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
+                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
+                }
+            };
+        }
 
         @Override
         default String name() {
@@ -818,6 +831,55 @@ public interface OnClick {
          * @since 2.0
          */
         @NullMarked
+        interface OpAction extends Action, PermissibleAction {
+            static OpAction of(String key, String name, Material material, ActionHandle handle) {
+                return new OpAction() {
+                    @Override
+                    public Material material() {
+                        return material;
+                    }
+
+                    @Override
+                    public String name() {
+                        return name;
+                    }
+
+                    @Override
+                    public NamespacedKey getKey() {
+                        return KeyUtil.newKey(key);
+                    }
+
+                    @Override
+                    public boolean click(JEGSlimefunGuideImplementation guide,
+                                         Player player, int slot,
+                                         io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
+                                         ClickAction clickAction, ChestMenu menu, int page) {
+                        handle.click(guide, player, slot, recipeType, clickAction, menu, page);
+                        return false;
+                    }
+                };
+            }
+
+            @Override
+            default boolean hasPermission(Player player) {
+                return player.isOp() || player.hasPermission("slimefun.cheat.items");
+            }
+        }
+
+        /**
+         * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        interface ClickHandler extends BaseClickHandler {
+            @SuppressWarnings("unused") io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType();
+        }
+
+        /**
+         * @author balugaq
+         * @since 2.0
+         */
+        @NullMarked
         class Normal implements RecipeType {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of(
@@ -886,69 +948,6 @@ public interface OnClick {
                 return listActions;
             }
         }
-
-        /**
-         * @author balugaq
-         * @since 2.0
-         */
-        @NullMarked
-        interface OpAction extends Action, PermissibleAction {
-            static OpAction of(String key, String name, Material material, ActionHandle handle) {
-                return new OpAction() {
-                    @Override
-                    public Material material() {
-                        return material;
-                    }
-
-                    @Override
-                    public String name() {
-                        return name;
-                    }
-
-                    @Override
-                    public NamespacedKey getKey() {
-                        return KeyUtil.newKey(key);
-                    }
-
-                    @Override
-                    public boolean click(JEGSlimefunGuideImplementation guide,
-                                         Player player, int slot,
-                                         io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
-                                         ClickAction clickAction, ChestMenu menu, int page) {
-                        handle.click(guide, player, slot, recipeType, clickAction, menu, page);
-                        return false;
-                    }
-                };
-            }
-
-            @Override
-            default boolean hasPermission(Player player) {
-                return player.isOp() || player.hasPermission("slimefun.cheat.items");
-            }
-        }
-
-        /**
-         * @author balugaq
-         * @since 2.1
-         */
-        @NullMarked
-        interface ClickHandler extends BaseClickHandler {
-            @SuppressWarnings("unused") io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType();
-        }
-
-        static ClickHandler withType(io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType type, BaseClickHandler base) {
-            return new ClickHandler() {
-                @Override
-                public io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType getRecipeType() {
-                    return type;
-                }
-
-                @Override
-                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
-                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
-                }
-            };
-        }
     }
 
     /**
@@ -984,6 +983,21 @@ public interface OnClick {
         Research Research = new Research();
 
         ObjectImmutableList<Item> subKeybinds = ObjectImmutableList.of(Normal, ItemMark, Bookmark, Research);
+
+        static ClickHandler withItem(@Nullable SlimefunItem sf, BaseClickHandler base) {
+            return new ClickHandler() {
+                @Override
+                @Nullable
+                public SlimefunItem getSlimefunItem() {
+                    return sf;
+                }
+
+                @Override
+                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
+                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
+                }
+            };
+        }
 
         @Override
         default String name() {
@@ -1201,6 +1215,15 @@ public interface OnClick {
 
         /**
          * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        interface ClickHandler extends BaseClickHandler {
+            @Nullable SlimefunItem getSlimefunItem();
+        }
+
+        /**
+         * @author balugaq
          * @since 2.0
          */
         @NullMarked
@@ -1360,6 +1383,18 @@ public interface OnClick {
                     )
             );
 
+            private static int findPage(SlimefunItem slimefunItem) {
+                var group = slimefunItem.getItemGroup();
+                if (!(group instanceof FlexItemGroup)) {
+                    var items = group.getItems();
+                    int idx = items.indexOf(slimefunItem);
+                    if (idx == -1) return 1;
+                    return idx / 36 + 1;
+                }
+
+                return 1;
+            }
+
             @Override
             public Material material() {
                 return Material.BARRIER;
@@ -1387,18 +1422,6 @@ public interface OnClick {
                             page
                     );
                 }));
-            }
-
-            private static int findPage(SlimefunItem slimefunItem) {
-                var group = slimefunItem.getItemGroup();
-                if (!(group instanceof FlexItemGroup)) {
-                    var items = group.getItems();
-                    int idx = items.indexOf(slimefunItem);
-                    if (idx == -1) return 1;
-                    return idx / 36 + 1;
-                }
-
-                return 1;
             }
         }
 
@@ -1551,30 +1574,6 @@ public interface OnClick {
             public ObjectImmutableList<Action> listActions() {
                 return listActions;
             }
-        }
-
-        /**
-         * @author balugaq
-         * @since 2.1
-         */
-        @NullMarked
-        interface ClickHandler extends BaseClickHandler {
-            @Nullable SlimefunItem getSlimefunItem();
-        }
-
-        static ClickHandler withItem(@Nullable SlimefunItem sf, BaseClickHandler base) {
-            return new ClickHandler() {
-                @Override
-                @Nullable
-                public SlimefunItem getSlimefunItem() {
-                    return sf;
-                }
-
-                @Override
-                public boolean onClick(final InventoryClickEvent inventoryClickEvent, final Player player, final int i, final ItemStack itemStack, final ClickAction clickAction) {
-                    return base.onClick(inventoryClickEvent, player, i, itemStack, clickAction);
-                }
-            };
         }
     }
 

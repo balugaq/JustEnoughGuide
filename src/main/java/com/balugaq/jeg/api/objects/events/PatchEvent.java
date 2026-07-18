@@ -56,7 +56,7 @@ public class PatchEvent extends Event {
     private ItemStack itemStack;
 
     public PatchEvent(
-            final PatchScope patchScope, final Player player, final ItemStack itemStack) {
+        final PatchScope patchScope, final Player player, final ItemStack itemStack) {
         super(!Bukkit.isPrimaryThread());
         this.patchScope = patchScope;
         this.player = player;
@@ -68,7 +68,7 @@ public class PatchEvent extends Event {
     }
 
     public static ItemStack patch(
-            final PatchScope patchScope, final Player player, @Nullable final ItemStack itemStack) {
+        final PatchScope patchScope, final Player player, @Nullable final ItemStack itemStack) {
         PatchEvent event = new PatchEvent(patchScope, player, ItemStackUtil.getCleanItem(itemStack));
         try {
             Bukkit.getPluginManager().callEvent(event);

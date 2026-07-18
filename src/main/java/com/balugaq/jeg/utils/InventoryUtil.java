@@ -51,9 +51,9 @@ import java.util.Map;
 public class InventoryUtil {
     @SuppressWarnings("ConstantValue")
     public static Map<ItemStack, Integer> pushItem(
-            final Inventory inventory,
-            final @Nullable ItemStack[] items,
-            @Range(from = 0, to = 53) final int... slots) {
+        final Inventory inventory,
+        final @Nullable ItemStack[] items,
+        @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.length == 0) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty array");
@@ -70,9 +70,9 @@ public class InventoryUtil {
     }
 
     public static Map<ItemStack, Integer> pushItem(
-            final Inventory inventory,
-            final @Nullable List<ItemStack> items,
-            @Range(from = 0, to = 53) final int... slots) {
+        final Inventory inventory,
+        final @Nullable List<ItemStack> items,
+        @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.isEmpty()) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty list");
@@ -93,9 +93,9 @@ public class InventoryUtil {
 
     @Nullable
     public static ItemStack pushItem(
-            final Inventory inventory,
-            final @Nullable ItemStack item,
-            @Range(from = 0, to = 53) final int... slots) {
+        final Inventory inventory,
+        final @Nullable ItemStack item,
+        @Range(from = 0, to = 53) final int... slots) {
         if (item == null || item.getType() == Material.AIR) {
             return null;
             // throw new IllegalArgumentException("Cannot push null or AIR");
@@ -140,9 +140,9 @@ public class InventoryUtil {
     }
 
     public static boolean fits(
-            final Inventory inventory,
-            final @Nullable ItemStack item,
-            @Range(from = 0, to = 53) final int... slots) {
+        final Inventory inventory,
+        final @Nullable ItemStack item,
+        @Range(from = 0, to = 53) final int... slots) {
         if (item == null || item.getType() == Material.AIR) {
             return true;
         }
@@ -166,9 +166,9 @@ public class InventoryUtil {
     }
 
     public static boolean fits(
-            final Inventory inventory,
-            final @Nullable ItemStack @Nullable [] items,
-            @Range(from = 0, to = 53) final int... slots) {
+        final Inventory inventory,
+        final @Nullable ItemStack @Nullable [] items,
+        @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.length == 0) {
             return false;
         }
@@ -184,9 +184,9 @@ public class InventoryUtil {
     }
 
     public static boolean fits(
-            final Inventory inventory,
-            final @Nullable List<ItemStack> items,
-            @Range(from = 0, to = 53) final int... slots) {
+        final Inventory inventory,
+        final @Nullable List<ItemStack> items,
+        @Range(from = 0, to = 53) final int... slots) {
         if (items == null || items.isEmpty()) {
             return false;
         }
@@ -250,18 +250,18 @@ public class InventoryUtil {
     }
 
     public static void consumeItem(
-            final Inventory inventory,
-            @Range(from = 0, to = 53) final int slot,
-            @Range(from = 0, to = 64) final int amount) {
+        final Inventory inventory,
+        @Range(from = 0, to = 53) final int slot,
+        @Range(from = 0, to = 64) final int amount) {
         consumeItem(inventory, slot, amount, false);
     }
 
     @SuppressWarnings("deprecation")
     public static void consumeItem(
-            final Inventory inventory,
-            @Range(from = 0, to = 53) final int slot,
-            @Range(from = 0, to = 64) final int amount,
-            final boolean replaceConsumables) {
+        final Inventory inventory,
+        @Range(from = 0, to = 53) final int slot,
+        @Range(from = 0, to = 64) final int amount,
+        final boolean replaceConsumables) {
         if (amount == 0) {
             return;
         }
@@ -269,8 +269,8 @@ public class InventoryUtil {
         final ItemStack item = inventory.getItem(slot);
         if (item != null && item.getType() != Material.AIR) {
             if (replaceConsumables
-                    && item.getAmount() == 1
-                    && StackUtils.itemsMatch(item, new ItemStack(item.getType()))) {
+                && item.getAmount() == 1
+                && StackUtils.itemsMatch(item, new ItemStack(item.getType()))) {
                 switch (item.getType()) {
                     case WATER_BUCKET,
                          LAVA_BUCKET,
@@ -283,7 +283,7 @@ public class InventoryUtil {
                          POWDER_SNOW_BUCKET,
                          TADPOLE_BUCKET -> item.setType(Material.BUCKET);
                     case POTION, SPLASH_POTION, LINGERING_POTION, HONEY_BOTTLE, DRAGON_BREATH -> item.setType(
-                            Material.GLASS_BOTTLE);
+                        Material.GLASS_BOTTLE);
                     case MUSHROOM_STEW, BEETROOT_SOUP, RABBIT_STEW, SUSPICIOUS_STEW -> item.setType(Material.BOWL);
                     default -> item.setAmount(0);
                 }
@@ -298,9 +298,9 @@ public class InventoryUtil {
     }
 
     public static void consumeItem(
-            final Inventory inventory,
-            @Range(from = 0, to = 53) final int slot,
-            final boolean replaceConsumables) {
+        final Inventory inventory,
+        @Range(from = 0, to = 53) final int slot,
+        final boolean replaceConsumables) {
         consumeItem(inventory, slot, 1, replaceConsumables);
     }
 }

@@ -59,15 +59,19 @@ public class LogiTechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
         return itemStack;
     }
 
+    public static NamespacedKey key0() {
+        return KeyUtil.newKey("logitech_true_recipe_settings");
+    }
+
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         var sf = SlimefunItem.getById("LOGITECH_TRUE_");
         ItemStack item = sf != null ? Converter.getItem(
-                sf.getItem(),
-                "&a单击打开" + getTitle()
+            sf.getItem(),
+            "&a单击打开" + getTitle()
         ) : Converter.getItem(
-                Material.MUSIC_DISC_5,
-                "&a单击打开" + getTitle()
+            Material.MUSIC_DISC_5,
+            "&a单击打开" + getTitle()
         );
         return Optional.of(item);
     }
@@ -75,10 +79,6 @@ public class LogiTechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static NamespacedKey key0() {
-        return KeyUtil.newKey("logitech_true_recipe_settings");
     }
 
     @Override
@@ -93,6 +93,6 @@ public class LogiTechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
 
     @Override
     public int[] getItemSlots() {
-        return new int[] {13};
+        return new int[]{13};
     }
 }

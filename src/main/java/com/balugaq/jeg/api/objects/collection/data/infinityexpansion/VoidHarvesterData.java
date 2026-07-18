@@ -52,10 +52,10 @@ public class VoidHarvesterData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
-                null,
-                new ItemStack[] {output},
-                TIME / speed,
-                (long) energyPerTick * TIME / speed
+            null,
+            new ItemStack[]{output},
+            TIME / speed,
+            (long) energyPerTick * TIME / speed
         ));
     }
 }

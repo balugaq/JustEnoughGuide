@@ -53,7 +53,7 @@ public abstract class AbstractBooleanGuideOption implements SlimefunGuideOption<
 
     public boolean getSelectedOption(Player p) {
         return (defaultValue() && !PersistentDataAPI.hasByte(p, getKey())) ||
-                PersistentDataAPI.getByte(p, getKey()) == (defaultValue() ? 1 : 0);
+            PersistentDataAPI.getByte(p, getKey()) == (defaultValue() ? 1 : 0);
     }
 
     @Override

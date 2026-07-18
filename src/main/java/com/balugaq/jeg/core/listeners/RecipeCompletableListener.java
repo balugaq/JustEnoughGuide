@@ -41,7 +41,12 @@ import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInvento
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
-import com.balugaq.jeg.utils.*;
+import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.KeyUtil;
+import com.balugaq.jeg.utils.Models;
+import com.balugaq.jeg.utils.ReflectionUtil;
+import com.balugaq.jeg.utils.StackUtils;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -98,15 +103,15 @@ import java.util.function.BiConsumer;
 @NullMarked
 public class RecipeCompletableListener implements ItemPatchListener {
     public static final NamespacedKey RECIPE_COMPLETE_EXIT_KEY = KeyUtil.newKey("recipe_complete_exit");
-    public static final int[] DISPENSER_SLOTS = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    public static final int[] DISPENSER_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
     public static final ConcurrentHashMap<Player, GuideEvents.ItemButtonClickEvent> LAST_EVENTS =
-            new ConcurrentHashMap<>();
+        new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<Player, GuideHistory> GUIDE_HISTORY = new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<Player, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile>> PROFILE_CALLBACKS =
-            new ConcurrentHashMap<>();
+        new ConcurrentHashMap<>();
     public static final Set<Player> listening = ConcurrentHashMap.newKeySet();
     public static final ConcurrentHashMap<SlimefunItem, Pair<int[], Boolean>> INGREDIENT_SLOTS =
-            new ConcurrentHashMap<>();
+        new ConcurrentHashMap<>();
     public static final ArrayList<SlimefunItem> NOT_APPLICABLE_ITEMS = new ArrayList<>();
     public static final ConcurrentHashMap<Player, Location> DISPENSER_LISTENING = new ConcurrentHashMap<>();
     public static final NamespacedKey LAST_RECIPE_COMPLETE_KEY = KeyUtil.newKey("last_recipe_complete");
@@ -116,68 +121,66 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
     static {
         JustEnoughGuide.runTimerAsync(
-                () -> {
-                    for (Player oldPlayer : missingMaterials.keySet()) {
-                        Player player = GuideUtil.updatePlayer(oldPlayer);
-                        if (player == null) {
-                            continue;
-                        }
+            () -> {
+                for (Player oldPlayer : missingMaterials.keySet()) {
+                    Player player = GuideUtil.updatePlayer(oldPlayer);
+                    if (player == null) {
+                        continue;
+                    }
 
-                        var v = missingMaterials.get(player);
-                        ArrayList<ItemStack> clone;
-                        if (v != null) {
-                            synchronized (v) {
-                                clone = new ArrayList<>(v);
-                                v.clear();
+                    var v = missingMaterials.get(player);
+                    ArrayList<ItemStack> clone;
+                    if (v != null) {
+                        synchronized (v) {
+                            clone = new ArrayList<>(v);
+                            v.clear();
+                        }
+                    } else {
+                        clone = new ArrayList<>();
+                    }
+
+                    Map<ItemStack, Integer> map = new HashMap<>();
+                    for (ItemStack item : clone) {
+                        map.merge(StackUtils.getAsQuantity(item, 1), item.getAmount(), Integer::sum);
+                    }
+
+                    for (var entry : map.entrySet()) {
+                        ItemStack itemStack = entry.getKey();
+                        int amount = entry.getValue();
+                        int stacks = amount / Math.max(1, itemStack.getMaxStackSize());
+                        int left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
+                        String amountString = "" + amount;
+                        if (amount > itemStack.getMaxStackSize()) {
+                            amountString += " &7( " + stacks + " 组";
+                            if (left > 0) {
+                                amountString += " + " + left + " 个";
                             }
+                            amountString += ")";
+                        }
+                        if (PaperLib.isPaper()) {
+                            var builder = Component.text().style(Style.style(NamedTextColor.RED)).append(Component.text("缺少"));
+                            var itemBuilder = Component
+                                .text(ItemStackHelper.getDisplayName(itemStack));
+                            SlimefunItem sf = SlimefunItem.getByItem(itemStack);
+                            if (sf != null) {
+                                itemBuilder = itemBuilder
+                                    .hoverEvent(HoverEvent.showText(Component.text().style(Style.style(NamedTextColor.YELLOW)).append(Component.text("点击查看"))))
+                                    .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
+                            }
+                            builder.style(Style.style(NamedTextColor.GRAY)).append(itemBuilder);
+                            builder.append(Component.text().style(Style.style(NamedTextColor.GREEN)).append(Component.text(amountString)));
+                            player.sendMessage(builder);
                         } else {
-                            clone = new ArrayList<>();
-                        }
-
-                        Map<ItemStack, Integer> map = new HashMap<>();
-                        for (ItemStack item : clone) {
-                            map.merge(StackUtils.getAsQuantity(item, 1), item.getAmount(), Integer::sum);
-                        }
-
-                        for (var entry : map.entrySet()) {
-                            ItemStack itemStack = entry.getKey();
-                            int amount = entry.getValue();
-                            int stacks = amount / Math.max(1, itemStack.getMaxStackSize());
-                            int left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
-                            String amountString = "" + amount;
-                            if (amount > itemStack.getMaxStackSize()) {
-                                amountString += " &7( " + stacks + " 组";
-                                if (left > 0) {
-                                    amountString += " + " + left + " 个";
-                                }
-                                amountString += ")";
-                            }
-                            if (PaperLib.isPaper()) {
-                                var builder = Component.text().style(Style.style(NamedTextColor.RED)).append(Component.text("缺少"));
-                                var itemBuilder = Component
-                                        .text(ItemStackHelper.getDisplayName(itemStack));
-                                SlimefunItem sf = SlimefunItem.getByItem(itemStack);
-                                if (sf != null) {
-                                    itemBuilder = itemBuilder
-                                            .hoverEvent(HoverEvent.showText(Component.text().style(Style.style(NamedTextColor.YELLOW)).append(Component.text("点击查看"))))
-                                            .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
-                                }
-                                builder.style(Style.style(NamedTextColor.GRAY)).append(itemBuilder);
-                                builder.append(Component.text().style(Style.style(NamedTextColor.GREEN)).append(Component.text(amountString)));
-                                player.sendMessage(builder);
-                            } else {
-                                player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(itemStack) + " &r&ax" + amountString));
-                            }
+                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(itemStack) + " &r&ax" + amountString));
                         }
                     }
-                }, 1L, 20L
+                }
+            }, 1L, 20L
         );
     }
 
     /**
-     * @param slimefunItem
-     *         the {@link SlimefunItem} to add
-     *
+     * @param slimefunItem the {@link SlimefunItem} to add
      * @see NotApplicable
      */
     public static void addNotApplicableItem(SlimefunItem slimefunItem) {
@@ -185,9 +188,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     /**
-     * @param slimefunItem
-     *         the {@link SlimefunItem} to remove
-     *
+     * @param slimefunItem the {@link SlimefunItem} to remove
      * @see NotApplicable
      */
     public static void removeNotApplicableItem(SlimefunItem slimefunItem) {
@@ -207,13 +208,13 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     public static void addCallback(
-            final UUID uuid, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile> callback) {
+        final UUID uuid, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile> callback) {
         var p = GuideUtil.updatePlayer(uuid);
         if (p != null) addCallback(p, callback);
     }
 
     public static void addCallback(
-            final Player player, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile> callback) {
+        final Player player, BiConsumer<GuideEvents.ItemButtonClickEvent, PlayerProfile> callback) {
         PROFILE_CALLBACKS.put(player, callback);
     }
 
@@ -320,17 +321,6 @@ public class RecipeCompletableListener implements ItemPatchListener {
         return KeyUtil.newKey(RecipeCompletableListener.class.getSimpleName().toLowerCase());
     }
 
-    @EventHandler
-    public void prepare(InventoryOpenEvent event) {
-        if (event.getInventory().getHolder() instanceof BlockMenu blockMenu) {
-            tryAddPlayerInventoryClickHandler(blockMenu);
-        }
-
-        if (event.getInventory().getHolder() instanceof Dispenser dispenser) {
-            tryAddVanillaListen(event, dispenser.getBlock(), event.getInventory());
-        }
-    }
-
     @SuppressWarnings("deprecation")
     private static void tryAddPlayerInventoryClickHandler(BlockMenu blockMenu) {
         SlimefunItem sf = blockMenu.getPreset().getSlimefunItem();
@@ -349,38 +339,38 @@ public class RecipeCompletableListener implements ItemPatchListener {
         }
 
         blockMenu.addPlayerInventoryClickHandler(
-                (RecipeCompletableClickHandler) (player, slot, itemStack, clickAction) -> {
-                    // mixin start
-                    if (StackUtils.itemsMatch(itemStack, getRecipeCompletableBookItem(), false, false, false, false)
-                            && blockMenu.isPlayerInventoryClickable()) {
-                        if (isSelectingItemStackToRecipeComplete(player)) {
-                            var session = RecipeCompleteSession.getSession(player);
-                            if (session == null) return false;
-                            if (session.getMenu() != null && session.getMenu().getLocation().equals(blockMenu.getLocation())) {
-                                GuideUtil.openGuide(player);
-                                return false;
-                            } else {
-                                session.cancel();
-                            }
-                        }
-
-                        allowSelectingItemStackToRecipeComplete(player);
-                        int[] slots = getIngredientSlots(sf);
-                        boolean unordered = isUnordered(sf);
-                        var session = RecipeCompleteSession.create(blockMenu, player, clickAction, slots, unordered, 1);
+            (RecipeCompletableClickHandler) (player, slot, itemStack, clickAction) -> {
+                // mixin start
+                if (StackUtils.itemsMatch(itemStack, getRecipeCompletableBookItem(), false, false, false, false)
+                    && blockMenu.isPlayerInventoryClickable()) {
+                    if (isSelectingItemStackToRecipeComplete(player)) {
+                        var session = RecipeCompleteSession.getSession(player);
                         if (session == null) return false;
-                        RecipeCompleteProvider.openSlimefun(session);
-
-                        return false;
-                    }
-                    // mixin end
-
-                    if (old != null) {
-                        return old.onClick(player, slot, itemStack, clickAction);
+                        if (session.getMenu() != null && session.getMenu().getLocation().equals(blockMenu.getLocation())) {
+                            GuideUtil.openGuide(player);
+                            return false;
+                        } else {
+                            session.cancel();
+                        }
                     }
 
-                    return true;
-                });
+                    allowSelectingItemStackToRecipeComplete(player);
+                    int[] slots = getIngredientSlots(sf);
+                    boolean unordered = isUnordered(sf);
+                    var session = RecipeCompleteSession.create(blockMenu, player, clickAction, slots, unordered, 1);
+                    if (session == null) return false;
+                    RecipeCompleteProvider.openSlimefun(session);
+
+                    return false;
+                }
+                // mixin end
+
+                if (old != null) {
+                    return old.onClick(player, slot, itemStack, clickAction);
+                }
+
+                return true;
+            });
     }
 
     private static void tryAddVanillaListen(InventoryOpenEvent event, Block block, Inventory inventory) {
@@ -404,7 +394,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     public static ItemStack getRecipeCompletableBookItem() {
         if (RECIPE_COMPLETABLE_BOOK_ITEM == null) {
             RECIPE_COMPLETABLE_BOOK_ITEM =
-                    ItemsSetup.RECIPE_COMPLETE_GUIDE.getItem().clone();
+                ItemsSetup.RECIPE_COMPLETE_GUIDE.getItem().clone();
         }
 
         return RECIPE_COMPLETABLE_BOOK_ITEM;
@@ -426,96 +416,18 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
     public static int[] getIngredientSlots(SlimefunItem slimefunItem) {
         return Optional.ofNullable(INGREDIENT_SLOTS.get(slimefunItem))
-                .orElse(new Pair<>(new int[0], false))
-                .first();
+            .orElse(new Pair<>(new int[0], false))
+            .first();
     }
 
     public static boolean isUnordered(SlimefunItem slimefunItem) {
         return Optional.ofNullable(INGREDIENT_SLOTS.get(slimefunItem))
-                .orElse(new Pair<>(new int[0], false))
-                .second();
-    }
-
-    @EventHandler
-    public void exit(RecipeCompleteEvents.SessionCancelEvent event) {
-        exitSelectingItemStackToRecipeComplete(event.getPlayer());
+            .orElse(new Pair<>(new int[0], false))
+            .second();
     }
 
     public static void exitSelectingItemStackToRecipeComplete(Player player) {
         listening.remove(player);
-    }
-
-    @EventHandler
-    public void exit(RecipeCompleteEvents.SessionCompleteEvent event) {
-        exitSelectingItemStackToRecipeComplete(event.getPlayer());
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void clickVanilla(InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
-        if (event.getRawSlot() < inventory.getSize()) {
-            return;
-        }
-
-        if (!(inventory.getHolder() instanceof Dispenser dispenser)) {
-            return;
-        }
-
-        Player player = GuideUtil.updatePlayer(event.getWhoClicked().getUniqueId());
-        if (player == null || !isOpeningDispenser(player)) {
-            return;
-        }
-
-        if (!StackUtils.itemsMatch(
-                event.getCurrentItem(), getRecipeCompletableBookItem(), false, false, false, false)) {
-            return;
-        }
-
-        Block block = dispenser.getBlock();
-        ClickAction clickAction = new ClickAction(event.isRightClick(), event.isShiftClick());
-        var session = RecipeCompleteSession.create(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1);
-        if (session == null) return;
-        RecipeCompleteProvider.openVanilla(session);
-
-        event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void exitVanilla(InventoryOpenEvent event) {
-        var p = GuideUtil.updatePlayer(event.getPlayer().getUniqueId());
-        if (p != null) removeDispenserListening(p);
-    }
-
-    @EventHandler
-    public void onJEGItemClick(GuideEvents.ItemButtonClickEvent event) {
-        Player player = event.getPlayer();
-        if (!isSelectingItemStackToRecipeComplete(player)) {
-            return;
-        }
-
-        if (event.getClickAction().isShiftClicked()) {
-            return;
-        }
-
-        PlayerProfile profile = RecipeCompletableListener.getPlayerProfile(player);
-        // try
-        if (RecipeCompleteOpenModeGuideOption.instance().get(player) == RecipeCompleteOpenMode.NEW) {
-            rollbackGuideHistory(profile);
-        }
-        // finally
-        GUIDE_HISTORY.remove(player);
-        var callback = RecipeCompletableListener.PROFILE_CALLBACKS.get(player);
-        if (callback != null) {
-            callback.accept(event, profile);
-            RecipeCompletableListener.PROFILE_CALLBACKS.remove(player);
-        }
-        RecipeCompletableListener.LAST_EVENTS.put(player, event);
-
-        ItemStack clickedItemStack = event.getClickedItem();
-        if (clickedItemStack != null) {
-            tryPatchRecipeCompleteBook(player, clickedItemStack);
-        }
     }
 
     public static void rollbackGuideHistory(PlayerProfile profile) {
@@ -573,11 +485,6 @@ public class RecipeCompletableListener implements ItemPatchListener {
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        tryRemoveRecipeCompleteBookLastRecipeCompleteLore(event.getPlayer());
-    }
-
     @SuppressWarnings({"deprecation", "DuplicateCondition", "ConstantValue"})
     private static void tryRemoveRecipeCompleteBookLastRecipeCompleteLore(Player player) {
         for (ItemStack itemStack : player.getInventory()) {
@@ -611,6 +518,108 @@ public class RecipeCompletableListener implements ItemPatchListener {
                 itemStack.setItemMeta(meta);
             }
         }
+    }
+
+    public static void registerPlayerInventoryItemGetter(PlayerInventoryItemSeeker itemGetter) {
+        PLAYER_INVENTORY_ITEM_GETTERS.put(itemGetter.getKey(), itemGetter);
+    }
+
+    public static void unregisterPlayerInventoryItemGetter(NamespacedKey key) {
+        PLAYER_INVENTORY_ITEM_GETTERS.remove(key);
+    }
+
+    @EventHandler
+    public void prepare(InventoryOpenEvent event) {
+        if (event.getInventory().getHolder() instanceof BlockMenu blockMenu) {
+            tryAddPlayerInventoryClickHandler(blockMenu);
+        }
+
+        if (event.getInventory().getHolder() instanceof Dispenser dispenser) {
+            tryAddVanillaListen(event, dispenser.getBlock(), event.getInventory());
+        }
+    }
+
+    @EventHandler
+    public void exit(RecipeCompleteEvents.SessionCancelEvent event) {
+        exitSelectingItemStackToRecipeComplete(event.getPlayer());
+    }
+
+    @EventHandler
+    public void exit(RecipeCompleteEvents.SessionCompleteEvent event) {
+        exitSelectingItemStackToRecipeComplete(event.getPlayer());
+    }
+
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void clickVanilla(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+        if (event.getRawSlot() < inventory.getSize()) {
+            return;
+        }
+
+        if (!(inventory.getHolder() instanceof Dispenser dispenser)) {
+            return;
+        }
+
+        Player player = GuideUtil.updatePlayer(event.getWhoClicked().getUniqueId());
+        if (player == null || !isOpeningDispenser(player)) {
+            return;
+        }
+
+        if (!StackUtils.itemsMatch(
+            event.getCurrentItem(), getRecipeCompletableBookItem(), false, false, false, false)) {
+            return;
+        }
+
+        Block block = dispenser.getBlock();
+        ClickAction clickAction = new ClickAction(event.isRightClick(), event.isShiftClick());
+        var session = RecipeCompleteSession.create(block, inventory, player, clickAction, DISPENSER_SLOTS, false, 1);
+        if (session == null) return;
+        RecipeCompleteProvider.openVanilla(session);
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void exitVanilla(InventoryOpenEvent event) {
+        var p = GuideUtil.updatePlayer(event.getPlayer().getUniqueId());
+        if (p != null) removeDispenserListening(p);
+    }
+
+    @EventHandler
+    public void onJEGItemClick(GuideEvents.ItemButtonClickEvent event) {
+        Player player = event.getPlayer();
+        if (!isSelectingItemStackToRecipeComplete(player)) {
+            return;
+        }
+
+        if (event.getClickAction().isShiftClicked()) {
+            return;
+        }
+
+        PlayerProfile profile = RecipeCompletableListener.getPlayerProfile(player);
+        // try
+        if (RecipeCompleteOpenModeGuideOption.instance().get(player) == RecipeCompleteOpenMode.NEW) {
+            rollbackGuideHistory(profile);
+        }
+        // finally
+        GUIDE_HISTORY.remove(player);
+        var callback = RecipeCompletableListener.PROFILE_CALLBACKS.get(player);
+        if (callback != null) {
+            callback.accept(event, profile);
+            RecipeCompletableListener.PROFILE_CALLBACKS.remove(player);
+        }
+        RecipeCompletableListener.LAST_EVENTS.put(player, event);
+
+        ItemStack clickedItemStack = event.getClickedItem();
+        if (clickedItemStack != null) {
+            tryPatchRecipeCompleteBook(player, clickedItemStack);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        tryRemoveRecipeCompleteBookLastRecipeCompleteLore(event.getPlayer());
     }
 
     @SuppressWarnings("deprecation")
@@ -744,14 +753,6 @@ public class RecipeCompletableListener implements ItemPatchListener {
         event.getPlayer().updateInventory();
     }
 
-    public static void registerPlayerInventoryItemGetter(PlayerInventoryItemSeeker itemGetter) {
-        PLAYER_INVENTORY_ITEM_GETTERS.put(itemGetter.getKey(), itemGetter);
-    }
-
-    public static void unregisterPlayerInventoryItemGetter(NamespacedKey key) {
-        PLAYER_INVENTORY_ITEM_GETTERS.remove(key);
-    }
-
     /**
      * @author balugaq
      * @see RecipeCompletableListener#addNotApplicableItem(SlimefunItem)
@@ -781,18 +782,17 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
     /**
      * @author balugaq
-     * @since 2.1
-     *
      * @see ShulkerBoxPlayerInventoryItemSeeker
      * @see Source#getItemStackFromPlayerInventory(RecipeCompleteSession, ItemStack, int)
+     * @since 2.1
      */
     @NullMarked
     public interface PlayerInventoryItemSeeker extends Keyed {
         /**
          * @param session The session
-         * @param target The target item
-         * @param item The item to be checked or handled
-         * @param need The requested amount
+         * @param target  The target item
+         * @param item    The item to be checked or handled
+         * @param need    The requested amount
          * @return gotten item stack amount
          */
         @NonNegative

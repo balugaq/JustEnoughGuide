@@ -53,12 +53,12 @@ public class SingularityConstructorData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return RECIPE_LIST.stream().map(
-                recipe -> new CERRecipeGroup.RecipeWrapper(
-                        new ItemStack[] {recipe.getInput()},
-                        new ItemStack[] {Converter.getItem(recipe.getOutput())},
-                        recipe.getAmount() / speed,
-                        (long) energyPerTick * speed
-                )).toList();
+            recipe -> new CERRecipeGroup.RecipeWrapper(
+                new ItemStack[]{recipe.getInput()},
+                new ItemStack[]{Converter.getItem(recipe.getOutput())},
+                recipe.getAmount() / speed,
+                (long) energyPerTick * speed
+            )).toList();
     }
 
     /**

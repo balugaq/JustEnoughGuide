@@ -76,12 +76,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public GroupLinkButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -105,12 +105,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BeginnerButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -134,12 +134,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public SettingsButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -163,12 +163,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public CollectItemEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -193,12 +193,12 @@ public class GuideEvents {
         private final ItemGroup itemGroup;
 
         public CollectItemGroupEvent(
-                final Player who,
-                final ItemGroup itemGroup,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final ItemGroup itemGroup,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, itemGroup.getItem(who), clickedSlot, clickAction, menu, guide);
             this.itemGroup = itemGroup;
         }
@@ -223,12 +223,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ResearchItemEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -290,12 +290,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public FeatureButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -319,12 +319,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public AuthorInformationButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -348,12 +348,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BigRecipeButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -377,12 +377,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public RecipeTypeButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -406,12 +406,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public WikiButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -435,12 +435,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BackButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -464,12 +464,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ItemMarkButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -493,12 +493,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public BookMarkButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -522,12 +522,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public NextButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -551,12 +551,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public PreviousButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -580,12 +580,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ItemButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -609,12 +609,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ItemGroupButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -638,12 +638,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public RTSButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -667,12 +667,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public SearchButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -696,12 +696,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public CerButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -725,12 +725,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public KeybindsButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -754,12 +754,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public KeybindButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -783,12 +783,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public ActionButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -812,12 +812,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public SubKeybindsButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -841,12 +841,12 @@ public class GuideEvents {
         private static final HandlerList HANDLERS = new HandlerList();
 
         public UnknownButtonClickEvent(
-                final Player who,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player who,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(who, clickedItem, clickedSlot, clickAction, menu, guide);
         }
 
@@ -876,12 +876,12 @@ public class GuideEvents {
         public boolean cancelled = false;
 
         public GuideEvent(
-                final Player player,
-                final @Nullable ItemStack clickedItem,
-                @Range(from = 0, to = 53) int clickedSlot,
-                final ClickAction clickAction,
-                final ChestMenu menu,
-                final SlimefunGuideImplementation guide) {
+            final Player player,
+            final @Nullable ItemStack clickedItem,
+            @Range(from = 0, to = 53) int clickedSlot,
+            final ClickAction clickAction,
+            final ChestMenu menu,
+            final SlimefunGuideImplementation guide) {
             super(false);
             this.player = player;
             this.clickedItem = clickedItem;

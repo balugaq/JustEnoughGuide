@@ -28,7 +28,20 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
-import com.balugaq.jeg.core.listeners.*;
+import com.balugaq.jeg.core.listeners.AnvilGuiListener;
+import com.balugaq.jeg.core.listeners.BundleListener;
+import com.balugaq.jeg.core.listeners.CerPatchListener;
+import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
+import com.balugaq.jeg.core.listeners.GuideGUIFixListener;
+import com.balugaq.jeg.core.listeners.GuideListener;
+import com.balugaq.jeg.core.listeners.MenuListener;
+import com.balugaq.jeg.core.listeners.RTSListener;
+import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.core.listeners.ReplacementCardAdaptItemListener;
+import com.balugaq.jeg.core.listeners.SlimefunGuideOptionPatchFixListener;
+import com.balugaq.jeg.core.listeners.SlimefunIdPatchListener;
+import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
+import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.WatchdogHandler;
 import com.balugaq.jeg.utils.MinecraftVersion;
@@ -39,7 +52,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
@@ -83,7 +95,7 @@ public class ListenerManager extends AbstractManager {
             listeners.add(new WatchdogHandler());
         }
         if (MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17)
-                && JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()) {
+            && JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()) {
             listeners.add(new BundleListener());
         }
         listeners.add(new SlimefunGuideOptionPatchFixListener());

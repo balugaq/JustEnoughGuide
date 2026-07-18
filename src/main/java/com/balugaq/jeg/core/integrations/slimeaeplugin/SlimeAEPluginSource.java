@@ -74,8 +74,8 @@ public interface SlimeAEPluginSource extends Source {
         ItemRequest request = new ItemRequest(new ItemKey(itemStack), Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
         for (var networkStorage : networkStorages) {
             ItemStack[] gotten = networkStorage
-                    .takeItem(request)
-                    .toItemStacks();
+                .takeItem(request)
+                .toItemStacks();
             if (gotten.length != 0) {
                 return gotten[0];
             }

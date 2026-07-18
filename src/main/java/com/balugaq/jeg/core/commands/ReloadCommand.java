@@ -68,10 +68,10 @@ public class ReloadCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
                 return "reload".equalsIgnoreCase(args[0]);
@@ -82,10 +82,10 @@ public class ReloadCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         JustEnoughGuide.reload(plugin, sender);
     }
 }

@@ -54,6 +54,18 @@ public class VanillaBlockHUDDisplayGuideOption implements SlimefunGuideOption<Bo
         return instance;
     }
 
+    public static boolean isEnabled(Player p) {
+        return getSelectedOption(p);
+    }
+
+    public static boolean getSelectedOption(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
+    }
+
+    public static NamespacedKey key0() {
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "vanilla_block_hud_display");
+    }
+
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
@@ -63,33 +75,21 @@ public class VanillaBlockHUDDisplayGuideOption implements SlimefunGuideOption<Bo
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(false);
         ItemStack item = Converter.getItem(
-                isEnabled(p) ? Material.GRASS_BLOCK : Material.DIRT,
-                "&b原版方块HUD显示: &" + (enabled ? "a启用" : "4禁用"),
-                "",
-                "&7你现在可以选择是否",
-                "&7在使用SlimeHUD显示方块信息时",
-                "&7允许显示原版方块的信息",
-                "",
-                "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 原版方块HUD显示"
+            isEnabled(p) ? Material.GRASS_BLOCK : Material.DIRT,
+            "&b原版方块HUD显示: &" + (enabled ? "a启用" : "4禁用"),
+            "",
+            "&7你现在可以选择是否",
+            "&7在使用SlimeHUD显示方块信息时",
+            "&7允许显示原版方块的信息",
+            "",
+            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 原版方块HUD显示"
         );
         return Optional.of(item);
-    }
-
-    public static boolean isEnabled(Player p) {
-        return getSelectedOption(p);
     }
 
     @Override
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static boolean getSelectedOption(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == (byte) 1;
-    }
-
-    public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "vanilla_block_hud_display");
     }
 
     @Override

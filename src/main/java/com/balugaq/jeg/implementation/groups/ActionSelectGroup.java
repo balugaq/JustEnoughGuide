@@ -75,9 +75,9 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
 
     @Override
     public ChestMenu generateMenu(
-            final Player player,
-            final PlayerProfile playerProfile,
-            final SlimefunGuideMode slimefunGuideMode) {
+        final Player player,
+        final PlayerProfile playerProfile,
+        final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu menu = new ChestMenu("&6点击选择切换的按键");
 
         OnClick.preset(menu);
@@ -92,18 +92,18 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
         for (int ss : Formats.actionSelect.getChars('b')) {
             menu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
             menu.addMenuClickHandler(
-                    ss, (pl, s, is, action) -> EventUtil.callEvent(
-                                    new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, implementation))
-                            .ifSuccess(() -> {
-                                GuideHistory guideHistory = playerProfile.getGuideHistory();
-                                if (action.isShiftClicked()) {
-                                    SlimefunGuide.openMainMenu(
-                                            playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                                } else {
-                                    GuideUtil.goBack(guideHistory);
-                                }
-                                return false;
-                            })
+                ss, (pl, s, is, action) -> EventUtil.callEvent(
+                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, implementation))
+                    .ifSuccess(() -> {
+                        GuideHistory guideHistory = playerProfile.getGuideHistory();
+                        if (action.isShiftClicked()) {
+                            SlimefunGuide.openMainMenu(
+                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
+                        } else {
+                            GuideUtil.goBack(guideHistory);
+                        }
+                        return false;
+                    })
             );
         }
 
@@ -115,17 +115,17 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
                 BaseAction act = actions.get(k);
                 menu.addItem(s, PatchScope.Action.patch(player, GuideUtil.getActionIcon(act)));
                 menu.addMenuClickHandler(
-                        s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ActionButtonClickEvent(
-                                pl,
-                                item, slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                        )).ifSuccess(() -> {
-                            BaseAction.redirect(pl, act.parent(), keybind, act);
-                            pl.closeInventory();
-                            pl.sendMessage(ChatColors.color("&a已设置 " + keybind.name() + " -> " + act.name()));
-                            GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                            playerProfile.getGuideHistory().openLastEntry(GuideUtil.getGuide(pl, slimefunGuideMode));
-                            return false;
-                        })
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ActionButtonClickEvent(
+                        pl,
+                        item, slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                    )).ifSuccess(() -> {
+                        BaseAction.redirect(pl, act.parent(), keybind, act);
+                        pl.closeInventory();
+                        pl.sendMessage(ChatColors.color("&a已设置 " + keybind.name() + " -> " + act.name()));
+                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                        playerProfile.getGuideHistory().openLastEntry(GuideUtil.getGuide(pl, slimefunGuideMode));
+                        return false;
+                    })
                 );
             } else {
                 menu.addItem(s, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()));
@@ -135,47 +135,47 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
 
         for (int s : Formats.actionSelect.getChars('P')) {
             menu.addItem(
-                    s, PatchScope.PreviousPage.patch(
-                            player, ChestMenuUtils.getPreviousButton(
-                                    player, page,
-                                    pages
-                            )
+                s, PatchScope.PreviousPage.patch(
+                    player, ChestMenuUtils.getPreviousButton(
+                        player, page,
+                        pages
                     )
+                )
             );
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
-                            pl,
-                            item,
-                            slot,
-                            action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                    )).ifSuccess(() -> {
-                        if (page - 1 > 0) {
-                            getByPage(page - 1).open(player, playerProfile, slimefunGuideMode);
-                        }
+                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                    pl,
+                    item,
+                    slot,
+                    action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                )).ifSuccess(() -> {
+                    if (page - 1 > 0) {
+                        getByPage(page - 1).open(player, playerProfile, slimefunGuideMode);
+                    }
 
-                        return false;
-                    })
+                    return false;
+                })
             );
         }
 
         for (int s : Formats.actionSelect.getChars('N')) {
             menu.addItem(s, PatchScope.NextPage.patch(player, ChestMenuUtils.getNextButton(player, page, pages)));
             menu.addMenuClickHandler(
-                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
-                            pl, item,
-                            slot,
-                            action,
-                            menu,
-                            GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                    )).ifSuccess(() -> {
-                        int next = page + 1;
+                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                    pl, item,
+                    slot,
+                    action,
+                    menu,
+                    GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
+                )).ifSuccess(() -> {
+                    int next = page + 1;
 
-                        if (page + 1 <= pages) {
-                            getByPage(page + 1).open(player, playerProfile, slimefunGuideMode);
-                        }
+                    if (page + 1 <= pages) {
+                        getByPage(page + 1).open(player, playerProfile, slimefunGuideMode);
+                    }
 
-                        return false;
-                    })
+                    return false;
+                })
             );
         }
         Formats.actionSelect.renderCustom(menu);

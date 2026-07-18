@@ -133,9 +133,9 @@ public class CERCalculator {
                 for (var item : recipe.getOutput()) {
                     if (predicate.test(item)) {
                         return calc(
-                                cost + ValueTable.getValue(recipe.getInput()), item.getAmount(),
-                                recipe.getTicks(),
-                                (double) acd.getEnergyConsumption() / acd.getSpeed() * recipe.getTicks()
+                            cost + ValueTable.getValue(recipe.getInput()), item.getAmount(),
+                            recipe.getTicks(),
+                            (double) acd.getEnergyConsumption() / acd.getSpeed() * recipe.getTicks()
                         );
                     }
                 }
@@ -174,8 +174,8 @@ public class CERCalculator {
                         }
 
                         return calc(
-                                cost + v, v2, recipe.getTicks(),
-                                (double) rcrmd.getEnergyConsumption() / rcrmd.getSpeed() * recipe.getTicks()
+                            cost + v, v2, recipe.getTicks(),
+                            (double) rcrmd.getEnergyConsumption() / rcrmd.getSpeed() * recipe.getTicks()
                         );
                     }
                     j++;
@@ -204,8 +204,8 @@ public class CERCalculator {
                         double amt = chance == null ? output.getAmount() : output.getAmount() * chance / 100.0D;
                         if (recipe.isChooseOneIfHas()) amt /= lo.linkedOutput().size();
                         return calc(
-                                cost + iv, amt, (double) recipe.getTicks() / rclrmd.getSpeed(),
-                                (double) (recipe.getTicks() * rclrmd.getEnergyConsumption()) / rclrmd.getSpeed()
+                            cost + iv, amt, (double) recipe.getTicks() / rclrmd.getSpeed(),
+                            (double) (recipe.getTicks() * rclrmd.getEnergyConsumption()) / rclrmd.getSpeed()
                         );
                     }
                 }
@@ -218,8 +218,8 @@ public class CERCalculator {
                         double amt = chance == null ? output.getAmount() : output.getAmount() * chance / 100.0D;
                         if (recipe.isChooseOneIfHas()) amt /= lo.freeChances().length;
                         return calc(
-                                cost + iv, amt, (double) recipe.getTicks() / rclrmd.getSpeed(),
-                                (double) (recipe.getTicks() * rclrmd.getEnergyConsumption()) / rclrmd.getSpeed()
+                            cost + iv, amt, (double) recipe.getTicks() / rclrmd.getSpeed(),
+                            (double) (recipe.getTicks() * rclrmd.getEnergyConsumption()) / rclrmd.getSpeed()
                         );
                     }
                 }
@@ -280,9 +280,9 @@ public class CERCalculator {
 
                             double btv = ValueTable.getTemplateValue(t);
                             return calc(
-                                    cost + (fasterIfMoreTemplates ? btv / mavg : btv) + v, v2,
-                                    fasterIfMoreTemplates ? (double) recipe.getTicks() / mavg : recipe.getTicks()
-                                    , (double) consumption * recipe.getTicks()
+                                cost + (fasterIfMoreTemplates ? btv / mavg : btv) + v, v2,
+                                fasterIfMoreTemplates ? (double) recipe.getTicks() / mavg : recipe.getTicks()
+                                , (double) consumption * recipe.getTicks()
                             );
                         }
                         j++;
@@ -298,8 +298,8 @@ public class CERCalculator {
             for (var ft : aep.getFuelTypes()) {
                 if (predicate.test(ft.getOutput())) {
                     return calc(
-                            cost + ValueTable.getValue(ft.getInput()), ft.getOutput().getAmount(), ft.getTicks(),
-                            -aep.getEnergyProduction() * ft.getTicks()
+                        cost + ValueTable.getValue(ft.getInput()), ft.getOutput().getAmount(), ft.getTicks(),
+                        -aep.getEnergyProduction() * ft.getTicks()
                     );
                 }
             }
@@ -406,8 +406,8 @@ public class CERCalculator {
                 if (predicate.test(Converter.getItem(output))) {
                     int speed = scd.getSpeed();
                     return calc(
-                            cost + ValueTable.getValue(input, amount), 1, speed,
-                            (double) (energyPerTick * amount) / speed
+                        cost + ValueTable.getValue(input, amount), 1, speed,
+                        (double) (energyPerTick * amount) / speed
                     );
                 }
             }
@@ -440,8 +440,8 @@ public class CERCalculator {
                 ItemStack output = Converter.getItem(recipe.getOutput());
                 if (predicate.test(output)) {
                     return calc(
-                            cost + ValueTable.getValue(i1) + ValueTable.getValue(i2), output.getAmount(), 1,
-                            energyPerTick
+                        cost + ValueTable.getValue(i1) + ValueTable.getValue(i2), output.getAmount(), 1,
+                        energyPerTick
                     );
                 }
             }
@@ -463,8 +463,8 @@ public class CERCalculator {
                 for (ItemStack o : os) {
                     if (predicate.test(o)) {
                         return calc(
-                                cost + ValueTable.getValue(new ItemStack(material)), o.getAmount(),
-                                ticksPerOutput, energyPerTick * ticksPerOutput
+                            cost + ValueTable.getValue(new ItemStack(material)), o.getAmount(),
+                            ticksPerOutput, energyPerTick * ticksPerOutput
                         );
                     }
                 }
@@ -492,8 +492,8 @@ public class CERCalculator {
                     ItemStack output = recipe.getOutput();
                     if (predicate.test(output)) {
                         return calc(
-                                cost + ValueTable.getValue(recipe.getInputs()), output.getAmount(),
-                                ticksPerOutput, energyPerTick * ticksPerOutput
+                            cost + ValueTable.getValue(recipe.getInputs()), output.getAmount(),
+                            ticksPerOutput, energyPerTick * ticksPerOutput
                         );
                     }
                 }
@@ -516,9 +516,9 @@ public class CERCalculator {
                 for (var o : recipe.getOutput()) {
                     if (predicate.test(o)) {
                         return calc(
-                                cost + ValueTable.getValue(recipe.getInput()), o.getAmount(),
-                                (double) recipe.getTicks() / processingSpeed,
-                                (double) (energyConsumedPerTick * recipe.getTicks()) / processingSpeed
+                            cost + ValueTable.getValue(recipe.getInput()), o.getAmount(),
+                            (double) recipe.getTicks() / processingSpeed,
+                            (double) (energyConsumedPerTick * recipe.getTicks()) / processingSpeed
                         );
                     }
                 }
@@ -566,8 +566,8 @@ public class CERCalculator {
             for (var entry : mdcd.getItemStackDoubleMap().entrySet()) {
                 if (predicate.test(entry.getKey())) {
                     return calc(
-                            cost + ValueTable.getValue(chamber), entry.getValue() * entry.getKey().getAmount(),
-                            interval, energy * interval
+                        cost + ValueTable.getValue(chamber), entry.getValue() * entry.getKey().getAmount(),
+                        interval, energy * interval
                     );
                 }
             }
@@ -583,8 +583,8 @@ public class CERCalculator {
                 for (var output : recipe.getOutput()) {
                     if (predicate.test(output)) {
                         return calc(
-                                cost + ValueTable.getValue(recipe.getInput()), output.getAmount(),
-                                recipe.getTicks(), recipe.getTicks() * amd.getEnergyConsumption()
+                            cost + ValueTable.getValue(recipe.getInput()), output.getAmount(),
+                            recipe.getTicks(), recipe.getTicks() * amd.getEnergyConsumption()
                         );
                     }
                 }

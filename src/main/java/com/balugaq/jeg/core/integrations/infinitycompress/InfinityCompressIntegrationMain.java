@@ -41,20 +41,32 @@ import java.util.List;
  */
 @NullMarked
 public class InfinityCompressIntegrationMain implements Integration {
-    public static final int[] INFINITY_FORGE_INPUT_SLOTS = new int[] {
-            0, 1, 2, 3, 4, 5,
-            9, 10, 11, 12, 13, 14,
-            18, 19, 20, 21, 22, 23,
-            27, 28, 29, 30, 31, 32,
-            36, 37, 38, 39, 40, 41,
-            45, 46, 47, 48, 49, 50
+    public static final int[] INFINITY_FORGE_INPUT_SLOTS = new int[]{
+        0, 1, 2, 3, 4, 5,
+        9, 10, 11, 12, 13, 14,
+        18, 19, 20, 21, 22, 23,
+        27, 28, 29, 30, 31, 32,
+        36, 37, 38, 39, 40, 41,
+        45, 46, 47, 48, 49, 50
     };
-    public static final int[] AUTO_INPUT_SLOTS = new int[] {
-            19, 20, 21,
-            28, 29, 30,
-            37, 38, 39
+    public static final int[] AUTO_INPUT_SLOTS = new int[]{
+        19, 20, 21,
+        28, 29, 30,
+        37, 38, 39
     };
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
 
     @Override
     public String getHookPlugin() {
@@ -73,18 +85,6 @@ public class InfinityCompressIntegrationMain implements Integration {
         rrc("INFCP_FN_AUTO_GEM_ALTAR", AUTO_INPUT_SLOTS, false);
         rrc("INFCP_FN_AUTO_MAGIC_ALTAR", AUTO_INPUT_SLOTS, false);
         rrc("INFCP_FN_AUTO_STICK_ALTAR", AUTO_INPUT_SLOTS, false);
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

@@ -50,10 +50,10 @@ public class SCCustomMaterialGeneratorData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
-                null,
-                new ItemStack[] {output},
-                tickRate,
-                0
+            null,
+            new ItemStack[]{output},
+            tickRate,
+            0
         ));
     }
 }

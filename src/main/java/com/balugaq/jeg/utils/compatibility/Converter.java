@@ -68,9 +68,7 @@ public class Converter {
     /**
      * Converts a {@link SlimefunItemStack} to a Bukkit ItemStack.
      *
-     * @param slimefunItemStack
-     *         the {@link SlimefunItemStack} to convert
-     *
+     * @param slimefunItemStack the {@link SlimefunItemStack} to convert
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(SlimefunItemStack slimefunItemStack) {
@@ -80,9 +78,7 @@ public class Converter {
     /**
      * Converts a {@link SlimefunItemStack} to a Bukkit ItemStack.
      *
-     * @param item
-     *         the {@link SlimefunItemStack} to convert
-     *
+     * @param item the {@link SlimefunItemStack} to convert
      * @return the converted Bukkit ItemStack
      */
     @SuppressWarnings({"RedundantClassCall", "ConstantValue"})
@@ -126,9 +122,7 @@ public class Converter {
      * Converts a {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to a Bukkit
      * ItemStack.
      *
-     * @param cis
-     *         the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
-     *
+     * @param cis the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack cis) {
@@ -139,9 +133,7 @@ public class Converter {
      * Converts a {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to a Bukkit
      * ItemStack.
      *
-     * @param item
-     *         the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
-     *
+     * @param item the {@link io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack} to convert
      * @return the converted Bukkit ItemStack
      */
     @SuppressWarnings({"RedundantClassCall", "ConstantValue"})
@@ -184,9 +176,7 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     *
+     * @param itemStack the Bukkit ItemStack to convert
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(ItemStack itemStack) {
@@ -196,9 +186,7 @@ public class Converter {
     /**
      * Converts a Material to a Bukkit ItemStack.
      *
-     * @param material
-     *         the Material to convert
-     *
+     * @param material the Material to convert
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material) {
@@ -208,26 +196,20 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with custom metadata.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     * @param itemMetaConsumer
-     *         the consumer to modify the item metadata
-     *
+     * @param itemStack        the Bukkit ItemStack to convert
+     * @param itemMetaConsumer the consumer to modify the item metadata
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
-            ItemStack itemStack, Consumer<ItemMeta> itemMetaConsumer) {
+        ItemStack itemStack, Consumer<ItemMeta> itemMetaConsumer) {
         return new CustomItemStack(itemStack, itemMetaConsumer).asBukkit();
     }
 
     /**
      * Converts a Material to a Bukkit ItemStack with custom metadata.
      *
-     * @param material
-     *         the Material to convert
-     * @param consumer
-     *         the consumer to modify the item metadata
-     *
+     * @param material the Material to convert
+     * @param consumer the consumer to modify the item metadata
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material, Consumer<ItemMeta> consumer) {
@@ -237,83 +219,62 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a name and lore.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     * @param name
-     *         the name of the item
-     * @param lore
-     *         the lore of the item
-     *
+     * @param itemStack the Bukkit ItemStack to convert
+     * @param name      the name of the item
+     * @param lore      the lore of the item
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
-            ItemStack itemStack, @Nullable String name, List<String> lore) {
+        ItemStack itemStack, @Nullable String name, List<String> lore) {
         return new CustomItemStack(itemStack, name, lore).asBukkit();
     }
 
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a name and lore.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     * @param name
-     *         the name of the item
-     * @param lore
-     *         the lore of the item
-     *
+     * @param itemStack the Bukkit ItemStack to convert
+     * @param name      the name of the item
+     * @param lore      the lore of the item
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
-            ItemStack itemStack, @Nullable String name, String... lore) {
+        ItemStack itemStack, @Nullable String name, String... lore) {
         return new CustomItemStack(itemStack, name, lore).asBukkit();
     }
 
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a color, name, and lore.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     * @param color
-     *         the color of the item
-     * @param name
-     *         the name of the item
-     * @param lore
-     *         the lore of the item
-     *
+     * @param itemStack the Bukkit ItemStack to convert
+     * @param color     the color of the item
+     * @param name      the name of the item
+     * @param lore      the lore of the item
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
-            ItemStack itemStack, Color color, @Nullable String name, String... lore) {
+        ItemStack itemStack, Color color, @Nullable String name, String... lore) {
         return new CustomItemStack(itemStack, color, name, lore).asBukkit();
     }
 
     /**
      * Converts a Material to a Bukkit ItemStack with a name and lore.
      *
-     * @param material
-     *         the Material to convert
-     * @param name
-     *         the name of the item
-     * @param lore
-     *         the lore of the item
-     *
+     * @param material the Material to convert
+     * @param name     the name of the item
+     * @param lore     the lore of the item
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
-            Material material, @Nullable String name, String... lore) {
+        Material material, @Nullable String name, String... lore) {
         return new CustomItemStack(material, name, lore).asBukkit();
     }
 
     /**
      * Converts a Material to a Bukkit ItemStack with a name and lore.
      *
-     * @param material
-     *         the Material to convert
-     * @param name
-     *         the name of the item
-     * @param lore
-     *         the lore of the item
-     *
+     * @param material the Material to convert
+     * @param name     the name of the item
+     * @param lore     the lore of the item
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material, String name, List<String> lore) {
@@ -323,11 +284,8 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a list of lore.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     * @param list
-     *         the list of lore
-     *
+     * @param itemStack the Bukkit ItemStack to convert
+     * @param list      the list of lore
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(ItemStack itemStack, List<String> list) {
@@ -337,11 +295,8 @@ public class Converter {
     /**
      * Converts a Material to a Bukkit ItemStack with a list of lore.
      *
-     * @param material
-     *         the Material to convert
-     * @param list
-     *         the list of lore
-     *
+     * @param material the Material to convert
+     * @param list     the list of lore
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(Material material, List<String> list) {
@@ -351,26 +306,20 @@ public class Converter {
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a specified amount.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     * @param amount
-     *         the amount of the item
-     *
+     * @param itemStack the Bukkit ItemStack to convert
+     * @param amount    the amount of the item
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(
-            ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
+        ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
         return new CustomItemStack(itemStack, amount).asBukkit();
     }
 
     /**
      * Converts a Bukkit ItemStack to another Bukkit ItemStack with a specified Material.
      *
-     * @param itemStack
-     *         the Bukkit ItemStack to convert
-     * @param material
-     *         the Material of the item
-     *
+     * @param itemStack the Bukkit ItemStack to convert
+     * @param material  the Material of the item
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(ItemStack itemStack, Material material) {
@@ -378,7 +327,7 @@ public class Converter {
     }
 
     public static ItemStack getItem(
-            Material material, String name, Consumer<ItemMeta> consumer) {
+        Material material, String name, Consumer<ItemMeta> consumer) {
         return new CustomItemStack(new CustomItemStack(material, name).asBukkit(), consumer).asBukkit();
     }
 
@@ -439,13 +388,13 @@ public class Converter {
         }
 
         public Builder add(
-                ItemStack itemStack, @Nullable String name, String... lore) {
+            ItemStack itemStack, @Nullable String name, String... lore) {
             itemStacks.add(getItem(itemStack, name, lore));
             return this;
         }
 
         public Builder add(
-                ItemStack itemStack, Color color, @Nullable String name, String... lore) {
+            ItemStack itemStack, Color color, @Nullable String name, String... lore) {
             itemStacks.add(getItem(itemStack, color, name, lore));
             return this;
         }
@@ -481,7 +430,7 @@ public class Converter {
         }
 
         public Builder add(
-                Material material, String name, Consumer<ItemMeta> consumer) {
+            Material material, String name, Consumer<ItemMeta> consumer) {
             itemStacks.add(getItem(material, name, consumer));
             return this;
         }
@@ -516,9 +465,9 @@ public class Converter {
 
         public ItemStack findFirst() {
             return itemStacks.stream()
-                    .filter(itemStack -> itemStack != null && itemStack.getType() != Material.AIR)
-                    .findFirst()
-                    .orElse(AIR.clone());
+                .filter(itemStack -> itemStack != null && itemStack.getType() != Material.AIR)
+                .findFirst()
+                .orElse(AIR.clone());
         }
     }
 }

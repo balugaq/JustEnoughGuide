@@ -27,14 +27,9 @@
 
 package com.balugaq.jeg.core.integrations.placeholderapi;
 
-import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author balugaq
@@ -43,6 +38,7 @@ import java.util.List;
 @NullMarked
 public class PlaceholderAPIIntegrationMain implements Integration {
     private @UnknownNullability JEGPlaceholderExpansion expansion;
+
     public String getHookPlugin() {
         return "PlaceholderAPI";
     }
@@ -52,6 +48,7 @@ public class PlaceholderAPIIntegrationMain implements Integration {
         expansion = new JEGPlaceholderExpansion();
         expansion.register();
     }
+
     @Override
     public void onDisable() {
         expansion.unregister();

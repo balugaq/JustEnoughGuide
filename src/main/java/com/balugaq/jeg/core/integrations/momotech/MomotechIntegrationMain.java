@@ -119,6 +119,18 @@ public class MomotechIntegrationMain implements Integration {
         return plugin;
     }
 
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
+
     @Override
     public String getHookPlugin() {
         return "Momotech";
@@ -140,13 +152,13 @@ public class MomotechIntegrationMain implements Integration {
 
             return switch (s.getId()) {
                 case "MOMOTECH_CREATIVE" ->
-                        AbstractItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_AMOUNTS);
+                    AbstractItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_AMOUNTS);
                 case "MOMOTECH_CREATIVE_I" ->
-                        AbstractItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_I_AMOUNTS);
+                    AbstractItemSettingsGuideOption.generateChoices(MomotechCreativeItemRecipeSettingsGuideOption.getItem(p), MOMOTECH_CREATIVE_I_AMOUNTS);
                 case "MOMOTECH_NONE" ->
-                        AbstractItemSettingsGuideOption.generateChoices(MomotechNoneRecipeSettingsGuideOption.getItems(p), MOMOTECH_NONE_AMOUNTS);
+                    AbstractItemSettingsGuideOption.generateChoices(MomotechNoneRecipeSettingsGuideOption.getItems(p), MOMOTECH_NONE_AMOUNTS);
                 case "MOMOTECH_QUANTITY_ITEM" ->
-                        AbstractItemSettingsGuideOption.generateChoices(MomotechQuantityItemRecipeSettingsGuideOption.getItem(p), MAX_AMOUNTS);
+                    AbstractItemSettingsGuideOption.generateChoices(MomotechQuantityItemRecipeSettingsGuideOption.getItem(p), MAX_AMOUNTS);
                 case "MOMOTECH_CREATIVE_II" -> UEC;
                 case "MOMOTECH_FINAL_RULE" -> RC;
                 case "MOMOTECH_FINAL_STAR" -> FC;
@@ -162,18 +174,6 @@ public class MomotechIntegrationMain implements Integration {
         rrc("MOMOTECH_QUANTITY_CONSTRUCTOR", QUANTITY_CONSTRUCTOR_RECIPE_SLOTS, true);
 
         JustEnoughGuide.getListenerManager().registerListener(new MomotechCreativeItemRecipeCompletePrecheckListener());
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

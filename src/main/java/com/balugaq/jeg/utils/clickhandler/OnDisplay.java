@@ -34,7 +34,6 @@ import com.balugaq.jeg.api.interfaces.VanillaItemShade;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.StackUtils;
@@ -101,7 +100,7 @@ public interface OnDisplay {
         }
 
         static ItemGroup NoPermission(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup
-                , JEGSlimefunGuideImplementation guide) {
+            , JEGSlimefunGuideImplementation guide) {
             return new NoPermission(player, itemGroup, guide);
         }
 
@@ -171,8 +170,8 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                        slot, PatchScope.ItemGroup.patch(player, itemGroup.getItem(player)),
-                        OnClick.ItemGroup.Normal.create(guide, menu, itemGroup)
+                    slot, PatchScope.ItemGroup.patch(player, itemGroup.getItem(player)),
+                    OnClick.ItemGroup.Normal.create(guide, menu, itemGroup)
                 );
             }
         }
@@ -192,14 +191,14 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 List<String> additionLore = List.of(
-                        "",
-                        (itemGroup instanceof FlexItemGroup || itemGroup.getItems().isEmpty())
-                                ? ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon()))
-                                : ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(
-                                itemGroup.getAddon(),
-                                itemGroup.getItems().get(0).getId()
-                        )),
-                        ChatColors.color("&e右键以取消收藏物品组")
+                    "",
+                    (itemGroup instanceof FlexItemGroup || itemGroup.getItems().isEmpty())
+                        ? ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon()))
+                        : ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(
+                        itemGroup.getAddon(),
+                        itemGroup.getItems().get(0).getId()
+                    )),
+                    ChatColors.color("&e右键以取消收藏物品组")
                 );
 
                 ItemStack icon = Converter.getItem(itemGroup.getItem(player));
@@ -210,18 +209,18 @@ public interface OnDisplay {
                     meta.setLore(lore);
 
                     meta.addItemFlags(
-                            ItemFlag.HIDE_ATTRIBUTES,
-                            ItemFlag.HIDE_ENCHANTS,
-                            JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
+                        ItemFlag.HIDE_ATTRIBUTES,
+                        ItemFlag.HIDE_ENCHANTS,
+                        JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
                     );
                 });
 
                 menu.addItem(
-                        slot, PatchScope.ItemGroup.patch(player, icon), OnClick.ItemGroup.Bookmark.create(
-                                guide,
-                                menu,
-                                itemGroup
-                        )
+                    slot, PatchScope.ItemGroup.patch(player, icon), OnClick.ItemGroup.Bookmark.create(
+                        guide,
+                        menu,
+                        itemGroup
+                    )
                 );
             }
         }
@@ -252,11 +251,11 @@ public interface OnDisplay {
                 }
 
                 ItemStack icon = PatchScope.LockedItemGroup.patch(
-                        player, Converter.getItem(
-                                Material.BARRIER,
-                                "&4" + Slimefun.getLocalization().getMessage(player, "guide.locked") + " &7- &f" + ItemStackHelper.getDisplayName(itemGroup.getItem(player)),
-                                lore.toArray(new String[0])
-                        )
+                    player, Converter.getItem(
+                        Material.BARRIER,
+                        "&4" + Slimefun.getLocalization().getMessage(player, "guide.locked") + " &7- &f" + ItemStackHelper.getDisplayName(itemGroup.getItem(player)),
+                        lore.toArray(new String[0])
+                    )
                 );
                 menu.addItem(slot, icon, OnClick.BaseClickHandler.deny());
             }
@@ -276,12 +275,12 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                        slot, PatchScope.NoPermission.patch(
-                                player, Converter.getItem(
-                                        ChestMenuUtils.getNoPermissionItem(),
-                                        ItemStackHelper.getDisplayName(itemGroup.getItem(player))
-                                )
-                        ), OnClick.BaseClickHandler.deny()
+                    slot, PatchScope.NoPermission.patch(
+                        player, Converter.getItem(
+                            ChestMenuUtils.getNoPermissionItem(),
+                            ItemStackHelper.getDisplayName(itemGroup.getItem(player))
+                        )
+                    ), OnClick.BaseClickHandler.deny()
                 );
             }
         }
@@ -299,13 +298,13 @@ public interface OnDisplay {
         }
 
         static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType
-                , ItemStack itemStack, SlimefunGuideImplementation guide) {
+            , ItemStack itemStack, SlimefunGuideImplementation guide) {
             if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, recipeType, itemStack, jeg);
             return display(player, recipeType, itemStack, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
         static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType
-                , ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
+            , ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
             return Normal(player, recipeType, itemStack, guide);
         }
 
@@ -326,9 +325,9 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                        slot,
-                        itemStack,
-                        OnClick.RecipeType.Normal.create(guide, menu, recipeType)
+                    slot,
+                    itemStack,
+                    OnClick.RecipeType.Normal.create(guide, menu, recipeType)
                 );
             }
         }
@@ -341,7 +340,7 @@ public interface OnDisplay {
     @SuppressWarnings("ConstantValue")
     interface Item extends OnDisplay {
         DisplayType Normal = DisplayType.Normal, ItemMark = DisplayType.ItemMark, Bookmark = DisplayType.Bookmark,
-                Search = DisplayType.Search;
+            Search = DisplayType.Search;
 
         static Item Vanilla(Player player, @Nullable SlimefunItem slimefunItem, ItemStack itemStack,
                             JEGSlimefunGuideImplementation guide) {
@@ -480,31 +479,31 @@ public interface OnDisplay {
                 if (research == null) return;
 
                 ItemStack icon = Converter.getItem(
-                        ChestMenuUtils.getNoPermissionItem(),
-                        "&f" + ItemUtils.getItemName(item.getItem()),
-                        "&7" + item.getId(),
-                        "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
-                        "",
-                        "&a> 单击解锁",
-                        "",
-                        "&7需要 &b",
-                        VaultIntegration.isEnabled()
-                                ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
-                                : research.getLevelCost() + " 级经验"
+                    ChestMenuUtils.getNoPermissionItem(),
+                    "&f" + ItemUtils.getItemName(item.getItem()),
+                    "&7" + item.getId(),
+                    "&4&l" + Slimefun.getLocalization().getMessage(player, "guide.locked"),
+                    "",
+                    "&a> 单击解锁",
+                    "",
+                    "&7需要 &b",
+                    VaultIntegration.isEnabled()
+                        ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
+                        : research.getLevelCost() + " 级经验"
                 );
 
                 ItemMeta meta = icon.getItemMeta();
                 meta.getPersistentDataContainer().set(
-                        JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY,
-                        PersistentDataType.STRING, item.getId()
+                    JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY,
+                    PersistentDataType.STRING, item.getId()
                 );
                 icon.setItemMeta(meta);
 
                 menu.addItem(
-                        slot,
-                        PatchScope.Research.patch(player, icon),
-                        // page argument is useless
-                        OnClick.Item.Research.create(guide, menu, 1)
+                    slot,
+                    PatchScope.Research.patch(player, icon),
+                    // page argument is useless
+                    OnClick.Item.Research.create(guide, menu, 1)
                 );
             }
         }
@@ -525,19 +524,19 @@ public interface OnDisplay {
             public void at(ChestMenu menu, int slot, int page) {
                 io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
-                        "",
-                        ChatColors.color(String.format(
-                                "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
-                                        itemGroup,
-                                        item.getId()
-                                )
-                                , LocalHelper.getDisplayName(itemGroup, player)
-                        ))
+                    "",
+                    ChatColors.color(String.format(
+                        "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
+                            itemGroup,
+                            item.getId()
+                        )
+                        , LocalHelper.getDisplayName(itemGroup, player)
+                    ))
                 );
 
                 ItemStack icon = Converter.getItem(item instanceof CustomIconDisplay cid ?
-                                                                                      cid.getCustomIcon() :
-                                                                                      item.getItem());
+                    cid.getCustomIcon() :
+                    item.getItem());
                 icon.editMeta(meta -> {
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -545,16 +544,16 @@ public interface OnDisplay {
                     meta.setLore(lore);
 
                     meta.addItemFlags(
-                            ItemFlag.HIDE_ATTRIBUTES,
-                            ItemFlag.HIDE_ENCHANTS,
-                            JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
+                        ItemFlag.HIDE_ATTRIBUTES,
+                        ItemFlag.HIDE_ENCHANTS,
+                        JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
                     );
                 });
 
                 menu.addItem(
-                        slot,
-                        PatchScope.SearchItem.patch(player, icon),
-                        OnClick.Item.Normal.create(guide, menu, page, item)
+                    slot,
+                    PatchScope.SearchItem.patch(player, icon),
+                    OnClick.Item.Normal.create(guide, menu, page, item)
                 );
             }
         }
@@ -575,20 +574,20 @@ public interface OnDisplay {
             public void at(ChestMenu menu, int slot, int page) {
                 io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
-                        "",
-                        ChatColors.color(String.format(
-                                "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
-                                        itemGroup,
-                                        item.getId()
-                                )
-                                , LocalHelper.getDisplayName(itemGroup, player)
-                        )),
-                        ChatColors.color("&e右键以取消收藏物品")
+                    "",
+                    ChatColors.color(String.format(
+                        "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
+                            itemGroup,
+                            item.getId()
+                        )
+                        , LocalHelper.getDisplayName(itemGroup, player)
+                    )),
+                    ChatColors.color("&e右键以取消收藏物品")
                 );
 
                 ItemStack icon = Converter.getItem(item instanceof CustomIconDisplay cid ?
-                                                                                      cid.getCustomIcon() :
-                                                                                      item.getItem());
+                    cid.getCustomIcon() :
+                    item.getItem());
                 icon.editMeta(meta -> {
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -596,18 +595,18 @@ public interface OnDisplay {
                     meta.setLore(lore);
 
                     meta.addItemFlags(
-                            ItemFlag.HIDE_ATTRIBUTES,
-                            ItemFlag.HIDE_ENCHANTS,
-                            JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
+                        ItemFlag.HIDE_ATTRIBUTES,
+                        ItemFlag.HIDE_ENCHANTS,
+                        JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
                     );
 
                     Slimefun.getItemDataService().setItemData(meta, item.getId());
                 });
 
                 menu.addItem(
-                        slot,
-                        PatchScope.SlimefunItem.patch(player, icon),
-                        OnClick.Item.Bookmark.create(guide, menu, page)
+                    slot,
+                    PatchScope.SlimefunItem.patch(player, icon),
+                    OnClick.Item.Bookmark.create(guide, menu, page)
                 );
             }
         }
@@ -628,20 +627,20 @@ public interface OnDisplay {
             public void at(ChestMenu menu, int slot, int page) {
                 io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
                 List<String> additionLore = List.of(
-                        "",
-                        ChatColors.color(String.format(
-                                "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
-                                        itemGroup,
-                                        item.getId()
-                                )
-                                , LocalHelper.getDisplayName(itemGroup, player)
-                        )),
-                        ChatColors.color("&e左键点击以收藏物品")
+                    "",
+                    ChatColors.color(String.format(
+                        "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
+                            itemGroup,
+                            item.getId()
+                        )
+                        , LocalHelper.getDisplayName(itemGroup, player)
+                    )),
+                    ChatColors.color("&e左键点击以收藏物品")
                 );
 
                 ItemStack icon = Converter.getItem(item instanceof CustomIconDisplay cid ?
-                                                                                      cid.getCustomIcon() :
-                                                                                      item.getItem());
+                    cid.getCustomIcon() :
+                    item.getItem());
                 icon.editMeta(meta -> {
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -649,18 +648,18 @@ public interface OnDisplay {
                     meta.setLore(lore);
 
                     meta.addItemFlags(
-                            ItemFlag.HIDE_ATTRIBUTES,
-                            ItemFlag.HIDE_ENCHANTS,
-                            JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
+                        ItemFlag.HIDE_ATTRIBUTES,
+                        ItemFlag.HIDE_ENCHANTS,
+                        JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP
                     );
 
                     Slimefun.getItemDataService().setItemData(meta, item.getId());
                 });
 
                 menu.addItem(
-                        slot,
-                        PatchScope.SlimefunItem.patch(player, icon),
-                        OnClick.Item.ItemMark.create(guide, menu, page)
+                    slot,
+                    PatchScope.SlimefunItem.patch(player, icon),
+                    OnClick.Item.ItemMark.create(guide, menu, page)
                 );
             }
         }
@@ -680,12 +679,12 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                        slot,
-                        PatchScope.SlimefunItem.patch(
-                                player,
-                                Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack)
-                        ),
-                        OnClick.Item.Normal.create(guide, menu, page, item)
+                    slot,
+                    PatchScope.SlimefunItem.patch(
+                        player,
+                        Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack)
+                    ),
+                    OnClick.Item.Normal.create(guide, menu, page, item)
                 );
             }
         }
@@ -727,9 +726,9 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                        slot,
-                        PatchScope.VanillaItem.patch(player, itemStack),
-                        OnClick.Item.Normal.create(guide, menu, page, slimefunItem)
+                    slot,
+                    PatchScope.VanillaItem.patch(player, itemStack),
+                    OnClick.Item.Normal.create(guide, menu, page, slimefunItem)
                 );
             }
         }
@@ -749,15 +748,15 @@ public interface OnDisplay {
             public void at(ChestMenu menu, int slot, int page) {
                 List<String> message = Slimefun.getPermissionsService().getLore(item);
                 menu.addItem(
-                        slot,
-                        PatchScope.NoPermission.patch(
-                                player, Converter.getItem(
-                                        ChestMenuUtils.getNoPermissionItem(),
-                                        item.getItemName(),
-                                        message.toArray(new String[0])
-                                )
-                        ),
-                        OnClick.BaseClickHandler.deny()
+                    slot,
+                    PatchScope.NoPermission.patch(
+                        player, Converter.getItem(
+                            ChestMenuUtils.getNoPermissionItem(),
+                            item.getItemName(),
+                            message.toArray(new String[0])
+                        )
+                    ),
+                    OnClick.BaseClickHandler.deny()
                 );
             }
         }

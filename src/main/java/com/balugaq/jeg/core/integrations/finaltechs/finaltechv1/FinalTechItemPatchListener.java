@@ -54,15 +54,59 @@ import java.util.List;
 @NullMarked
 public class FinalTechItemPatchListener implements ItemPatchListener {
     public static final EnumSet<PatchScope> VALID_SCOPES = EnumSet.of(
-            PatchScope.SlimefunItem,
-            PatchScope.ItemMarkItem,
-            PatchScope.BookMarkItem,
-            PatchScope.SearchItem
+        PatchScope.SlimefunItem,
+        PatchScope.ItemMarkItem,
+        PatchScope.BookMarkItem,
+        PatchScope.SearchItem
     );
     public static final String DEFAULT_INPUT_VALUE = "0";
     public static final String DEFAULT_OUTPUT_VALUE = "INFINITY";
     public static @UnknownNullability Class<?> class_ItemValueTable = null;
     public static @UnknownNullability Object ItemValueTableInstance = null;
+
+    @UnknownNullability
+    public static String getOrCalItemInputValue(@Nullable ItemStack itemStack) {
+        if (!initValueTable()) {
+            return DEFAULT_INPUT_VALUE;
+        }
+
+        if (itemStack == null) {
+            return DEFAULT_INPUT_VALUE;
+        }
+
+        return (String) ReflectionUtil.invokeMethod(ItemValueTableInstance, "getOrCalItemInputValue", itemStack);
+    }
+
+    @UnknownNullability
+    public static String getOrCalItemOutputValue(@Nullable ItemStack itemStack) {
+        if (!initValueTable()) {
+            return DEFAULT_OUTPUT_VALUE;
+        }
+
+        if (itemStack == null) {
+            return DEFAULT_OUTPUT_VALUE;
+        }
+
+        return (String) ReflectionUtil.invokeMethod(ItemValueTableInstance, "getOrCalItemOutputValue", itemStack);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean initValueTable() {
+        if (class_ItemValueTable == null) {
+            try {
+                class_ItemValueTable = Class.forName("io.taraxacum.finaltech.api.factory.ItemValueTable");
+            } catch (ClassNotFoundException e) {
+                Debug.trace(e);
+                return false;
+            }
+        }
+
+        if (ItemValueTableInstance == null) {
+            ItemValueTableInstance = ReflectionUtil.invokeStaticMethod(class_ItemValueTable, "getInstance");
+        }
+
+        return ItemValueTableInstance != null;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void patchItem(PatchEvent event) {
@@ -121,49 +165,5 @@ public class FinalTechItemPatchListener implements ItemPatchListener {
         meta.setLore(lore);
         tagMeta(meta);
         itemStack.setItemMeta(meta);
-    }
-
-    @UnknownNullability
-    public static String getOrCalItemInputValue(@Nullable ItemStack itemStack) {
-        if (!initValueTable()) {
-            return DEFAULT_INPUT_VALUE;
-        }
-
-        if (itemStack == null) {
-            return DEFAULT_INPUT_VALUE;
-        }
-
-        return (String) ReflectionUtil.invokeMethod(ItemValueTableInstance, "getOrCalItemInputValue", itemStack);
-    }
-
-    @UnknownNullability
-    public static String getOrCalItemOutputValue(@Nullable ItemStack itemStack) {
-        if (!initValueTable()) {
-            return DEFAULT_OUTPUT_VALUE;
-        }
-
-        if (itemStack == null) {
-            return DEFAULT_OUTPUT_VALUE;
-        }
-
-        return (String) ReflectionUtil.invokeMethod(ItemValueTableInstance, "getOrCalItemOutputValue", itemStack);
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean initValueTable() {
-        if (class_ItemValueTable == null) {
-            try {
-                class_ItemValueTable = Class.forName("io.taraxacum.finaltech.api.factory.ItemValueTable");
-            } catch (ClassNotFoundException e) {
-                Debug.trace(e);
-                return false;
-            }
-        }
-
-        if (ItemValueTableInstance == null) {
-            ItemValueTableInstance = ReflectionUtil.invokeStaticMethod(class_ItemValueTable, "getInstance");
-        }
-
-        return ItemValueTableInstance != null;
     }
 }

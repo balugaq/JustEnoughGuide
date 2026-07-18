@@ -48,8 +48,8 @@ public interface IParsable {
         }
 
         return Arrays.stream(clazz.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(Key.class))
-                .map(Field::getName)
-                .toArray(String[]::new);
+            .filter(field -> field.isAnnotationPresent(Key.class))
+            .map(Field::getName)
+            .toArray(String[]::new);
     }
 }

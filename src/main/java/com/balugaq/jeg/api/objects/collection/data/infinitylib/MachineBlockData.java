@@ -51,12 +51,12 @@ public class MachineBlockData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return recipes.stream()
-                .map(recipe -> new CERRecipeGroup.RecipeWrapper(
-                        recipe.getInputs(),
-                        new ItemStack[] {recipe.getOutput()},
-                        ticksPerOutput,
-                        (long) ticksPerOutput * energyPerTick
-                ))
-                .toList();
+            .map(recipe -> new CERRecipeGroup.RecipeWrapper(
+                recipe.getInputs(),
+                new ItemStack[]{recipe.getOutput()},
+                ticksPerOutput,
+                (long) ticksPerOutput * energyPerTick
+            ))
+            .toList();
     }
 }

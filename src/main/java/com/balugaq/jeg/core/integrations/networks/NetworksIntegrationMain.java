@@ -68,8 +68,8 @@ public class NetworksIntegrationMain implements Integration {
     };
     // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
-    public static final BlockFace[] VALID_FACES = new BlockFace[] {
-            BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    public static final BlockFace[] VALID_FACES = new BlockFace[]{
+        BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
     };
     public static @Nullable JavaPlugin plugin = null;
 
@@ -107,6 +107,18 @@ public class NetworksIntegrationMain implements Integration {
         return roots;
     }
 
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
+
     @Override
     public String getHookPlugin() {
         return "Networks";
@@ -126,18 +138,6 @@ public class NetworksIntegrationMain implements Integration {
         rrc("NTW_IMPORTER", PUSHER_SLOTS, true);
 
         RecipeCompletableRegistry.registerPlayerInventoryItemGetter(new QuantumStoragePlayerInventoryItemSeeker());
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override

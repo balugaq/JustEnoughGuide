@@ -56,19 +56,19 @@ public class ThirdPartyWarnings {
                 // Check if NetworksExpansion is in affected versions
                 if (netex.getPluginMeta().getPluginSoftDependencies().contains(JustEnoughGuide.getInstance().getName())) {
                     Debug.warn("Potential dependency cycle detected: Logitech -> Networks -> JustEnoughGuide -> " +
-                                       "LogiTech");
+                        "LogiTech");
                     Debug.warn("1. This may cause SpecialMenuProvider module load incorrectly, which will break the " +
-                                       "Big Recipe module");
+                        "Big Recipe module");
                     Debug.warn("2. This may cause incorrect load order where Logitech loads AFTER Networks and " +
-                                       "InfinityExpansion");
+                        "InfinityExpansion");
                     Debug.warn("Consequences of incorrect load order:");
                     Debug.warn("- Logitech will fail to load DependencyNetwork module");
                     Debug.warn("- Logitech will fail to load DependencyInfinity module");
                     Debug.warn("Impact:");
                     Debug.warn("- Without DependencyNetwork: Network Quantum Storage won't be recognized, and " +
-                                       "Networks Fast Machine won't load (may break some Logitech machines)");
+                        "Networks Fast Machine won't load (may break some Logitech machines)");
                     Debug.warn("- Without DependencyInfinity: Infinity Fast Machines won't load (may break some " +
-                                       "Logitech machines)");
+                        "Logitech machines)");
                     Debug.warn("Solution: Update NetworksExpansion to the latest version");
                 }
             }

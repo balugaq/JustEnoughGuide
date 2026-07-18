@@ -73,43 +73,43 @@ public class GroupResorter {
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     private static void loadInternal() {
         JustEnoughGuide
-                .runLater(
-                        () -> {
-                            if (hasCfg()) {
-                                int offset = 0;
-                                ItemGroup lastItemGroup = null;
-                                for (ItemGroup itemGroup :
-                                        new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
-                                    oldTiers.put(itemGroup, itemGroup.getTier());
+            .runLater(
+                () -> {
+                    if (hasCfg()) {
+                        int offset = 0;
+                        ItemGroup lastItemGroup = null;
+                        for (ItemGroup itemGroup :
+                            new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+                            oldTiers.put(itemGroup, itemGroup.getTier());
 
-                                    Integer cfg = getTierCfg(getKey(itemGroup));
-                                    if (cfg != null) {
-                                        setTier(itemGroup, cfg + offset);
-                                    } else {
-                                        if (lastItemGroup != null) {
-                                            // New ItemGroup
-                                            // Sort by related order.
-                                            setTier(itemGroup, getTier(lastItemGroup) + 1);
-                                            setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
-                                            offset += 1;
-                                        } else {
-                                            // By default
-                                            setTier(itemGroup, itemGroup.getTier());
-                                        }
-                                    }
-                                    lastItemGroup = itemGroup;
-                                }
+                            Integer cfg = getTierCfg(getKey(itemGroup));
+                            if (cfg != null) {
+                                setTier(itemGroup, cfg + offset);
                             } else {
-                                int i = 0;
-                                for (ItemGroup itemGroup :
-                                        new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
-                                    setTier(itemGroup, i++);
+                                if (lastItemGroup != null) {
+                                    // New ItemGroup
+                                    // Sort by related order.
+                                    setTier(itemGroup, getTier(lastItemGroup) + 1);
                                     setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                                    offset += 1;
+                                } else {
+                                    // By default
+                                    setTier(itemGroup, itemGroup.getTier());
                                 }
                             }
-                        },
-                        1L
-                );
+                            lastItemGroup = itemGroup;
+                        }
+                    } else {
+                        int i = 0;
+                        for (ItemGroup itemGroup :
+                            new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+                            setTier(itemGroup, i++);
+                            setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                        }
+                    }
+                },
+                1L
+            );
     }
 
     public static boolean hasCfg() {
@@ -126,7 +126,7 @@ public class GroupResorter {
         } else if (itemGroup instanceof SubItemGroup s) {
             NestedItemGroup n = s.getParent();
             return n.getKey().getNamespace() + "-" + n.getKey().getKey() + ".sub."
-                    + s.getKey().getNamespace() + "-" + n.getKey().getKey();
+                + s.getKey().getNamespace() + "-" + n.getKey().getKey();
         } else if (itemGroup.getClass() == ItemGroup.class) {
             return itemGroup.getKey().getNamespace() + "-" + itemGroup.getKey().getKey();
         } else {
@@ -135,7 +135,7 @@ public class GroupResorter {
     }
 
     public static void setTier(
-            final ItemGroup itemGroup, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
+        final ItemGroup itemGroup, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
         jegGroupTier.put(itemGroup, tier);
         setTierCfg(getKey(itemGroup), tier);
     }
@@ -170,7 +170,7 @@ public class GroupResorter {
     }
 
     public static void setTierCfg(
-            final String key, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
+        final String key, final @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int tier) {
         getOrCreateConfig().set(key + ".tier", tier);
         saveCfg();
     }

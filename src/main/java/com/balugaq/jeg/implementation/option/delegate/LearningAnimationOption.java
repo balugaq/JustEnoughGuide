@@ -57,6 +57,14 @@ import java.util.Optional;
 @SuppressWarnings("DataFlowIssue")
 @NullMarked
 public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
+    public static NamespacedKey key0() {
+        return new NamespacedKey(Slimefun.instance(), "research_learning_animation");
+    }
+
+    public static boolean isEnabled(Player p) {
+        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == 1;
+    }
+
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
@@ -67,13 +75,13 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
             String optionState = enabled ? "enabled" : "disabled";
             List<String> lore = Slimefun.getLocalization().getMessages(
-                    p,
-                    "guide.options.learning-animation." + optionState + ".text"
+                p,
+                "guide.options.learning-animation." + optionState + ".text"
             );
             lore.add("");
             String var10001 = Slimefun.getLocalization().getMessage(
-                    p,
-                    "guide.options.learning-animation." + optionState + ".click"
+                p,
+                "guide.options.learning-animation." + optionState + ".click"
             );
             lore.add("&7⇨ " + var10001);
             ItemStack item = new CustomItemStack(enabled ? Material.MAP : Material.PAPER, lore);
@@ -83,16 +91,8 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
         }
     }
 
-    public static NamespacedKey key0() {
-        return new NamespacedKey(Slimefun.instance(), "research_learning_animation");
-    }
-
     public NamespacedKey getKey() {
         return key0();
-    }
-
-    public static boolean isEnabled(Player p) {
-        return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == 1;
     }
 
     public void onClick(Player p, ItemStack guide) {

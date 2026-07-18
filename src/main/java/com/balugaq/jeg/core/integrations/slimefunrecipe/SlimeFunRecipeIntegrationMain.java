@@ -27,15 +27,11 @@
 
 package com.balugaq.jeg.core.integrations.slimefunrecipe;
 
-import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import pers.xanadu.slimefunrecipe.manager.GuiManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author balugaq
@@ -43,13 +39,13 @@ import java.util.List;
  */
 @NullMarked
 public class SlimeFunRecipeIntegrationMain implements Integration {
+    public static void openGui(Player player, SlimefunItem sf) {
+        GuiManager.openSlimeInv(player, sf);
+    }
+
     @Override
     public String getHookPlugin() {
         return "SlimeFunRecipe";
-    }
-
-    public static void openGui(Player player, SlimefunItem sf) {
-        GuiManager.openSlimeInv(player, sf);
     }
 
     @Override

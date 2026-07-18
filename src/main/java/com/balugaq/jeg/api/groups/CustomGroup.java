@@ -85,9 +85,9 @@ public class CustomGroup extends MixedGroup<CustomGroup> {
 
     @Override
     public void open(
-            Player player,
-            PlayerProfile playerProfile,
-            SlimefunGuideMode slimefunGuideMode) {
+        Player player,
+        PlayerProfile playerProfile,
+        SlimefunGuideMode slimefunGuideMode) {
         if (acitons.isEmpty()) {
             playerProfile.getGuideHistory().add(this, this.page);
             this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);

@@ -43,17 +43,17 @@ public class SlimefunRegistryFinalizeListener implements Listener {
     @Getter
     private static final List<Runnable> tasks = new ArrayList<>();
 
-    @EventHandler
-    public void onRegistryFinalized(SlimefunItemRegistryFinalizedEvent event) {
-        tasks.forEach(Runnable::run);
-        clearTasks();
-    }
-
     public static void addTask(Runnable task) {
         tasks.add(task);
     }
 
     public static void clearTasks() {
         tasks.clear();
+    }
+
+    @EventHandler
+    public void onRegistryFinalized(SlimefunItemRegistryFinalizedEvent event) {
+        tasks.forEach(Runnable::run);
+        clearTasks();
     }
 }

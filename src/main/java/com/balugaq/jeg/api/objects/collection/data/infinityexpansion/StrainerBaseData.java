@@ -51,12 +51,12 @@ public class StrainerBaseData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return List.of(new CERRecipeGroup.RecipeWrapper(
-                null,
-                (new ArrayList<>(List.of(OUTPUTS)) {{
-                    add(POTATO);
-                }}).toArray(new ItemStack[0]),
-                40,
-                0
+            null,
+            (new ArrayList<>(List.of(OUTPUTS)) {{
+                add(POTATO);
+            }}).toArray(new ItemStack[0]),
+            40,
+            0
         ));
     }
 }

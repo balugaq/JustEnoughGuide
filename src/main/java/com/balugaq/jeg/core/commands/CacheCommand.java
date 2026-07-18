@@ -34,7 +34,6 @@ import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.lang.ref.Reference;
@@ -69,17 +68,17 @@ public class CacheCommand implements JEGCommand {
                 switch (args[1]) {
                     case "1" -> {
                         List<String> result = new ArrayList<>(SearchGroup.CACHE.keySet().stream()
-                                                                      .sorted()
-                                                                      .map(String::valueOf)
-                                                                      .toList());
+                            .sorted()
+                            .map(String::valueOf)
+                            .toList());
                         result.add("clear");
                         return result;
                     }
                     case "2" -> {
                         List<String> result = new ArrayList<>(SearchGroup.CACHE2.keySet().stream()
-                                                                      .sorted()
-                                                                      .map(String::valueOf)
-                                                                      .toList());
+                            .sorted()
+                            .map(String::valueOf)
+                            .toList());
                         result.add("clear");
                         return result;
                     }
@@ -97,10 +96,10 @@ public class CacheCommand implements JEGCommand {
 
     @Override
     public boolean canCommand(
-            final CommandSender sender,
-            final Command command,
-            final String label,
-            final String[] args) {
+        final CommandSender sender,
+        final Command command,
+        final String label,
+        final String[] args) {
         if (sender.isOp()) {
             if (args.length >= 1) {
                 return "cache".equalsIgnoreCase(args[0]);
@@ -111,10 +110,10 @@ public class CacheCommand implements JEGCommand {
 
     @Override
     public void onCommand(
-            final CommandSender sender,
-            Command command,
-            String label,
-            String[] args) {
+        final CommandSender sender,
+        Command command,
+        String label,
+        String[] args) {
         onCheck(sender, args);
     }
 

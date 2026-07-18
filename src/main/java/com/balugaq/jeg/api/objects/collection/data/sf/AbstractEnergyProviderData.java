@@ -52,12 +52,12 @@ public class AbstractEnergyProviderData extends MachineData {
     @Override
     public List<CERRecipeGroup.RecipeWrapper> wrap() {
         return fuelTypes.stream()
-                .map(fuel -> new CERRecipeGroup.RecipeWrapper(
-                        new ItemStack[] {fuel.getInput()},
-                        new ItemStack[] {fuel.getOutput()},
-                        fuel.getTicks(),
-                        -(long) energyProduction * fuel.getTicks()
-                ))
-                .toList();
+            .map(fuel -> new CERRecipeGroup.RecipeWrapper(
+                new ItemStack[]{fuel.getInput()},
+                new ItemStack[]{fuel.getOutput()},
+                fuel.getTicks(),
+                -(long) energyProduction * fuel.getTicks()
+            ))
+            .toList();
     }
 }

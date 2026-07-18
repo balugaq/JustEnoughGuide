@@ -85,6 +85,30 @@ public class FinalTechIntegrationMain implements Integration {
     // @formatter:on
     public static final List<SlimefunItem> handledSlimefunItems = new ArrayList<>();
 
+    public static void rrc(String id) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, MANUAL_CRAFTER_INPUT_SLOTS);
+        }
+    }
+
+    public static void rrc(String id, int[] slots, boolean unordered) {
+        SlimefunItem slimefunItem = SlimefunItem.getById(id);
+        if (slimefunItem != null) {
+            rrc(slimefunItem, slots, unordered);
+        }
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, true);
+    }
+
+    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
+        handledSlimefunItems.add(slimefunItem);
+        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
+    }
+
     @Override
     public String getHookPlugin() {
         return "FinalTech";
@@ -110,9 +134,9 @@ public class FinalTechIntegrationMain implements Integration {
 
             return switch (s.getId()) {
                 case "FINALTECH_ORDERED_DUST" ->
-                        AbstractItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_ORDERED_DUST_AMOUNTS);
+                    AbstractItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_ORDERED_DUST_AMOUNTS);
                 case "FINALTECH_UNORDERED_DUST" ->
-                        AbstractItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_UNORDERED_DUST_AMOUNTS);
+                    AbstractItemSettingsGuideOption.generateChoices(FinalTechDustRecipeSettingsGuideOption.getItem(p), FINALTECH_UNORDERED_DUST_AMOUNTS);
                 default -> null;
             };
         });
@@ -134,30 +158,6 @@ public class FinalTechIntegrationMain implements Integration {
         rrc("FINALTECH_MANUAL_ANCIENT_ALTAR");
         rrc("FINALTECH_MATRIX_CRAFTING_TABLE", MATRIX_CRAFTING_TABLE_INPUT_SLOTS, false);
         rrc("FINALTECH_ORDERED_DUST_FACTORY_STONE", ORDERED_DUST_FACTORY_STONE_INPUT_SLOTS, false);
-    }
-
-    public static void rrc(String id) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, MANUAL_CRAFTER_INPUT_SLOTS);
-        }
-    }
-
-    public static void rrc(String id, int[] slots, boolean unordered) {
-        SlimefunItem slimefunItem = SlimefunItem.getById(id);
-        if (slimefunItem != null) {
-            rrc(slimefunItem, slots, unordered);
-        }
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, true);
-    }
-
-    public static void rrc(SlimefunItem slimefunItem, int[] slots, boolean unordered) {
-        handledSlimefunItems.add(slimefunItem);
-        RecipeCompletableRegistry.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
     @Override
