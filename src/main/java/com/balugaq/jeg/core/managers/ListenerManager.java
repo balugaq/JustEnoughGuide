@@ -89,6 +89,7 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new SlimefunGuideOptionPatchFixListener());
         listeners.add(new SlimefunRegistryFinalizeListener());
         listeners.add(new ReplacementCardAdaptItemListener());
+        listeners.add(new AnvilGuiListener());
     }
 
     public void registerListener(Listener listener) {

@@ -286,10 +286,6 @@
             <url>https://repo.jeff-media.com/public</url>
         </repository>
         <repository>
-            <id>mvn-wesjd-net</id>
-            <url>https://mvn.wesjd.net/</url>
-        </repository>
-        <repository>
             <id>gugu-maven-repo</id>
             <url>https://maven.norain.city/snapshots</url>
             <snapshots>
@@ -464,13 +460,6 @@
             <artifactId>SlimeHUD</artifactId>
             <version>ad7a52fead</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.wesjd</groupId>
-            <artifactId>anvilgui</artifactId>
-            <version>1.10.10-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>

@@ -32,16 +32,13 @@ import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.groups.MixedGroup;
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
-import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.interfaces.*;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
-import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.listeners.GuideListener;
-import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.groups.ActionSelectGroup;
 import com.balugaq.jeg.implementation.groups.KeybindItemsGroup;
@@ -69,8 +66,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.experimental.UtilityClass;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import net.wesjd.anvilgui.AnvilGUI;
-import net.wesjd.anvilgui.version.VersionMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -84,7 +79,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -116,7 +110,6 @@ public final class GuideUtil {
                     "JEG_CER_BUTTON", Material.EMERALD,
                     "&e&l性价比界面（仅供参考）"
             ));
-    private static boolean rtsLoad = false;
 
     public static void openMainMenuAsync(Player player) {
         openMainMenuAsync(player, getLastGuide(player).getMode());
@@ -169,40 +162,6 @@ public final class GuideUtil {
         }
     }
 
-    public boolean checkRTS(Player pl) {
-        try {
-            if (!rtsLoad) {
-                try {
-                    rtsLoad = true;
-                    new VersionMatcher().match();
-                    RTSSearchGroup.setRtsAvailable(true);
-                } catch (Exception e) {
-                    RTSSearchGroup.setRtsAvailable(false);
-                }
-            }
-
-            if (!RTSSearchGroup.isRtsAvailable()) {
-                MinecraftVersion maxVersion = MinecraftVersion.of(0, 0, 0);
-                Map<String, String> v2r = (Map<String, String>) ReflectionUtil.getStaticValue(VersionMatcher.class, "VERSION_TO_REVISION", Map.class);
-                if (v2r != null) {
-                    for (MinecraftVersion v : v2r.keySet().stream().map(MinecraftVersion::of).toList()) {
-                        maxVersion = MinecraftVersion.max(maxVersion, v);
-                    }
-                } else {
-                    maxVersion = MinecraftVersion.UNKNOWN;
-                }
-                pl.sendMessage(ChatColors.color("&c实时搜索在当前服务器版本 " + MinecraftVersion.current().humanize() + " 无法使用，实时搜索支持库最高支持版本为 " + maxVersion));
-                return false;
-            }
-        } catch (Exception e) {
-            Debug.trace(e);
-            pl.sendMessage(ChatColors.color("&c无法检查实时搜索，相关功能已禁用"));
-            return false;
-        }
-
-        return true;
-    }
-
     @SuppressWarnings("deprecation")
     public static void addRTSButton(
             ChestMenu menu,
@@ -219,86 +178,10 @@ public final class GuideUtil {
                         (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.RTSButtonClickEvent(
                                         pl, itemstack, slot, action, menu, implementation))
                                 .ifSuccess(() -> {
-                                    // check version
-                                    if (!checkRTS(pl)) {
-                                        return false;
-                                    }
-
                                     try {
-                                        RTSSearchGroup.newRTSInventoryFor(
-                                                pl,
-                                                mode,
-                                                (s, stateSnapshot) -> {
-                                                    if (s == AnvilGUI.Slot.INPUT_LEFT) {
-                                                        // back button clicked
-                                                        GuideHistory history = profile.getGuideHistory();
-                                                        if (action.isShiftClicked()) {
-                                                            implementation.openMainMenu(
-                                                                    profile,
-                                                                    history.getMainMenuPage()
-                                                            );
-                                                        } else {
-                                                            GuideUtil.goBack(history);
-                                                        }
-                                                    } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
-                                                        // previous page button clicked
-                                                        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
-                                                        if (rts != null) {
-                                                            int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
-                                                            int newPage = Math.max(1, oldPage - 1);
-                                                            RTSEvents.PageChangeEvent event =
-                                                                    new RTSEvents.PageChangeEvent(
-                                                                            pl,
-                                                                            RTSSearchGroup.RTS_PLAYERS.get(pl),
-                                                                            oldPage,
-                                                                            newPage,
-                                                                            mode
-                                                                    );
-                                                            Bukkit.getPluginManager()
-                                                                    .callEvent(event);
-                                                            if (!event.isCancelled()) {
-                                                                synchronized (RTSSearchGroup.RTS_PAGES) {
-                                                                    RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-                                                                }
-                                                            }
-                                                        }
-                                                    } else if (s == AnvilGUI.Slot.OUTPUT) {
-                                                        // next page button clicked
-                                                        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
-                                                        if (rts != null) {
-                                                            int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
-                                                            int newPage = Math.min(
-                                                                    (rts.slimefunItemList.size() - 1)
-                                                                            / RTSListener.FILL_ORDER.length
-                                                                            + 1,
-                                                                    oldPage + 1
-                                                            );
-                                                            RTSEvents.PageChangeEvent event =
-                                                                    new RTSEvents.PageChangeEvent(
-                                                                            pl,
-                                                                            RTSSearchGroup.RTS_PLAYERS.get(pl),
-                                                                            oldPage,
-                                                                            newPage,
-                                                                            mode
-                                                                    );
-                                                            Bukkit.getPluginManager()
-                                                                    .callEvent(event);
-                                                            if (!event.isCancelled()) {
-                                                                synchronized (RTSSearchGroup.RTS_PAGES) {
-                                                                    RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                new int[] {
-                                                        AnvilGUI.Slot.INPUT_LEFT,
-                                                        AnvilGUI.Slot.INPUT_RIGHT,
-                                                        AnvilGUI.Slot.OUTPUT
-                                                },
-                                                null
-                                        );
-                                    } catch (Exception ignored) {
+                                        RTSSearchGroup.openRTSInventoryFor(pl);
+                                    } catch (Exception e) {
+                                        Debug.trace(e);
                                         p.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
                                     }
                                     return false;

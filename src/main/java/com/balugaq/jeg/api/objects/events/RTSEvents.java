@@ -30,12 +30,12 @@ package com.balugaq.jeg.api.objects.events;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import lombok.Getter;
 import lombok.Setter;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -55,43 +55,17 @@ public class RTSEvents {
     @SuppressWarnings("unused")
     @Getter
     @NullMarked
-    public static class CloseRTSEvent extends Event {
+    public static class CloseRTSEvent extends PlayerEvent {
         private static final HandlerList HANDLERS = new HandlerList();
-        private final Player player;
-        private final AnvilGUI.StateSnapshot stateSnapshot;
-        private final SlimefunGuideMode guideMode;
 
-        /**
-         * Constructs a new CloseRTSEvent.
-         *
-         * @param player
-         *         The player who closed the RTS.
-         * @param stateSnapshot
-         *         The state snapshot of the anvil GUI.
-         * @param guideMode
-         *         The guide mode.
-         */
-        public CloseRTSEvent(Player player, AnvilGUI.StateSnapshot stateSnapshot, SlimefunGuideMode guideMode) {
-            super(!Bukkit.isPrimaryThread());
-            this.player = player;
-            this.stateSnapshot = stateSnapshot;
-            this.guideMode = guideMode;
+        public CloseRTSEvent(Player player) {
+            super(player);
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         @Override
         public final HandlerList getHandlers() {
             return HANDLERS;
@@ -107,66 +81,20 @@ public class RTSEvents {
     @SuppressWarnings("unused")
     @Getter
     @NullMarked
-    public static class OpenRTSEvent extends Event implements Cancellable {
+    public static class OpenRTSEvent extends PlayerEvent implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
-        private final Player player;
         private final AnvilInventory openingInventory;
-        private final SlimefunGuideMode guideMode;
-        private @Nullable final String presetSearchTerm;
         private @Setter boolean cancelled = false;
 
-        /**
-         * Constructs a new OpenRTSEvent.
-         *
-         * @param player
-         *         The player who opened the RTS.
-         * @param openingInventory
-         *         The opening inventory.
-         * @param guideMode
-         *         The guide mode.
-         */
-        public OpenRTSEvent(Player player, AnvilInventory openingInventory, SlimefunGuideMode guideMode) {
-            this(player, openingInventory, guideMode, null);
-        }
-
-        /**
-         * Constructs a new OpenRTSEvent.
-         *
-         * @param player
-         *         The player who opened the RTS.
-         * @param openingInventory
-         *         The opening inventory.
-         * @param guideMode
-         *         The guide mode.
-         * @param presetSearchTerm
-         *         The preset search term.
-         */
-        public OpenRTSEvent(
-                Player player,
-                AnvilInventory openingInventory,
-                SlimefunGuideMode guideMode,
-                @Nullable String presetSearchTerm) {
-            super(!Bukkit.isPrimaryThread());
-            this.player = player;
+        public OpenRTSEvent(Player player, AnvilInventory openingInventory) {
+            super(player);
             this.openingInventory = openingInventory;
-            this.guideMode = guideMode;
-            this.presetSearchTerm = presetSearchTerm;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         @Override
         public final HandlerList getHandlers() {
             return HANDLERS;
@@ -182,61 +110,24 @@ public class RTSEvents {
     @SuppressWarnings("unused")
     @Getter
     @NullMarked
-    public static class SearchTermChangeEvent extends Event {
+    public static class SearchTermChangeEvent extends PlayerEvent {
         private static final HandlerList HANDLERS = new HandlerList();
-        private final Player player;
-        private final Object inventoryView; // Use Object to avoid InventoryView compatibility issues
-        private final AnvilInventory openingInventory;
         private final @Nullable String oldSearchTerm;
         private final String newSearchTerm;
-        private final SlimefunGuideMode guideMode;
 
-        /**
-         * Constructs a new SearchTermChangeEvent.
-         *
-         * @param player
-         *         The player who changed the search term.
-         * @param inventoryView
-         *         The inventory view (as Object for compatibility).
-         * @param openingInventory
-         *         The opening inventory.
-         * @param oldSearchTerm
-         *         The old search term.
-         * @param newSearchTerm
-         *         The new search term.
-         * @param guideMode
-         *         The guide mode.
-         */
         public SearchTermChangeEvent(
                 Player player,
-                Object inventoryView,
-                AnvilInventory openingInventory,
                 @Nullable String oldSearchTerm,
-                String newSearchTerm,
-                SlimefunGuideMode guideMode) {
-            super(false);
-            this.player = player;
-            this.inventoryView = inventoryView;
-            this.openingInventory = openingInventory;
+                String newSearchTerm) {
+            super(player);
             this.oldSearchTerm = oldSearchTerm;
             this.newSearchTerm = newSearchTerm;
-            this.guideMode = guideMode;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         @Override
         public final HandlerList getHandlers() {
             return HANDLERS;
@@ -255,8 +146,6 @@ public class RTSEvents {
     public static class ClickAnvilItemEvent extends Event implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Player player;
-        private final AnvilGUI.StateSnapshot stateSnapshot;
-        private final SlimefunGuideMode guideMode;
         private final int slot;
         private boolean cancelled;
 
@@ -265,20 +154,16 @@ public class RTSEvents {
          *
          * @param player
          *         The player who clicked the anvil item.
-         * @param stateSnapshot
-         *         The state snapshot of the anvil GUI.
          * @param slot
          *         The slot that was clicked.
          * @param guideMode
          *         The guide mode.
          */
         public ClickAnvilItemEvent(
-                Player player, AnvilGUI.StateSnapshot stateSnapshot, int slot, SlimefunGuideMode guideMode) {
+                Player player, int slot, SlimefunGuideMode guideMode) {
             super(!Bukkit.isPrimaryThread());
             this.player = player;
-            this.stateSnapshot = stateSnapshot;
             this.slot = slot;
-            this.guideMode = guideMode;
         }
 
         /**

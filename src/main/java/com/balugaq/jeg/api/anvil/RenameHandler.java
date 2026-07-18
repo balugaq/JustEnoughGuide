@@ -25,4 +25,19 @@
  *
  */
 
-package com.balugaq.jeg.api.helper;
+package com.balugaq.jeg.api.anvil;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+
+/**
+ * @author balugaq
+ * @since 2.1
+ */
+@NullMarked
+@FunctionalInterface
+public interface RenameHandler {
+    void onRename(Player player, @Nullable String oldName, String newName, PrepareAnvilEvent event);
+}
