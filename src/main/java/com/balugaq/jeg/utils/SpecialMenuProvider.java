@@ -848,6 +848,7 @@ public class SpecialMenuProvider {
      * @see CustomMenuHandlerImpl_utils
      * @since 1.3
      */
+    // todo: rewrite it with bytebuddy
     public class CustomMenuHandlerImpl_Utils
             implements me.matl114.logitech.Utils.UtilClass.MenuClass.CustomMenuHandler {
         @Override
@@ -867,6 +868,7 @@ public class SpecialMenuProvider {
      * @see CustomMenuHandlerImpl_Utils
      * @since 1.5
      */
+    // todo: rewrite it with bytebuddy
     public class CustomMenuHandlerImpl_utils
             implements me.matl114.logitech.utils.UtilClass.MenuClass.CustomMenuHandler {
         @Override

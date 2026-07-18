@@ -37,7 +37,9 @@ import lombok.Setter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -186,5 +188,31 @@ public class AnvilMenu implements InventoryHolder {
         Inventory topInventory = (Inventory) ReflectionUtil.invokeMethod(player.getOpenInventory(), "getTopInventory", Inventory.class);
         if (topInventory != null && topInventory.getHolder() instanceof AnvilMenu menu) return menu;
         return null;
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.1
+     */
+    public static interface CloseHandler {
+        void onClose(Player player, InventoryCloseEvent event);
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.1
+     */
+    public static interface OpenHandler {
+        void onOpen(Player player);
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.1
+     */
+    @NullMarked
+    @FunctionalInterface
+    public static interface RenameHandler {
+        void onRename(Player player, @Nullable String oldName, String newName, PrepareAnvilEvent event);
     }
 }

@@ -28,8 +28,6 @@
 package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.anvil.AnvilMenu;
-import com.balugaq.jeg.api.anvil.CloseHandler;
-import com.balugaq.jeg.api.anvil.RenameHandler;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.Material;
@@ -68,7 +66,7 @@ public class AnvilGuiListener implements Listener {
             return;
         }
 
-        RenameHandler renameHandler = menu.getRenameHandler();
+        AnvilMenu.RenameHandler renameHandler = menu.getRenameHandler();
         if (renameHandler != null) {
             renameHandler.onRename(player, oldName, newName, event);
         }
@@ -80,7 +78,7 @@ public class AnvilGuiListener implements Listener {
             return;
         }
 
-        CloseHandler closeHandler = menu.getCloseHandler();
+        AnvilMenu.CloseHandler closeHandler = menu.getCloseHandler();
         if (closeHandler != null) {
             closeHandler.onClose((Player) event.getInventory().getViewers().get(0), event);
         }
