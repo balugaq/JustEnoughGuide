@@ -474,7 +474,7 @@ public interface OnClick {
                                     return;
                                 }
 
-                                player.getInventory().addItem(ItemStackUtil.getCleanItem(Converter.getItem(slimefunItem.getItem())));
+                                player.getInventory().addItem(Converter.getItem(slimefunItem.getItem()));
                             }
                     ),
                     OpAction.of(

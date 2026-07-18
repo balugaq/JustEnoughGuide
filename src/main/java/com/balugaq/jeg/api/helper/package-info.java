@@ -25,30 +25,4 @@
  *
  */
 
-package com.balugaq.jeg.core.listeners;
-
-import com.balugaq.jeg.api.objects.events.PatchEvent;
-import com.balugaq.jeg.utils.ItemStackUtil;
-import com.balugaq.jeg.utils.compatibility.Converter;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.jspecify.annotations.NullMarked;
-
-/**
- * @author balugaq
- * @since 1.9
- */
-@NullMarked
-public class GuideGUIFixListener implements Listener {
-    /**
-     * Fix Official Slimefun: SlimefunItemStack break changes Fix 1.21+ Minecraft bug:
-     * SlimefunItemStack cannot cast toCraftItemStack
-     *
-     * @param event PatchEvent
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void patchItem(PatchEvent event) {
-        event.setItemStack(Converter.getItem(event.getItemStack()));
-    }
-}
+package com.balugaq.jeg.api.helper;

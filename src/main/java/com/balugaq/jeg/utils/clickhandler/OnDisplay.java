@@ -202,7 +202,7 @@ public interface OnDisplay {
                         ChatColors.color("&e右键以取消收藏物品组")
                 );
 
-                ItemStack icon = ItemStackUtil.getCleanItem(Converter.getItem(itemGroup.getItem(player)));
+                ItemStack icon = Converter.getItem(itemGroup.getItem(player));
                 icon.editMeta(meta -> {
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -535,9 +535,9 @@ public interface OnDisplay {
                         ))
                 );
 
-                ItemStack icon = ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ?
+                ItemStack icon = Converter.getItem(item instanceof CustomIconDisplay cid ?
                                                                                       cid.getCustomIcon() :
-                                                                                      item.getItem()));
+                                                                                      item.getItem());
                 icon.editMeta(meta -> {
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -586,9 +586,9 @@ public interface OnDisplay {
                         ChatColors.color("&e右键以取消收藏物品")
                 );
 
-                ItemStack icon = ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ?
+                ItemStack icon = Converter.getItem(item instanceof CustomIconDisplay cid ?
                                                                                       cid.getCustomIcon() :
-                                                                                      item.getItem()));
+                                                                                      item.getItem());
                 icon.editMeta(meta -> {
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -639,9 +639,9 @@ public interface OnDisplay {
                         ChatColors.color("&e左键点击以收藏物品")
                 );
 
-                ItemStack icon = ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ?
+                ItemStack icon = Converter.getItem(item instanceof CustomIconDisplay cid ?
                                                                                       cid.getCustomIcon() :
-                                                                                      item.getItem()));
+                                                                                      item.getItem());
                 icon.editMeta(meta -> {
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -683,7 +683,7 @@ public interface OnDisplay {
                         slot,
                         PatchScope.SlimefunItem.patch(
                                 player,
-                                ItemStackUtil.getCleanItem(Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack))
+                                Converter.getItem(item instanceof CustomIconDisplay cid ? cid.getCustomIcon() : itemStack)
                         ),
                         OnClick.Item.Normal.create(guide, menu, page, item)
                 );

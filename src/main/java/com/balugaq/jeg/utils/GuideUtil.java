@@ -29,29 +29,24 @@ package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
-import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
-import com.balugaq.jeg.implementation.groups.ActionSelectGroup;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
-import com.balugaq.jeg.implementation.groups.KeybindItemsGroup;
-import com.balugaq.jeg.implementation.groups.KeybindsItemsGroup;
 import com.balugaq.jeg.api.groups.MixedGroup;
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
-import com.balugaq.jeg.implementation.groups.SubKeybindsItemsGroup;
-import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
-import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
-import com.balugaq.jeg.api.interfaces.DisplayInSurvivalMode;
-import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
-import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
-import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
+import com.balugaq.jeg.api.interfaces.*;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
+import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.groups.ActionSelectGroup;
+import com.balugaq.jeg.implementation.groups.KeybindItemsGroup;
+import com.balugaq.jeg.implementation.groups.KeybindsItemsGroup;
+import com.balugaq.jeg.implementation.groups.SubKeybindsItemsGroup;
 import com.balugaq.jeg.utils.clickhandler.BaseAction;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -107,20 +102,20 @@ import java.util.logging.Logger;
 public final class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack(
+            Converter.getItem(new SlimefunItemStack(
                     "JEG_BOOK_MARK_BUTTON",
                     Material.NETHER_STAR, "&e&l收藏物列表"
-            )));
+            ));
     private static final ItemStack ITEM_MARK_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack(
+            Converter.getItem(new SlimefunItemStack(
                     "JEG_ITEM_MARK_BUTTON",
                     Material.WRITABLE_BOOK, "&e&l收藏物品"
-            )));
+            ));
     private static final ItemStack CER_MENU_BUTTON =
-            ItemStackUtil.getCleanItem(Converter.getItem(new SlimefunItemStack(
+            Converter.getItem(new SlimefunItemStack(
                     "JEG_CER_BUTTON", Material.EMERALD,
                     "&e&l性价比界面（仅供参考）"
-            )));
+            ));
     private static boolean rtsLoad = false;
 
     public static void openMainMenuAsync(Player player) {
@@ -188,7 +183,7 @@ public final class GuideUtil {
 
             if (!RTSSearchGroup.isRtsAvailable()) {
                 MinecraftVersion maxVersion = MinecraftVersion.of(0, 0, 0);
-                Map<String, String> v2r = ReflectionUtil.getStaticValue(VersionMatcher.class, "VERSION_TO_REVISION", Map.class);
+                Map<String, String> v2r = (Map<String, String>) ReflectionUtil.getStaticValue(VersionMatcher.class, "VERSION_TO_REVISION", Map.class);
                 if (v2r != null) {
                     for (MinecraftVersion v : v2r.keySet().stream().map(MinecraftVersion::of).toList()) {
                         maxVersion = MinecraftVersion.max(maxVersion, v);
@@ -575,7 +570,7 @@ public final class GuideUtil {
     public static List<ItemGroup> getVisibleItemGroupsCheat(Player p, PlayerProfile profile, boolean guideTierMode) {
         List<ItemGroup> groups = new ArrayList<>();
         List<ItemGroup> specialGroups = new ArrayList<>();
-        List<ItemGroup> survival = getVisibleItemGroupsSurvival(p, profile);
+        List<ItemGroup> survival = getVisibleItemGroupsSurvival(p, profile, guideTierMode);
         for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
             try {
                 if (group.getClass().isAnnotationPresent(NotDisplayInCheatMode.class)) {
@@ -643,7 +638,7 @@ public final class GuideUtil {
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public static List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile) {
+    public static List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile, boolean guideTierMode) {
         List<ItemGroup> groups = new ArrayList<>();
 
         for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
@@ -655,7 +650,7 @@ public final class GuideUtil {
                     groups.add(group);
                     continue;
                 }
-                if (GuideUtil.isForceHidden(group)) {
+                if (!guideTierMode && GuideUtil.isForceHidden(group)) {
                     continue;
                 }
                 if (group instanceof FlexItemGroup flexItemGroup) {
@@ -706,6 +701,14 @@ public final class GuideUtil {
             mixedGroup.addItem(sf);
         } else {
             itemGroup.add(sf);
+        }
+    }
+
+    public static String getGuideTitle(SlimefunGuideMode mode) {
+        if (mode == SlimefunGuideMode.SURVIVAL_MODE) {
+            return JustEnoughGuide.getConfigManager().getSurvivalGuideTitle();
+        } else {
+            return JustEnoughGuide.getConfigManager().getCheatGuideTitle();
         }
     }
 }

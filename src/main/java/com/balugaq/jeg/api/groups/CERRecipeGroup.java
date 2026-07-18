@@ -38,7 +38,6 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -134,7 +133,7 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
                             list.add(new Pair<>(
                                     PatchScope.CerRecipeInput.patch(
                                             p,
-                                            Converter.getItem(ItemStackUtil.getCleanItem(input))
+                                            Converter.getItem(input)
                                     ),
                                     subMenuOpen
                             ));

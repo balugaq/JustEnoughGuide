@@ -27,59 +27,90 @@
 
 package com.balugaq.jeg.api.interfaces;
 
-import city.norain.slimefun4.VaultIntegration;
+import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.BookmarkGroup;
 import com.balugaq.jeg.api.groups.ItemMarkGroup;
+import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
+import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
+import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
+import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
+import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
+import com.balugaq.jeg.implementation.items.GroupTierEditorGuide;
 import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
-import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
-import com.balugaq.jeg.utils.LocalHelper;
-import com.balugaq.jeg.utils.ReflectionUtil;
+import com.balugaq.jeg.utils.*;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
+import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.compatibility.Converter;
+import com.balugaq.jeg.utils.compatibility.Sounds;
 import com.balugaq.jeg.utils.formatter.Format;
 import com.balugaq.jeg.utils.formatter.Formats;
+import com.balugaq.jeg.utils.formatter.RecipeDisplayFormat;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
+import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlock;
+import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.AsyncRecipeChoiceTask;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.recipes.MinecraftRecipe;
+import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.inventory.RecipeChoice;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
+ * This is JEG's guide implementation, providing a common
+ * interface for both {@link SurvivalGuideImplementation} and {@link CheatGuideImplementation},
+ * also used to editor group tiers in {@link GroupTierEditorGuide}
+ *
+ * @author TheBusyBiscuit
  * @author balugaq
  * @since 1.0
+ * @see SlimefunGuideImplementation
+ * @see CheatGuideImplementation
+ * @see GroupTierEditorGuide
+ * @see GroupTierEditorListener
  */
-@SuppressWarnings({"deprecation", "unused"})
+@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape"})
 @NullMarked
 public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementation {
     NamespacedKey UNLOCK_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "unlock_item");
 
-    @Deprecated(forRemoval = true)
-    static ItemStack getDisplayItem(Player p, boolean isSlimefunRecipe, ItemStack item) {
+    @Nullable
+    static ItemStack getDisplayItem(Player p, boolean isSlimefunRecipe, @Nullable ItemStack item) {
         if (isSlimefunRecipe) {
             SlimefunItem slimefunItem = SlimefunItem.getByItem(item);
 
@@ -88,71 +119,158 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             }
 
             ItemGroup itemGroup = slimefunItem.getItemGroup();
-            if (slimefunItem.isDisabledIn(p.getWorld())) {
-                return ItemStackUtil.getCleanItem(
-                        Converter.getItem(Material.BARRIER, SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem), "&4&l 该 Slimefun 物品已被禁用"));
-            }
             String lore = hasPermission0(p, slimefunItem)
                     ? String.format(
                     "&f需要在 %s 中解锁",
                     (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                            + LocalHelper.getDisplayName(itemGroup, p)
+                    + LocalHelper.getDisplayName(itemGroup, p)
             )
                     : "&f无权限";
-            Research research = slimefunItem.getResearch();
-            if (research == null) {
-                return ItemStackUtil.getCleanItem(
-                        slimefunItem.canUse(p, false)
-                                ? item
-                                : Converter.getItem(
-                                Converter.getItem(
-                                        Material.BARRIER,
-                                        SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem),
-                                        "&4&l"
-                                                + Slimefun.getLocalization()
-                                                .getMessage(p, "guide.locked"),
-                                        "",
-                                        lore
-                                ),
-                                meta -> meta.getPersistentDataContainer()
-                                        .set(
-                                                UNLOCK_ITEM_KEY,
-                                                PersistentDataType.STRING,
-                                                slimefunItem.getId()
-                                        )
-                        ));
-            } else {
-                String cost = VaultIntegration.isEnabled()
-                        ? String.format("%.2f", research.getCurrencyCost()) + " 游戏币"
-                        : research.getLevelCost() + " 级经验";
-                return ItemStackUtil.getCleanItem(
-                        slimefunItem.canUse(p, false)
-                                ? item
-                                : Converter.getItem(
-                                Converter.getItem(
-                                        Material.BARRIER,
-                                        SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem),
-                                        "&4&l"
-                                                + Slimefun.getLocalization()
-                                                .getMessage(p, "guide.locked"),
-                                        "",
-                                        lore,
-                                        "",
-                                        "&a单击解锁",
-                                        "",
-                                        "&7需要",
-                                        "&b" + cost
-                                ),
-                                meta -> meta.getPersistentDataContainer()
-                                        .set(
-                                                UNLOCK_ITEM_KEY,
-                                                PersistentDataType.STRING,
-                                                slimefunItem.getId()
-                                        )
-                        ));
-            }
+            return slimefunItem.canUse(p, false)
+                ? Converter.getItem(item)
+                : Converter.getItem(
+                    Material.BARRIER,
+                    SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem),
+                    "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
+                    "",
+                    lore);
         } else {
             return item;
+        }
+    }
+
+    default void openItemGroup(PlayerProfile profile, ItemGroup itemGroup, int page) {
+        Player p = profile.getPlayer();
+
+        if (p == null) {
+            return;
+        }
+
+        if (itemGroup instanceof NestedItemGroup nested && (itemGroup.getClass() == NestedItemGroup.class || (itemGroup.getClass().getSuperclass() == NestedItemGroup.class && itemGroup.getClass().isAnonymousClass()))) {
+            openNestedItemGroup(p, profile, nested, page);
+            return;
+        }
+
+        if (itemGroup instanceof FlexItemGroup flexItemGroup) {
+            try {
+                flexItemGroup.open(p, profile, getMode());
+            } catch (Exception e) {
+                printErrorMessage0(p, e);
+            }
+            return;
+        }
+
+        profile.getGuideHistory().add(itemGroup, page);
+
+        ChestMenu menu = create0(p);
+        createHeader(p, profile, menu, Formats.sub);
+
+        int pages = (itemGroup.getItems().size() - 1) / getMaxItemsPerPage() + 1;
+
+        for (int s : Formats.sub.getChars('P')) {
+            menu.addItem(s, PatchScope.PreviousPage.patch(profile, ChestMenuUtils.getPreviousButton(p, page, pages)));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action, menu, this
+                    )).ifSuccess(() -> {
+                        int previous = page - 1;
+
+                        if (previous > 0) {
+                            openItemGroup(profile, itemGroup, previous);
+                        }
+
+                        return false;
+                    })
+            );
+        }
+
+        for (int s : Formats.sub.getChars('N')) {
+            menu.addItem(s, PatchScope.NextPage.patch(profile, ChestMenuUtils.getNextButton(p, page, pages)));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                            pl, item,
+                            slot,
+                            action,
+                            menu,
+                            this
+                    )).ifSuccess(() -> {
+                        int next = page + 1;
+
+                        if (next <= pages) {
+                            openItemGroup(profile, itemGroup, next);
+                        }
+
+                        return false;
+                    })
+            );
+        }
+
+        List<Integer> indexes = Formats.sub.getChars('i');
+        int itemGroupIndex = getMaxItemsPerPage() * (Math.max(page, 1) - 1);
+
+        for (int i = 0; i < getMaxItemsPerPage(); i++) {
+            int target = itemGroupIndex + i;
+
+            if (target < 0 || target >= itemGroup.getItems().size()) {
+                break;
+            }
+
+            SlimefunItem sfitem = itemGroup.getItems().get(target);
+
+            if (!sfitem.isDisabledIn(p.getWorld())) {
+                displaySlimefunItem0(menu, itemGroup, p, profile, sfitem, Math.max(page, 1), indexes.get(i));
+            }
+        }
+
+        GuideUtil.addRTSButton(menu, p, profile, Formats.sub, getMode(), this);
+        GuideUtil.addBookMarkButton(menu, p, profile, Formats.sub, this, itemGroup);
+        GuideUtil.addItemMarkButton(menu, p, profile, Formats.sub, this, itemGroup);
+
+        menu.open(p);
+    }
+
+    default void displayItem(
+            final ChestMenu menu,
+            final PlayerProfile profile,
+            final Player p,
+            Object item,
+            @Nullable ItemStack output,
+            final RecipeType recipeType,
+            @Nullable ItemStack[] recipe,
+            final AsyncRecipeChoiceTask task,
+            final Format format) {
+        for (int s : format.getChars('b')) {
+            addBackButton0(menu, s, p, profile);
+        }
+
+        boolean isSlimefunRecipe = item instanceof SlimefunItem && !(item instanceof VanillaItemShade);
+
+        List<Integer> recipeSlots = format.getChars('r');
+        for (int i = 0; i < recipe.length; i++) {
+            ItemStack recipeItem = getDisplayItem(p, isSlimefunRecipe, recipe[i]);
+            OnDisplay.Item.display(p, PatchScope.ItemRecipeIngredient.patch(p, recipeItem), OnDisplay.Item.Normal, this)
+                    .at(menu, recipeSlots.get(i), 1);
+
+            if (recipeItem != null && item instanceof MultiBlockMachine) {
+                for (Tag<Material> tag : MultiBlock.getSupportedTags()) {
+                    if (tag.isTagged(recipeItem.getType())) {
+                        task.add(recipeSlots.get(i), tag);
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (int s : format.getChars('t')) {
+            OnDisplay.RecipeType.display(p, recipeType, PatchScope.ItemRecipeType.patch(p, recipeType.getItem(p)), this)
+                    .at(menu, s, 1);
+        }
+        for (int s : format.getChars('i')) {
+            OnDisplay.Item.display(p, PatchScope.ItemRecipeOut.patch(p, output), OnDisplay.Item.Normal, this)
+                    .at(menu, s, 1);
         }
     }
 
@@ -160,10 +278,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         return Slimefun.getPermissionsService().hasPermission(p, item);
     }
 
-    void showItemGroup0(ChestMenu menu, Player p, PlayerProfile profile, ItemGroup group, int index);
-
     default ChestMenu create0(Player p) {
-        ChestMenu menu = new ChestMenu(JustEnoughGuide.getConfigManager().getSurvivalGuideTitle());
+        ChestMenu menu = new ChestMenu(GuideUtil.getGuideTitle(getMode()));
 
         OnClick.preset(menu);
         return menu;
@@ -200,44 +316,344 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         new ItemMarkGroup(this, itemGroup, player).open(player, profile, getMode());
     }
 
-    void openNestedItemGroup(Player p, PlayerProfile profile, NestedItemGroup nested, int page);
+    default void openNestedItemGroup(
+            Player p, PlayerProfile profile, NestedItemGroup nested, int page) {
+        GuideHistory history = profile.getGuideHistory();
 
-    void displaySlimefunItem0(
-            ChestMenu menu,
-            ItemGroup itemGroup,
-            Player p,
-            PlayerProfile profile,
-            SlimefunItem sfitem,
+        history.add(nested, page);
+
+        ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "guide.title.main"));
+
+        menu.setEmptySlotsClickable(false);
+
+        menu.addMenuOpeningHandler(p2 -> {
+            try {
+                Sounds.playFor(p2, Sounds.GUIDE_BUTTON_CLICK_SOUND);
+            } catch (Exception ignored) {
+            }
+        });
+
+        this.createHeader(p, profile, menu, Formats.nested);
+
+        List<Integer> ss = Formats.nested.getChars('G');
+        int groupsPerPage = ss.size();
+
+        try {
+            @SuppressWarnings("unchecked")
+            List<SubItemGroup> subGroups = (List<SubItemGroup>) ReflectionUtil.getValue(nested, "subGroups");
+            if (subGroups == null) {
+                return;
+            }
+
+            int t = 0;
+            int target = groupsPerPage * (page - 1) - 1;
+            for (int i = 0; i < subGroups.size() && t < groupsPerPage; i++) {
+                target = groupsPerPage * (page - 1) + i;
+                if (target >= subGroups.size()) {
+                    break;
+                }
+
+                SubItemGroup subGroup = subGroups.get(target);
+                if (subGroup.isVisibleInNested(p)) {
+                    menu.addItem(ss.get(t), PatchScope.ItemGroup.patch(p, subGroup.getItem(p)));
+                    menu.addMenuClickHandler(
+                            ss.get(t),
+                            (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.ItemGroupButtonClickEvent(pl, item, slot, action, menu, this)).ifSuccess(() -> {
+                                if (pl.isOp() && GroupResorter.isSelecting(pl)) {
+                                    ItemGroup selected = GroupResorter.getSelectedGroup(pl);
+                                    if (selected == null) {
+                                        GroupResorter.setSelectedGroup(pl, subGroup);
+                                        pl.sendMessage(ChatColors.color("&a已选择物品组: &e" + subGroup.getDisplayName(pl)));
+                                    } else {
+                                        GroupResorter.swap(selected, subGroup);
+                                        GroupResorter.setSelectedGroup(pl, null);
+                                        pl.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(pl)
+                                                + " &7<-> &e" + subGroup.getDisplayName(pl)));
+                                        openMainMenu(profile, page);
+                                    }
+                                    return false;
+                                }
+                                this.openItemGroup(profile, subGroup, 1);
+                                return false;
+                            })
+                    );
+                    t += 1;
+                }
+            }
+
+            int pages = target == subGroups.size() - 1 ? page : (subGroups.size() - 1) / groupsPerPage + 1;
+            for (int s : Formats.nested.getChars('P')) {
+                menu.addItem(s, PatchScope.PreviousPage.patch(p, ChestMenuUtils.getPreviousButton(p, page, pages)));
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                                pl,
+                                item
+                                , slot, action, menu, this
+                        )).ifSuccess(() -> {
+                            int next = page - 1;
+                            if (next > 0) {
+                                this.openNestedItemGroup(p, profile, nested, next);
+                            }
+
+                            return false;
+                        })
+                );
+            }
+
+            for (int s : Formats.nested.getChars('N')) {
+                menu.addItem(s, PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, page, pages)));
+                menu.addMenuClickHandler(
+                        s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                                pl,
+                                item,
+                                slot,
+                                action, menu, this
+                        )).ifSuccess(() -> {
+                            int next = page + 1;
+                            if (next <= pages) {
+                                this.openNestedItemGroup(p, profile, nested, next);
+                            }
+
+                            return false;
+                        })
+                );
+            }
+
+            menu.open(p);
+        } catch (Exception e) {
+            Debug.trace(e);
+        }
+    }
+
+    default void displaySlimefunItem0(
+            final ChestMenu menu,
+            final ItemGroup itemGroup,
+            final Player p,
+            final PlayerProfile profile,
+            final SlimefunItem sfitem,
             int page,
-            int index);
+            int index) {
+        OnDisplay.Item.display(p, sfitem, OnDisplay.Item.Normal, this)
+                .at(menu, index, page);
+    }
 
-    void openSearch(PlayerProfile profile, String input, int page, boolean addToHistory);
+    @Override
+    default void openSearch(PlayerProfile profile, String input, boolean addToHistory) {
+        openSearch(profile, input, 0, addToHistory);
+    }
 
-    void showMinecraftRecipe0(
+    default void openSearch(PlayerProfile profile, String input, int page, boolean addToHistory) {
+        Player p = profile.getPlayer();
+
+        if (p == null) {
+            return;
+        }
+
+        String searchTerm = ChatColor.stripColor(input.toLowerCase(Locale.ROOT));
+        SearchGroup.searchTerms.put(p.getUniqueId(), searchTerm);
+        SearchGroup group = new SearchGroup(
+                this, p, searchTerm, JustEnoughGuide.getConfigManager().isPinyinSearch(), true);
+        group.open(p, profile, getMode());
+    }
+
+    default void showMinecraftRecipe0(
             Recipe[] recipes,
             int index,
             final ItemStack item,
             final PlayerProfile profile,
             final Player p,
-            boolean addToHistory);
+            boolean addToHistory) {
+        Recipe recipe = recipes[index];
 
-    <T extends Recipe> void showRecipeChoices0(
-            final T recipe, ItemStack[] recipeItems, AsyncRecipeChoiceTask task);
+        @Nullable ItemStack[] recipeItems = new ItemStack[9];
+        RecipeType recipeType = RecipeType.NULL;
+        @Nullable ItemStack result = null;
 
-    default void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial) {
+        Optional<MinecraftRecipe<? super Recipe>> optional = MinecraftRecipe.of(recipe);
+        AsyncRecipeChoiceTask task = new AsyncRecipeChoiceTask();
+
+        if (optional.isPresent()) {
+            showRecipeChoices0(recipe, recipeItems, task);
+
+            recipeType = new RecipeType(optional.get());
+            result = recipe.getResult();
+        } else {
+            recipeItems = new @Nullable ItemStack[] {
+                    null,
+                    null,
+                    null,
+                    null,
+                    Converter.getItem(Material.BARRIER, "&4我们不知道如何展示该配方 :/"),
+                    null,
+                    null,
+                    null,
+                    null
+            };
+        }
+
+        ChestMenu menu = create0(p);
+
+        if (addToHistory) {
+            profile.getGuideHistory().add(item, index);
+        }
+
+        displayItem(menu, profile, p, item, result, recipeType, recipeItems, task, Formats.recipe_vanilla);
+
+        if (recipes.length > 1) {
+            for (int s : Formats.recipe_vanilla.getChars('B')) {
+                menu.addItem(
+                        s,
+                        PatchScope.Background.patch(p, ChestMenuUtils.getBackground()),
+                        ChestMenuUtils.getEmptyClickHandler()
+                );
+            }
+
+            for (int s : Formats.recipe_vanilla.getChars('P')) {
+                menu.addItem(
+                        s,
+                        PatchScope.PreviousPage.patch(
+                                p, ChestMenuUtils.getPreviousButton(p, index + 1, recipes.length)),
+                        (pl, slot, stack, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                                pl,
+                                stack, slot, action, menu, this
+                        )).ifSuccess(() -> {
+                            if (index > 0) {
+                                showMinecraftRecipe0(recipes, index - 1, item, profile, p, true);
+                            }
+                            return false;
+                        })
+                );
+            }
+
+            for (int s : Formats.recipe_vanilla.getChars('N')) {
+                menu.addItem(
+                        s,
+                        PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, index + 1, recipes.length)),
+                        (pl, slot, stack, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                                pl,
+                                stack,
+                                slot,
+                                action,
+                                menu,
+                                this
+                        )).ifSuccess(() -> {
+                            if (index < recipes.length - 1) {
+                                showMinecraftRecipe0(recipes, index + 1, item, profile, p, true);
+                            }
+                            return false;
+                        })
+                );
+            }
+        }
+
+        Formats.recipe_vanilla.renderCustom(menu);
+
+        menu.open(p);
+
+        if (!task.isEmpty()) {
+            task.start(menu.toInventory());
+        }
+    }
+
+    default void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory) {
         displayItem(
                 profile,
                 item,
                 addToHistory,
-                maybeSpecial,
                 item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe
         );
     }
 
-    void displayItem(
-            PlayerProfile profile, SlimefunItem item, boolean addToHistory, boolean maybeSpecial, Format format);
+    default void displayItem(
+            PlayerProfile profile, SlimefunItem item, boolean addToHistory, Format format) {
+        Player p = profile.getPlayer();
 
-    void displayItem0(
+        if (p == null) {
+            return;
+        }
+
+        if (item instanceof VanillaItemShade vis) {
+            displayItem(profile, vis.getCustomIcon(), 0, true);
+            return;
+        }
+
+        ChestMenu menu = create0(p);
+        Optional<String> wiki = item.getWikipage();
+
+        if (wiki.isPresent()) {
+            for (int s : format.getChars('w')) {
+                menu.addItem(s, PatchScope.ItemWiki.patch(p, Converter.getItem(
+                        Material.KNOWLEDGE_BOOK,
+                        ChatColors.color("&f" + Slimefun.getLocalization().getMessage(p, "guide.tooltips.wiki")),
+                        "",
+                        ChatColors.color("&7\u21E8 &a" + Slimefun.getLocalization().getMessage(
+                                p,
+                                "guide.tooltips.open-itemgroup"
+                        ))
+                )));
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.WikiButtonClickEvent(
+                                pl,
+                                itemstack, slot, action, menu, this
+                        )).ifSuccess(() -> {
+                            pl.closeInventory();
+                            ChatUtils.sendURL(pl, wiki.get());
+                            return false;
+                        })
+                );
+            }
+        }
+
+        AsyncRecipeChoiceTask task = new AsyncRecipeChoiceTask();
+
+        if (addToHistory) {
+            profile.getGuideHistory().add(item);
+        }
+
+        ItemStack result = item.getRecipeOutput();
+        RecipeType recipeType = item.getRecipeType();
+        ItemStack[] recipe = item.getRecipe();
+
+        displayItem(menu, profile, p, item, result, recipeType, recipe, task, format);
+
+        if (item instanceof RecipeDisplayItem recipeDisplayItem) {
+            displayRecipes0(p, profile, menu, recipeDisplayItem, 0);
+        }
+
+        if (SpecialMenuProvider.isSpecialItem(item)) {
+            for (int s : format.getChars('E')) {
+                menu.addItem(
+                        s,
+                        PatchScope.BigRecipe.patch(p, Models.SPECIAL_MENU_ITEM),
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.BigRecipeButtonClickEvent(pl, itemstack, slot, action, menu, this)).ifSuccess(() -> {
+                            try {
+                                SpecialMenuProvider.open(profile.getPlayer(), profile, getMode(), item);
+                            } catch (InstantiationException
+                                     | IllegalAccessException
+                                     | InvocationTargetException e) {
+                                Debug.trace(e);
+                            }
+                            return false;
+                        })
+                );
+            }
+        }
+
+        GuideUtil.addCerButton(menu, p, profile, item, this, format);
+
+        GuideUtil.addSlimefunRecipeEditButton(menu, p, profile, item, format);
+
+        format.renderCustom(menu);
+
+        menu.open(p);
+
+        if (!task.isEmpty()) {
+            task.start(menu.toInventory());
+        }
+    }
+    default void displayItem0(
             final ChestMenu menu,
             final PlayerProfile profile,
             final Player p,
@@ -245,36 +661,274 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             ItemStack output,
             final RecipeType recipeType,
             ItemStack[] recipe,
-            final AsyncRecipeChoiceTask task);
+            final AsyncRecipeChoiceTask task) {
+        displayItem(menu, profile, p, item, output, recipeType, recipe, task, Formats.recipe);
+    }
 
-    void displayItem(
+    default void createHeader(Player p, PlayerProfile profile, ChestMenu menu) {
+        createHeader(p, profile, menu, Formats.main);
+    }
+
+    default void createHeader(Player p, PlayerProfile profile, ChestMenu menu, Format format) {
+        for (int s : format.getChars('B')) {
+            menu.addItem(
+                    s,
+                    PatchScope.Background.patch(p, ChestMenuUtils.getBackground()),
+                    ChestMenuUtils.getEmptyClickHandler()
+            );
+        }
+
+        for (int s : format.getChars('b')) {
+            addBackButton0(menu, s, p, profile);
+        }
+
+        // Settings Panel
+        for (int s : format.getChars('T')) {
+            menu.addItem(s, PatchScope.Settings.patch(profile, ChestMenuUtils.getMenuButton(p)));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action, menu, this
+                    )).ifSuccess(() -> {
+                        JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
+                        return false;
+                    })
+            );
+        }
+
+        for (int s : format.getChars('S')) {
+            menu.addItem(s, PatchScope.Search.patch(profile, ChestMenuUtils.getSearchButton(p)));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action,
+                            menu,
+                            this
+                    )).ifSuccess(() -> {
+                        pl.closeInventory();
+
+                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                        ChatInput.waitForPlayer(
+                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, true));
+
+                        return false;
+                    })
+            );
+        }
+
+        GuideUtil.addRTSButton(menu, p, profile, format, getMode(), this);
+        GuideUtil.addBookMarkButton(menu, p, profile, format, this, null);
+        GuideUtil.addItemMarkButton(menu, p, profile, format, this, null);
+
+        format.renderCustom(menu);
+    }
+
+    default void createHeader(Player p, PlayerProfile profile, ChestMenu menu, ItemGroup itemGroup) {
+        for (int s : Formats.main.getChars('B')) {
+            menu.addItem(
+                    s,
+                    PatchScope.Background.patch(p, ChestMenuUtils.getBackground()),
+                    ChestMenuUtils.getEmptyClickHandler()
+            );
+        }
+
+        // Settings Panel
+        for (int s : Formats.main.getChars('T')) {
+            menu.addItem(s, PatchScope.Settings.patch(profile, ChestMenuUtils.getMenuButton(p)));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action, menu, this
+                    )).ifSuccess(() -> {
+                        JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
+                        return false;
+                    })
+            );
+        }
+
+        for (int s : Formats.main.getChars('S')) {
+            menu.addItem(s, PatchScope.Search.patch(profile, ChestMenuUtils.getSearchButton(p)));
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action,
+                            menu,
+                            this
+                    )).ifSuccess(() -> {
+                        pl.closeInventory();
+
+                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
+                        ChatInput.waitForPlayer(
+                                JustEnoughGuide.getInstance(), pl, msg -> openSearch(profile, msg, true));
+
+                        return false;
+                    })
+            );
+        }
+
+        GuideUtil.addRTSButton(menu, p, profile, Formats.main, getMode(), this);
+        GuideUtil.addBookMarkButton(menu, p, profile, Formats.main, this, itemGroup);
+        GuideUtil.addItemMarkButton(menu, p, profile, Formats.main, this, itemGroup);
+    }
+
+    default void addBackButton0(ChestMenu menu, @Range(from = 0, to = 53) int slot, Player p, PlayerProfile profile) {
+        GuideHistory history = profile.getGuideHistory();
+
+        if (history.size() > 1) {
+            menu.addItem(
+                    slot,
+                    PatchScope.Back.patch(
+                            p, ChestMenuUtils.getBackButton(p, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单"))
+            );
+
+            menu.addMenuClickHandler(
+                    slot, (pl, s, is, action) -> EventUtil.callEvent(new GuideEvents.BackButtonClickEvent(
+                            pl, is, s,
+                            action,
+                            menu, this
+                    )).ifSuccess(() -> {
+                        if (action.isShiftClicked()) {
+                            openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
+                        } else {
+                            GuideUtil.goBack(history);
+                        }
+                        return false;
+                    })
+            );
+
+        } else {
+            menu.addItem(
+                    slot, PatchScope.Back.patch(
+                            p, ChestMenuUtils.getBackButton(
+                                    p,
+                                    "",
+                                    ChatColor.GRAY + Slimefun.getLocalization().getMessage(p, "guide.back.guide")
+                            )
+                    )
+            );
+            menu.addMenuClickHandler(
+                    slot, (pl, s, is, action) -> EventUtil.callEvent(new GuideEvents.BackButtonClickEvent(
+                            pl, is, s,
+                            action,
+                            menu, this
+                    )).ifSuccess(() -> {
+                        openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
+                        return false;
+                    })
+            );
+        }
+    }
+
+    default void displayRecipes0(Player p, PlayerProfile profile, ChestMenu menu, RecipeDisplayItem sfItem, int page) {
+        List<ItemStack> recipes = sfItem.getDisplayRecipes();
+
+        if (!recipes.isEmpty()) {
+            // setSize
+            menu.addItem(Formats.recipe_display.getSize() - 1, ItemStackUtil.getCleanItem(null));
+
+            if (page == 0) {
+                for (int s : Formats.recipe_display.getChars('B')) {
+                    menu.replaceExistingItem(
+                            s,
+                            PatchScope.RecipeDisplay.patch(
+                                    p,
+                                    Converter.getItem(
+                                            ChestMenuUtils.getBackground(), sfItem.getRecipeSectionLabel(p))
+                            )
+                    );
+                    menu.addMenuClickHandler(s, ChestMenuUtils.getEmptyClickHandler());
+                }
+            }
+
+            List<Integer> ds = Formats.recipe_display.getChars('d');
+            int length = ds.size();
+            int pages = (recipes.size() - 1) / length + 1;
+
+            for (int s : Formats.recipe_display.getChars('P')) {
+                menu.replaceExistingItem(
+                        s, PatchScope.PreviousPage.patch(p, ChestMenuUtils.getPreviousButton(p, page + 1, pages)));
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(pl, itemstack, slot, action, menu, this)).ifSuccess(() -> {
+                            if (page > 0) {
+                                displayRecipes0(pl, profile, menu, sfItem, page - 1);
+                                Sounds.playFor(pl, Sounds.GUIDE_BUTTON_CLICK_SOUND);
+                            }
+
+                            return false;
+                        })
+                );
+            }
+
+            for (int s : Formats.recipe_display.getChars('N')) {
+                menu.replaceExistingItem(
+                        s, PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, page + 1, pages)));
+                menu.addMenuClickHandler(
+                        s,
+                        (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                                pl,
+                                itemstack, slot, action, menu, this
+                        )).ifSuccess(() -> {
+                            if (recipes.size() > (length * (page + 1))) {
+                                displayRecipes0(pl, profile, menu, sfItem, page + 1);
+                                Sounds.playFor(pl, Sounds.GUIDE_BUTTON_CLICK_SOUND);
+                            }
+
+                            return false;
+                        })
+                );
+            }
+
+            List<Integer> fds = RecipeDisplayFormat.fenceShuffle(ds);
+            for (int index = 0; index < length; index++) {
+                addDisplayRecipe0(menu, profile, recipes, fds.get(index), index, page);
+            }
+        }
+    }
+
+    default void addDisplayRecipe0(
             final ChestMenu menu,
             final PlayerProfile profile,
-            final Player p,
-            Object item,
-            ItemStack output,
-            final RecipeType recipeType,
-            ItemStack[] recipe,
-            final AsyncRecipeChoiceTask task,
-            Format format);
-
-    void createHeader(Player p, PlayerProfile profile, ChestMenu menu, Format format);
-
-    void createHeader(Player p, PlayerProfile profile, ChestMenu menu, ItemGroup itemGroup);
-
-    void addBackButton0(ChestMenu menu, @Range(from = 0, to = 53) int slot, Player p, PlayerProfile profile);
-
-    void displayRecipes0(Player p, PlayerProfile profile, ChestMenu menu, RecipeDisplayItem sfItem, int page);
-
-    void addDisplayRecipe0(
-            ChestMenu menu,
-            PlayerProfile profile,
-            List<ItemStack> recipes,
+            final List<@Nullable ItemStack> recipes,
             @Range(from = 0, to = 53) int slot,
             int index,
-            int page);
+            int page) {
+        Player p = profile.getPlayer();
+        if (p == null) return;
+        int l = Formats.recipe_display.getChars('d').size();
+        if ((index + (page * l)) < recipes.size()) {
+            ItemStack displayItem = recipes.get(index + (page * l));
+
+            /*
+             * We want to clone this item to avoid corrupting the original
+             * but we wanna make sure no stupid addon creator sneaked some nulls in here
+             */
+            if (displayItem != null) {
+                // JEG - Fix clone SlimefunItemStack
+                displayItem = PatchScope.RecipeDisplay.patch(profile, Converter.getItem(displayItem).clone());
+            }
+
+            OnDisplay.Item.display(
+                            p, displayItem,
+                            OnDisplay.Item.Normal, this
+                    )
+                    .at(menu, slot, page);
+        } else {
+            menu.replaceExistingItem(slot, PatchScope.RecipeDisplay.patch(profile, Converter.getItem()));
+            menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
+        }
+    }
 
     default void printErrorMessage0(Player p, Throwable x) {
+        Debug.trace(x);
         p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
         Debug.log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
         Debug.warn("我们正在尝试恢复玩家 \"" + p.getName() + "\" 的指南...");
@@ -285,22 +939,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
-    default void printErrorMessage0(Player p, SlimefunItem item, Throwable x) {
-        p.sendMessage(ChatColor.DARK_RED
-                              + "An internal server error has occurred. Please inform an admin, check the console for"
-                              + " further info.");
-        item.error(
-                "This item has caused an error message to be thrown while viewing it in the Slimefun" + " guide.", x);
-        Debug.warn("We are trying to recover the player \"" + p.getName() + "\"'s guide...");
-        PlayerProfile profile = PlayerProfile.find(p).orElse(null);
-        if (profile == null) {
-            return;
-        }
-        GuideUtil.removeLastEntry(profile.getGuideHistory());
-    }
-
     @Override
-    @ParametersAreNonnullByDefault
     default void unlockItem(Player p, SlimefunItem sfitem, Consumer<Player> callback) {
         if (!Slimefun.getConfigManager().isLearningAnimationDisabled() && !LearningAnimationOption.isEnabled(p)) {
             ReflectionUtil.setValue(Slimefun.getConfigManager(), "disableLearningAnimation", true);
@@ -309,5 +948,187 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             }, 1L);
         }
         SlimefunGuideImplementation.super.unlockItem(p, sfitem, callback);
+    }
+
+    default void showItemGroup0(
+            final ChestMenu menu,
+            Player p,
+            PlayerProfile profile,
+            ItemGroup group,
+            int index) {
+        showItemGroup0(menu, p, profile, group, index, 1);
+    }
+
+    default void showItemGroup0(
+            final ChestMenu menu,
+            Player p,
+            PlayerProfile profile,
+            ItemGroup group,
+            int index,
+            int page) {
+        OnDisplay.ItemGroup.display(p, group, OnDisplay.ItemGroup.Normal, this)
+                .at(menu, index, page);
+    }
+
+    default JEGSlimefunGuideImplementation getImplementation() {
+        return this;
+    }
+
+    default <T extends Recipe> void showRecipeChoices0(
+            final T recipe, @Nullable ItemStack[] recipeItems, AsyncRecipeChoiceTask task) {
+        RecipeChoice[] choices = Slimefun.getMinecraftRecipeService().getRecipeShape(recipe);
+
+        List<Integer> recipeSlots = Formats.recipe_vanilla.getChars('r');
+        if (choices.length == 1 && choices[0] instanceof RecipeChoice.MaterialChoice materialChoice) {
+            recipeItems[4] = new ItemStack(materialChoice.getChoices().get(0));
+
+            if (materialChoice.getChoices().size() > 1) {
+                task.add(recipeSlots.get(4), materialChoice);
+            }
+        } else {
+            for (int i = 0; i < choices.length; i++) {
+                if (choices[i] instanceof RecipeChoice.MaterialChoice materialChoice) {
+                    recipeItems[i] = new ItemStack(materialChoice.getChoices().get(0));
+
+                    if (materialChoice.getChoices().size() > 1) {
+                        task.add(recipeSlots.get(i), materialChoice);
+                    }
+                }
+            }
+        }
+    }
+
+    default void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
+        Player p = profile.getPlayer();
+
+        if (p == null || item == null || item.getType() == Material.AIR) {
+            return;
+        }
+
+        SlimefunItem sfItem = SlimefunItem.getByItem(item);
+
+        if (sfItem != null && !(sfItem instanceof VanillaItemShade)) {
+            displayItem(profile, sfItem, addToHistory);
+            return;
+        }
+
+        // Not SlimefunItem, or VanillaItemShade
+        if (!Slimefun.getConfigManager().isShowVanillaRecipes()) {
+            return;
+        }
+
+        Recipe[] recipes = Slimefun.getMinecraftRecipeService().getRecipesFor(item);
+
+        if (recipes.length == 0) {
+            return;
+        }
+
+        showMinecraftRecipe0(recipes, index, item, profile, p, addToHistory);
+    }
+
+    default int getMaxItemsPerPage() {
+        return MAX_ITEMS_PER_PAGE;
+    }
+
+    default int getMaxItemGroupsPerPage() {
+        return MAX_ITEM_GROUPS_PER_PAGE;
+    }
+
+    int MAX_ITEMS_PER_PAGE = Formats.sub.getChars('i').size();
+    int MAX_ITEM_GROUPS_PER_PAGE = Formats.main.getChars('G').size();
+
+    /**
+     * Returns a {@link List} of visible {@link ItemGroup} instances that the {@link SlimefunGuide} would display.
+     *
+     * @param p
+     *         The {@link Player} who opened his {@link SlimefunGuide}
+     * @param profile
+     *         The {@link PlayerProfile} of the {@link Player}
+     *
+     * @return a {@link List} of visible {@link ItemGroup} instances
+     */
+    List<ItemGroup> getVisibleItemGroups(Player p, PlayerProfile profile);
+
+    @Override
+    default void openMainMenu(PlayerProfile profile, int page) {
+        Player p = profile.getPlayer();
+
+        if (p == null) {
+            return;
+        }
+
+        GuideHistory history = profile.getGuideHistory();
+        history.clear();
+        history.setMainMenuPage(page);
+
+        ChestMenu menu = create0(p);
+        List<ItemGroup> itemGroups = getVisibleItemGroups(p, profile);
+
+        createHeader(p, profile, menu, Formats.main);
+
+        int target = (getMaxItemGroupsPerPage() * (page - 1)) - 1;
+        int pages = target == itemGroups.size() - 1 ? page : (itemGroups.size() - 1) / getMaxItemGroupsPerPage() + 1;
+        if (page > pages) {
+            page = pages;
+        }
+
+        List<Integer> indexes = Formats.main.getChars('G');
+        int index = 0;
+
+        while (target < (itemGroups.size() - 1) && index < getMaxItemGroupsPerPage()) {
+            target++;
+
+            ItemGroup group = itemGroups.get(target);
+            showItemGroup0(menu, p, profile, group, indexes.get(index));
+
+            index++;
+        }
+
+        for (int s : Formats.main.getChars('P')) {
+            menu.addItem(s, PatchScope.PreviousPage.patch(profile, ChestMenuUtils.getPreviousButton(p, page, pages)));
+            int finalPage1 = page;
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
+                            pl,
+                            item,
+                            slot,
+                            action, menu, this
+                    )).ifSuccess(() -> {
+                        int previous = finalPage1 - 1;
+
+                        if (previous > 0) {
+                            openMainMenu(profile, previous);
+                        }
+
+                        return false;
+                    })
+            );
+        }
+
+        for (int s : Formats.main.getChars('N')) {
+            menu.addItem(s, PatchScope.NextPage.patch(profile, ChestMenuUtils.getNextButton(p, page, pages)));
+            int finalPage = page;
+            menu.addMenuClickHandler(
+                    s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
+                            pl, item,
+                            slot,
+                            action,
+                            menu,
+                            this
+                    )).ifSuccess(() -> {
+                        int next = finalPage + 1;
+
+                        if (next <= pages) {
+                            openMainMenu(profile, next);
+                        }
+
+                        return false;
+                    })
+            );
+        }
+
+        GuideListener.guideModeMap.put(p, getMode());
+
+        menu.open(p);
     }
 }

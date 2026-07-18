@@ -31,6 +31,8 @@ import com.balugaq.jeg.api.objects.events.PatchEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -89,7 +91,9 @@ public enum PatchScope {
     Action,
     SlimefunRecipeEdit;
 
-    public ItemStack patch(PlayerProfile profile, ItemStack itemStack) {
+    @Contract("_, null -> null")
+    @Nullable
+    public ItemStack patch(final PlayerProfile profile, @Nullable final ItemStack itemStack) {
         Player player = profile.getPlayer();
         if (player == null) {
             return itemStack;
@@ -97,7 +101,7 @@ public enum PatchScope {
         return patch(player, itemStack);
     }
 
-    public ItemStack patch(Player player, ItemStack itemStack) {
+    public ItemStack patch(Player player, @Nullable ItemStack itemStack) {
         return PatchEvent.patch(this, player, itemStack);
     }
 }

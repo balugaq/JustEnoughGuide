@@ -835,7 +835,7 @@ public class SpecialMenuProvider {
             SlimefunItem slimefunItem) {
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
         if (implementation instanceof JEGSlimefunGuideImplementation jeg) {
-            jeg.displayItem(playerProfile, slimefunItem, true, false);
+            jeg.displayItem(playerProfile, slimefunItem, false);
         } else {
             implementation.displayItem(playerProfile, slimefunItem, true);
         }

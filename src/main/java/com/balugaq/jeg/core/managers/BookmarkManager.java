@@ -106,7 +106,7 @@ public class BookmarkManager extends AbstractManager {
             bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+        ItemStack itemStack = Converter.getItem(
                 bookmarksItem, itemMeta -> {
                     List<String> lore = itemMeta.getLore();
                     if (lore == null) {
@@ -117,7 +117,7 @@ public class BookmarkManager extends AbstractManager {
                     lore.add(id);
                     itemMeta.setLore(lore);
                 }
-        ));
+        );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -195,14 +195,14 @@ public class BookmarkManager extends AbstractManager {
     }
 
     public ItemStack markItemAsBookmarksItem(ItemStack itemStack, Player player) {
-        return ItemStackUtil.getCleanItem(Converter.getItem(
+        return Converter.getItem(
                 itemStack, itemMeta -> itemMeta.getPersistentDataContainer()
                         .set(
                                 BOOKMARKS_KEY,
                                 PersistentDataType.STRING,
                                 player.getUniqueId().toString()
                         )
-        ));
+        );
     }
 
     private void operateController(Consumer<ProfileDataController> consumer) {
@@ -245,7 +245,7 @@ public class BookmarkManager extends AbstractManager {
             bookmarksItem = markItemAsBookmarksItem(new ItemStack(Material.DIRT), player);
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+        ItemStack itemStack = Converter.getItem(
                 bookmarksItem, itemMeta -> {
                     List<String> lore = itemMeta.getLore();
                     if (lore == null) {
@@ -256,7 +256,7 @@ public class BookmarkManager extends AbstractManager {
                     lore.add(id);
                     itemMeta.setLore(lore);
                 }
-        ));
+        );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -323,7 +323,7 @@ public class BookmarkManager extends AbstractManager {
             return;
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+        ItemStack itemStack = Converter.getItem(
                 bookmarksItem, itemMeta -> {
                     List<String> lore = itemMeta.getLore();
                     if (lore == null) {
@@ -332,7 +332,7 @@ public class BookmarkManager extends AbstractManager {
                     lore.remove(slimefunItem.getId());
                     itemMeta.setLore(lore);
                 }
-        ));
+        );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -355,7 +355,7 @@ public class BookmarkManager extends AbstractManager {
             return;
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(Converter.getItem(
+        ItemStack itemStack = Converter.getItem(
                 bookmarksItem, itemMeta -> {
                     List<String> lore = itemMeta.getLore();
                     if (lore == null) {
@@ -364,7 +364,7 @@ public class BookmarkManager extends AbstractManager {
                     lore.remove("itemgroup:" + itemGroup.getKey());
                     itemMeta.setLore(lore);
                 }
-        ));
+        );
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {
@@ -387,8 +387,7 @@ public class BookmarkManager extends AbstractManager {
             return;
         }
 
-        ItemStack itemStack = ItemStackUtil.getCleanItem(
-                Converter.getItem(bookmarksItem, itemMeta -> itemMeta.setLore(new ArrayList<>())));
+        ItemStack itemStack = Converter.getItem(bookmarksItem, itemMeta -> itemMeta.setLore(new ArrayList<>()));
 
         backpack.getInventory().setItem(DATA_ITEM_SLOT, itemStack);
         operateController(controller -> {

@@ -29,7 +29,6 @@ package com.balugaq.jeg.core.commands;
 
 import com.balugaq.jeg.api.interfaces.JEGCommand;
 import com.balugaq.jeg.utils.ClipboardUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -43,7 +42,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
@@ -112,7 +110,7 @@ public class CategoriesCommand implements JEGCommand {
                         }
                 );
             } else {
-                menu.replaceExistingItem(i, Converter.getItem(ItemStackUtil.getCleanItem(null)));
+                menu.replaceExistingItem(i, Converter.getItem());
             }
         }
 

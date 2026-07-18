@@ -57,6 +57,14 @@ public class Converter {
         return new Builder();
     }
 
+    public static ItemStack getItem() {
+        return getAir();
+    }
+
+    public static ItemStack getAir() {
+        return AIR.clone();
+    }
+
     /**
      * Converts a {@link SlimefunItemStack} to a Bukkit ItemStack.
      *
