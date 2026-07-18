@@ -518,7 +518,7 @@ local-translate:
   GeyserHeads: "互通头颅材质"
   VariousClutter: "杂乱物品"
   Mineralgenerator: "Mineral 矿物生成器" # Avoid conflict with OreGeneration
-  CivilizationEvolution: "AG科技" # Avoid conflict with AgTech
+  CivilizationEvolution: "AG科技" # Avoid conflict with AgTech, ProductState
   RemiliasUtilities: "雷米科技"
   BetterChests: "更好的箱子"
   SlimeFood: "粘液美食"
@@ -559,7 +559,7 @@ local-translate:
   EtherTech: "虚素科技"
   SlimefunTimeit: "性能监视器"
   AsianStarProgram: "亚星计划"
-  AgTech: "AG科技 - RSC" # Avoid conflict with CivilizationEvolution
+  AgTech: "AG科技 - RSC" # Avoid conflict with CivilizationEvolution, ProductState
   CavernTech: "洞穴科技"
   Creation: "创世"
   Greed: "贪婪"
@@ -621,6 +621,8 @@ local-translate:
   SLTech: "SL科技"
   EpoTech_Branch: "EpoTech分支版"
   SakuraLoveTech: "樱沫科技" # Same as YINGMO
+  SlimeBotania: "植物魔法"
+  ProductState: "AG科技 - PS" # Avoid conflict with CivilizationEvolution, AgTech
 
 # Do not change this value unless you know what you are doing.
 debug: false

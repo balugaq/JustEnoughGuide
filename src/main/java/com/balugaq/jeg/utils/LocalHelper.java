@@ -298,7 +298,7 @@ public class LocalHelper {
         addonLocals.put("GeyserHeads", "互通头颅材质");
         addonLocals.put("VariousClutter", "杂乱物品");
         addonLocals.put("Mineralgenerator", "Mineral 矿物生成器"); // Avoid conflict with OreGeneration
-        addonLocals.put("CivilizationEvolution", "AG科技"); // Avoid conflict with AgTech
+        addonLocals.put("CivilizationEvolution", "AG科技"); // Avoid conflict with AgTech, ProductState
         addonLocals.put("RemiliasUtilities", "雷米科技");
         addonLocals.put("BetterChests", "更好的箱子");
         addonLocals.put("SlimeFood", "粘液美食");
@@ -338,7 +338,7 @@ public class LocalHelper {
         addonLocals.put("InfinityExpansion2", "无尽贪婪2");
         addonLocals.put("EtherTech", "虚素科技");
         addonLocals.put("SlimefunTimeit", "性能监视器");
-        addonLocals.put("AgTech", "AG科技 - RSC"); // Avoid conflict with CivilizationEvolution
+        addonLocals.put("AgTech", "AG科技 - RSC"); // Avoid conflict with CivilizationEvolution, ProductState
         addonLocals.put("CavernTech", "洞穴科技");
         addonLocals.put("Creation", "创世");
         addonLocals.put("Greed", "贪婪");
@@ -400,6 +400,8 @@ public class LocalHelper {
         addonLocals.put("SLTech", "SL科技");
         addonLocals.put("EpoTech_Branch", "EpoTech分支版");
         addonLocals.put("SakuraLoveTech", "樱沫科技"); // Same as YINGMO
+        addonLocals.put("SlimeBotania", "植物魔法");
+        addonLocals.put("ProductState", "AG科技 - PS"); // Avoid conflict with CivilizationEvolution, AgTech
     }
 
     public static String getOfficialAddonName(ItemGroup itemGroup, String itemId) {
