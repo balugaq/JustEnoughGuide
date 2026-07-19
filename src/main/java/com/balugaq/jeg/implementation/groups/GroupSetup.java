@@ -48,6 +48,7 @@ public class GroupSetup {
     public static RecipeCompletableGroup recipeCompletableGroup;
     public static BannedItemsGroup bannedItemGroup;
     public static JEGItemsGroup jegItemsGroup;
+    public static MultiBlockBuilderItemsGroup multiBlockBuilderItemsGroup;
 
     /**
      * Registers all the JEG groups.
@@ -80,6 +81,10 @@ public class GroupSetup {
         jegItemsGroup = new JEGItemsGroup(KeyUtil.newKey("jeg_items_group"), Models.JEG_ITEMS_GROUP);
         jegItemsGroup.setTier(Integer.MAX_VALUE);
         jegItemsGroup.register(JustEnoughGuide.getInstance());
+
+        multiBlockBuilderItemsGroup = new MultiBlockBuilderItemsGroup(KeyUtil.newKey("multi_block_builder_items_group"), Models.MULTI_BLOCK_BUILDER_ITEMS_GROUP);
+        multiBlockBuilderItemsGroup.setTier(Integer.MAX_VALUE);
+        multiBlockBuilderItemsGroup.register(JustEnoughGuide.getInstance());
 
         IntegrationManager.scheduleRun(() ->
             RecipeCompletableRegistry.getAllRecipeCompletableBlocks().forEach(block ->

@@ -25,46 +25,22 @@
  *
  */
 
-package com.balugaq.jeg.core.listeners;
+package com.balugaq.jeg.implementation.groups;
 
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.PluginEnableEvent;
+import com.balugaq.jeg.api.groups.MixedGroup;
+import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
+ * @since 2.1
  */
-@Getter
-public class SearchReloadListener implements Listener {
-    private boolean scheduleReload = false;
-
-    // @formatter:off
-    public SearchReloadListener() {
-        JustEnoughGuide.runTimerAsync(() -> {
-            if (scheduleReload) {
-                JustEnoughGuide.reload(JustEnoughGuide.getInstance(), Bukkit.getConsoleSender());
-                scheduleReload = false;
-            }
-        }, 5000, 20 * 60 * 5);
-    }
-    // @formatter:on
-
-    @EventHandler
-    public void onSlimefunAddonEnable(PluginEnableEvent event) {
-        if (event.getPlugin() instanceof SlimefunAddon) {
-            scheduleReload = true;
-        }
-    }
-
-    @EventHandler
-    public void onSlimefunAddonDisable(PluginDisableEvent event) {
-        if (event.getPlugin() instanceof SlimefunAddon && !"JustEnoughGuide".equals(event.getPlugin().getName())) {
-            scheduleReload = true;
-        }
+@NotDisplayInSurvivalMode
+@NullMarked
+public class MultiBlockBuilderItemsGroup extends MixedGroup<MultiBlockBuilderItemsGroup> {
+    public MultiBlockBuilderItemsGroup(final NamespacedKey key, final ItemStack icon) {
+        super(key, icon);
     }
 }

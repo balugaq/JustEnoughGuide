@@ -35,6 +35,7 @@ import com.balugaq.jeg.api.objects.enums.FilterType;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.items.MultiBlockBuilderItem;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.ClipboardUtil;
@@ -1468,8 +1469,7 @@ public interface OnClick {
                                     int amount = 1;
                                     if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
 
-                                    ItemStack itemStack = slimefunItem == null ? item :
-                                            Converter.getItem(slimefunItem.getItem());
+                                    ItemStack itemStack = MultiBlockBuilderItem.getItem(slimefunItem);
                                     player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
                                     return;
                                 }
@@ -1509,13 +1509,8 @@ public interface OnClick {
                                                                                           page) -> {
                                 ItemStack cursor = player.getItemOnCursor();
                                 if (cursor == null || cursor.getType() == Material.AIR) {
-                                    if (slimefunItem instanceof MultiBlockMachine) {
-                                        Slimefun.getLocalization().sendMessage(player, "guide.cheat.no-multiblocks");
-                                        return;
-                                    }
+                                    ItemStack itemStack = MultiBlockBuilderItem.getItem(item);
 
-                                    ItemStack itemStack = slimefunItem == null ? item :
-                                            Converter.getItem(slimefunItem.getItem());
                                     player.setItemOnCursor(StackUtils.getAsQuantity(
                                             itemStack,
                                             itemStack.getMaxStackSize()
@@ -1530,8 +1525,7 @@ public interface OnClick {
                                 int amount = 1;
                                 if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
 
-                                ItemStack itemStack = slimefunItem == null ? item :
-                                        Converter.getItem(slimefunItem.getItem());
+                                ItemStack itemStack = MultiBlockBuilderItem.getItem(item);
                                 player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
                             }
                     ),

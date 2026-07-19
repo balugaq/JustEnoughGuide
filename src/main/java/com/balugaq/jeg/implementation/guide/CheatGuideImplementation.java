@@ -31,11 +31,13 @@ import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.utils.GuideUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.CheatSheetSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.SlimefunGuideItem;
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -80,5 +82,35 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     @Override
     public ItemStack getItem() {
         return item;
+    }
+
+    @Override
+    public void displayItem(PlayerProfile profile, SlimefunItem item, boolean addToHistory) {
+        JEGSlimefunGuideImplementation.super.displayItem(profile, item, addToHistory);
+    }
+
+    @Override
+    public void displayItem(PlayerProfile profile, ItemStack item, int index, boolean addToHistory) {
+        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index, addToHistory);
+    }
+
+    @Override
+    public void openSearch(PlayerProfile profile, String input, boolean addToHistory) {
+        JEGSlimefunGuideImplementation.super.openSearch(profile, input, addToHistory);
+    }
+
+    @Override
+    public void openItemGroup(PlayerProfile profile, ItemGroup itemGroup, int page) {
+        JEGSlimefunGuideImplementation.super.openItemGroup(profile, itemGroup, page);
+    }
+
+    @Override
+    public void openMainMenu(PlayerProfile profile, int page) {
+        JEGSlimefunGuideImplementation.super.openMainMenu(profile, page);
+    }
+
+    @Override
+    public void createHeader(Player p, PlayerProfile profile, ChestMenu menu) {
+        JEGSlimefunGuideImplementation.super.createHeader(p, profile, menu);
     }
 }

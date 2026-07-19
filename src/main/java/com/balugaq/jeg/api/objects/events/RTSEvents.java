@@ -30,6 +30,7 @@ package com.balugaq.jeg.api.objects.events;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import lombok.Getter;
 import lombok.Setter;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -57,9 +58,12 @@ public class RTSEvents {
     @NullMarked
     public static class CloseRTSEvent extends PlayerEvent {
         private static final HandlerList HANDLERS = new HandlerList();
+        private final AnvilGUI.StateSnapshot stateSnapshot;
 
-        public CloseRTSEvent(Player player) {
-            super(player);
+        public CloseRTSEvent(Player player, AnvilGUI.StateSnapshot stateSnapshot) {
+            super(player, !Bukkit.isPrimaryThread());
+            this.player = player;
+            this.stateSnapshot = stateSnapshot;
         }
 
         public static HandlerList getHandlerList() {
@@ -86,8 +90,11 @@ public class RTSEvents {
         private final AnvilInventory openingInventory;
         private @Setter boolean cancelled = false;
 
-        public OpenRTSEvent(Player player, AnvilInventory openingInventory) {
-            super(player);
+        public OpenRTSEvent(
+            Player player,
+            AnvilInventory openingInventory) {
+            super(player, !Bukkit.isPrimaryThread());
+            this.player = player;
             this.openingInventory = openingInventory;
         }
 
@@ -112,16 +119,25 @@ public class RTSEvents {
     @NullMarked
     public static class SearchTermChangeEvent extends PlayerEvent {
         private static final HandlerList HANDLERS = new HandlerList();
+        private final Object inventoryView; // Use Object to avoid InventoryView compatibility issues
+        private final AnvilInventory openingInventory;
         private final @Nullable String oldSearchTerm;
         private final String newSearchTerm;
+        private final SlimefunGuideMode guideMode;
 
         public SearchTermChangeEvent(
             Player player,
+            Object inventoryView,
+            AnvilInventory openingInventory,
             @Nullable String oldSearchTerm,
-            String newSearchTerm) {
+            String newSearchTerm,
+            SlimefunGuideMode guideMode) {
             super(player);
+            this.inventoryView = inventoryView;
+            this.openingInventory = openingInventory;
             this.oldSearchTerm = oldSearchTerm;
             this.newSearchTerm = newSearchTerm;
+            this.guideMode = guideMode;
         }
 
         public static HandlerList getHandlerList() {
@@ -143,63 +159,27 @@ public class RTSEvents {
     @SuppressWarnings("unused")
     @Getter
     @NullMarked
-    public static class ClickAnvilItemEvent extends Event implements Cancellable {
+    public static class ClickAnvilItemEvent extends PlayerEvent implements Cancellable {
         private static final HandlerList HANDLERS = new HandlerList();
-        private final Player player;
+        private final AnvilGUI.StateSnapshot stateSnapshot;
         private final int slot;
-        private boolean cancelled;
+        private @Setter boolean cancelled;
 
-        /**
-         * Constructs a new ClickAnvilItemEvent.
-         *
-         * @param player    The player who clicked the anvil item.
-         * @param slot      The slot that was clicked.
-         * @param guideMode The guide mode.
-         */
         public ClickAnvilItemEvent(
-            Player player, int slot, SlimefunGuideMode guideMode) {
-            super(!Bukkit.isPrimaryThread());
+            Player player, AnvilGUI.StateSnapshot stateSnapshot, int slot) {
+            super(player, !Bukkit.isPrimaryThread());
             this.player = player;
+            this.stateSnapshot = stateSnapshot;
             this.slot = slot;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         @Override
         public final HandlerList getHandlers() {
             return HANDLERS;
-        }
-
-        /**
-         * Checks if the event is cancelled.
-         *
-         * @return true if the event is cancelled, false otherwise
-         */
-        @Override
-        public boolean isCancelled() {
-            return cancelled;
-        }
-
-        /**
-         * Sets the cancellation state of the event.
-         *
-         * @param cancelled the cancellation state
-         */
-        @Override
-        public void setCancelled(boolean cancelled) {
-            this.cancelled = cancelled;
         }
     }
 
@@ -219,17 +199,8 @@ public class RTSEvents {
         private final SlimefunGuideMode guideMode;
         private final int oldPage;
         private final int newPage;
-        private boolean cancelled;
+        private @Setter boolean cancelled;
 
-        /**
-         * Constructs a new PageChangeEvent.
-         *
-         * @param player           The player who changed the page.
-         * @param openingInventory The opening inventory.
-         * @param oldPage          The old page number.
-         * @param newPage          The new page number.
-         * @param guideMode        The guide mode.
-         */
         public PageChangeEvent(
             Player player, AnvilInventory openingInventory, int oldPage, int newPage, SlimefunGuideMode guideMode) {
             super(!Bukkit.isPrimaryThread());
@@ -240,33 +211,13 @@ public class RTSEvents {
             this.guideMode = guideMode;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         public static HandlerList getHandlerList() {
             return HANDLERS;
         }
 
-        /**
-         * Returns the handler list.
-         *
-         * @return the handler list
-         */
         @Override
         public final HandlerList getHandlers() {
             return HANDLERS;
-        }
-
-        /**
-         * Sets the cancellation state of the event.
-         *
-         * @param cancelled the cancellation state
-         */
-        @Override
-        public void setCancelled(boolean cancelled) {
-            this.cancelled = cancelled;
         }
     }
 }

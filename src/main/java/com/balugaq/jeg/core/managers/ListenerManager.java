@@ -28,7 +28,6 @@
 package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
-import com.balugaq.jeg.core.listeners.AnvilGuiListener;
 import com.balugaq.jeg.core.listeners.BundleListener;
 import com.balugaq.jeg.core.listeners.CerPatchListener;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
@@ -80,8 +79,6 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new GroupTierEditorListener());
         listeners.add(new GuideGUIFixListener());
         listeners.add(new MenuListener());
-        // Disable it for now
-        // listeners.add(new SearchReloadListener());
         if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
             listeners.add(new SlimefunIdPatchListener());
         }
@@ -101,7 +98,6 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new SlimefunGuideOptionPatchFixListener());
         listeners.add(new SlimefunRegistryFinalizeListener());
         listeners.add(new ReplacementCardAdaptItemListener());
-        listeners.add(new AnvilGuiListener());
     }
 
     public void registerListener(Listener listener) {

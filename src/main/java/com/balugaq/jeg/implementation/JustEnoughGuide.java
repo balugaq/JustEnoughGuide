@@ -46,6 +46,7 @@ import com.balugaq.jeg.implementation.groups.VanillaItemsGroup;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
+import com.balugaq.jeg.implementation.items.MultiBlockBuilderItem;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -501,6 +502,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         SpecialMenuProvider.loadConfiguration();
         ReplacementCardAdapter.load();
+        MultiBlockBuilderItem.setup();
         ThirdPartyWarnings.check();
 
         getLogger().info("正在适配其他插件...");

@@ -29,8 +29,6 @@ package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.DontShowInSearch;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
-import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
-import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.Timer;
 import com.balugaq.jeg.api.objects.enums.FilterType;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
@@ -101,8 +99,6 @@ import java.util.stream.Collectors;
  * @since 1.0
  */
 @SuppressWarnings({"deprecation", "unused", "ConstantValue", "JavaExistingMethodCanBeUsed"})
-@NotDisplayInSurvivalMode
-@NotDisplayInCheatMode
 @NullMarked
 public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final ConcurrentHashMap<UUID, String> searchTerms = new ConcurrentHashMap<>();
@@ -263,6 +259,23 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             .toList();
     }
 
+    public static List<ItemStack> filterItem(
+        Player player,
+        FilterType filterType,
+        String filterValue,
+        boolean pinyin,
+        List<ItemStack> items,
+        boolean passNonSlimefun) {
+        String lowerFilterValue = filterValue.toLowerCase();
+        return items.stream()
+            .filter(item -> {
+                SlimefunItem sf = SlimefunItem.getByItem(item);
+                if (sf != null) return filterType.getFilter().apply(player, sf, lowerFilterValue, pinyin);
+                return passNonSlimefun;
+            })
+            .toList();
+    }
+
     public static Set<SlimefunItem> filterItems(
         Player player,
         FilterType filterType,
@@ -272,6 +285,23 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         String lowerFilterValue = filterValue.toLowerCase();
         return items.stream()
             .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
+            .collect(Collectors.toSet());
+    }
+
+    public static Set<ItemStack> filterItems(
+        Player player,
+        FilterType filterType,
+        String filterValue,
+        boolean pinyin,
+        Set<ItemStack> items,
+        boolean passNonSlimefun) {
+        String lowerFilterValue = filterValue.toLowerCase();
+        return items.stream()
+            .filter(item -> {
+                SlimefunItem sf = SlimefunItem.getByItem(item);
+                if (sf != null) return filterType.getFilter().apply(player, sf, lowerFilterValue, pinyin);
+                return passNonSlimefun;
+            })
             .collect(Collectors.toSet());
     }
 
@@ -343,7 +373,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                                                             continue;
                                                         }
 
-                                                        // RykenSlimeCustomizer
+                                                        // RykenSlimefunCustomizer
                                                         // CustomTemplateMachine
                                                         else if (Otemplates instanceof List<?> templates) {
                                                             for (Object template : templates) {
@@ -686,9 +716,9 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     List<ItemStack> displayRecipes = null;
                     if (slimefunItem instanceof AContainer ac) {
                         displayRecipes = ac.getDisplayRecipes();
-                    } else if (slimefunItem instanceof MultiBlockMachine mb) {
+                    } else if (slimefunItem instanceof MultiBlockMachine mbm) {
                         try {
-                            displayRecipes = mb.getDisplayRecipes();
+                            displayRecipes = mbm.getDisplayRecipes();
                         } catch (Exception ignored) {
                         }
                     } else if (SpecialMenuProvider.ENABLED_LogiTech

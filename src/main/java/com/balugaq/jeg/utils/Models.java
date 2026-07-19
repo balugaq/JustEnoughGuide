@@ -73,6 +73,8 @@ public class Models {
         new SlimefunItemStack("JEG_REPLACEMENT_CARDS_GROUP", Converter.getItem(Material.PAPER, "&b替换卡 - 伴生物品")));
     public static final ItemStack BANNED_ITEMS_GROUP = Converter.getItem(
         new SlimefunItemStack("JEG_BANNED_ITEMS_GROUP", Converter.getItem(Material.COMMAND_BLOCK, "&c已禁用的物品")));
+    public static final ItemStack MULTI_BLOCK_BUILDER_ITEMS_GROUP = Converter.getItem(
+        new SlimefunItemStack("MULTI_BLOCK_BUILDER_ITEMS_GROUP", Converter.getItem(Material.BRICKS, "&b多方块建筑物品")));
     public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(
         Material.YELLOW_STAINED_GLASS_PANE, " ",
         " "

@@ -28,8 +28,6 @@
 package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
-import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
-import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
@@ -65,8 +63,6 @@ import java.util.List;
  * @since 1.1
  */
 @SuppressWarnings({"deprecation", "unused"})
-@NotDisplayInSurvivalMode
-@NotDisplayInCheatMode
 @NullMarked
 public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
     private final SlimefunGuideImplementation implementation;

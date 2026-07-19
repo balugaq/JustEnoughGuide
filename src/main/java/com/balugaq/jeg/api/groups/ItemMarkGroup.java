@@ -29,8 +29,6 @@ package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
-import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
-import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -57,15 +55,13 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 
 /**
- * This class used to create groups to mark items into {@link BookmarkGroup} in the guide. Will not display Item Mark
- * Button in {@link NestedItemGroup}
+ * This class used to create groups to mark items into {@link BookmarkGroup} in the guide.
+ * Will not display Item Mark Button in {@link NestedItemGroup}
  *
  * @author balugaq
  * @since 1.1
  */
 @SuppressWarnings({"deprecation", "unused"})
-@NotDisplayInSurvivalMode
-@NotDisplayInCheatMode
 @NullMarked
 public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
     private final JEGSlimefunGuideImplementation implementation;
