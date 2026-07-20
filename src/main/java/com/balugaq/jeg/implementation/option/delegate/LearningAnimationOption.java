@@ -33,6 +33,8 @@
 package com.balugaq.jeg.implementation.option.delegate;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.config.SlimefunConfigManager;
@@ -56,7 +58,7 @@ import java.util.Optional;
  */
 @SuppressWarnings("DataFlowIssue")
 @NullMarked
-public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
+public class LearningAnimationOption implements PrioritySlimefunGuideOption<Boolean> {
     public static NamespacedKey key0() {
         return new NamespacedKey(Slimefun.instance(), "research_learning_animation");
     }
@@ -65,10 +67,12 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
         return !PersistentDataAPI.hasByte(p, key0()) || PersistentDataAPI.getByte(p, key0()) == 1;
     }
 
+    @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
+    @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         SlimefunConfigManager cfgManager = Slimefun.getConfigManager();
         if (cfgManager.isResearchingEnabled() && !cfgManager.isLearningAnimationDisabled()) {
@@ -91,20 +95,29 @@ public class LearningAnimationOption implements SlimefunGuideOption<Boolean> {
         }
     }
 
+    @Override
     public NamespacedKey getKey() {
         return key0();
     }
 
+    @Override
     public void onClick(Player p, ItemStack guide) {
         this.setSelectedOption(p, guide, !(Boolean) this.getSelectedOption(p, guide).orElse(true));
         JEGGuideSettings.openSettings(p, guide);
     }
 
+    @Override
     public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
         return Optional.of(isEnabled(p));
     }
 
+    @Override
     public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
         PersistentDataAPI.setByte(p, this.getKey(), (byte) (value ? 1 : 0));
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.LearningAnimationOption;
     }
 }

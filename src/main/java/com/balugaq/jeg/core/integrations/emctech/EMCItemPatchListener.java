@@ -84,7 +84,7 @@ public class EMCItemPatchListener implements ItemPatchListener {
     }
 
     public boolean disabledOption(Player player) {
-        return !EMCValueDisplayOption.isEnabled(player);
+        return !EMCValueDisplayGuideOption.isEnabled(player);
     }
 
     @SuppressWarnings("deprecation")

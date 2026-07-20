@@ -32,6 +32,7 @@ import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.groups.GroupSetup;
 import com.balugaq.jeg.implementation.items.MultiBlockBuilderItem;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -76,7 +77,9 @@ public class MultiBlockBuilder {
                     new ItemStack[0],
                     mb.getMultiBlock()
                 );
-                item.setHidden(true);
+                // don't use setHidden(boolean), otherwise the item won't show in item group.
+                ReflectionUtil.setValue(item, "hidden", true);
+
                 item.register(JustEnoughGuide.getInstance());
                 items.put(mb, item);
             }

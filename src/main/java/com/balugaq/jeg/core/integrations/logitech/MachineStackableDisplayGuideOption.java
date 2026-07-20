@@ -28,6 +28,8 @@
 package com.balugaq.jeg.core.integrations.logitech;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -47,7 +49,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class MachineStackableDisplayGuideOption implements SlimefunGuideOption<Boolean> {
+public class MachineStackableDisplayGuideOption implements PrioritySlimefunGuideOption<Boolean> {
     public static final MachineStackableDisplayGuideOption instance = new MachineStackableDisplayGuideOption();
 
     public static MachineStackableDisplayGuideOption instance() {
@@ -108,5 +110,10 @@ public class MachineStackableDisplayGuideOption implements SlimefunGuideOption<B
     @Override
     public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
         PersistentDataAPI.setByte(p, getKey(), value ? (byte) 1 : (byte) 0);
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.MachineStackableDisplayGuideOption;
     }
 }

@@ -27,14 +27,12 @@
 
 package com.balugaq.jeg.implementation.option;
 
-import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
-import org.bukkit.Material;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,39 +42,20 @@ import java.util.Optional;
 
 /**
  * @author balugaq
- * @since 2.0
+ * @since 1.9
  */
 @SuppressWarnings({"SameReturnValue"})
 @NullMarked
-public class KeybindsSettingsGuideOption extends AbstractCustomActionGuideOption {
-    public static final ItemStack DEFAULT_ICON = Converter.getItem(
-        Material.COMPASS,
-        "&a单击打开指南书按键控制界面"
-    );;
-
+public abstract class AbstractCustomActionGuideOption extends AbstractBooleanGuideOption {
     @Override
-    public int priority() {
-        return Priorities.KeybindsSettingsGuideOption;
-    }
-
-    private static final KeybindsSettingsGuideOption instance = new KeybindsSettingsGuideOption();
-
-    public static KeybindsSettingsGuideOption instance() {
-        return instance;
+    public Optional<Boolean> getSelectedOption(Player p, ItemStack guide) {
+        return Optional.of(false);
     }
 
     @Override
-    public ItemStack getDisplayItem(Player p, ItemStack guide, boolean unused) {
-        return DEFAULT_ICON;
+    public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
     }
 
-    @Override
-    public void onClick(Player p, ItemStack guide) {
-        GuideUtil.openKeybindsGui(p);
-    }
-
-    @Override
-    public String key0() {
-        return "keybinds_settings";
-    }
+    @SuppressWarnings("unused")
+    public abstract ItemStack getDisplayItem(Player player, ItemStack guide, boolean enabled);
 }

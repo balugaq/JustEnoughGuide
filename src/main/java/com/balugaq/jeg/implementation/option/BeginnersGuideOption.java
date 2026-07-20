@@ -27,6 +27,7 @@
 
 package com.balugaq.jeg.implementation.option;
 
+import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,6 +47,11 @@ public class BeginnersGuideOption extends AbstractBooleanGuideOption {
 
     public static BeginnersGuideOption instance() {
         return instance;
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.BeginnersGuideOption;
     }
 
     @Override

@@ -25,14 +25,17 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.finaltechs.finaltechv1;
+package com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -47,10 +50,13 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class FinalTechValueDisplayOption implements SlimefunGuideOption<Boolean> {
-    public static final FinalTechValueDisplayOption instance = new FinalTechValueDisplayOption();
+public class FinalTECHValueDisplayGuideOption implements PrioritySlimefunGuideOption<Boolean> {
+    public static final FinalTECHValueDisplayGuideOption instance = new FinalTECHValueDisplayGuideOption();
+    @Setter
+    @Getter
+    private static boolean booted = false;
 
-    public static FinalTechValueDisplayOption instance() {
+    public static FinalTECHValueDisplayGuideOption instance() {
         return instance;
     }
 
@@ -63,7 +69,7 @@ public class FinalTechValueDisplayOption implements SlimefunGuideOption<Boolean>
     }
 
     public static NamespacedKey key0() {
-        return new NamespacedKey(JustEnoughGuide.getInstance(), "finaltechv1_emc_item");
+        return new NamespacedKey(JustEnoughGuide.getInstance(), "finaltechv2_emc_item");
     }
 
     @Override
@@ -72,20 +78,25 @@ public class FinalTechValueDisplayOption implements SlimefunGuideOption<Boolean>
     }
 
     @Override
+    public int priority() {
+        return Priorities.FinalTECHValueDisplayGuideOption;
+    }
+
+    @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
             isEnabled(p) ? Material.RESPAWN_ANCHOR : Material.REDSTONE_LAMP,
-            "&b旧乱序EMC值显示: &" + (enabled ? "a启用" : "4禁用"),
+            "&b新乱序EMC值显示: &" + (enabled ? "a启用" : "4禁用"),
             "",
             "&7你现在可以选择是否",
             "&7在查阅一个新物品的时候",
-            "&7显示它的旧乱序EMC数值",
+            "&7显示它的新乱序EMC数值",
             "",
             "&7注: 此EMC数值为",
-            "&7旧乱序中的数值",
-            "&7不等同于新乱序, EMCTech等附属的数值",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 旧乱序EMC值显示"
+            "&7新乱序中的数值",
+            "&7不等同于旧乱序, EMCTech等附属的数值",
+            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 新乱序EMC值显示"
         );
         return Optional.of(item);
     }

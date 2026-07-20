@@ -28,12 +28,13 @@
 package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Calculator;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
@@ -51,7 +52,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
+public class HUDReachBlockGuideOption implements PrioritySlimefunGuideOption<Integer> {
     public static final HUDReachBlockGuideOption instance = new HUDReachBlockGuideOption();
     public static final int MAX_REACH_BLOCK = 8;
 
@@ -74,6 +75,11 @@ public class HUDReachBlockGuideOption implements SlimefunGuideOption<Integer> {
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.HUDReachBlockGuideOption;
     }
 
     @Override

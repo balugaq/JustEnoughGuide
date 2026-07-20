@@ -31,7 +31,7 @@ import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHItemPatchListener;
-import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
+import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayGuideOption;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTechDustRecipeCompletePrecheckListener;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTechDustRecipeSettingsGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -123,9 +123,9 @@ public class FinalTECHIntegrationMain implements Integration {
     @Override
     public void onEnable() {
         if (JustEnoughGuide.getConfigManager().isFinalTECHValueDisplay()) {
-            if (!FinalTECHValueDisplayOption.isBooted()) {
-                FinalTECHValueDisplayOption.setBooted(true);
-                SlimefunGuideSettings.addOption(FinalTECHValueDisplayOption.instance());
+            if (!FinalTECHValueDisplayGuideOption.isBooted()) {
+                FinalTECHValueDisplayGuideOption.setBooted(true);
+                SlimefunGuideSettings.addOption(FinalTECHValueDisplayGuideOption.instance());
                 JustEnoughGuide.getListenerManager().registerListener(new FinalTECHItemPatchListener());
             }
         }

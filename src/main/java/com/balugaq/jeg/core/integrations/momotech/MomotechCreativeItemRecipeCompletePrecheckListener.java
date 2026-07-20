@@ -47,7 +47,7 @@ public class MomotechCreativeItemRecipeCompletePrecheckListener implements Liste
     @Getter
     public static boolean booted = false;
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onRecipeComplete(RecipeCompleteEvents.SessionStartEvent event) {
         var session = event.getSession();
         BlockMenu menu = session.getMenu();

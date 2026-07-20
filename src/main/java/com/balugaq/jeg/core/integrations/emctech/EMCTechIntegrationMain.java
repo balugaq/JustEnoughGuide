@@ -71,7 +71,7 @@ public class EMCTechIntegrationMain implements Integration {
     @Override
     public void onEnable() {
         if (JustEnoughGuide.getConfigManager().isEMCValueDisplay()) {
-            SlimefunGuideSettings.addOption(EMCValueDisplayOption.instance());
+            SlimefunGuideSettings.addOption(EMCValueDisplayGuideOption.instance());
             JustEnoughGuide.getListenerManager().registerListener(new EMCItemPatchListener());
         }
     }

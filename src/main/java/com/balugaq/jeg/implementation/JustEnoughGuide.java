@@ -29,12 +29,13 @@ package com.balugaq.jeg.implementation;
 
 import com.balugaq.jeg.api.CustomGroupConfigurations;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
+import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.ValueTable;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
-import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
+import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayGuideOption;
 import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
 import com.balugaq.jeg.core.managers.BookmarkManager;
 import com.balugaq.jeg.core.managers.CommandManager;
@@ -368,6 +369,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
             if (getConfigManager().isCerPatch()) {
                 CERCalculator.load();
+                ValueTable.load();
             }
         }
 
@@ -401,6 +403,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         ReplacementCardAdapter.load();
         MultiBlockBuilder.load();
         ThirdPartyWarnings.check();
+
+        IntegrationManager.scheduleRun(JEGGuideSettings::sortOptions);
 
         getLogger().info("正在适配其他插件...");
         this.integrationManager = new IntegrationManager(this);
@@ -444,7 +448,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 }
             }
             JEGGuideSettings.unpatchSlimefun();
-            FinalTECHValueDisplayOption.setBooted(false);
+            FinalTECHValueDisplayGuideOption.setBooted(false);
         } catch (Exception ignored) {
         }
 

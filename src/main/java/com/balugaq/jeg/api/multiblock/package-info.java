@@ -25,48 +25,4 @@
  *
  */
 
-package com.balugaq.jeg.implementation.option;
-
-import com.balugaq.jeg.api.patches.Priorities;
-import com.balugaq.jeg.utils.compatibility.Converter;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NullMarked;
-
-/**
- * @author balugaq
- * @since 1.9
- */
-@SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
-@NullMarked
-public class ShareOutGuideOption extends AbstractBooleanGuideOption {
-    private static final ShareOutGuideOption instance = new ShareOutGuideOption();
-
-    public static ShareOutGuideOption instance() {
-        return instance;
-    }
-
-    public String key0() {
-        return "share_out";
-    }
-
-    @Override
-    public int priority() {
-        return Priorities.ShareOutGuideOption;
-    }
-
-    @Override
-    public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
-        return Converter.getItem(
-            Material.WRITABLE_BOOK,
-            "&b向他人分享物品: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择",
-            "&7在粘液书中的物品上按 Q 时",
-            "&7是否向他人分享这个物品",
-            "",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 向他人分享物品"
-        );
-    }
-}
+package com.balugaq.jeg.api.multiblock;

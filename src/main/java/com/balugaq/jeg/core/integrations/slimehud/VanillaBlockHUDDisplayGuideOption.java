@@ -28,10 +28,11 @@
 package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -47,7 +48,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class VanillaBlockHUDDisplayGuideOption implements SlimefunGuideOption<Boolean> {
+public class VanillaBlockHUDDisplayGuideOption implements PrioritySlimefunGuideOption<Boolean> {
     public static final VanillaBlockHUDDisplayGuideOption instance = new VanillaBlockHUDDisplayGuideOption();
 
     public static VanillaBlockHUDDisplayGuideOption instance() {
@@ -64,6 +65,11 @@ public class VanillaBlockHUDDisplayGuideOption implements SlimefunGuideOption<Bo
 
     public static NamespacedKey key0() {
         return new NamespacedKey(JustEnoughGuide.getInstance(), "vanilla_block_hud_display");
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.VanillaBlockHUDDisplayGuideOption;
     }
 
     @Override

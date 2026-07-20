@@ -28,6 +28,8 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -48,11 +50,16 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class NoticeMissingMaterialGuideOption implements SlimefunGuideOption<Boolean> {
+public class NoticeMissingMaterialGuideOption implements PrioritySlimefunGuideOption<Boolean> {
     private static final NoticeMissingMaterialGuideOption instance = new NoticeMissingMaterialGuideOption();
 
     public static NoticeMissingMaterialGuideOption instance() {
         return instance;
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.NoticeMissingMaterialGuideOption;
     }
 
     public static boolean isEnabled(Player p) {

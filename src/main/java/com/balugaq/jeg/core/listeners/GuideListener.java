@@ -59,6 +59,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * This class listens to {@link SlimefunGuideOpenEvent} and opens the corresponding guide for the player.
  *
+ * @author TheBusyBiscuit
  * @author balugaq
  * @since 1.0
  */
@@ -101,8 +102,7 @@ public class GuideListener implements Listener {
         JustEnoughGuide.runLaterAsync(() -> openGuide(player, mode), 1L);
     }
 
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide" +
-        "(Player, PlayerRightClickEvent, SlimefunGuideMode)")
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)")
     @Internal
     public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
         ItemStack item = e.getItem();
@@ -156,8 +156,7 @@ public class GuideListener implements Listener {
         );
     }
 
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract" +
-        "(PlayerRightClickEvent)")
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract(PlayerRightClickEvent)")
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onInteract(PlayerRightClickEvent e) {
         Player p = e.getPlayer();
@@ -186,8 +185,7 @@ public class GuideListener implements Listener {
         }
     }
 
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onJoin" +
-        "(PlayerJoinEvent)")
+    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onJoin(PlayerJoinEvent)")
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (this.giveOnFirstJoin && !e.getPlayer().hasPlayedBefore()) {

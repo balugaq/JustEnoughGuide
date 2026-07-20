@@ -28,6 +28,7 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.objects.enums.RecipeCompleteOpenMode;
+import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,6 +46,11 @@ public class RecipeCompleteOpenModeGuideOption extends AbstractBooleanGuideOptio
 
     public static RecipeCompleteOpenModeGuideOption instance() {
         return instance;
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.RecipeCompleteOpenModeGuideOption;
     }
 
     public RecipeCompleteOpenMode get(Player player) {

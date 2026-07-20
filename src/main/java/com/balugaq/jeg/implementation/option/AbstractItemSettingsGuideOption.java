@@ -30,6 +30,7 @@ package com.balugaq.jeg.implementation.option;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -61,7 +62,7 @@ import java.util.Optional;
  */
 @SuppressWarnings("deprecation")
 @NullMarked
-public abstract class AbstractItemSettingsGuideOption implements SlimefunGuideOption<Boolean> {
+public abstract class AbstractItemSettingsGuideOption implements PrioritySlimefunGuideOption<Boolean> {
     public static final ItemStack DEFAULT_ICON = Converter.getItem(
         Material.BARRIER,
         "&c未设置物品",

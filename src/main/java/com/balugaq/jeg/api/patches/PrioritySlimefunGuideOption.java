@@ -25,58 +25,23 @@
  *
  */
 
-package com.balugaq.jeg.implementation.option;
+package com.balugaq.jeg.api.patches;
 
-import com.balugaq.jeg.api.patches.Priorities;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NullMarked;
-
-import java.util.Optional;
 
 /**
  * @author balugaq
- * @since 2.0
+ * @since 2.1
  */
-@SuppressWarnings({"SameReturnValue"})
-@NullMarked
-public class KeybindsSettingsGuideOption extends AbstractCustomActionGuideOption {
-    public static final ItemStack DEFAULT_ICON = Converter.getItem(
-        Material.COMPASS,
-        "&a单击打开指南书按键控制界面"
-    );;
+public interface PrioritySlimefunGuideOption<T> extends SlimefunGuideOption<T> {
+    int DEFAULT_PRIORITY = 1000;
 
-    @Override
-    public int priority() {
-        return Priorities.KeybindsSettingsGuideOption;
-    }
-
-    private static final KeybindsSettingsGuideOption instance = new KeybindsSettingsGuideOption();
-
-    public static KeybindsSettingsGuideOption instance() {
-        return instance;
-    }
-
-    @Override
-    public ItemStack getDisplayItem(Player p, ItemStack guide, boolean unused) {
-        return DEFAULT_ICON;
-    }
-
-    @Override
-    public void onClick(Player p, ItemStack guide) {
-        GuideUtil.openKeybindsGui(p);
-    }
-
-    @Override
-    public String key0() {
-        return "keybinds_settings";
+    /**
+     * The priority of the option. The higher the priority, the earlier the option will be shown.
+     * For any other PrioritySlimefunGuideOption that has the same priority, the order is sorted by {@link SlimefunGuideOption#getKey()}
+     * For any other SlimefunGuideOption that has no priority, uses {@link #DEFAULT_PRIORITY}.
+     */
+    default int priority() {
+        return DEFAULT_PRIORITY;
     }
 }

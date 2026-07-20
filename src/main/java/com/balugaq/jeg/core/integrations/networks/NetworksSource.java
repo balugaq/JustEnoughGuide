@@ -30,6 +30,7 @@ package com.balugaq.jeg.core.integrations.networks;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import org.bukkit.Material;
@@ -73,12 +74,12 @@ public interface NetworksSource extends Source {
         // get from root
         ItemRequest request = new ItemRequest(itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
         for (var root : roots) {
-            try {
+            if (JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion()) {
                 var got = root.getItemStack0(player.getLocation(), request);
                 if (got != null && got.getType() != Material.AIR) {
                     return got;
                 }
-            } catch (Exception e) {
+            } else {
                 var got = root.getItemStack(request);
                 if (got != null && got.getType() != Material.AIR) {
                     return got;

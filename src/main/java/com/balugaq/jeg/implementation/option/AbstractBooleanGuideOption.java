@@ -28,6 +28,7 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -46,7 +47,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"SameReturnValue"})
 @NullMarked
-public abstract class AbstractBooleanGuideOption implements SlimefunGuideOption<Boolean> {
+public abstract class AbstractBooleanGuideOption implements PrioritySlimefunGuideOption<Boolean> {
     public boolean isEnabled(Player p) {
         return getSelectedOption(p);
     }

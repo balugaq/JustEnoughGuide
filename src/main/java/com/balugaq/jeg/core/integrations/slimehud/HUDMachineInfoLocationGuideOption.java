@@ -29,6 +29,8 @@ package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.objects.enums.HUDLocation;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -48,7 +50,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HUDLocation> {
+public class HUDMachineInfoLocationGuideOption implements PrioritySlimefunGuideOption<HUDLocation> {
     public static final HUDMachineInfoLocationGuideOption instance = new HUDMachineInfoLocationGuideOption();
 
     public static HUDMachineInfoLocationGuideOption instance() {
@@ -68,6 +70,11 @@ public class HUDMachineInfoLocationGuideOption implements SlimefunGuideOption<HU
     @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.HUDMachineInfoLocationGuideOption;
     }
 
     @Override

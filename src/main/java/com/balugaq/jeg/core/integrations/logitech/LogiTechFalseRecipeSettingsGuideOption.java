@@ -27,6 +27,7 @@
 
 package com.balugaq.jeg.core.integrations.logitech;
 
+import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -86,7 +87,7 @@ public class LogiTechFalseRecipeSettingsGuideOption extends AbstractItemSettings
 
     @Override
     public String getTitle() {
-        return "&aFALSE配方补全配置";
+        return "&aFALSE 配方补全配置";
     }
 
     @Override
@@ -97,5 +98,10 @@ public class LogiTechFalseRecipeSettingsGuideOption extends AbstractItemSettings
     @Override
     public int[] getItemSlots() {
         return new int[]{9, 10, 11, 12};
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.LogiTechFalseRecipeSettingsGuideOption;
     }
 }

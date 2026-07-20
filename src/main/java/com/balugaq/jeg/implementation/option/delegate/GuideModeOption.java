@@ -33,6 +33,9 @@
 package com.balugaq.jeg.implementation.option.delegate;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
@@ -59,11 +62,13 @@ import java.util.Optional;
  */
 @SuppressWarnings({"deprecation", "DataFlowIssue", "ExtractMethodRecommender"})
 @NullMarked
-public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
+public class GuideModeOption implements PrioritySlimefunGuideOption<SlimefunGuideMode> {
+    @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
+    @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (!p.hasPermission("slimefun.cheat.items")) {
             return Optional.empty();
@@ -79,12 +84,12 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
                 }
 
                 ItemMeta meta = item.getItemMeta();
-                ChatColor var10001 = ChatColor.GRAY;
-                meta.setDisplayName(var10001 + "Slimefun 指南样式: " + ChatColor.YELLOW + selectedMode.getDisplayName());
+                ChatColor color = ChatColor.GRAY;
+                meta.setDisplayName(color + "Slimefun 指南样式: " + ChatColor.YELLOW + selectedMode.getDisplayName());
                 List<String> lore = new ArrayList<>();
                 lore.add("");
-                var10001 = selectedMode == SlimefunGuideMode.SURVIVAL_MODE ? ChatColor.GREEN : ChatColor.GRAY;
-                lore.add(var10001 + "普通模式");
+                color = selectedMode == SlimefunGuideMode.SURVIVAL_MODE ? ChatColor.GREEN : ChatColor.GRAY;
+                lore.add(color + "普通模式");
                 lore.add((selectedMode == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "作弊模式");
                 lore.add("");
                 lore.add(ChatColor.GRAY + "⇨ " + ChatColor.YELLOW + "单击修改指南样式");
@@ -97,6 +102,7 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
         }
     }
 
+    @Override
     public void onClick(Player p, ItemStack guide) {
         Optional<SlimefunGuideMode> current = this.getSelectedOption(p, guide);
         if (current.isPresent()) {
@@ -108,24 +114,33 @@ public class GuideModeOption implements SlimefunGuideOption<SlimefunGuideMode> {
     }
 
     private SlimefunGuideMode getNextMode(Player p, SlimefunGuideMode mode) {
-        if (p.hasPermission("slimefun.cheat.items")) {
+        if (p.isOp() || p.hasPermission("slimefun.cheat.items")) {
             return mode == SlimefunGuideMode.SURVIVAL_MODE ? SlimefunGuideMode.CHEAT_MODE :
                 SlimefunGuideMode.SURVIVAL_MODE;
-        } else {
-            return SlimefunGuideMode.SURVIVAL_MODE;
         }
+
+        return SlimefunGuideMode.SURVIVAL_MODE;
     }
 
+    @Override
     public Optional<SlimefunGuideMode> getSelectedOption(Player p, ItemStack guide) {
         return SlimefunUtils.isItemSimilar(guide, SlimefunGuide.getItem(SlimefunGuideMode.CHEAT_MODE), true, false) ?
             Optional.of(SlimefunGuideMode.CHEAT_MODE) : Optional.of(SlimefunGuideMode.SURVIVAL_MODE);
     }
 
+    @Override
     public void setSelectedOption(Player p, ItemStack guide, SlimefunGuideMode value) {
         guide.setItemMeta(SlimefunGuide.getItem(value).getItemMeta());
+        GuideListener.guideModeMap.put(p, value);
     }
 
+    @Override
     public NamespacedKey getKey() {
         return new NamespacedKey(Slimefun.instance(), "guide_mode");
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.GuideModeOption;
     }
 }

@@ -28,6 +28,8 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Calculator;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -51,9 +53,14 @@ import java.util.Optional;
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class RecipeFillingWithNearbyContainerGuideOption implements SlimefunGuideOption<Integer> {
+public class RecipeFillingWithNearbyContainerGuideOption implements PrioritySlimefunGuideOption<Integer> {
     public static final int MAX_REACH_LENGTH = 2; // 2*2+1=5, 5*5*5=125 blocks
     private static final RecipeFillingWithNearbyContainerGuideOption instance = new RecipeFillingWithNearbyContainerGuideOption();
+
+    @Override
+    public int priority() {
+        return Priorities.RecipeFillingWithNearbyContainerGuideOption;
+    }
 
     public static RecipeFillingWithNearbyContainerGuideOption instance() {
         return instance;

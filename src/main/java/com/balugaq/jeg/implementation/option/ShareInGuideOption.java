@@ -27,6 +27,7 @@
 
 package com.balugaq.jeg.implementation.option;
 
+import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
@@ -45,6 +46,11 @@ public class ShareInGuideOption extends AbstractBooleanGuideOption {
 
     public static ShareInGuideOption instance() {
         return instance;
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.ShareInGuideOption;
     }
 
     public String key0() {

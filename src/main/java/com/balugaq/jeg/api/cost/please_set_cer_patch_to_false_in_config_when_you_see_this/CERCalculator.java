@@ -87,7 +87,6 @@ public class CERCalculator {
 
     public static void load() {
         IntegrationManager.scheduleRun(CERCalculator::loadInternal);
-        ValueTable.load();
     }
 
     @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)

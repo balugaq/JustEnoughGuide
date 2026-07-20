@@ -133,7 +133,7 @@ public class FinalTECHItemPatchListener implements ItemPatchListener {
     }
 
     public boolean disabledOption(Player player) {
-        return !FinalTECHValueDisplayOption.isEnabled(player);
+        return !FinalTECHValueDisplayGuideOption.isEnabled(player);
     }
 
     @SuppressWarnings("deprecation")

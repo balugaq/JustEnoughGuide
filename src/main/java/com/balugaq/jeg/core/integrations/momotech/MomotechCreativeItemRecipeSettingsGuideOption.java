@@ -27,6 +27,7 @@
 
 package com.balugaq.jeg.core.integrations.momotech;
 
+import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -89,5 +90,10 @@ public class MomotechCreativeItemRecipeSettingsGuideOption extends AbstractItemS
     @Override
     public int[] getItemSlots() {
         return new int[]{13};
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.MomotechCreativeItemRecipeSettingsGuideOption;
     }
 }

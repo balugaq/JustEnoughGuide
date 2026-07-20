@@ -33,6 +33,8 @@
 package com.balugaq.jeg.implementation.option.delegate;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerLanguageChangeEvent;
@@ -51,6 +53,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -65,11 +68,13 @@ import java.util.Optional;
  */
 @SuppressWarnings({"DataFlowIssue", "deprecation", "ConstantValue"})
 @NullMarked
-public class PlayerLanguageOption implements SlimefunGuideOption<String> {
+public class PlayerLanguageOption implements PrioritySlimefunGuideOption<String> {
+    @Override
     public SlimefunAddon getAddon() {
         return JustEnoughGuide.getInstance();
     }
 
+    @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         if (Slimefun.getLocalization().isEnabled()) {
             Language language = Slimefun.getLocalization().getLanguage(p);
@@ -102,15 +107,18 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
         }
     }
 
+    @Override
     public void onClick(Player p, ItemStack guide) {
         this.openLanguageSelection(p, guide);
     }
 
+    @Override
     public Optional<String> getSelectedOption(Player p, ItemStack guide) {
         return Optional.of(Slimefun.getLocalization().getLanguage(p).getId());
     }
 
-    public void setSelectedOption(Player p, ItemStack guide, String value) {
+    @Override
+    public void setSelectedOption(Player p, ItemStack guide, @Nullable String value) {
         if (value == null) {
             PersistentDataAPI.remove(p, this.getKey());
         } else {
@@ -122,9 +130,7 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
     private void openLanguageSelection(Player p, ItemStack guide) {
         ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "guide.title.languages"));
         menu.setEmptySlotsClickable(false);
-        SoundEffect var10001 = SoundEffect.GUIDE_LANGUAGE_OPEN_SOUND;
-        Objects.requireNonNull(var10001);
-        menu.addMenuOpeningHandler(var10001::playFor);
+        menu.addMenuOpeningHandler(SoundEffect.GUIDE_LANGUAGE_OPEN_SOUND::playFor);
 
         for (int i = 0; i < 9; ++i) {
             if (i == 1) {
@@ -208,7 +214,13 @@ public class PlayerLanguageOption implements SlimefunGuideOption<String> {
         menu.open(p);
     }
 
+    @Override
     public NamespacedKey getKey() {
         return Slimefun.getLocalization().getKey();
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.PlayerLanguageOption;
     }
 }

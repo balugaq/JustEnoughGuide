@@ -28,6 +28,8 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Calculator;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -53,11 +55,16 @@ import static com.balugaq.jeg.api.recipe_complete.source.base.Source.RECIPE_DEPT
  */
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameReturnValue"})
 @NullMarked
-public class RecursiveRecipeFillingGuideOption implements SlimefunGuideOption<Integer> {
+public class RecursiveRecipeFillingGuideOption implements PrioritySlimefunGuideOption<Integer> {
     private static final RecursiveRecipeFillingGuideOption instance = new RecursiveRecipeFillingGuideOption();
 
     public static RecursiveRecipeFillingGuideOption instance() {
         return instance;
+    }
+
+    @Override
+    public int priority() {
+        return Priorities.RecursiveRecipeFillingGuideOption;
     }
 
     public static NamespacedKey key0() {

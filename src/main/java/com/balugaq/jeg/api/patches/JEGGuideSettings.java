@@ -27,6 +27,7 @@
 
 package com.balugaq.jeg.api.patches;
 
+import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.implementation.option.delegate.FireworksOption;
 import com.balugaq.jeg.implementation.option.delegate.GuideModeOption;
@@ -400,6 +401,26 @@ public class JEGGuideSettings {
 
     public static void addOption(SlimefunGuideOption<?> option) {
         SlimefunGuideSettings.addOption(option);
+    }
+
+    @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)
+    public static void sortOptions() {
+        getOptions().sort((a, b) -> {
+            int priorityA = PrioritySlimefunGuideOption.DEFAULT_PRIORITY;
+            int priorityB = PrioritySlimefunGuideOption.DEFAULT_PRIORITY;
+            if (a instanceof PrioritySlimefunGuideOption<?> pa) {
+                priorityA = pa.priority();
+            }
+            if (b instanceof PrioritySlimefunGuideOption<?> pb) {
+                priorityB = pb.priority();
+            }
+
+            if (priorityA == priorityB) {
+                return a.getKey().compareTo(b.getKey());
+            } else {
+                return priorityA - priorityB;
+            }
+        });
     }
 
     public static void unpatchSlimefun() {
