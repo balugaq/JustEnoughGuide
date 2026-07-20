@@ -30,6 +30,7 @@ package com.balugaq.jeg.utils.clickhandler;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.BookmarkGroup;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
+import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.objects.collection.cooldown.FrequencyWatcher;
 import com.balugaq.jeg.api.objects.enums.FilterType;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
@@ -1469,7 +1470,7 @@ public interface OnClick {
                                     int amount = 1;
                                     if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
 
-                                    ItemStack itemStack = MultiBlockBuilderItem.getItem(slimefunItem);
+                                    ItemStack itemStack = MultiBlockBuilder.getItem(slimefunItem);
                                     player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
                                     return;
                                 }
@@ -1509,7 +1510,7 @@ public interface OnClick {
                                                                                           page) -> {
                                 ItemStack cursor = player.getItemOnCursor();
                                 if (cursor == null || cursor.getType() == Material.AIR) {
-                                    ItemStack itemStack = MultiBlockBuilderItem.getItem(item);
+                                    ItemStack itemStack = MultiBlockBuilder.getItem(item);
 
                                     player.setItemOnCursor(StackUtils.getAsQuantity(
                                             itemStack,
@@ -1525,7 +1526,7 @@ public interface OnClick {
                                 int amount = 1;
                                 if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
 
-                                ItemStack itemStack = MultiBlockBuilderItem.getItem(item);
+                                ItemStack itemStack = MultiBlockBuilder.getItem(item);
                                 player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
                             }
                     ),

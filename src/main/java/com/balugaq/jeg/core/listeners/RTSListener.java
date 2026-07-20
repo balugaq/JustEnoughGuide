@@ -29,6 +29,7 @@ package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
+import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.MultiBlockBuilderItem;
@@ -545,7 +546,7 @@ public class RTSListener implements Listener {
                         tryQuitRTS(player);
                     } else if (mode == SlimefunGuideMode.CHEAT_MODE) {
                         if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
-                            ItemStack clonedItem = MultiBlockBuilderItem.getItem(slimefunItem);
+                            ItemStack clonedItem = MultiBlockBuilder.getItem(slimefunItem);
 
                             int addAmount = clonedItem.getMaxStackSize();
                             clonedItem.setAmount(addAmount);

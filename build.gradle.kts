@@ -68,6 +68,7 @@ java {
 
 tasks {
     compileJava {
+        options.compilerArgs.add("-Xlint:-removal")
         options.encoding = "UTF-8"
     }
 
