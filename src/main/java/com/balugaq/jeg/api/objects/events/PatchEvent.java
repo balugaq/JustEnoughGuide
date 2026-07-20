@@ -29,7 +29,7 @@ package com.balugaq.jeg.api.objects.events;
 
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.ItemStackUtil;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -69,7 +69,7 @@ public class PatchEvent extends Event {
 
     public static ItemStack patch(
         final PatchScope patchScope, final Player player, @Nullable final ItemStack itemStack) {
-        PatchEvent event = new PatchEvent(patchScope, player, ItemStackUtil.getCleanItem(itemStack));
+        PatchEvent event = new PatchEvent(patchScope, player, Converter.getItem(itemStack));
         try {
             Bukkit.getPluginManager().callEvent(event);
         } catch (Throwable e) {

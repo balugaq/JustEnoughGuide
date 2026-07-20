@@ -25,9 +25,10 @@
  *
  */
 
-package com.balugaq.jeg.implementation.groups;
+package com.balugaq.jeg.core.integrations.nexcavate;
 
 import com.balugaq.jeg.api.groups.BaseGroup;
+import com.balugaq.jeg.api.interfaces.DisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
@@ -36,6 +37,7 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.formatter.Format;
@@ -59,22 +61,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class used to create groups to display all the Nexcavate items in the guide.
+ *
  * @author balugaq
- * @since 2.1
+ * @since 1.1
  */
 @SuppressWarnings({"deprecation", "unused"})
+@DisplayInCheatMode
 @NotDisplayInSurvivalMode
 @NullMarked
-public class BannedItemsGroup extends BaseGroup<BannedItemsGroup> {
+public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
     private final List<SlimefunItem> slimefunItemList;
 
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
-    public BannedItemsGroup(NamespacedKey key, ItemStack icon) {
+    public NexcavateItemsGroup(NamespacedKey key, ItemStack icon) {
         super(key, icon);
         this.page = 1;
         List<SlimefunItem> slimefunItemList = new ArrayList<>();
         for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
-            if (item.isDisabled()) {
+            if ("nexcavate".equalsIgnoreCase(item.getAddon().getName())) {
                 slimefunItemList.add(item);
             }
         }
@@ -82,20 +87,28 @@ public class BannedItemsGroup extends BaseGroup<BannedItemsGroup> {
         this.pageMap.put(1, this);
     }
 
+    protected NexcavateItemsGroup(NexcavateItemsGroup nexcavateItemsGroup, int page) {
+        super(nexcavateItemsGroup.key, Models.NEXCAVATE_ITEMS_GROUP);
+        this.page = page;
+        this.slimefunItemList = nexcavateItemsGroup.slimefunItemList;
+        this.pageMap.put(page, this);
+    }
+
     @Override
     public ChestMenu generateMenu(
         final Player player,
         final PlayerProfile playerProfile,
         final SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("已禁用的物品");
+        ChestMenu chestMenu = new ChestMenu("文明复兴物品");
 
         Format format = Formats.sub;
-        int maxPage = (this.slimefunItemList.size() - 1) / format.getChars('i').size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
+        List<Integer> contentSlots = format.getChars('i');
+        int maxPage = (this.slimefunItemList.size() - 1) / contentSlots.size() + 1;
+        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, page, maxPage);
 
         var impl = GuideUtil.getLastJEGGuide(player);
         if (impl == null) return chestMenu;
-        List<Integer> contentSlots = Formats.sub.getChars('i');
+
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.slimefunItemList.size()) {

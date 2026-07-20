@@ -93,16 +93,16 @@ public class Converter {
         } else {
             try {
                 itemStack = ReflectionUtil.getValue(item, "item", ItemStack.class);
-                if (itemStack == null) throw new Throwable();
-            } catch (Throwable ignored) {
+                if (itemStack == null) throw new Exception();
+            } catch (Exception ignored) {
                 try {
                     itemStack = (ItemStack) ReflectionUtil.invokeMethod(item, "getItem");
-                    if (itemStack == null) throw new Throwable();
-                } catch (Throwable ignored2) {
+                    if (itemStack == null) throw new Exception();
+                } catch (Exception ignored2) {
                     try {
                         itemStack = (ItemStack) ReflectionUtil.invokeMethod(item, "item");
-                        if (itemStack == null) throw new Throwable();
-                    } catch (Throwable ignored3) {
+                        if (itemStack == null) throw new Exception();
+                    } catch (Exception ignored3) {
                         return AIR.clone();
                     }
                 }
@@ -148,16 +148,16 @@ public class Converter {
         } else {
             try {
                 itemStack = ReflectionUtil.getValue(item, "item", ItemStack.class);
-                if (itemStack == null) throw new Throwable();
-            } catch (Throwable ignored) {
+                if (itemStack == null) throw new Exception();
+            } catch (Exception ignored) {
                 try {
                     itemStack = (ItemStack) ReflectionUtil.invokeMethod(item, "getItem");
-                    if (itemStack == null) throw new Throwable();
-                } catch (Throwable ignored2) {
+                    if (itemStack == null) throw new Exception();
+                } catch (Exception ignored2) {
                     try {
                         itemStack = (ItemStack) ReflectionUtil.invokeMethod(item, "item");
-                        if (itemStack == null) throw new Throwable();
-                    } catch (Throwable ignored3) {
+                        if (itemStack == null) throw new Exception();
+                    } catch (Exception ignored3) {
                         return AIR.clone();
                     }
                 }
@@ -179,7 +179,8 @@ public class Converter {
      * @param itemStack the Bukkit ItemStack to convert
      * @return the converted Bukkit ItemStack
      */
-    public static ItemStack getItem(ItemStack itemStack) {
+    public static ItemStack getItem(@Nullable ItemStack itemStack) {
+        if (itemStack == null) return AIR.clone();
         return new CustomItemStack(itemStack).asBukkit();
     }
 

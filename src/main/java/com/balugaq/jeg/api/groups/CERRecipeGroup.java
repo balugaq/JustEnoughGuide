@@ -29,24 +29,15 @@ package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.ValueTable;
-import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
-import com.balugaq.jeg.api.objects.events.GuideEvents;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
+import com.balugaq.jeg.utils.formatter.Format;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Data;
@@ -75,17 +66,14 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
         // todo
         return false;
     };
-    private final SlimefunGuideImplementation implementation;
     private final List<Pair<ItemStack, ChestMenu.MenuClickHandler>> icons;
 
     public CERRecipeGroup(
-        final SlimefunGuideImplementation implementation,
         final Player player,
         final SlimefunItem machine,
         final List<RecipeWrapper> recipes) {
         super();
         this.page = 1;
-        this.implementation = implementation;
         this.pageMap.put(1, this);
         this.icons = getDisplayIcons(player, machine, recipes.stream().limit(64).toList());
     }
@@ -206,120 +194,9 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("&a性价比预览（仅供参考）");
 
-        OnClick.preset(chestMenu);
-
-        for (int ss : Formats.sub.getChars('b')) {
-            chestMenu.addItem(ss, PatchScope.Back.patch(playerProfile, ChestMenuUtils.getBackButton(player)));
-            chestMenu.addMenuClickHandler(
-                ss, (pl, s, is, action) -> EventUtil.callEvent(
-                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            GuideUtil.goBack(guideHistory);
-                        }
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('P')) {
-            chestMenu.addItem(
-                ss,
-                PatchScope.PreviousPage.patch(
-                    playerProfile,
-                    ChestMenuUtils.getPreviousButton(
-                        player,
-                        this.page,
-                        (iconsLength() - 1)
-                            / Formats.sub.getChars('i').size()
-                            + 1
-                    )
-                )
-            );
-            chestMenu.addMenuClickHandler(
-                ss, (p, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.PreviousButtonClickEvent(
-                            p, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        CERRecipeGroup CERRecipeGroup = this.getByPage(Math.max(this.page - 1, 1));
-                        CERRecipeGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('S')) {
-            chestMenu.addItem(ss, PatchScope.Search.patch(playerProfile, ChestMenuUtils.getSearchButton(player)));
-            chestMenu.addMenuClickHandler(
-                ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.SearchButtonClickEvent(
-                            pl, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        pl.closeInventory();
-
-                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                        ChatInput.waitForPlayer(
-                            JustEnoughGuide.getInstance(),
-                            pl,
-                            msg -> implementation.openSearch(
-                                playerProfile,
-                                msg,
-                                true
-                            )
-                        );
-
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('N')) {
-            chestMenu.addItem(
-                ss,
-                PatchScope.NextPage.patch(
-                    playerProfile,
-                    ChestMenuUtils.getNextButton(
-                        player,
-                        this.page,
-                        (iconsLength() - 1)
-                            / Formats.sub.getChars('i').size()
-                            + 1
-                    )
-                )
-            );
-            chestMenu.addMenuClickHandler(
-                ss, (p, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.NextButtonClickEvent(
-                            p, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        CERRecipeGroup CERRecipeGroup = this.getByPage(Math.min(
-                            this.page + 1,
-                            (iconsLength() - 1)
-                                / Formats.sub.getChars('i').size()
-                                + 1
-                        ));
-                        CERRecipeGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('B')) {
-            chestMenu.addItem(ss, PatchScope.Background.patch(playerProfile, ChestMenuUtils.getBackground()));
-            chestMenu.addMenuClickHandler(ss, ChestMenuUtils.getEmptyClickHandler());
-        }
+        Format format = Formats.sub;
+        int maxPage = (iconsLength() - 1) / format.getChars('i').size() + 1;
+        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
 
         List<Integer> contentSlots = Formats.sub.getChars('i');
         for (int i = 0; i < contentSlots.size(); i++) {
@@ -328,14 +205,6 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
                 chestMenu.addItem(contentSlots.get(i), icons.get(m).getFirst(), icons.get(m).getSecond());
             }
         }
-
-        GuideUtil.addRTSButton(chestMenu, player, playerProfile, Formats.sub, slimefunGuideMode, implementation);
-        if (implementation instanceof JEGSlimefunGuideImplementation jeg) {
-            GuideUtil.addBookMarkButton(chestMenu, player, playerProfile, Formats.sub, jeg, this);
-            GuideUtil.addItemMarkButton(chestMenu, player, playerProfile, Formats.sub, jeg, this);
-        }
-
-        Formats.sub.renderCustom(chestMenu);
 
         return chestMenu;
     }

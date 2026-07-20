@@ -30,9 +30,9 @@ package com.balugaq.jeg.api.recipe_complete;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.StackUtils;
+import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
@@ -74,7 +74,7 @@ public interface RecipeCompletableAdapter {
     }
 
     static void addJEGButton(@NotNull SlimefunItem slimefunItem, @NotNull BlockMenu blockMenu, @Range(from = 0, to = 53) int slot) {
-        blockMenu.replaceExistingItem(slot, ItemStackUtil.getCleanItem(Models.JEG_RECIPE_COMPLETE_BUTTON));
+        blockMenu.replaceExistingItem(slot, Converter.getItem(Models.JEG_RECIPE_COMPLETE_BUTTON));
         blockMenu.addMenuClickHandler(slot, (player, slot1, item, action) -> {
             if (!Bukkit.getPluginManager().isPluginEnabled("JustEnoughGuide")) {
                 player.sendMessage(ChatColors.color("&cJustEnoughGuide 附属已被禁用，配方补全功能无法使用"));

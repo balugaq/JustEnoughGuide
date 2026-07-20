@@ -239,9 +239,9 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             }
         }
 
-        GuideUtil.addRTSButton(chestMenu, player, playerProfile, Formats.sub, slimefunGuideMode, implementation);
-        GuideUtil.addBookMarkButton(chestMenu, player, playerProfile, Formats.sub, implementation, this);
-        GuideUtil.addItemMarkButton(chestMenu, player, playerProfile, Formats.sub, implementation, this);
+        GuideUtil.addRTSButton(chestMenu, Formats.sub, playerProfile, player);
+        GuideUtil.addBookMarkButton(chestMenu, Formats.sub, playerProfile, player, this);
+        GuideUtil.addItemMarkButton(chestMenu, Formats.sub, playerProfile, player, this);
 
         Formats.sub.renderCustom(chestMenu);
         return chestMenu;

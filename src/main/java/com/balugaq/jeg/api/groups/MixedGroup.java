@@ -28,25 +28,18 @@
 package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
-import com.balugaq.jeg.api.objects.enums.PatchScope;
-import com.balugaq.jeg.api.objects.events.GuideEvents;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
+import com.balugaq.jeg.utils.formatter.Format;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
@@ -68,7 +61,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 @NullMarked
 public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
-    public final List<String> acitons = new ArrayList<>();
+    public final List<String> actions = new ArrayList<>();
     public final List<Object> objects;
 
     public MixedGroup(NamespacedKey key, ItemStack icon, int tier) {
@@ -100,11 +93,11 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
         Player player,
         PlayerProfile playerProfile,
         SlimefunGuideMode slimefunGuideMode) {
-        if (acitons.isEmpty()) {
+        if (actions.isEmpty()) {
             playerProfile.getGuideHistory().add(this, this.page);
             this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
         } else {
-            String s = acitons.get(ThreadLocalRandom.current().nextInt(acitons.size()));
+            String s = actions.get(ThreadLocalRandom.current().nextInt(actions.size()));
             if (s.startsWith("command /")) {
                 String a = s.substring(9);
                 player.closeInventory();
@@ -147,148 +140,35 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
         OnClick.preset(chestMenu);
 
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
-
-        for (int ss : Formats.sub.getChars('b')) {
-            chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
-            chestMenu.addMenuClickHandler(
-                ss, (pl, s, is, action) -> EventUtil.callEvent(
-                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            GuideUtil.goBack(guideHistory);
-                        }
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('S')) {
-            chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
-            chestMenu.addMenuClickHandler(
-                ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.SearchButtonClickEvent(
-                            pl, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        pl.closeInventory();
-
-                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                        ChatInput.waitForPlayer(
-                            JustEnoughGuide.getInstance(),
-                            pl,
-                            msg -> implementation.openSearch(
-                                playerProfile,
-                                msg,
-                                true
-                            )
-                        );
-
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('P')) {
-            chestMenu.addItem(
-                ss,
-                PatchScope.PreviousPage.patch(
-                    player,
-                    ChestMenuUtils.getPreviousButton(
-                        player,
-                        this.page,
-                        (this.objects.size() - 1)
-                            / Formats.sub.getChars('i').size()
-                            + 1
-                    )
-                )
-            );
-            chestMenu.addMenuClickHandler(
-                ss, (p, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.PreviousButtonClickEvent(
-                            p, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        BaseGroup<?> customGroup = this.getByPage(Math.max(this.page - 1, 1));
-                        customGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('N')) {
-            chestMenu.addItem(
-                ss,
-                PatchScope.NextPage.patch(
-                    player,
-                    ChestMenuUtils.getNextButton(
-                        player,
-                        this.page,
-                        (this.objects.size() - 1)
-                            / Formats.sub.getChars('i').size()
-                            + 1
-                    )
-                )
-            );
-            chestMenu.addMenuClickHandler(
-                ss, (p, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.NextButtonClickEvent(
-                            p, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        BaseGroup<?> customGroup = this.getByPage(Math.min(
-                            this.page + 1,
-                            (this.objects.size() - 1)
-                                / Formats.sub.getChars('i').size()
-                                + 1
-                        ));
-                        customGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : Formats.sub.getChars('B')) {
-            chestMenu.addItem(ss, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()));
-            chestMenu.addMenuClickHandler(ss, ChestMenuUtils.getEmptyClickHandler());
-        }
+        Format format = Formats.sub;
+        int maxPage = (this.objects.size() - 1) / format.getChars('i').size() + 1;
+        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
 
         List<Integer> contentSlots = Formats.sub.getChars('i');
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.objects.size()) {
                 Object o = objects.get(index);
-                if (o instanceof SlimefunItem slimefunItem) {
-                    OnDisplay.Item.display(player, slimefunItem.getItem(), OnDisplay.Item.Normal, implementation)
-                        .at(chestMenu, contentSlots.get(i), page);
-                } else if (o instanceof ItemGroup itemGroup) {
-                    if (GuideUtil.getGuide(
-                        player, GuideUtil.getLastGuideMode(player)
-                    ) instanceof JEGSlimefunGuideImplementation guide) {
-                        guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));
+                switch (o) {
+                    case SlimefunItem slimefunItem ->
+                        OnDisplay.Item.display(player, slimefunItem.getItem(), OnDisplay.Item.Normal, implementation)
+                            .at(chestMenu, contentSlots.get(i), page);
+                    case ItemGroup itemGroup -> {
+                        if (GuideUtil.getGuide(
+                            player, GuideUtil.getLastGuideMode(player)
+                        ) instanceof JEGSlimefunGuideImplementation guide) {
+                            guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));
+                        }
                     }
-                } else if (o instanceof ItemStack itemStack) {
-                    OnDisplay.Item.display(player, itemStack, OnDisplay.Item.Normal, implementation)
-                        .at(chestMenu, contentSlots.get(i), page);
+                    case ItemStack itemStack ->
+                        OnDisplay.Item.display(player, itemStack, OnDisplay.Item.Normal, implementation)
+                            .at(chestMenu, contentSlots.get(i), page);
+                    default -> {
+                    }
                 }
             }
         }
 
-        GuideUtil.addRTSButton(chestMenu, player, playerProfile, Formats.sub, slimefunGuideMode, implementation);
-        if (implementation instanceof JEGSlimefunGuideImplementation jeg) {
-            GuideUtil.addBookMarkButton(chestMenu, player, playerProfile, Formats.sub, jeg, this);
-            GuideUtil.addItemMarkButton(chestMenu, player, playerProfile, Formats.sub, jeg, this);
-        }
-
-        Formats.sub.renderCustom(chestMenu);
         return chestMenu;
     }
 }

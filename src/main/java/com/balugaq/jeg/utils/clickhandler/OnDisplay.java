@@ -434,13 +434,17 @@ public interface OnDisplay {
             return Research(player, slimefunItem, guide);
         }
 
-        static Item display(Player player, ItemStack itemStack, DisplayType type, SlimefunGuideImplementation guide) {
+        static Item display(Player player, @Nullable ItemStack itemStack, DisplayType type, SlimefunGuideImplementation guide) {
             if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, itemStack, type, jeg);
             return display(player, itemStack, type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
-        static Item display(Player player, ItemStack itemStack, DisplayType type,
+        static Item display(Player player, @Nullable ItemStack itemStack, DisplayType type,
                             JEGSlimefunGuideImplementation guide) {
+            if (itemStack == null) {
+                return Vanilla(player, null, Converter.getItem(), guide);
+            }
+
             SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);
             if (slimefunItem == null) {
                 slimefunItem = Vanilla.findSlimefunItem(itemStack);

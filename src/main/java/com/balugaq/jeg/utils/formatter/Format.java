@@ -29,6 +29,10 @@ package com.balugaq.jeg.utils.formatter;
 
 import com.balugaq.jeg.api.groups.GuideGroup;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2CharMap;
+import it.unimi.dsi.fastutil.ints.Int2CharOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,7 +42,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,14 +51,13 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 @Getter
-@ToString
 @NullMarked
 public abstract class Format {
-    public static final Map<Character, ItemStack> customMapping = new HashMap<>();
-    public final Map<Integer, Character> mapping = new HashMap<>();
+    public static final Char2ObjectMap<ItemStack> customMapping = new Char2ObjectOpenHashMap<>();
+    public final Int2CharMap mapping = new Int2CharOpenHashMap();
 
     @ToString.Exclude
-    public final Map<Character, List<Integer>> cached = new HashMap<>();
+    public final Char2ObjectMap<List<Integer>> cached = new Char2ObjectOpenHashMap<>();
 
     @Setter
     public int size = 54;
@@ -87,7 +89,7 @@ public abstract class Format {
         }
 
         List<Integer> list = new ArrayList<>();
-        for (Map.Entry<Integer, Character> entry : mapping.entrySet()) {
+        for (Map.Entry<Integer, Character> entry : mapping.int2CharEntrySet()) {
             if (entry.getValue() == c) {
                 list.add(entry.getKey());
             }
@@ -110,7 +112,7 @@ public abstract class Format {
     }
 
     public void renderCustom(GuideGroup menu) {
-        for (Map.Entry<Character, ItemStack> entry : customMapping.entrySet()) {
+        for (Map.Entry<Character, ItemStack> entry : customMapping.char2ObjectEntrySet()) {
             for (int slot : getChars(entry.getKey())) {
                 menu.addGuide(slot, entry.getValue());
                 if (menu.getMenuClickHandler(slot) == null) {
@@ -118,5 +120,10 @@ public abstract class Format {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

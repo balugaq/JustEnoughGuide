@@ -39,6 +39,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -79,27 +80,31 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
         final Player player,
         final PlayerProfile playerProfile,
         final SlimefunGuideMode slimefunGuideMode) {
-        playerProfile.getGuideHistory().add(this, this.page);
-        this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
+        playerProfile.getGuideHistory().add(this, page);
+        ChestMenu menu = generateMenu(player, playerProfile, slimefunGuideMode);
+        if (menu != null) {
+            menu.open(player);
+        }
     }
 
+    @Nullable
     protected abstract ChestMenu generateMenu(
         final Player player,
         final PlayerProfile playerProfile,
         final SlimefunGuideMode slimefunGuideMode);
 
-    protected T getByPage(int page) {
-        if (this.pageMap.containsKey(page)) {
-            return this.pageMap.get(page);
+    public T getByPage(int page) {
+        if (pageMap.containsKey(page)) {
+            return pageMap.get(page);
         } else {
-            synchronized (this.pageMap) {
-                if (this.pageMap.containsKey(page)) {
-                    return this.pageMap.get(page);
+            synchronized (pageMap) {
+                if (pageMap.containsKey(page)) {
+                    return pageMap.get(page);
                 }
 
                 T group = clone();
                 group.page = page;
-                this.pageMap.put(page, group);
+                pageMap.put(page, group);
                 return group;
             }
         }
