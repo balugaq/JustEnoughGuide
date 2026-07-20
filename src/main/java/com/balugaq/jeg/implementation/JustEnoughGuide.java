@@ -31,6 +31,7 @@ import com.balugaq.jeg.api.CustomGroupConfigurations;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.SearchGroup;
+import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayOption;
@@ -46,7 +47,6 @@ import com.balugaq.jeg.implementation.groups.VanillaItemsGroup;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
-import com.balugaq.jeg.implementation.items.MultiBlockBuilderItem;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -106,8 +106,8 @@ import java.util.logging.Level;
 @NullMarked
 public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public static final int RECOMMENDED_JAVA_VERSION = 21;
-    public static final int LEAST_JAVA_VERSION = 17;
-    public static final MinecraftVersion RECOMMENDED_MC_VERSION = MinecraftVersion.V1_20_1;
+    public static final int LEAST_JAVA_VERSION = 21;
+    public static final MinecraftVersion RECOMMENDED_MC_VERSION = MinecraftVersion.V1_21_10;
     public static final MinecraftVersion LEAST_MC_VERSION = MinecraftVersion.V1_16;
 
     @Getter
@@ -127,35 +127,27 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     @Getter
     private final String branch;
 
-    @Getter
     @UnknownNullability
     private BookmarkManager bookmarkManager = null;
 
-    @Getter
     @UnknownNullability
     private CommandManager commandManager = null;
 
-    @Getter
     @UnknownNullability
     private ConfigManager configManager = null;
 
-    @Getter
     @UnknownNullability
     private IntegrationManager integrationManager = null;
 
-    @Getter
     @UnknownNullability
     private ListenerManager listenerManager = null;
 
-    @Getter
     @UnknownNullability
     private RTSBackpackManager rtsBackpackManager = null;
 
-    @Getter
     @UnknownNullability
     private MinecraftVersion minecraftVersion = null;
 
-    @Getter
     @UnknownNullability
     private TaskScheduler scheduler = null;
 
@@ -174,10 +166,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
     public static BookmarkManager getBookmarkManager() {
         return getInstance().bookmarkManager;
-    }
-
-    public static JustEnoughGuide getInstance() {
-        return JustEnoughGuide.instance;
     }
 
     public static CommandManager getCommandManager() {
@@ -304,97 +292,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     }
 
     /**
-     * Cleans up resources and shuts down the plugin.
-     */
-    @Override
-    public void onDisable() {
-        CustomGroupConfigurations.unload();
-        GroupResorter.rollback();
-
-        GroupSetup.shutdown();
-        RecipeCompleteProvider.shutdown();
-        GuideUtil.shutdown();
-
-        /**
-         * Unregister all {@link SlimefunItem}
-         *
-         * @see VanillaItemsGroup
-         * @see ItemsSetup#RECIPE_COMPLETE_GUIDE
-         */
-        SlimefunRegistryUtil.unregisterItems(JustEnoughGuide.getInstance());
-
-        try {
-            List<SlimefunGuideOption<?>> l = JEGGuideSettings.getOptions();
-            List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
-            for (SlimefunGuideOption<?> option : copy) {
-                if (option.getAddon() instanceof JustEnoughGuide) {
-                    l.remove(option);
-                }
-            }
-            JEGGuideSettings.unpatchSlimefun();
-            FinalTECHValueDisplayOption.setBooted(false);
-        } catch (Exception ignored) {
-        }
-
-        try {
-            Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
-            newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide());
-            newGuides.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
-            ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
-        } catch (Exception e) {
-            Debug.trace(e);
-        }
-
-        // Managers
-        if (this.bookmarkManager != null) {
-            this.bookmarkManager.unload();
-        }
-
-        if (this.integrationManager != null) {
-            this.integrationManager.unload();
-        }
-
-        if (this.commandManager != null) {
-            this.commandManager.unload();
-        }
-
-        if (this.listenerManager != null) {
-            this.listenerManager.unload();
-        }
-
-        if (this.rtsBackpackManager != null) {
-            this.rtsBackpackManager.unload();
-        }
-
-        if (this.metrics != null) {
-            this.metrics.shutdown();
-        }
-
-        if (this.configManager != null) {
-            this.configManager.unload();
-        }
-
-        ReplacementCardAdapter.getReplacementCards().clear();
-
-        this.bookmarkManager = null;
-        this.integrationManager = null;
-        this.commandManager = null;
-        this.listenerManager = null;
-        this.rtsBackpackManager = null;
-        this.metrics = null;
-        this.configManager = null;
-        Debug.setPlugin(null);
-
-        // Other fields
-        this.minecraftVersion = null;
-        this.javaVersion = 0;
-
-        // Clear instance
-        instance = null;
-        getLogger().info("成功禁用此附属");
-    }
-
-    /**
      * Initializes the plugin and sets up all necessary components.
      */
     @SuppressWarnings("DuplicateExpressions")
@@ -502,7 +399,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         SpecialMenuProvider.loadConfiguration();
         ReplacementCardAdapter.load();
-        MultiBlockBuilderItem.setup();
+        MultiBlockBuilder.load();
         ThirdPartyWarnings.check();
 
         getLogger().info("正在适配其他插件...");
@@ -516,6 +413,97 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         metrics = new JEGMetrics();
 
         getLogger().info("成功启用此附属");
+    }
+
+    /**
+     * Cleans up resources and shuts down the plugin.
+     */
+    @Override
+    public void onDisable() {
+        CustomGroupConfigurations.unload();
+        GroupResorter.rollback();
+
+        GroupSetup.shutdown();
+        RecipeCompleteProvider.shutdown();
+        GuideUtil.shutdown();
+
+        /**
+         * Unregister all {@link SlimefunItem}
+         *
+         * @see VanillaItemsGroup
+         * @see ItemsSetup#RECIPE_COMPLETE_GUIDE
+         */
+        SlimefunRegistryUtil.unregisterItems(JustEnoughGuide.getInstance());
+
+        try {
+            List<SlimefunGuideOption<?>> l = JEGGuideSettings.getOptions();
+            List<SlimefunGuideOption<?>> copy = new ArrayList<>(l);
+            for (SlimefunGuideOption<?> option : copy) {
+                if (option.getAddon() instanceof JustEnoughGuide) {
+                    l.remove(option);
+                }
+            }
+            JEGGuideSettings.unpatchSlimefun();
+            FinalTECHValueDisplayOption.setBooted(false);
+        } catch (Exception ignored) {
+        }
+
+        try {
+            Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
+            newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalSlimefunGuide());
+            newGuides.put(SlimefunGuideMode.CHEAT_MODE, new CheatSheetSlimefunGuide());
+            ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
+        } catch (Exception e) {
+            Debug.trace(e);
+        }
+
+        // Managers
+        if (this.bookmarkManager != null) {
+            this.bookmarkManager.unload();
+        }
+
+        if (this.integrationManager != null) {
+            this.integrationManager.unload();
+        }
+
+        if (this.commandManager != null) {
+            this.commandManager.unload();
+        }
+
+        if (this.listenerManager != null) {
+            this.listenerManager.unload();
+        }
+
+        if (this.rtsBackpackManager != null) {
+            this.rtsBackpackManager.unload();
+        }
+
+        if (this.metrics != null) {
+            this.metrics.shutdown();
+        }
+
+        if (this.configManager != null) {
+            this.configManager.unload();
+        }
+
+        ReplacementCardAdapter.getReplacementCards().clear();
+
+        this.bookmarkManager = null;
+        this.integrationManager = null;
+        this.commandManager = null;
+        this.listenerManager = null;
+        this.rtsBackpackManager = null;
+        this.metrics = null;
+        this.configManager = null;
+        Debug.setPlugin(null);
+
+        // Other fields
+        this.minecraftVersion = null;
+        this.javaVersion = 0;
+
+        // Clear instance
+        instance = null;
+        getLogger().info("成功禁用此附属");
     }
 
     /**
@@ -579,15 +567,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private void loadLibraries() {
         LibraryManager libraryManager = new BukkitLibraryManager(this);
         libraryManager.addMavenCentral();
-//        libraryManager.addRepository("https://mvn.wesjd.net/");
-
-//        getLogger().info("正在加载 AnvilGUI");
-//        Library anvilgui = Library.builder()
-//                .groupId("net{}wesjd")
-//                .artifactId("anvilgui")
-//                .version("1.10.10-SNAPSHOT")
-//                .build();
-//        libraryManager.loadLibrary(anvilgui);
 
         getLogger().info("正在加载 Pinyin");
         Library pinyin = Library.builder()

@@ -27,77 +27,41 @@
 
 package com.balugaq.jeg.implementation.items;
 
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.implementation.groups.GroupSetup;
-import com.balugaq.jeg.utils.compatibility.Converter;
+import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlock;
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.Getter;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @NullMarked
-public class MultiBlockBuilderItem extends JEGSlimefunItem {
-    private static final Map<MultiBlockMachine, MultiBlockBuilderItem> items = new HashMap<>();
+public class MultiBlockBuilderItem extends JEGSlimefunItem implements NotPlaceable {
     private final MultiBlock multiBlock;
 
     public MultiBlockBuilderItem(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, MultiBlock multiBlock) {
         super(itemGroup, item, recipeType, recipe);
         this.multiBlock = multiBlock;
-    }
 
-    public static void setup() {
-        for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getAllSlimefunItems())) {
-            if (sf instanceof MultiBlockMachine mb) {
-                MultiBlockBuilderItem item = new MultiBlockBuilderItem(
-                    GroupSetup.multiBlockBuilderItemsGroup,
-                    new SlimefunItemStack(
-                        "JEG_MULTI_BLOCK_BUILDER_ITEM_" + sf.getId(),
-                        Converter.getItem(
-                            sf.getItem(),
-                            "&a" + sf.getItemName() + "建造器"
-                        )
-                    ),
-                    RecipeType.NULL,
-                    new ItemStack[0],
-                    mb.getMultiBlock()
-                );
-                item.register(JustEnoughGuide.getInstance());
-                items.put(mb, item);
-            }
-        }
-    }
-
-    public static MultiBlockBuilderItem get(MultiBlockMachine multiBlock) {
-        return items.get(multiBlock);
-    }
-
-    @Override
-    public void postRegister() {
         addItemHandler((ItemUseHandler) e -> {
             e.getClickedBlock().ifPresent(block -> {
                 Player player = e.getPlayer();
                 boolean alongX = player.getFacing() == BlockFace.NORTH || player.getFacing() == BlockFace.SOUTH;
-                if (buildMultiblock(multiBlock, player.getLocation().clone().add(player.getFacing().getDirection()), alongX, true)) {
+                if (MultiBlockBuilder.buildMultiblock(
+                    multiBlock,
+                    block.getLocation().clone().add(0, 1, 0),
+                    player.getFacing().getOppositeFace(),
+                    alongX,
+                    true
+                )) {
                     if (!player.isOp() && player.getGameMode() != GameMode.CREATIVE) {
                         e.getItem().setAmount(e.getItem().getAmount() - 1);
                     }
@@ -107,54 +71,5 @@ public class MultiBlockBuilderItem extends JEGSlimefunItem {
                 }
             });
         });
-    }
-
-    public static boolean buildMultiblock(MultiBlock multiBlock, Location location, boolean alongX, boolean ignoreExistingBlocks) {
-        Map<Location, Material> blockMap = new HashMap<>();
-        for (int i = 0; i < multiBlock.getStructure().length; i++) {
-            int a = (alongX ? location.getBlockX() : location.getBlockZ()) - 1 + i % 3;
-            int y = location.getBlockY() + i / 3;
-            Location blockLocation = location.clone().add(
-                alongX ? a : location.getBlockX(),
-                y,
-                alongX ? location.getBlockZ() : a
-            );
-            Material material = multiBlock.getStructure()[i];
-            blockMap.put(blockLocation, material);
-        }
-
-        if (!ignoreExistingBlocks) {
-            // check positions
-            for (Location blockLocation : blockMap.keySet()) {
-                if (!blockLocation.getBlock().getType().isAir()) {
-                    return false;
-                }
-            }
-        }
-
-        // place blocks
-        for (var entry : blockMap.entrySet()) {
-            Location blockLocation = entry.getKey();
-            Material material = entry.getValue();
-            blockLocation.getBlock().setType(material);
-        }
-
-        return true;
-    }
-
-    public static ItemStack getItem(ItemStack item) {
-        ItemStack itemStack = getItem(SlimefunItem.getByItem(item));
-        if (itemStack != null) return itemStack;
-        return item;
-    }
-
-    @Contract("null -> null; !null -> !null")
-    @Nullable
-    public static ItemStack getItem(@Nullable SlimefunItem slimefunItem) {
-        if (slimefunItem instanceof MultiBlockMachine mbm)
-            return MultiBlockBuilderItem.get(mbm).getItem();
-        if (slimefunItem != null)
-            return slimefunItem.getItem();
-        return null;
     }
 }
