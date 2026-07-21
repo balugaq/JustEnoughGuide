@@ -35,7 +35,14 @@ repositories {
     maven("https://maven.norain.city/snapshots")
     maven("https://repo.alessiodp.com/releases")
     maven("https://repo.jeff-media.com/public")
-    maven("https://repo.extendedclip.com/releases")
+    exclusiveContent {
+        forRepository {
+            maven("https://repo.extendedclip.com/releases")
+        }
+        filter {
+            includeGroup("me.clip")
+        }
+    }
 }
 
 dependencies {
