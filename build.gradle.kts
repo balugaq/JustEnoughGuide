@@ -31,11 +31,11 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.tcoded.com/releases")
-    maven("https://repo.jeff-media.com/public")
     maven("https://mvn.wesjd.net/")
     maven("https://maven.norain.city/snapshots")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
-    maven("https://repo.alessiodp.com/releases/")
+    maven("https://repo.alessiodp.com/releases")
+    maven("https://repo.jeff-media.com/public")
+    maven("https://repo.extendedclip.com/releases")
 }
 
 dependencies {
@@ -48,23 +48,24 @@ dependencies {
     implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
     implementation("com.github.balugaq:AnvilGUI:ca2ef9e187")
     implementation("com.tcoded:FoliaLib:0.5.1")
-    implementation("net.byteflux:libby-bukkit:1.3.1")
+    implementation("net.byteflux:libby-bukkit:1.3.2")
     implementation("org.jetbrains:annotations:26.1.0")
     implementation("org.jspecify:jspecify:1.0.0")
 
-    // Provided dependencies (not packaged)
     compileOnly("com.google.code.findbugs:annotations:3.0.1u2")
     compileOnly("org.projectlombok:lombok:1.18.46")
     annotationProcessor("org.projectlombok:lombok:1.18.46")
+
+    // Downloaded in LibraryManager
     compileOnly("com.github.houbb:pinyin:0.4.0")
     compileOnly("com.github.houbb:opencc4j:1.14.0")
     compileOnly("com.github.houbb:heaven:0.13.0")
     compileOnly("com.github.houbb:nlp-common:0.0.5")
+
     compileOnly("net.guizhanss:GuizhanLibPlugin:2.5.0")
     compileOnly("net.guizhanss:SlimefunTranslation:e6da231617")
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("me.clip:placeholderapi:2.12.3")
 
-    // Provided for optional integrations
     compileOnly("com.github.ytdd9527:NetworksExpansion:0cfc607e89")
     compileOnly("com.github.balugaq:SlimeAE:40ff388e88")
     compileOnly("com.github.Zrips:CMILib:1.4.7.4")
