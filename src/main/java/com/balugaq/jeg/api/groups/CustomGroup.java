@@ -54,7 +54,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @NullMarked
 public class CustomGroup extends MixedGroup<CustomGroup> {
     public final CustomGroupConfiguration configuration;
-    public final List<String> acitons = new ArrayList<>();
+    public final List<String> actions = new ArrayList<>();
 
     public CustomGroup(CustomGroupConfiguration configuration) {
         super(configuration.key(), configuration.item(), configuration.tier());
@@ -62,68 +62,29 @@ public class CustomGroup extends MixedGroup<CustomGroup> {
 
         List<ItemGroup> itemGroups = new ArrayList<>();
         for (Object obj : configuration.objects()) {
-            if (obj instanceof ItemGroup group) {
-                if (configuration.mode() == CustomGroupConfiguration.Mode.TRANSFER) {
-                    // hide ItemGroup / SlimefunItem
-                    GuideUtil.setForceHiddens(group, true);
+            switch (obj) {
+                case ItemGroup group -> {
+                    if (configuration.mode() == CustomGroupConfiguration.Mode.TRANSFER) {
+                        // hide ItemGroup / SlimefunItem
+                        GuideUtil.setForceHiddens(group, true);
+                    }
+                    itemGroups.add(group);
+                    addGroup(group);
                 }
-                itemGroups.add(group);
-                addGroup(group);
-            } else if (obj instanceof SlimefunItem sf) {
-                addItem(sf);
-                sf.getItemGroup().remove(sf);
-                sf.setItemGroup(this);
-            } else if (obj instanceof String action) {
-                acitons.add(action);
+                case SlimefunItem sf -> {
+                    addItem(sf);
+                    sf.getItemGroup().remove(sf);
+                    sf.setItemGroup(this);
+                }
+                case String action -> actions.add(action);
+                default -> {
+                }
             }
         }
 
         GroupResorter.sort(itemGroups);
 
         this.pageMap.put(1, this);
-    }
-
-    @Override
-    public void open(
-        Player player,
-        PlayerProfile playerProfile,
-        SlimefunGuideMode slimefunGuideMode) {
-        if (acitons.isEmpty()) {
-            playerProfile.getGuideHistory().add(this, this.page);
-            this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
-        } else {
-            String s = acitons.get(ThreadLocalRandom.current().nextInt(acitons.size()));
-            if (s.startsWith("command /")) {
-                String a = s.substring(9);
-                player.closeInventory();
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), a.replace("%player%", player.getName()));
-            } else if (s.startsWith("commandp /")) {
-                String a = s.substring(9);
-                player.closeInventory();
-                Bukkit.dispatchCommand(player, a.replace("%player%", player.getName()));
-            } else if (s.startsWith("sayp ")) {
-                player.closeInventory();
-                player.chat(s.substring(5).replace("%player%", player.getName()));
-            } else if (s.startsWith("lookupitem ")) {
-                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                if (profile == null) return;
-                SlimefunItem item = SlimefunItem.getById(s.substring(11));
-                if (item == null) return;
-                GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).displayItem(profile, item, true);
-            } else if (s.startsWith("lookupgroup ")) {
-                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                if (profile == null) return;
-                for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
-                    if (group.getKey().toString().equals(s.substring(12))) {
-                        GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).openItemGroup(profile, group, 1);
-                        return;
-                    }
-                }
-            } else if (s.startsWith("link ")) {
-                ChatUtils.sendURL(player, s.substring(5));
-                player.closeInventory();
-            }
-        }
     }
 
     @Override

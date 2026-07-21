@@ -96,38 +96,39 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
         if (actions.isEmpty()) {
             playerProfile.getGuideHistory().add(this, this.page);
             this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
-        } else {
-            String s = actions.get(ThreadLocalRandom.current().nextInt(actions.size()));
-            if (s.startsWith("command /")) {
-                String a = s.substring(9);
-                player.closeInventory();
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), a.replace("%player%", player.getName()));
-            } else if (s.startsWith("commandp /")) {
-                String a = s.substring(9);
-                player.closeInventory();
-                Bukkit.dispatchCommand(player, a.replace("%player%", player.getName()));
-            } else if (s.startsWith("sayp ")) {
-                player.closeInventory();
-                player.chat(s.substring(5).replace("%player%", player.getName()));
-            } else if (s.startsWith("lookupitem ")) {
-                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                if (profile == null) return;
-                SlimefunItem item = SlimefunItem.getById(s.substring(11));
-                if (item == null) return;
-                GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).displayItem(profile, item, true);
-            } else if (s.startsWith("lookupgroup ")) {
-                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                if (profile == null) return;
-                for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
-                    if (group.getKey().toString().equals(s.substring(12))) {
-                        GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).openItemGroup(profile, group, 1);
-                        return;
-                    }
+            return;
+        }
+
+        String s = actions.get(ThreadLocalRandom.current().nextInt(actions.size()));
+        if (s.startsWith("command /")) {
+            String a = s.substring(9);
+            player.closeInventory();
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), a.replace("%player%", player.getName()));
+        } else if (s.startsWith("commandp /")) {
+            String a = s.substring(9);
+            player.closeInventory();
+            Bukkit.dispatchCommand(player, a.replace("%player%", player.getName()));
+        } else if (s.startsWith("sayp ")) {
+            player.closeInventory();
+            player.chat(s.substring(5).replace("%player%", player.getName()));
+        } else if (s.startsWith("lookupitem ")) {
+            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+            if (profile == null) return;
+            SlimefunItem item = SlimefunItem.getById(s.substring(11));
+            if (item == null) return;
+            GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).displayItem(profile, item, true);
+        } else if (s.startsWith("lookupgroup ")) {
+            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+            if (profile == null) return;
+            for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+                if (group.getKey().toString().equals(s.substring(12))) {
+                    GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).openItemGroup(profile, group, 1);
+                    return;
                 }
-            } else if (s.startsWith("link ")) {
-                ChatUtils.sendURL(player, s.substring(5));
-                player.closeInventory();
             }
+        } else if (s.startsWith("link ")) {
+            ChatUtils.sendURL(player, s.substring(5));
+            player.closeInventory();
         }
     }
 
@@ -141,10 +142,10 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
 
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
         Format format = Formats.sub;
-        int maxPage = (this.objects.size() - 1) / format.getChars('i').size() + 1;
+        int maxPage = (this.objects.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
         GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
 
-        List<Integer> contentSlots = Formats.sub.getChars('i');
+        List<Integer> contentSlots = Formats.sub.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.objects.size()) {

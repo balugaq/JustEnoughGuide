@@ -188,7 +188,8 @@ public final class GuideUtil {
 
             if (!RTSSearchGroup.isRtsAvailable()) {
                 MinecraftVersion maxVersion = MinecraftVersion.of(0, 0, 0);
-                Map<String, String> v2r = ReflectionUtil.getStaticValue(VersionMatcher.class, "VERSION_TO_REVISION", Map.class);
+                Map<String, String> v2r = (Map<String, String>)
+                    ReflectionUtil.getStaticValue(VersionMatcher.class, "VERSION_TO_REVISION", Map.class);
                 if (v2r != null) {
                     for (MinecraftVersion v : v2r.keySet().stream().map(MinecraftVersion::of).toList()) {
                         maxVersion = MinecraftVersion.max(maxVersion, v);
@@ -215,11 +216,11 @@ public final class GuideUtil {
         PlayerProfile profile,
         Player p) {
         if (!JustEnoughGuide.getConfigManager().isRTSSearch()) {
-            addBackgroundItems(menu, format, 'R', profile);
+            addBackgroundItems(menu, format, Formats.Char.RTS, profile);
             return;
         }
 
-        for (int ss : format.getChars('R')) {
+        for (int ss : format.getChars(Formats.Char.RTS)) {
             menu.addItem(
                 ss,
                 PatchScope.RealTimeSearch.patch(p, Models.RTS_ITEM),
@@ -233,6 +234,69 @@ public final class GuideUtil {
         }
     }
 
+    private static void onRTSPreviousButtonClick(Player pl) {
+        // previous page button clicked
+        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
+        if (rts == null) return;
+
+        int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
+        int newPage = Math.max(1, oldPage - 1);
+        RTSEvents.PageChangeEvent event =
+            new RTSEvents.PageChangeEvent(
+                pl,
+                RTSSearchGroup.RTS_PLAYERS.get(pl),
+                oldPage,
+                newPage,
+                getLastGuideMode(pl)
+            );
+        Bukkit.getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            synchronized (RTSSearchGroup.RTS_PAGES) {
+                RTSSearchGroup.RTS_PAGES.put(pl, newPage);
+            }
+        }
+    }
+
+    private static void onRTSNextButtonClick(Player pl) {
+        // next page button clicked
+        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
+        if (rts == null) return;
+
+        int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
+        int newPage = Math.min(
+            (rts.slimefunItemList.size() - 1)
+                / RTSListener.FILL_ORDER.length
+                + 1,
+            oldPage + 1
+        );
+        RTSEvents.PageChangeEvent event =
+            new RTSEvents.PageChangeEvent(
+                pl,
+                RTSSearchGroup.RTS_PLAYERS.get(pl),
+                oldPage,
+                newPage,
+                getLastGuideMode(pl)
+            );
+        Bukkit.getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            synchronized (RTSSearchGroup.RTS_PAGES) {
+                RTSSearchGroup.RTS_PAGES.put(pl, newPage);
+            }
+        }
+    }
+
+    private static void handleRTSClick(PlayerProfile profile, Player pl, int s, AnvilGUI.StateSnapshot snapshot) {
+        if (s == AnvilGUI.Slot.INPUT_LEFT) {
+            // back button clicked
+            GuideHistory history = profile.getGuideHistory();
+            goBack(history);
+        } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
+            onRTSPreviousButtonClick(pl);
+        } else if (s == AnvilGUI.Slot.OUTPUT) {
+            onRTSNextButtonClick(pl);
+        }
+    }
+
     public static void openRTS(Player pl, PlayerProfile profile) {
         // check version
         if (!checkRTS(pl)) {
@@ -242,62 +306,9 @@ public final class GuideUtil {
         try {
             RTSSearchGroup.newRTSInventoryFor(
                 pl,
-                GuideUtil.getLastGuideMode(pl),
-                (s, stateSnapshot) -> {
-                    if (s == AnvilGUI.Slot.INPUT_LEFT) {
-                        // back button clicked
-                        GuideHistory history = profile.getGuideHistory();
-                        GuideUtil.goBack(history);
-                    } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
-                        // previous page button clicked
-                        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
-                        if (rts != null) {
-                            int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
-                            int newPage = Math.max(1, oldPage - 1);
-                            RTSEvents.PageChangeEvent event =
-                                new RTSEvents.PageChangeEvent(
-                                    pl,
-                                    RTSSearchGroup.RTS_PLAYERS.get(pl),
-                                    oldPage,
-                                    newPage,
-                                    getLastGuideMode(pl)
-                                );
-                            Bukkit.getPluginManager()
-                                .callEvent(event);
-                            if (!event.isCancelled()) {
-                                synchronized (RTSSearchGroup.RTS_PAGES) {
-                                    RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-                                }
-                            }
-                        }
-                    } else if (s == AnvilGUI.Slot.OUTPUT) {
-                        // next page button clicked
-                        SearchGroup rts = RTSSearchGroup.RTS_SEARCH_GROUPS.get(pl);
-                        if (rts != null) {
-                            int oldPage = RTSSearchGroup.RTS_PAGES.getOrDefault(pl, 1);
-                            int newPage = Math.min(
-                                (rts.slimefunItemList.size() - 1)
-                                    / RTSListener.FILL_ORDER.length
-                                    + 1,
-                                oldPage + 1
-                            );
-                            RTSEvents.PageChangeEvent event =
-                                new RTSEvents.PageChangeEvent(
-                                    pl,
-                                    RTSSearchGroup.RTS_PLAYERS.get(pl),
-                                    oldPage,
-                                    newPage,
-                                    getLastGuideMode(pl)
-                                );
-                            Bukkit.getPluginManager()
-                                .callEvent(event);
-                            if (!event.isCancelled()) {
-                                synchronized (RTSSearchGroup.RTS_PAGES) {
-                                    RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-                                }
-                            }
-                        }
-                    }
+                getLastGuideMode(pl),
+                (s, snapshot) -> {
+                    GuideUtil.handleRTSClick(profile, pl, s, snapshot);
                 },
                 new int[]{
                     AnvilGUI.Slot.INPUT_LEFT,
@@ -355,28 +366,21 @@ public final class GuideUtil {
 
     public static SlimefunGuideImplementation getLastGuide(Player player) {
         var mode = GuideListener.guideModeMap.get(player);
-        return GuideUtil.getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
+        return getGuide(player, mode == null ? SlimefunGuideMode.SURVIVAL_MODE : mode);
     }
 
-    /**
-     * Get the guide implementation for the given player and mode.
-     *
-     * @param player The player to get the guide for.
-     * @param mode   The mode to get the guide for.
-     * @return The guide implementation for the given player and mode.
-     */
     public static SlimefunGuideImplementation getGuide(Player player, SlimefunGuideMode mode) {
         if (mode == SlimefunGuideMode.SURVIVAL_MODE) {
-            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
+            return getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
         }
 
         // Player must be op or have the permission "slimefun.cheat.items" to access the cheat guide
         if ((player.isOp() || player.hasPermission("slimefun.cheat.items")) && mode == SlimefunGuideMode.CHEAT_MODE) {
-            return GuideUtil.getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
+            return getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE);
         }
 
         // Fallback to survival guide if no permission is given
-        return GuideUtil.getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
+        return getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
     }
 
     @ApiStatus.Obsolete
@@ -398,15 +402,15 @@ public final class GuideUtil {
         Player p,
         @Nullable ItemGroup itemGroup) {
         if (!JustEnoughGuide.getConfigManager().isBookmark()) {
-            addBackgroundItems(menu, format, 'C', profile);
+            addBackgroundItems(menu, format, Formats.Char.BOOK_MARK, profile);
             return;
         }
 
-        JEGSlimefunGuideImplementation implementation = GuideUtil.getLastJEGGuide(p);
+        JEGSlimefunGuideImplementation implementation = getLastJEGGuide(p);
         if (implementation == null) return;
         BookmarkRelocation b =
             itemGroup instanceof BookmarkRelocation bookmarkRelocation ? bookmarkRelocation : null;
-        for (int s : b != null ? b.getBookMark(implementation, p) : format.getChars('C')) {
+        for (int s : b != null ? b.getBookMark(implementation, p) : format.getChars(Formats.Char.BOOK_MARK)) {
             menu.addItem(
                 s,
                 PatchScope.BookMark.patch(p, getBookMarkMenuButton()),
@@ -432,14 +436,14 @@ public final class GuideUtil {
         Player p,
         @Nullable ItemGroup itemGroup) {
         if (itemGroup == null || !JustEnoughGuide.getConfigManager().isBookmark() || !isTaggedGroupType(itemGroup)) {
-            addBackgroundItems(menu, format, 'c', profile);
+            addBackgroundItems(menu, format, Formats.Char.ITEM_MARK, profile);
             return;
         }
 
-        JEGSlimefunGuideImplementation implementation = GuideUtil.getLastJEGGuide(p);
+        JEGSlimefunGuideImplementation implementation = getLastJEGGuide(p);
         if (implementation == null) return;
         BookmarkRelocation b = itemGroup instanceof BookmarkRelocation relocation ? relocation : null;
-        for (int ss : b != null ? b.getItemMark(implementation, p) : format.getChars('c')) {
+        for (int ss : b != null ? b.getItemMark(implementation, p) : format.getChars(Formats.Char.ITEM_MARK)) {
             menu.addItem(
                 ss,
                 PatchScope.ItemMark.patch(p, getItemMarkMenuButton()),
@@ -477,13 +481,13 @@ public final class GuideUtil {
             return;
         }
 
-        var implementation = GuideUtil.getLastGuide(p);
-        for (int ss : format.getChars('m')) {
+        var implementation = getLastGuide(p);
+        for (int ss : format.getChars(Formats.Char.CER_PATCH)) {
             menu.addItem(
                 ss, PatchScope.Cer.patch(p, getCerMenuButton()),
                 (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> {
                     new CERRecipeGroup(pl, machine, MachineData.get(machine).wrap())
-                        .open(pl, profile, GuideUtil.getLastGuideMode(pl));
+                        .open(pl, profile, getLastGuideMode(pl));
                 })
             );
         }
@@ -491,7 +495,7 @@ public final class GuideUtil {
 
     public static void addSlimefunRecipeEditButton(ChestMenu menu, Player p, PlayerProfile profile, SlimefunItem item, Format format) {
         if (JustEnoughGuide.getIntegrationManager().isEnabledSlimeFunRecipe() && p.isOp()) {
-            for (int s : format.getChars('K')) {
+            for (int s : format.getChars(Formats.Char.RECIPE_EDIT)) {
                 menu.addItem(s, PatchScope.SlimefunRecipeEdit.patch(profile, Models.SLIMEFUN_RECIPE_EDIT), (player, slot, itemStack, action) -> {
                     SlimeFunRecipeIntegrationMain.openGui(player, item);
                     return false;
@@ -586,7 +590,7 @@ public final class GuideUtil {
                     continue;
                 }
 
-                if (!guideTierMode && GuideUtil.isForceHidden(group)) {
+                if (!guideTierMode && isForceHidden(group)) {
                     continue;
                 }
 
@@ -655,7 +659,7 @@ public final class GuideUtil {
                     groups.add(group);
                     continue;
                 }
-                if (!guideTierMode && GuideUtil.isForceHidden(group)) {
+                if (!guideTierMode && isForceHidden(group)) {
                     continue;
                 }
                 if (group instanceof FlexItemGroup flexItemGroup) {
@@ -717,37 +721,56 @@ public final class GuideUtil {
         }
     }
 
-    public static void addBackgroundItems(ChestMenu menu, Format format, PlayerProfile playerProfile) {
-        addBackgroundItems(menu, format, playerProfile, ChestMenuUtils.getBackground());
+    public static void addBackgroundItems(ChestMenu menu, Format format, PlayerProfile profile) {
+        addBackgroundItems(menu, format, profile, ChestMenuUtils.getBackground());
     }
 
-    public static void addBackgroundItems(ChestMenu menu, Format format, char ch, PlayerProfile playerProfile) {
-        addBackgroundItems(menu, format, ch, playerProfile, ChestMenuUtils.getBackground());
+    public static void addBackgroundItems(ChestMenu menu, Format format, char ch, PlayerProfile profile) {
+        addBackgroundItems(menu, format, ch, profile, ChestMenuUtils.getBackground());
     }
 
-    public static void addBackgroundItems(ChestMenu menu, Format format, PlayerProfile playerProfile, ItemStack background) {
-        addBackgroundItems(menu, format, 'B', playerProfile, background);
+    public static void addBackgroundItems(ChestMenu menu, Format format, PlayerProfile profile, ItemStack background) {
+        addBackgroundItems(menu, format, Formats.Char.BACKGROUND, profile, background);
     }
 
-    public static void addBackgroundItems(ChestMenu menu, Format format, char ch, PlayerProfile playerProfile, ItemStack background) {
-        for (int ss : format.getChars(ch)) {
-            menu.addItem(ss, PatchScope.Background.patch(playerProfile, background));
+    public static void addBackgroundItems(ChestMenu menu, Format format, char ch, PlayerProfile profile, ItemStack background) {
+        addBackgroundItems(menu, format.getChars(ch), profile, background);
+    }
+
+    public static void addBackgroundItems(ChestMenu menu, List<Integer> slots, PlayerProfile profile, ItemStack background) {
+        for (int ss : slots) {
+            menu.addItem(ss, PatchScope.Background.patch(profile, background));
             menu.addMenuClickHandler(ss, ChestMenuUtils.getEmptyClickHandler());
         }
     }
 
     // 1-based page
+    public static void addPreviousPageButton(ChestMenu menu, Format format, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage) {
+        addPreviousPageButton(menu, format, profile, player, group, currentPage, maxPage, null);
+    }
+
+    // 1-based page
     public static void addPreviousPageButton(ChestMenu menu, Format format, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage, @Nullable PageOpener opener) {
+        addPreviousPageButton(menu, format.getChars(Formats.Char.PREVIOUS_PAGE), profile, player, group, currentPage, maxPage, opener);
+    }
+
+    // 1-based page
+    public static void addPreviousPageButton(ChestMenu menu, List<Integer> slots, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage) {
+        addPreviousPageButton(menu, slots, profile, player, group, currentPage, maxPage, null);
+    }
+
+    // 1-based page
+    public static void addPreviousPageButton(ChestMenu menu, List<Integer> slots, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage, @Nullable PageOpener opener) {
         var impl = getLastJEGGuide(player);
         if (impl == null) return;
-        for (int ss : Formats.sub.getChars('P')) {
+        for (int ss : slots) {
             menu.addItem(ss, PatchScope.PreviousPage.patch(profile, ChestMenuUtils.getPreviousButton(player, currentPage, maxPage)));
             menu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, menu, impl)).ifSuccess(() -> {
                 removeLastEntry(profile.getGuideHistory());
                 int newPage = Math.max(currentPage - 1, 1);
                 if (group instanceof BaseGroup<?> baseGroup) {
                     BaseGroup<?> newGroup = baseGroup.getByPage(newPage);
-                    newGroup.open(player, profile, GuideUtil.getLastGuideMode(player));
+                    newGroup.open(player, profile, getLastGuideMode(player));
                 } else if (opener != null) {
                     opener.open(newPage);
                 }
@@ -757,6 +780,10 @@ public final class GuideUtil {
     }
 
     public static void addBackButton(ChestMenu menu, Format format, PlayerProfile profile, Player player) {
+        addBackButton(menu, format.getChars(Formats.Char.BACK), profile, player);
+    }
+
+    public static void addBackButton(ChestMenu menu, List<Integer> slots, PlayerProfile profile, Player player) {
         var impl = getLastJEGGuide(player);
         if (impl == null) return;
         GuideHistory history = profile.getGuideHistory();
@@ -774,25 +801,29 @@ public final class GuideUtil {
                 "&fShift + 左键: &7返回主菜单"
             );
         }
-        for (int ss : format.getChars('b')) {
+        for (int ss : slots) {
             menu.addItem(ss, PatchScope.Back.patch(profile, backIcon));
             menu.addMenuClickHandler(ss, (pl, s, is, action) -> EventUtil.callEvent(new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, impl)).ifSuccess(() -> {
                 GuideHistory guideHistory = profile.getGuideHistory();
                 if (history.size() == 1 || action.isShiftClicked()) {
-                    openMainMenu(pl, profile, GuideUtil.getLastGuideMode(pl), guideHistory.getMainMenuPage());
+                    openMainMenu(pl, profile, getLastGuideMode(pl), guideHistory.getMainMenuPage());
                     return false;
                 }
 
-                GuideUtil.goBack(guideHistory);
+                goBack(guideHistory);
                 return false;
             }));
         }
     }
 
     public static void addSearchButton(ChestMenu menu, Format format, PlayerProfile profile, Player player) {
-        for (int ss : format.getChars('S')) {
+        addSearchButton(menu, format.getChars(Formats.Char.SEARCH), profile, player);
+    }
+
+    public static void addSearchButton(ChestMenu menu, List<Integer> slots, PlayerProfile profile, Player player) {
+        for (int ss : slots) {
             menu.addItem(ss, PatchScope.Search.patch(profile, ChestMenuUtils.getSearchButton(player)));
-            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, menu, GuideUtil.getLastGuide(pl)))
+            menu.addMenuClickHandler(ss, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SearchButtonClickEvent(pl, item, slot, action, menu, getLastGuide(pl)))
                 .ifSuccess(() -> {
                     pl.closeInventory();
 
@@ -800,7 +831,7 @@ public final class GuideUtil {
                     ChatInput.waitForPlayer(
                         JustEnoughGuide.getInstance(),
                         pl,
-                        msg -> GuideUtil.getLastGuide(pl).openSearch(
+                        msg -> getLastGuide(pl).openSearch(
                             profile,
                             msg,
                             true
@@ -814,18 +845,33 @@ public final class GuideUtil {
     }
 
     // 1-based page
+    public static void addNextPageButton(ChestMenu menu, Format format, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage) {
+        addNextPageButton(menu, format, profile, player, group, currentPage, maxPage, null);
+    }
+
+    // 1-based page
     public static void addNextPageButton(ChestMenu menu, Format format, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage, @Nullable PageOpener opener) {
+        addNextPageButton(menu, format.getChars(Formats.Char.NEXT_PAGE), profile, player, group, currentPage, maxPage, opener);
+    }
+
+    // 1-based page
+    public static void addNextPageButton(ChestMenu menu, List<Integer> slots, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage) {
+        addNextPageButton(menu, slots, profile, player, group, currentPage, maxPage, null);
+    }
+
+    // 1-based page
+    public static void addNextPageButton(ChestMenu menu, List<Integer> slots, PlayerProfile profile, Player player, @Nullable ItemGroup group, int currentPage, int maxPage, @Nullable PageOpener opener) {
         var impl = getLastJEGGuide(player);
         if (impl == null) return;
-        for (int ss : Formats.sub.getChars('N')) {
+        for (int ss : slots) {
             menu.addItem(ss, PatchScope.NextPage.patch(profile, ChestMenuUtils.getNextButton(player, currentPage, maxPage)));
             menu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(p, item, slot, action, menu, impl))
                 .ifSuccess(() -> {
-                    GuideUtil.removeLastEntry(profile.getGuideHistory());
+                    removeLastEntry(profile.getGuideHistory());
                     int newPage = Math.min(currentPage + 1, maxPage);
                     if (group instanceof BaseGroup<?> baseGroup) {
                         BaseGroup<?> newGroup = baseGroup.getByPage(newPage);
-                        newGroup.open(player, profile, GuideUtil.getLastGuideMode(player));
+                        newGroup.open(player, profile, getLastGuideMode(player));
                     } else if (opener != null) {
                         opener.open(newPage);
                     }
@@ -836,9 +882,9 @@ public final class GuideUtil {
     }
 
     public static void addSettingsPanelButton(ChestMenu menu, Format format, PlayerProfile profile, Player player) {
-        for (int s : format.getChars('T')) {
+        for (int s : format.getChars(Formats.Char.SETTINGS_PANEL_BUTTON)) {
             menu.addItem(s, PatchScope.Settings.patch(profile, ChestMenuUtils.getMenuButton(player)));
-            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl, item, slot, action, menu, GuideUtil.getLastGuide(pl))).ifSuccess(() -> {
+            menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl, item, slot, action, menu, getLastGuide(pl))).ifSuccess(() -> {
                 JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
                 return false;
             }));
@@ -847,11 +893,11 @@ public final class GuideUtil {
 
     public static void commonRender(ChestMenu menu, Format format, PlayerProfile profile, Player player) {
         OnClick.preset(menu);
-        GuideUtil.addBackgroundItems(menu, format, profile);
-        GuideUtil.addBackButton(menu, format, profile, player);
-        GuideUtil.addSettingsPanelButton(menu, format, profile, player);
-        GuideUtil.addSearchButton(menu, format, profile, player);
-        GuideUtil.addRTSButton(menu, format, profile, player);
+        addBackgroundItems(menu, format, profile);
+        addBackButton(menu, format, profile, player);
+        addSettingsPanelButton(menu, format, profile, player);
+        addSearchButton(menu, format, profile, player);
+        addRTSButton(menu, format, profile, player);
         format.renderCustom(menu);
     }
 
@@ -887,16 +933,16 @@ public final class GuideUtil {
         @Nullable PageOpener pageOpener
     ) {
         OnClick.preset(menu);
-        GuideUtil.addBackgroundItems(menu, format, profile);
-        GuideUtil.addBackButton(menu, format, profile, player);
-        GuideUtil.addSettingsPanelButton(menu, format, profile, player);
-        GuideUtil.addSearchButton(menu, format, profile, player);
+        addBackgroundItems(menu, format, profile);
+        addBackButton(menu, format, profile, player);
+        addSettingsPanelButton(menu, format, profile, player);
+        addSearchButton(menu, format, profile, player);
         if (currentPage != 0 && maxPage != 0) {
-            GuideUtil.addPageButtons(menu, format, profile, player, group, currentPage, maxPage, pageOpener);
+            addPageButtons(menu, format, profile, player, group, currentPage, maxPage, pageOpener);
         }
-        GuideUtil.addRTSButton(menu, format, profile, player);
-        GuideUtil.addBookMarkButton(menu, format, profile, player, group);
-        GuideUtil.addItemMarkButton(menu, format, profile, player, group);
+        addRTSButton(menu, format, profile, player);
+        addBookMarkButton(menu, format, profile, player, group);
+        addItemMarkButton(menu, format, profile, player, group);
         format.renderCustom(menu);
     }
 
@@ -910,22 +956,22 @@ public final class GuideUtil {
         @Range(from = 0, to = Integer.MAX_VALUE) int maxPage,
         @Nullable PageOpener pageOpener
     ) {
-        GuideUtil.addPreviousPageButton(menu, format, profile, player, group, currentPage, maxPage, pageOpener);
-        GuideUtil.addNextPageButton(menu, format, profile, player, group, currentPage, maxPage, pageOpener);
+        addPreviousPageButton(menu, format, profile, player, group, currentPage, maxPage, pageOpener);
+        addNextPageButton(menu, format, profile, player, group, currentPage, maxPage, pageOpener);
     }
 
     public static void addWikiButton(ChestMenu menu, Format format, Player p, SlimefunItem item) {
         Optional<String> wiki = item.getWikipage();
         if (wiki.isEmpty()) return;
 
-        for (int s : format.getChars('w')) {
+        for (int s : format.getChars(Formats.Char.ITEM_WIKI_PAGE)) {
             menu.addItem(s, PatchScope.ItemWiki.patch(p, Converter.getItem(
                 Material.KNOWLEDGE_BOOK,
                 ChatColors.color("&f" + Slimefun.getLocalization().getMessage(p, "guide.tooltips.wiki")),
                 "",
                 ChatColors.color("&7\u21E8 &a" + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup"))
             )));
-            menu.addMenuClickHandler(s, (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.WikiButtonClickEvent(pl, itemstack, slot, action, menu, GuideUtil.getLastGuide(pl))).ifSuccess(() -> {
+            menu.addMenuClickHandler(s, (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.WikiButtonClickEvent(pl, itemstack, slot, action, menu, getLastGuide(pl))).ifSuccess(() -> {
                 pl.closeInventory();
                 ChatUtils.sendURL(pl, wiki.get());
                 return false;
@@ -937,7 +983,7 @@ public final class GuideUtil {
         if (!SpecialMenuProvider.isSpecialItem(item)) {
             return;
         }
-        for (int s : format.getChars('E')) {
+        for (int s : format.getChars(Formats.Char.BIG_RECIPE)) {
             menu.addItem(s, PatchScope.BigRecipe.patch(p, Models.SPECIAL_MENU_ITEM), (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.BigRecipeButtonClickEvent(pl, itemstack, slot, action, menu, getLastGuide(pl))).ifSuccess(() -> {
                 try {
                     SpecialMenuProvider.open(pl, profile, getLastGuideMode(pl), item);

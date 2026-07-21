@@ -108,4 +108,41 @@ public class Formats {
         customFormats.clear();
         Format.customMapping.clear();
     }
+
+    /**
+     * @author balugaq
+     * @since 2.1
+     */
+    public static class Char {
+        public static final char
+        BACKGROUND = 'B',
+        BACK = 'b',
+        PREVIOUS_PAGE = 'P',
+        NEXT_PAGE = 'N',
+        BIG_RECIPE = 'E',
+        ITEM_WIKI_PAGE = 'w',
+        SETTINGS_PANEL_BUTTON = 'T',
+        SEARCH = 'S',
+        RTS = 'R',
+        CONTENT = 'i',
+        ITEM = 'i',
+        RECIPE_INGREDIENT = 'r',
+        RECIPE_TYPE = 't',
+        RECIPE_DISPLAY = 'd',
+        RECIPE_RESULT = 'i',
+        ITEM_GROUP = 'G',
+        ITEM_MARK = 'c',
+        CER_PATCH = 'm',
+        RECIPE_EDIT = 'K',
+        BOOK_MARK = 'C',
+        CONTRIBUTOR = 'p',
+        CREDITS = 's',
+        VERSION = 'v',
+        SOURCE_CODE = 'u',
+        SLIMEFUN_WIKI_PAGE = 'W',
+        ADDONS = 'l',
+        UNOFFICIAL_TIPS = 'z',
+        UNKNOWN_FEATURE = 'U'
+        ;
+    }
 }

@@ -29,25 +29,17 @@ package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.interfaces.BookmarkRelocation;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
-import com.balugaq.jeg.api.objects.enums.PatchScope;
-import com.balugaq.jeg.api.objects.events.GuideEvents;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
+import com.balugaq.jeg.utils.formatter.Format;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -101,134 +93,66 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("添加收藏物 - JEG");
 
+        Format format = Formats.sub;
         OnClick.preset(chestMenu);
 
-        for (int ss : itemGroup instanceof BookmarkRelocation relocation
-            ? relocation.getBackButton(implementation, player)
-            : Formats.sub.getChars('b')) {
-            chestMenu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
-            chestMenu.addMenuClickHandler(
-                ss, (pl, s, is, action) -> EventUtil.callEvent(
-                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, chestMenu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            GuideUtil.goBack(guideHistory);
-                        }
-                        return false;
-                    })
-            );
-        }
+        GuideUtil.addBackButton(
+            chestMenu,
+            itemGroup instanceof BookmarkRelocation relocation
+                ? relocation.getBackButton(implementation, player)
+                : format.getChars(Formats.Char.BACK),
+            playerProfile,
+            player
+        );
 
-        for (int ss : itemGroup instanceof BookmarkRelocation relocation
-            ? relocation.getSearchButton(implementation, player)
-            : Formats.sub.getChars('S')) {
-            chestMenu.addItem(ss, PatchScope.Search.patch(player, ChestMenuUtils.getSearchButton(player)));
-            chestMenu.addMenuClickHandler(
-                ss, (pl, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.SearchButtonClickEvent(
-                            pl, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        pl.closeInventory();
+        GuideUtil.addSettingsPanelButton(chestMenu, format, playerProfile, player);
 
-                        Slimefun.getLocalization().sendMessage(pl, "guide.search.message");
-                        ChatInput.waitForPlayer(
-                            JustEnoughGuide.getInstance(),
-                            pl,
-                            msg -> implementation.openSearch(
-                                playerProfile,
-                                msg,
-                                true
-                            )
-                        );
+        GuideUtil.addSearchButton(
+            chestMenu,
+            itemGroup instanceof BookmarkRelocation relocation
+                ? relocation.getSearchButton(implementation, player)
+                : format.getChars(Formats.Char.SEARCH),
+            playerProfile,
+            player
+        );
 
-                        return false;
-                    })
-            );
-        }
+        int maxPage = (this.slimefunItemList.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
+        GuideUtil.addPreviousPageButton(
+            chestMenu,
+            itemGroup instanceof BookmarkRelocation relocation
+                ? relocation.getPreviousButton(implementation, player)
+                : format.getChars(Formats.Char.PREVIOUS_PAGE),
+            playerProfile,
+            player,
+            this,
+            page,
+            maxPage
+        );
 
-        for (int ss : itemGroup instanceof BookmarkRelocation relocation
-            ? relocation.getPreviousButton(implementation, player)
-            : Formats.sub.getChars('P')) {
-            chestMenu.addItem(
-                ss,
-                PatchScope.PreviousPage.patch(
-                    player,
-                    ChestMenuUtils.getPreviousButton(
-                        player,
-                        this.page,
-                        (this.slimefunItemList.size() - 1)
-                            / Formats.sub.getChars('i').size()
-                            + 1
-                    )
-                )
-            );
-            chestMenu.addMenuClickHandler(
-                ss, (p, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.PreviousButtonClickEvent(
-                            p, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        ItemMarkGroup itemMarkGroup = this.getByPage(Math.max(this.page - 1, 1));
-                        itemMarkGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    })
-            );
-        }
+        GuideUtil.addNextPageButton(
+            chestMenu,
+            itemGroup instanceof BookmarkRelocation relocation
+                ? relocation.getNextButton(implementation, player)
+                : format.getChars(Formats.Char.NEXT_PAGE),
+            playerProfile,
+            player,
+            this,
+            page,
+            maxPage
+        );
 
-        for (int ss : itemGroup instanceof BookmarkRelocation relocation
-            ? relocation.getNextButton(implementation, player)
-            : Formats.sub.getChars('N')) {
-            chestMenu.addItem(
-                ss,
-                PatchScope.NextPage.patch(
-                    player,
-                    ChestMenuUtils.getNextButton(
-                        player,
-                        this.page,
-                        (this.slimefunItemList.size() - 1)
-                            / Formats.sub.getChars('i').size()
-                            + 1
-                    )
-                )
-            );
-            chestMenu.addMenuClickHandler(
-                ss, (p, slot, item, action) -> EventUtil.callEvent(
-                        new GuideEvents.NextButtonClickEvent(
-                            p, item, slot, action, chestMenu,
-                            implementation
-                        ))
-                    .ifSuccess(() -> {
-                        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                        ItemMarkGroup itemMarkGroup = this.getByPage(Math.min(
-                            this.page + 1,
-                            (this.slimefunItemList.size() - 1)
-                                / Formats.sub.getChars('i').size()
-                                + 1
-                        ));
-                        itemMarkGroup.open(player, playerProfile, slimefunGuideMode);
-                        return false;
-                    })
-            );
-        }
-
-        for (int ss : itemGroup instanceof BookmarkRelocation relocation
-            ? relocation.getBorder(implementation, player)
-            : Formats.sub.getChars('B')) {
-            chestMenu.addItem(ss, PatchScope.Background.patch(player, Models.ITEM_MARK_BACKGROUND));
-            chestMenu.addMenuClickHandler(ss, ChestMenuUtils.getEmptyClickHandler());
-        }
+        GuideUtil.addBackgroundItems(
+            chestMenu,
+            itemGroup instanceof BookmarkRelocation relocation
+                ? relocation.getBorder(implementation, player)
+                : format.getChars(Formats.Char.BACKGROUND),
+            playerProfile,
+            Models.ITEM_MARK_BACKGROUND
+        );
 
         List<Integer> contentSlots = itemGroup instanceof BookmarkRelocation relocation
             ? relocation.getMainContents(implementation, player)
-            : Formats.sub.getChars('i');
+            : format.getChars(Formats.Char.CONTENT);
 
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
@@ -239,11 +163,13 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             }
         }
 
-        GuideUtil.addRTSButton(chestMenu, Formats.sub, playerProfile, player);
-        GuideUtil.addBookMarkButton(chestMenu, Formats.sub, playerProfile, player, this);
-        GuideUtil.addItemMarkButton(chestMenu, Formats.sub, playerProfile, player, this);
+        GuideUtil.addRTSButton(chestMenu, format, playerProfile, player);
+        GuideUtil.addBookMarkButton(chestMenu, format, playerProfile, player, this);
+        GuideUtil.addItemMarkButton(chestMenu, format, playerProfile, player, this);
 
-        Formats.sub.renderCustom(chestMenu);
+        if (!(itemGroup instanceof BookmarkRelocation)) {
+            format.renderCustom(chestMenu);
+        }
         return chestMenu;
     }
 }

@@ -107,8 +107,8 @@ import java.util.logging.Level;
 @NullMarked
 public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementation {
     NamespacedKey UNLOCK_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "unlock_item");
-    int MAX_ITEMS_PER_PAGE = Formats.sub.getChars('i').size();
-    int MAX_ITEM_GROUPS_PER_PAGE = Formats.main.getChars('G').size();
+    int MAX_ITEMS_PER_PAGE = Formats.sub.getChars(Formats.Char.ITEM).size();
+    int MAX_ITEM_GROUPS_PER_PAGE = Formats.main.getChars(Formats.Char.ITEM_GROUP).size();
 
     @Nullable
     static ItemStack getDisplayItem(Player p, boolean isSlimefunRecipe, @Nullable ItemStack item) {
@@ -175,7 +175,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             openItemGroup(profile, itemGroup, np);
         });
 
-        List<Integer> indexes = Formats.sub.getChars('i');
+        List<Integer> indexes = format.getChars(Formats.Char.CONTENT);
         int itemGroupIndex = getMaxItemsPerPage() * (Math.max(page, 1) - 1);
 
         for (int i = 0; i < getMaxItemsPerPage(); i++) {
@@ -207,7 +207,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         final Format format) {
         boolean isSlimefunRecipe = item instanceof SlimefunItem && !(item instanceof VanillaItemShade);
 
-        List<Integer> recipeSlots = format.getChars('r');
+        List<Integer> recipeSlots = format.getChars(Formats.Char.RECIPE_INGREDIENT);
         for (int i = 0; i < recipe.length; i++) {
             ItemStack recipeItem = getDisplayItem(p, isSlimefunRecipe, recipe[i]);
             OnDisplay.Item.display(p, PatchScope.ItemRecipeIngredient.patch(p, recipeItem), OnDisplay.Item.Normal, this)
@@ -223,11 +223,11 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             }
         }
 
-        for (int s : format.getChars('t')) {
+        for (int s : format.getChars(Formats.Char.RECIPE_TYPE)) {
             OnDisplay.RecipeType.display(p, recipeType, PatchScope.ItemRecipeType.patch(p, recipeType.getItem(p)), this)
                 .at(menu, s, 1);
         }
-        for (int s : format.getChars('i')) {
+        for (int s : format.getChars(Formats.Char.RECIPE_RESULT)) {
             OnDisplay.Item.display(p, PatchScope.ItemRecipeOut.patch(p, output), OnDisplay.Item.Normal, this)
                 .at(menu, s, 1);
         }
@@ -281,7 +281,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         });
 
         Format format = Formats.nested;
-        List<Integer> ss = format.getChars('G');
+        List<Integer> ss = format.getChars(Formats.Char.ITEM_GROUP);
         int groupsPerPage = ss.size();
 
         try {
@@ -561,7 +561,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                     Converter.getItem(ChestMenuUtils.getBackground(), sfItem.getRecipeSectionLabel(p))));
             }
 
-            List<Integer> ds = format.getChars('d');
+            List<Integer> ds = format.getChars(Formats.Char.RECIPE_DISPLAY);
             int length = ds.size();
             int pages = (recipes.size() - 1) / length + 1; // 1-based
             GuideUtil.addPageButtons(menu, format, profile, p, null, /*0-based*/ page + 1, pages, np -> {
@@ -585,7 +585,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         int page) {
         Player p = profile.getPlayer();
         if (p == null) return;
-        int l = Formats.recipe_display.getChars('d').size();
+        int l = Formats.recipe_display.getChars(Formats.Char.RECIPE_DISPLAY).size();
         if ((index + (page * l)) < recipes.size()) {
             ItemStack displayItem = recipes.get(index + (page * l));
 
@@ -612,9 +612,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         Debug.log(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
         Debug.warn("我们正在尝试恢复玩家 \"" + p.getName() + "\" 的指南...");
         PlayerProfile profile = PlayerProfile.find(p).orElse(null);
-        if (profile == null) {
-            return;
-        }
+        if (profile == null) return;
         GuideUtil.removeLastEntry(profile.getGuideHistory());
     }
 
@@ -744,7 +742,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         }
 
         Format format = Formats.main;
-        List<Integer> indexes = format.getChars('G');
+        List<Integer> indexes = format.getChars(Formats.Char.ITEM_GROUP);
         int index = 0;
 
         while (target < (itemGroups.size() - 1) && index < getMaxItemGroupsPerPage()) {

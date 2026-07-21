@@ -252,19 +252,19 @@ public class RTSSearchGroup extends FlexItemGroup {
                 });
             if (clickHandler != null) {
                 builder.onClickAsync((slot, stateSnapshot) -> CompletableFuture.supplyAsync(() -> {
-                    if (slots != null) {
-                        for (int s : slots) {
-                            if (s == slot) {
-                                return List.of(AnvilGUI.ResponseAction.run(() -> {
-                                    RTSEvents.ClickAnvilItemEvent event =
-                                        new RTSEvents.ClickAnvilItemEvent(player, stateSnapshot, slot);
-                                    Bukkit.getPluginManager().callEvent(event);
-                                    if (!event.isCancelled()) {
-                                        clickHandler.accept(s, stateSnapshot);
-                                    }
-                                }));
+                    if  (slots == null) return Collections.emptyList();
+
+                    for (int s : slots) {
+                        if (s != slot) continue;
+
+                        return List.of(AnvilGUI.ResponseAction.run(() -> {
+                            RTSEvents.ClickAnvilItemEvent event =
+                                new RTSEvents.ClickAnvilItemEvent(player, stateSnapshot, slot);
+                            Bukkit.getPluginManager().callEvent(event);
+                            if (!event.isCancelled()) {
+                                clickHandler.accept(s, stateSnapshot);
                             }
-                        }
+                        }));
                     }
                     return Collections.emptyList();
                 }));

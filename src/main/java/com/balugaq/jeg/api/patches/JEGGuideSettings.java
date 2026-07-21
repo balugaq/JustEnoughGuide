@@ -104,7 +104,7 @@ public class JEGGuideSettings {
         menu.addMenuOpeningHandler(SoundEffect.GUIDE_OPEN_SETTING_SOUND::playFor);
 
         ChestMenuUtils.drawBackground(
-            menu, Formats.settings.getChars('B').stream().mapToInt(i -> i).toArray());
+            menu, Formats.settings.getChars(Formats.Char.BACKGROUND).stream().mapToInt(i -> i).toArray());
 
         addHeader(p, menu);
         addConfigurableOptions(p, menu, guide, page);
@@ -126,7 +126,7 @@ public class JEGGuideSettings {
                         "",
                         "&7" + locale.getMessage(p, "guide.back.guide")));
 
-        for (int ss : Formats.settings.getChars('b')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.BACK)) {
             menu.addItem(ss, b, (pl, slot, item, action) -> {
                 GuideUtil.openMainMenuAsync(pl);
                 return false;
@@ -156,7 +156,7 @@ public class JEGGuideSettings {
                         SlimefunUtils.getCustomHead("e952d2b3f351a6b0487cc59db31bf5f2641133e5ba0006b18576e996a0293e52"),
                         "&c" + locale.getMessage(p, "guide.title.credits"),
                         contributorsLore.toArray(new String[0])));
-        for (int ss : Formats.settings.getChars('s')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.CREDITS)) {
             menu.addItem(ss, s, (pl, slot, action, item) -> {
                 JEGContributorsMenu.open(pl, 0);
                 return false;
@@ -180,7 +180,7 @@ public class JEGGuideSettings {
                         "",
                         "&fMinecraft: &a" + Bukkit.getBukkitVersion(),
                         "&fSlimefun: &a" + Slimefun.getVersion()));
-        for (int ss : Formats.settings.getChars('v')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.VERSION)) {
             menu.addItem(ss, v, ChestMenuUtils.getEmptyClickHandler());
         }
         // @formatter:on
@@ -202,7 +202,7 @@ public class JEGGuideSettings {
                         "&7&o你可以考虑对项目做出贡献",
                         "",
                         "&7\u21E8 &e点击前往汉化版 GitHub 仓库"));
-        for (int ss : Formats.settings.getChars('u')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.SOURCE_CODE)) {
             menu.addItem(ss, u, (pl, slot, item, action) -> {
                 pl.closeInventory();
                 ChatUtils.sendURL(pl, "https://github.com/SlimefunGuguProject/Slimefun4");
@@ -224,7 +224,7 @@ public class JEGGuideSettings {
                         "&7并考虑成为一名编辑者!",
                         "",
                         "&7\u21E8 &e点击前往非官方中文 Wiki"));
-        for (int ss : Formats.settings.getChars('W')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.SLIMEFUN_WIKI_PAGE)) {
             menu.addItem(ss, W, (pl, slot, item, action) -> {
                 pl.closeInventory();
                 ChatUtils.sendURL(pl, "https://slimefun-wiki.guizhanss.cn/");
@@ -247,7 +247,7 @@ public class JEGGuideSettings {
                         "&7该服务器已安装附属插件: &b" + Slimefun.getInstalledAddons().size(),
                         "",
                         "&7\u21E8 &e点击查看 Slimefun4 可用的附属插件"));
-        for (int ss : Formats.settings.getChars('l')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.ADDONS)) {
             menu.addItem(ss, l, (pl, slot, item, action) -> {
                 pl.closeInventory();
                 ChatUtils.sendURL(pl, "https://slimefun-wiki.guizhanss.cn/Addons");
@@ -256,7 +256,7 @@ public class JEGGuideSettings {
         }
         // @formatter:on
 
-        for (int ss : Formats.settings.getChars('z')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.UNOFFICIAL_TIPS)) {
             if (Slimefun.getUpdater().getBranch().isOfficial()) {
                 // @formatter:off
                 menu.addItem(
@@ -287,7 +287,7 @@ public class JEGGuideSettings {
             }
         }
 
-        for (int ss : Formats.settings.getChars('U')) {
+        for (int ss : Formats.settings.getChars(Formats.Char.UNKNOWN_FEATURE)) {
             menu.addItem(
                 ss,
                 PatchScope.UnknownFeature.patch(

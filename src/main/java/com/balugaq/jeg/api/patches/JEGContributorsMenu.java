@@ -68,10 +68,10 @@ public class JEGContributorsMenu {
 
         ChestMenuUtils.drawBackground(
             menu,
-            Formats.contributors.getChars('B').stream().mapToInt(i -> i).toArray()
+            Formats.contributors.getChars(Formats.Char.BACKGROUND).stream().mapToInt(i -> i).toArray()
         );
 
-        for (int ss : Formats.contributors.getChars('b')) {
+        for (int ss : Formats.contributors.getChars(Formats.Char.BACK)) {
             menu.addItem(
                 ss,
                 PatchScope.Back.patch(
@@ -92,7 +92,7 @@ public class JEGContributorsMenu {
             new ArrayList<>(Slimefun.getGitHubService().getContributors().values());
         contributors.sort(Comparator.comparingInt(Contributor::getPosition));
 
-        List<Integer> slots = Formats.contributors.getChars('p');
+        List<Integer> slots = Formats.contributors.getChars(Formats.Char.CONTRIBUTOR);
         int sizePerPage = slots.size();
         for (int i = page * sizePerPage; i < contributors.size() && i < (page + 1) * sizePerPage; i++) {
             Contributor contributor = contributors.get(i);
@@ -113,7 +113,7 @@ public class JEGContributorsMenu {
 
         int pages = (contributors.size() - 1) / sizePerPage + 1;
 
-        for (int ss : Formats.contributors.getChars('P')) {
+        for (int ss : Formats.contributors.getChars(Formats.Char.PREVIOUS_PAGE)) {
             menu.addItem(ss, PatchScope.PreviousPage.patch(p, ChestMenuUtils.getPreviousButton(p, page + 1, pages)));
             menu.addMenuClickHandler(
                 ss, (pl, slot, item, action) -> {
@@ -126,7 +126,7 @@ public class JEGContributorsMenu {
             );
         }
 
-        for (int ss : Formats.contributors.getChars('N')) {
+        for (int ss : Formats.contributors.getChars(Formats.Char.NEXT_PAGE)) {
             menu.addItem(ss, PatchScope.NextPage.patch(p, ChestMenuUtils.getNextButton(p, page + 1, pages)));
             menu.addMenuClickHandler(
                 ss, (pl, slot, item, action) -> {
