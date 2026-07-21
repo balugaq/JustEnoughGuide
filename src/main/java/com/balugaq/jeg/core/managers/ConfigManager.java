@@ -59,8 +59,6 @@ import java.util.Set;
 public class ConfigManager extends AbstractManager {
     private final boolean AUTO_UPDATE;
     private final boolean DEBUG;
-    private final boolean SURVIVAL_IMPROVEMENTS;
-    private final boolean CHEAT_IMPROVEMENTS;
     private final boolean RECIPE_COMPLETE;
     private final boolean PINYIN_SEARCH;
     private final boolean BOOKMARK;
@@ -111,8 +109,6 @@ public class ConfigManager extends AbstractManager {
 
         this.AUTO_UPDATE = cfg.getBoolean("auto-update", false);
         this.DEBUG = cfg.getBoolean("debug", false);
-        this.SURVIVAL_IMPROVEMENTS = cfg.getBoolean("guide.survival-improvements", true);
-        this.CHEAT_IMPROVEMENTS = cfg.getBoolean("guide.cheat-improvements", true);
         this.RECIPE_COMPLETE = cfg.getBoolean("guide.recipe-complete", true);
         this.PINYIN_SEARCH = cfg.getBoolean("improvements.pinyin-search", true);
         this.BOOKMARK = cfg.getBoolean("improvements.bookmark", true);
@@ -442,14 +438,6 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isDebug() {
         return DEBUG;
-    }
-
-    public boolean isSurvivalImprovement() {
-        return SURVIVAL_IMPROVEMENTS;
-    }
-
-    public boolean isCheatImprovement() {
-        return CHEAT_IMPROVEMENTS;
     }
 
     public boolean isPinyinSearch() {

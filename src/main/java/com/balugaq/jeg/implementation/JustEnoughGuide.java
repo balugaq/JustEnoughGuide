@@ -333,44 +333,32 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().warning("注册指令失败！");
         }
 
-        final boolean survivalOverride = getConfigManager().isSurvivalImprovement();
-        final boolean cheatOverride = getConfigManager().isCheatImprovement();
-        if (survivalOverride || cheatOverride) {
-            getLogger().info("已开启指南替换！");
-            getLogger().info("正在替换指南...");
-            Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
-            newGuides.put(
-                SlimefunGuideMode.SURVIVAL_MODE,
-                survivalOverride ? new SurvivalGuideImplementation() : new SurvivalSlimefunGuide()
-            );
-            newGuides.put(
-                SlimefunGuideMode.CHEAT_MODE,
-                cheatOverride ? new CheatGuideImplementation() : new CheatSheetSlimefunGuide()
-            );
+        getLogger().info("正在替换指南...");
+        Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
+        newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalGuideImplementation());
+        newGuides.put(SlimefunGuideMode.CHEAT_MODE, new CheatGuideImplementation());
 
-            try {
-                ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
-            } catch (Exception e) {
-                Debug.trace(e);
-            }
-            getLogger().info(survivalOverride ? "已开启替换生存指南" : "未开启替换生存指南");
-            getLogger().info(cheatOverride ? "已开启替换作弊指南" : "未开启替换作弊指南");
+        try {
+            ReflectionUtil.setValue(Slimefun.getRegistry(), "guides", newGuides);
+        } catch (Exception e) {
+            Debug.trace(e);
+        }
+        getLogger().info("已替换生存指南");
+        getLogger().info("已替换作弊指南");
 
-            getLogger().info("正在加载书签...");
-            this.bookmarkManager = new BookmarkManager(this);
-            this.bookmarkManager.load();
+        getLogger().info("正在加载书签...");
+        this.bookmarkManager = new BookmarkManager(this);
+        this.bookmarkManager.load();
 
-            getLogger().info("正在加载物品组...");
-            GroupSetup.setup();
-            if (survivalOverride) {
-                JustEnoughGuide.runLaterAsync(CustomGroupConfigurations::load, 1L);
-            }
-            getLogger().info("物品组加载完毕！");
+        getLogger().info("正在加载物品组...");
+        GroupSetup.setup();
+        JustEnoughGuide.runLaterAsync(CustomGroupConfigurations::load, 1L);
+        getLogger().info("物品组加载完毕！");
 
-            if (getConfigManager().isCerPatch()) {
-                CERCalculator.load();
-                ValueTable.load();
-            }
+        if (getConfigManager().isCerPatch()) {
+            getLogger().info("已启用性价比系统");
+            CERCalculator.load();
+            ValueTable.load();
         }
 
         ItemsSetup.setup(this);
@@ -378,24 +366,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.rtsBackpackManager = new RTSBackpackManager(this);
         this.rtsBackpackManager.load();
 
-        File uuidFile = new File(getDataFolder(), "server-uuid");
-        if (uuidFile.exists()) {
-            try {
-                serverUUID = UUID.nameUUIDFromBytes(Files.readAllBytes(Path.of(uuidFile.getPath())));
-            } catch (IOException e) {
-                Debug.warn(e);
-            }
-        } else {
-            serverUUID = UUID.randomUUID();
-            try {
-                getDataFolder().mkdirs();
-                uuidFile.createNewFile();
-                Files.write(Path.of(uuidFile.getPath()), UUIDUtils.toByteArray(serverUUID));
-            } catch (IOException e) {
-                Debug.warn(e);
-            }
-        }
-
+        setupServerUUID();
         SearchGroup.init();
         GroupResorter.load();
 
@@ -565,6 +536,27 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         } catch (NoClassDefFoundError | NullPointerException | UnsupportedClassVersionError e) {
             getLogger().info("自动更新失败: " + e.getMessage());
             Debug.trace(e);
+        }
+    }
+
+    private void setupServerUUID() {
+        File uuidFile = new File(getDataFolder(), "server-uuid");
+        Path path = Path.of(uuidFile.getPath());
+        if (uuidFile.exists()) {
+            try {
+                serverUUID = UUID.nameUUIDFromBytes(Files.readAllBytes(path));
+            } catch (IOException e) {
+                Debug.warn(e);
+            }
+        } else {
+            serverUUID = UUID.randomUUID();
+            try {
+                getDataFolder().mkdirs();
+                uuidFile.createNewFile();
+                Files.write(path, UUIDUtils.toByteArray(serverUUID));
+            } catch (IOException e) {
+                Debug.warn(e);
+            }
         }
     }
 

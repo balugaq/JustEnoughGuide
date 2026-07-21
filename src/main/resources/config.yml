@@ -3,8 +3,6 @@
 auto-update: true
 
 guide:
-  survival-improvements: true
-  cheat-improvements: true
   survival-guide-title: "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide"
   cheat-guide-title: "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide"
 
