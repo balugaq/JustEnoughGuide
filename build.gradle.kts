@@ -22,7 +22,7 @@ plugins {
 }
 
 group = "io.github.balugaq"
-version = "2.1.33"
+version = "2.1.34"
 
 repositories {
     mavenCentral()
@@ -114,6 +114,8 @@ tasks {
         exclude("META-INF/*")
         exclude("META-INF/maven/**")
         exclude("META-INF/versions/**")
+
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         mergeServiceFiles()
     }
