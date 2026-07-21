@@ -93,6 +93,15 @@ tasks {
         mergeServiceFiles()
     }
 
+    processResources {
+        filesMatching("**/*.yml") {
+            expand(project.properties)
+        }
+        filesMatching("**/*.properties") {
+            expand(project.properties)
+        }
+    }
+
     build {
         dependsOn(shadowJar)
     }

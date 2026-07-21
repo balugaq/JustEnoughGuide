@@ -151,27 +151,26 @@ public class RecipeCompletableListener implements ItemPatchListener {
                         int left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
                         String amountString = "" + amount;
                         if (amount > itemStack.getMaxStackSize()) {
-                            amountString += " &7( " + stacks + " 组";
+                            amountString += " ( " + stacks + " 组";
                             if (left > 0) {
                                 amountString += " + " + left + " 个";
                             }
                             amountString += ")";
                         }
                         if (PaperLib.isPaper()) {
-                            var builder = Component.text().style(Style.style(NamedTextColor.RED)).append(Component.text("缺少"));
-                            var itemBuilder = Component
-                                .text(ItemStackHelper.getDisplayName(itemStack));
+                            var builder = Component.text().color(NamedTextColor.RED).append(Component.text("缺少 "));
+                            var itemBuilder = Component.text(ItemStackHelper.getDisplayName(itemStack));
                             SlimefunItem sf = SlimefunItem.getByItem(itemStack);
                             if (sf != null) {
                                 itemBuilder = itemBuilder
-                                    .hoverEvent(HoverEvent.showText(Component.text().style(Style.style(NamedTextColor.YELLOW)).append(Component.text("点击查看"))))
+                                    .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击查看"))))
                                     .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
                             }
-                            builder.style(Style.style(NamedTextColor.GRAY)).append(itemBuilder);
-                            builder.append(Component.text().style(Style.style(NamedTextColor.GREEN)).append(Component.text(amountString)));
+                            builder.color(NamedTextColor.GRAY).append(itemBuilder);
+                            builder.append(Component.text().color(NamedTextColor.GREEN).append(Component.text(" x")).append(Component.text(amountString)));
                             player.sendMessage(builder);
                         } else {
-                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(itemStack) + " &r&ax" + amountString));
+                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(itemStack) + " &r&ax&7" + amountString));
                         }
                     }
                 }

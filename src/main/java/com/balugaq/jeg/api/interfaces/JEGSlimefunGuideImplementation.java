@@ -110,36 +110,6 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     int MAX_ITEMS_PER_PAGE = Formats.sub.getChars(Formats.Char.ITEM).size();
     int MAX_ITEM_GROUPS_PER_PAGE = Formats.main.getChars(Formats.Char.ITEM_GROUP).size();
 
-    @Nullable
-    static ItemStack getDisplayItem(Player p, boolean isSlimefunRecipe, @Nullable ItemStack item) {
-        if (isSlimefunRecipe) {
-            SlimefunItem slimefunItem = SlimefunItem.getByItem(item);
-
-            if (slimefunItem == null) {
-                return item;
-            }
-
-            ItemGroup itemGroup = slimefunItem.getItemGroup();
-            String lore = hasPermission0(p, slimefunItem)
-                ? String.format(
-                "&f需要在 %s 中解锁",
-                (LocalHelper.getAddonName(itemGroup, slimefunItem.getId())) + ChatColor.WHITE + " - "
-                + LocalHelper.getDisplayName(itemGroup, p)
-            )
-                : "&f无权限";
-            return slimefunItem.canUse(p, false)
-                ? Converter.getItem(item)
-                : Converter.getItem(
-                Material.BARRIER,
-                SlimefunTranslationIntegrationMain.getTranslatedItemName(p, slimefunItem),
-                "&4&l" + Slimefun.getLocalization().getMessage(p, "guide.locked"),
-                "",
-                lore);
-        } else {
-            return item;
-        }
-    }
-
     static boolean hasPermission0(Player p, SlimefunItem item) {
         return Slimefun.getPermissionsService().hasPermission(p, item);
     }
@@ -205,11 +175,9 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         @Nullable ItemStack[] recipe,
         final AsyncRecipeChoiceTask task,
         final Format format) {
-        boolean isSlimefunRecipe = item instanceof SlimefunItem && !(item instanceof VanillaItemShade);
-
         List<Integer> recipeSlots = format.getChars(Formats.Char.RECIPE_INGREDIENT);
         for (int i = 0; i < recipe.length; i++) {
-            ItemStack recipeItem = getDisplayItem(p, isSlimefunRecipe, recipe[i]);
+            ItemStack recipeItem = recipe[i];
             OnDisplay.Item.display(p, PatchScope.ItemRecipeIngredient.patch(p, recipeItem), OnDisplay.Item.Normal, this)
                 .at(menu, recipeSlots.get(i), 1);
 

@@ -3,7 +3,7 @@ author: balugaq
 description: This is a Slimefun addon and improved the guide.
 main: com.balugaq.jeg.implementation.JustEnoughGuide
 website: https://github.com/balugaq/JustEnoughGuide
-version: ${project.version}
+version: ${version}
 api-version: 1.17
 depend:
   - Slimefun

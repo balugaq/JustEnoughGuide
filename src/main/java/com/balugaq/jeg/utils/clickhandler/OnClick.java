@@ -1340,7 +1340,7 @@ public interface OnClick {
                     ClickType clickType = event.getClick();
                     if (clickType == ClickType.DOUBLE_CLICK) return false;
                     // 注入左键
-                    if (clickType == ClickType.LEFT) {
+                    if (clickType == ClickType.LEFT || clickType == ClickType.NUMBER_KEY) {
                         return findAction(player, "left-click").click(
                                 guide, player, slot, slimefunItem, item, action
                                 , menu, page

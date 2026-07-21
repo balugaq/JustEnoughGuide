@@ -29,10 +29,10 @@ package com.balugaq.jeg.utils.formatter;
 
 import com.balugaq.jeg.api.groups.GuideGroup;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import it.unimi.dsi.fastutil.chars.Char2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2CharLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2CharMap;
-import it.unimi.dsi.fastutil.ints.Int2CharOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -53,11 +53,11 @@ import java.util.Map;
 @Getter
 @NullMarked
 public abstract class Format {
-    public static final Char2ObjectMap<ItemStack> customMapping = new Char2ObjectOpenHashMap<>();
-    public final Int2CharMap mapping = new Int2CharOpenHashMap();
+    public static final Char2ObjectMap<ItemStack> customMapping = new Char2ObjectLinkedOpenHashMap<>();
+    public final Int2CharMap mapping = new Int2CharLinkedOpenHashMap();
 
     @ToString.Exclude
-    public final Char2ObjectMap<List<Integer>> cached = new Char2ObjectOpenHashMap<>();
+    public final Char2ObjectMap<List<Integer>> cached = new Char2ObjectLinkedOpenHashMap<>();
 
     @Setter
     public int size = 54;
