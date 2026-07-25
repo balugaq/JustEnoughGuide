@@ -169,7 +169,9 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         final AsyncRecipeChoiceTask task,
         final Format format) {
         List<Integer> recipeSlots = format.getChars(Formats.Char.RECIPE_INGREDIENT);
-        for (int i = 0; i < recipeSlots.get(i); i++) {
+        for (int i = 0; i < recipeSlots.size(); i++) {
+            if (recipe.length <= i) break;
+
             ItemStack recipeItem = recipe[i];
             OnDisplay.Item.display(p, PatchScope.ItemRecipeIngredient.patch(p, recipeItem), OnDisplay.Item.Normal, this)
                 .at(menu, recipeSlots.get(i), 1);
