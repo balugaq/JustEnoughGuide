@@ -32,6 +32,7 @@ import com.balugaq.jeg.implementation.option.BeginnersGuideOption;
 import com.balugaq.jeg.implementation.option.CerPatchGuideOption;
 import com.balugaq.jeg.implementation.option.KeybindsSettingsGuideOption;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
+import com.balugaq.jeg.implementation.option.OpenBigRecipeMenuWhenPossibleGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
@@ -112,6 +113,7 @@ public class JustEnoughGuideIntegrationMain implements Integration {
         JEGGuideSettings.addOption(NoticeMissingMaterialGuideOption.instance());
         JEGGuideSettings.addOption(RecipeFillingWithNearbyContainerGuideOption.instance());
         JEGGuideSettings.addOption(RecipeCompleteOpenModeGuideOption.instance());
+        JEGGuideSettings.addOption(OpenBigRecipeMenuWhenPossibleGuideOption.instance());
         Debug.log("指南选项加载完毕！");
 
         if (JustEnoughGuide.getConfigManager().isAutoAddRecipeCompleteButton()) {

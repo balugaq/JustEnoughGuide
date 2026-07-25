@@ -60,5 +60,6 @@ public class Priorities {
     ShareOutGuideOption                           = 910,
     BeginnersGuideOption                          = 920,
     CerPathGuideOption                            = 930,
-    PlayerLanguageOption                          = 940;
+    PlayerLanguageOption                          = 940,
+    OpenBigRecipeMenuWhenPossibleGuideOption      = 950;
 }
