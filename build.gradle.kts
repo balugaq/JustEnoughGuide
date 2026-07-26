@@ -76,7 +76,7 @@ dependencies {
 
     compileOnly("com.github.ytdd9527:NetworksExpansion:0cfc607e89")
     compileOnly("com.github.balugaq:SlimeAE:40ff388e88")
-    compileOnly("com.github.Zrips:CMILib:1.4.7.4")
+    compileOnly("com.github.Zrips:CMILib:1.5.9.6")
     compileOnly("com.github.TimetownDev:GuguSlimefunLib:3f1830a50b")
     compileOnly("com.github.balugaq:EMCTech:d6e4b43d23")
     compileOnly("com.github.balugaq:SlimeHUD:ad7a52fead")
