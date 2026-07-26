@@ -55,7 +55,7 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.2.1")
     implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
     implementation("com.github.balugaq:AnvilGUI:ca2ef9e187")
-    implementation("com.tcoded:FoliaLib:0.5.1")
+    implementation("com.tcoded:FoliaLib:0.5.2")
     implementation("net.byteflux:libby-bukkit:1.3.2")
     implementation("org.jetbrains:annotations:26.1.0")
     implementation("org.jspecify:jspecify:1.0.0")
