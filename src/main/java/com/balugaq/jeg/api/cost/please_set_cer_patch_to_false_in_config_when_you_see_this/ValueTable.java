@@ -433,19 +433,14 @@ public class ValueTable {
     }
 
     private static double handleRecipeVanilla(Recipe recipe, int depth) {
-        if (recipe instanceof ShapedRecipe shapedRecipe) {
-            return handleShapedRecipe(shapedRecipe, depth);
-        } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
-            return handleShapelessRecipe(shapelessRecipe, depth);
-        } else if (recipe instanceof CookingRecipe<?> cookingRecipe) {
-            return handleCookingRecipe(cookingRecipe, depth);
-        } else if (recipe instanceof SmithingRecipe smithingRecipe) {
-            return handleSmithingRecipe(smithingRecipe, depth);
-        } else if (recipe instanceof StonecuttingRecipe stonecuttingRecipe) {
-            return handleStonecuttingRecipe(stonecuttingRecipe, depth);
-        } else {
-            return 0.0D;
-        }
+        return switch (recipe) {
+            case ShapedRecipe shapedRecipe -> handleShapedRecipe(shapedRecipe, depth);
+            case ShapelessRecipe shapelessRecipe -> handleShapelessRecipe(shapelessRecipe, depth);
+            case CookingRecipe<?> cookingRecipe -> handleCookingRecipe(cookingRecipe, depth);
+            case SmithingRecipe smithingRecipe -> handleSmithingRecipe(smithingRecipe, depth);
+            case StonecuttingRecipe stonecuttingRecipe -> handleStonecuttingRecipe(stonecuttingRecipe, depth);
+            default -> 0.0D;
+        };
     }
 
     private static double handleShapedRecipe(ShapedRecipe shapedRecipe, int depth) {

@@ -70,8 +70,7 @@ import java.util.function.Supplier;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"DataFlowIssue", "unchecked", "MismatchedQueryAndUpdateOfCollection", "rawtypes",
-    "CommentedOutCode", "IfCanBeSwitch"})
+@SuppressWarnings({"DataFlowIssue", "unchecked", "MismatchedQueryAndUpdateOfCollection", "rawtypes", "CommentedOutCode", "IfCanBeSwitch", "removal"})
 @NullMarked
 public abstract class MachineData {
     @CallTimeSensitive(CallTimeSensitive.AfterIntegrationsLoaded)

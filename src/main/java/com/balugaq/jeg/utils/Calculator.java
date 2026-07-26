@@ -52,7 +52,7 @@ public class Calculator {
         PRIORITY.put("(", 0);
     }
 
-    @SuppressWarnings({"DuplicatedCode", "ConstantValue"})
+    @SuppressWarnings({"ConstantValue"})
     public static BigDecimal calculate(String expression) throws NumberFormatException {
         if (expression == null || expression.trim().isEmpty()) {
             throw new NumberFormatException("Empty expression");
@@ -62,7 +62,7 @@ public class Calculator {
         expr = replaceUnits(expr);
 
         expr = expr.replaceAll("\\s+", "");
-        expr = expr.replaceAll("_", "");
+        expr = expr.replace("_", "");
 
         expr = completeParentheses(expr);
 

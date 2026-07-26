@@ -62,44 +62,39 @@ public class GroupResorter {
     @ApiStatus.Internal
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     private static void loadInternal() {
-        JustEnoughGuide
-            .runLater(
-                () -> {
-                    if (hasCfg()) {
-                        int offset = 0;
-                        ItemGroup lastItemGroup = null;
-                        for (ItemGroup itemGroup :
-                            new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
-                            oldTiers.put(itemGroup, itemGroup.getTier());
+        JustEnoughGuide.runLater(() -> {
+            if (!hasCfg()) {
+                int i = 0;
+                for (ItemGroup itemGroup :
+                    new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+                    setTier(itemGroup, i++);
+                    setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                }
+                return;
+            }
+            int offset = 0;
+            ItemGroup lastItemGroup = null;
+            for (ItemGroup itemGroup : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
+                oldTiers.put(itemGroup, itemGroup.getTier());
 
-                            Integer cfg = getTierCfg(getKey(itemGroup));
-                            if (cfg != null) {
-                                setTier(itemGroup, cfg + offset);
-                            } else {
-                                if (lastItemGroup != null) {
-                                    // New ItemGroup
-                                    // Sort by related order.
-                                    setTier(itemGroup, getTier(lastItemGroup) + 1);
-                                    setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
-                                    offset += 1;
-                                } else {
-                                    // By default
-                                    setTier(itemGroup, itemGroup.getTier());
-                                }
-                            }
-                            lastItemGroup = itemGroup;
-                        }
+                Integer cfg = getTierCfg(getKey(itemGroup));
+                if (cfg != null) {
+                    setTier(itemGroup, cfg + offset);
+                } else {
+                    if (lastItemGroup != null) {
+                        // New ItemGroup
+                        // Sort by related order.
+                        setTier(itemGroup, getTier(lastItemGroup) + 1);
+                        setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                        offset += 1;
                     } else {
-                        int i = 0;
-                        for (ItemGroup itemGroup :
-                            new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
-                            setTier(itemGroup, i++);
-                            setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
-                        }
+                        // By default
+                        setTier(itemGroup, itemGroup.getTier());
                     }
-                },
-                1L
-            );
+                }
+                lastItemGroup = itemGroup;
+            }
+        }, 1L);
     }
 
     public static boolean hasCfg() {

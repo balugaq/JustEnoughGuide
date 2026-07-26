@@ -47,7 +47,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author balugaq
  * @since 2.1
  */
-@SuppressWarnings({"deprecation", "unused"})
+@SuppressWarnings({"deprecation", "unused", "removal"})
 @Getter
 @NullMarked
 public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {

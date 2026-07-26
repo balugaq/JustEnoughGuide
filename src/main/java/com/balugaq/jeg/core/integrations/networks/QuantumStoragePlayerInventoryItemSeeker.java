@@ -30,7 +30,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -78,7 +77,7 @@ public class QuantumStoragePlayerInventoryItemSeeker implements RecipeCompletabl
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return KeyUtil.newKey("quantum_storage_handler");
     }
 }

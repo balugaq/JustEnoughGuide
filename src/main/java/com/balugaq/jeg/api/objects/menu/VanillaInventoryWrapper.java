@@ -78,55 +78,59 @@ public class VanillaInventoryWrapper extends BlockMenu {
         };
     }
 
-    @SuppressWarnings("deprecation")
     private static int[] getSlotsAccessedByItemTransport(final Inventory inv, final BlockState blockState, final ItemTransportFlow flow, final ItemStack itemStack) {
-        if (inv instanceof BrewerInventory) {
-            if (flow == ItemTransportFlow.WITHDRAW) {
-                if (!(blockState instanceof BrewingStand bs)) return EMPTY;
-                if (bs.getBrewingTime() > 0) return EMPTY;
+        switch (inv) {
+            case BrewerInventory itemStacks -> {
+                if (flow == ItemTransportFlow.WITHDRAW) {
+                    if (!(blockState instanceof BrewingStand bs)) return EMPTY;
+                    if (bs.getBrewingTime() > 0) return EMPTY;
 
-                IntList list = new IntArrayList();
-                for (int i = 0; i < 3; i++) {
-                    final ItemStack stack = inv.getContents()[i];
-                    if (stack != null && stack.getType() != Material.AIR) {
-                        final PotionMeta potionMeta = (PotionMeta) stack.getItemMeta();
-                        if (MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20_5)) {
-                            if (potionMeta.getBasePotionType() != PotionType.WATER) {
-                                list.add(i);
-                            }
-                        } else {
-                            PotionData bpd = potionMeta.getBasePotionData();
-                            if (bpd != null && bpd.getType() != PotionType.WATER) {
-                                list.add(i);
+                    IntList list = new IntArrayList();
+                    for (int i = 0; i < 3; i++) {
+                        final ItemStack stack = inv.getContents()[i];
+                        if (stack != null && stack.getType() != Material.AIR) {
+                            final PotionMeta potionMeta = (PotionMeta) stack.getItemMeta();
+                            if (MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_20_5)) {
+                                if (potionMeta.getBasePotionType() != PotionType.WATER) {
+                                    list.add(i);
+                                }
+                            } else {
+                                PotionData bpd = potionMeta.getBasePotionData();
+                                if (bpd != null && bpd.getType() != PotionType.WATER) {
+                                    list.add(i);
+                                }
                             }
                         }
                     }
-                }
-                return list.toIntArray(); // potion slots
-            } else {
-                // insert
-                if (itemStack.getType() == Material.BLAZE_POWDER) {
-                    return new int[]{4, 3}; // fuel and ingredient slot
-                } else if (itemStack.getType() == Material.POTION || itemStack.getType() == Material.SPLASH_POTION || itemStack.getType() == Material.LINGERING_POTION) {
-                    return generateArray(3); // potion slots
+                    return list.toIntArray(); // potion slots
                 } else {
-                    return new int[]{4}; // ingredient slot
+                    // insert
+                    if (itemStack.getType() == Material.BLAZE_POWDER) {
+                        return new int[]{4, 3}; // fuel and ingredient slot
+                    } else if (itemStack.getType() == Material.POTION || itemStack.getType() == Material.SPLASH_POTION || itemStack.getType() == Material.LINGERING_POTION) {
+                        return generateArray(3); // potion slots
+                    } else {
+                        return new int[]{4}; // ingredient slot
+                    }
                 }
             }
-        } else if (inv instanceof FurnaceInventory) {
-            if (flow == ItemTransportFlow.WITHDRAW) {
-                return new int[]{2}; // result slot
-            } else {
-                if (itemStack.getType().isFuel()) {
-                    return new int[]{1, 0}; // fuel and smelting slot
+            case FurnaceInventory itemStacks -> {
+                if (flow == ItemTransportFlow.WITHDRAW) {
+                    return new int[]{2}; // result slot
                 } else {
-                    return new int[]{0, 1}; // smelting and fuel slot
+                    if (itemStack.getType().isFuel()) {
+                        return new int[]{1, 0}; // fuel and smelting slot
+                    } else {
+                        return new int[]{0, 1}; // smelting and fuel slot
+                    }
                 }
             }
-        } else if (inv instanceof PlayerInventory) {
-            return generateArray(36);
-        } else {
-            return generateArray(inv.getSize()); // all slot
+            case PlayerInventory itemStacks -> {
+                return generateArray(36);
+            }
+            default -> {
+                return generateArray(inv.getSize()); // all slot
+            }
         }
     }
 

@@ -44,7 +44,7 @@ public class RecipeDisplayFormat extends Format {
         }
 
         if (firstHalf.size() > secondHalf.size()) {
-            result.add(firstHalf.get(firstHalf.size() - 1));
+            result.add(firstHalf.getLast());
         }
 
         return result;

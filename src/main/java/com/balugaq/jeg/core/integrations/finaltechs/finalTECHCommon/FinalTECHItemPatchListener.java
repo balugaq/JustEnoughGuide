@@ -126,7 +126,7 @@ public class FinalTECHItemPatchListener implements ItemPatchListener {
         return !FinalTECHValueDisplayGuideOption.isEnabled(player);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "unused"})
     public void patchItem(@Nullable ItemStack itemStack, PatchScope scope) {
         if (itemStack == null) {
             return;

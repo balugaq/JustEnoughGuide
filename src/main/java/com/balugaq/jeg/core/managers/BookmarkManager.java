@@ -200,7 +200,7 @@ public class BookmarkManager extends AbstractManager {
         }
     }
 
-    private <T, R> @Nullable R operateController(Function<ProfileDataController, R> function) {
+    private <T, R> @Nullable R operateController(Function<ProfileDataController, @Nullable R> function) {
         if (controller != null) {
             return function.apply(controller);
         }

@@ -44,6 +44,7 @@ import java.util.UUID;
  * @author balugaq
  * @since 2.1
  */
+@SuppressWarnings({"unused", "deprecation"})
 @NullMarked
 public class ReplacementCardAdaptItemListener implements Listener {
     private static final Set<UUID> noticedPlayers = new HashSet<>();
@@ -59,6 +60,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
         preprocessEvent(e, e.getSender(), e.getCommand());
     }
 
+    @SuppressWarnings("unused")
     public void preprocessEvent(Cancellable event, CommandSender sender, String command) {
         if (command.startsWith("sf banitem") || command.startsWith("slimefun banitem")) {
             banitem(sender, command);
@@ -231,7 +233,6 @@ public class ReplacementCardAdaptItemListener implements Listener {
             } else {
                 sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] 物品 " + formattedName + " 已是解禁状态."));
             }
-            return;
         } else {
             unbanitem(item);
             if (PaperLib.isPaper()) {
@@ -302,7 +303,6 @@ public class ReplacementCardAdaptItemListener implements Listener {
             } else {
                 sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] 物品 " + formattedName + " 已经是禁用状态."));
             }
-            return;
         } else {
             banitem(item);
             if (PaperLib.isPaper()) {

@@ -32,6 +32,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
@@ -44,7 +45,7 @@ import java.util.Set;
 @NullMarked
 @Data
 public class JEGBlockMenuPreset extends BlockMenuPreset {
-    private BlockMenuPreset preset;
+    private @UnknownNullability BlockMenuPreset preset;
 
     public JEGBlockMenuPreset(BlockMenuPreset preset) {
         super(preset.getID(), preset.getTitle());

@@ -31,6 +31,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
@@ -80,7 +81,7 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
     }
 
     @Override
-    public void displayItem(PlayerProfile profile, ItemStack item, int index, boolean addToHistory) {
+    public void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
         JEGSlimefunGuideImplementation.super.displayItem(profile, item, index, addToHistory);
     }
 

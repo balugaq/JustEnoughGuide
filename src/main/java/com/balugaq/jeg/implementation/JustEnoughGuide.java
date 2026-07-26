@@ -92,7 +92,7 @@ import java.util.logging.Level;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"unused", "Lombok", "deprecation", "ResultOfMethodCallIgnored"})
+@SuppressWarnings({"unused", "deprecation", "ResultOfMethodCallIgnored", "removal"})
 @Getter
 @NullMarked
 public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
@@ -285,7 +285,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     /**
      * Initializes the plugin and sets up all necessary components.
      */
-    @SuppressWarnings("DuplicateExpressions")
     @Override
     public void onEnable() {
         instance = this;

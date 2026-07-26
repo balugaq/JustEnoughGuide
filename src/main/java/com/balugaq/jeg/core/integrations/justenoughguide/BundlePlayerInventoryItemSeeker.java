@@ -27,7 +27,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BundleMeta;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -86,7 +85,7 @@ public class BundlePlayerInventoryItemSeeker implements RecipeCompletableListene
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return KeyUtil.newKey("bundle_handler");
     }
 }

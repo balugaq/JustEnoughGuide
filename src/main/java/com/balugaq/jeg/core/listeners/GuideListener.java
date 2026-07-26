@@ -117,33 +117,29 @@ public class GuideListener implements Listener {
         try {
             openGuide(p, mode);
         } catch (Exception ex) {
-            PlayerProfile.find(e.getPlayer()).ifPresent(profile -> {
-                GuideUtil.removeLastEntry(profile.getGuideHistory());
-            });
+            PlayerProfile.find(e.getPlayer()).ifPresent(profile -> GuideUtil.removeLastEntry(profile.getGuideHistory()));
         }
     }
 
     @Internal
     public void openGuideSync(Player player, SlimefunGuideMode mode) {
-        JustEnoughGuide.runLater(
-            () -> {
-                Optional<PlayerProfile> optional = PlayerProfile.find(player);
+        JustEnoughGuide.runLater(() -> {
+            Optional<PlayerProfile> optional = PlayerProfile.find(player);
 
-                if (optional.isPresent()) {
-                    PlayerProfile profile = optional.get();
-                    SlimefunGuideImplementation guide = GuideUtil.getGuide(player, mode);
-                    SlimefunGuideMode lastMode = guideModeMap.get(player);
-                    guideModeMap.put(player, mode);
-                    if (lastMode != mode) {
-                        GuideUtil.openMainMenu(player, profile, mode, 1);
-                    } else {
-                        profile.getGuideHistory().openLastEntry(guide);
-                    }
+            if (optional.isPresent()) {
+                PlayerProfile profile = optional.get();
+                SlimefunGuideImplementation guide = GuideUtil.getGuide(player, mode);
+                SlimefunGuideMode lastMode = guideModeMap.get(player);
+                guideModeMap.put(player, mode);
+                if (lastMode != mode) {
+                    GuideUtil.openMainMenu(player, profile, mode, 1);
                 } else {
-                    GuideUtil.openMainMenuAsync(player, mode, 1);
+                    profile.getGuideHistory().openLastEntry(guide);
                 }
-            }, 1L
-        );
+            } else {
+                GuideUtil.openMainMenuAsync(player, mode, 1);
+            }
+        }, 1L);
     }
 
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract(PlayerRightClickEvent)")

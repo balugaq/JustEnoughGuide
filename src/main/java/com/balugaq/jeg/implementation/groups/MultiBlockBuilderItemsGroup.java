@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.groups;
 
 import com.balugaq.jeg.api.groups.MixedGroup;
+import com.balugaq.jeg.api.interfaces.DontShowInSearch;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -27,6 +28,7 @@ import org.jspecify.annotations.NullMarked;
  * @author balugaq
  * @since 2.1
  */
+@DontShowInSearch
 @NotDisplayInSurvivalMode
 @NullMarked
 public class MultiBlockBuilderItemsGroup extends MixedGroup<MultiBlockBuilderItemsGroup> {

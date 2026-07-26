@@ -22,7 +22,6 @@ import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.implementation.items.MultiBlockBuilderItem;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
@@ -34,7 +33,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
@@ -91,7 +89,7 @@ import java.util.Map;
  * @author balugaq
  * @since 1.4
  */
-@SuppressWarnings({"deprecation", "UnnecessaryUnicodeEscape", "ConstantValue"})
+@SuppressWarnings({"deprecation", "UnnecessaryUnicodeEscape", "ConstantValue", "removal"})
 @Getter
 @NullMarked
 public class RTSListener implements Listener {

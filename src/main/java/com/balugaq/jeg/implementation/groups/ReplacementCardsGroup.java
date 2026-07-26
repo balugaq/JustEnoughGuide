@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.implementation.groups;
 
+import com.balugaq.jeg.api.interfaces.DontShowInSearch;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import org.bukkit.NamespacedKey;
@@ -26,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
  * @author balugaq
  * @since 2.1
  */
+@DontShowInSearch
 @NotDisplayInSurvivalMode
 public class ReplacementCardsGroup extends ItemGroup {
     public ReplacementCardsGroup(NamespacedKey key, ItemStack item) {

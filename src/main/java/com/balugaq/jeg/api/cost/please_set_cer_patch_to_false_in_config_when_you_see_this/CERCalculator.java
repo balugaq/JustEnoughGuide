@@ -69,7 +69,7 @@ import java.util.regex.Pattern;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"unused", "deprecation", "ConstantValue"})
+@SuppressWarnings({"unused", "deprecation", "ConstantValue", "removal"})
 @NullMarked
 public class CERCalculator {
     public static final Map<SlimefunItem, MachineData> machines = new HashMap<>();

@@ -115,7 +115,7 @@ public class InventoryUtil {
                     continue;
                 }
 
-                final int received = Math.max(0, Math.min(item.getMaxStackSize() - existingAmount, leftAmount));
+                final int received = Math.clamp(item.getMaxStackSize() - existingAmount, 0, leftAmount);
                 leftAmount -= received;
                 existing.setAmount(existingAmount + received);
                 item.setAmount(leftAmount);
@@ -220,7 +220,7 @@ public class InventoryUtil {
                         continue;
                     }
 
-                    final int received = Math.max(0, Math.min(item.getMaxStackSize() - existingAmount, leftAmount));
+                    final int received = Math.clamp(item.getMaxStackSize() - existingAmount, 0, leftAmount);
                     leftAmount -= received;
                     existing.setAmount(existingAmount + received);
                     item.setAmount(leftAmount);

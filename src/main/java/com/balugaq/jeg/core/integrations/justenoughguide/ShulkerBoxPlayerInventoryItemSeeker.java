@@ -28,7 +28,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -87,7 +86,7 @@ public class ShulkerBoxPlayerInventoryItemSeeker implements RecipeCompletableLis
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public NamespacedKey getKey() {
         return KeyUtil.newKey("shulker_box_handler");
     }
 }

@@ -51,7 +51,7 @@ import java.util.Set;
  * @author balugaq
  * @since 1.3
  */
-@SuppressWarnings({"deprecation", "unused", "UnusedReturnValue", "ConstantValue"})
+@SuppressWarnings({"deprecation", "unused", "UnusedReturnValue"})
 @Getter
 @NotDisplayInCheatMode
 @NullMarked

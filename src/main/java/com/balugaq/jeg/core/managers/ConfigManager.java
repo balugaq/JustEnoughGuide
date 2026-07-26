@@ -563,7 +563,7 @@ public class ConfigManager extends AbstractManager {
     }
 
     private void processSharedChars(Set<Map.Entry<String, List<String>>> data) {
-        for (Pair<String, String> p : data.stream().map(e -> new Pair<>(e.getKey(), e.getValue().get(0))).toList()) {
+        for (Pair<String, String> p : data.stream().map(e -> new Pair<>(e.getKey(), e.getValue().getFirst())).toList()) {
             if (p.first().length() != p.second().length()) {
                 continue;
             }

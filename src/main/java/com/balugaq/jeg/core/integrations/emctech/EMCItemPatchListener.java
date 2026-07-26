@@ -77,7 +77,7 @@ public class EMCItemPatchListener implements ItemPatchListener {
         return !EMCValueDisplayGuideOption.isEnabled(player);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "unused"})
     public void patchItem(@Nullable ItemStack itemStack, PatchScope scope) {
         if (itemStack == null) {
             return;

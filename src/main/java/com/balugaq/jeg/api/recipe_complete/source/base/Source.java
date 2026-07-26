@@ -26,6 +26,7 @@ import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGui
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -178,7 +179,7 @@ public interface Source {
     }
 
     default @Nullable ItemStack getItemStackFromPlayerInventory(RecipeCompleteSession session, ItemStack itemStack) {
-        return getItemStackFromPlayerInventory(session, itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
+        return getItemStackFromPlayerInventory(session, itemStack, ItemStackUtil.getValidItemAmountAtLeastOne(itemStack));
     }
 
     default @Nullable ItemStack getItemStackFromPlayerInventory(RecipeCompleteSession session, ItemStack target, int need) {
@@ -226,7 +227,7 @@ public interface Source {
     }
 
     default @Nullable ItemStack getItemStackFromNearbyContainer(Player player, Location target, ItemStack itemStack) {
-        return getItemStackFromNearbyContainer(player, target, itemStack, Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize())));
+        return getItemStackFromNearbyContainer(player, target, itemStack, ItemStackUtil.getValidItemAmountAtLeastOne(itemStack));
     }
 
     @SuppressWarnings("unchecked")
@@ -337,7 +338,7 @@ public interface Source {
         ItemGetter itemGetter,
         ItemFitter itemFitter,
         ItemPusher itemPusher) {
-        Debug.debug("handling " + session.toString() + " :completeRecipeWithGuide");
+        Debug.debug("handling " + session + " :completeRecipeWithGuide");
         var event = session.getEvent();
         var ingredientSlots = session.getIngredientSlots();
         var unordered = session.isUnordered();

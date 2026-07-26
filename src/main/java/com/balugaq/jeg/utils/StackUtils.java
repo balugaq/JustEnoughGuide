@@ -59,7 +59,7 @@ import java.util.Optional;
  * @author baluagq
  * @since 1.9
  */
-@SuppressWarnings({"deprecation", "UnstableApiUsage", "unused"})
+@SuppressWarnings({"deprecation", "UnstableApiUsage", "unused", "removal"})
 @UtilityClass
 @NullMarked
 public class StackUtils {

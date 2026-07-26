@@ -48,7 +48,7 @@ import java.util.List;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"deprecation", "unused"})
+@SuppressWarnings({"deprecation", "unused", "removal"})
 @NullMarked
 public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
     public static final DecimalFormat FORMAT = new DecimalFormat("#.###");

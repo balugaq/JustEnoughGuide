@@ -28,6 +28,7 @@ import org.jspecify.annotations.NullMarked;
  * @author balugaq
  * @since 2.1
  */
+@SuppressWarnings("unused")
 @NullMarked
 public class CompanionItem extends JEGSlimefunItem {
     public CompanionItem(final ItemGroup itemGroup, final SlimefunItemStack item, final RecipeType recipeType, final @Nullable ItemStack[] recipe) {

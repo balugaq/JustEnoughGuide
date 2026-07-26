@@ -25,6 +25,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -38,6 +39,8 @@ public class ItemsSetup {
     public static final SlimefunItem USAGE_INFO;
     public static final SlimefunItem MECHANISM;
     public static final SlimefunItem SUPPORTED_ADDONS_INFO;
+    @SuppressWarnings("unused")
+    @ApiStatus.Obsolete
     public static final SlimefunItem JEG_BUTTON;
 
     static {
@@ -62,32 +65,28 @@ public class ItemsSetup {
             null, null, null,
             null, null, null,
             null, null, null
-        }
-        );
+        });
 
         MECHANISM = new JEGSlimefunItem(
             GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[]{
             null, null, null,
             null, null, null,
             null, null, null
-        }
-        );
+        });
 
         SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(
             GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
             null, null, null,
             null, null, null,
             null, null, null
-        }
-        );
+        });
 
         JEG_BUTTON = new JEGSlimefunItem(
             GroupSetup.jegItemsGroup, Models.JEG_RECIPE_COMPLETE_BUTTON, RecipeType.NULL, new @Nullable ItemStack[]{
             null, null, null,
             null, null, null,
             null, null, null
-        }
-        );
+        });
     }
 
     public static void setup(SlimefunAddon addon) {

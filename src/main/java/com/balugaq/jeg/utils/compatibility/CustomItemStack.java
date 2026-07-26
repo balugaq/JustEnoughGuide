@@ -43,16 +43,14 @@ import java.util.function.Consumer;
 @SuppressWarnings({"deprecation", "unused"})
 @ApiStatus.Experimental
 @NullMarked
-public class CustomItemStack implements Cloneable {
-    private final ItemStack delegate;
-
+public record CustomItemStack(ItemStack delegate) implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack.
      *
-     * @param item the Bukkit ItemStack to create from
+     * @param delegate the Bukkit ItemStack to create from
      */
-    public CustomItemStack(ItemStack item) {
-        this.delegate = item.clone();
+    public CustomItemStack(ItemStack delegate) {
+        this.delegate = delegate.clone();
     }
 
     /**
@@ -61,7 +59,7 @@ public class CustomItemStack implements Cloneable {
      * @param material the Material to create from
      */
     public CustomItemStack(Material material) {
-        this.delegate = new ItemStack(material);
+        this(new ItemStack(material));
     }
 
     /**
@@ -81,7 +79,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemMetaConsumer the consumer to modify the item metadata
      */
     public CustomItemStack(ItemStack itemStack, Consumer<ItemMeta> itemMetaConsumer) {
-        this.delegate = itemStack.clone();
+        this(itemStack.clone());
         Preconditions.checkNotNull(itemMetaConsumer, "ItemMeta consumer cannot be null");
         editItemMeta(itemMetaConsumer);
     }
@@ -191,7 +189,7 @@ public class CustomItemStack implements Cloneable {
      * @param list      the list of name and lore
      */
     public CustomItemStack(ItemStack itemStack, List<String> list) {
-        this(itemStack, list.get(0), new ArrayList<>(list.subList(1, list.size())).toArray(new String[0]));
+        this(itemStack, list.getFirst(), new ArrayList<>(list.subList(1, list.size())).toArray(new String[0]));
     }
 
     /**
@@ -201,7 +199,7 @@ public class CustomItemStack implements Cloneable {
      * @param amount    the amount of the item
      */
     public CustomItemStack(ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
-        this.delegate = ItemStackUtil.getCleanItem(itemStack);
+        this(ItemStackUtil.getCleanItem(itemStack));
         this.delegate.setAmount(amount);
     }
 
@@ -212,7 +210,7 @@ public class CustomItemStack implements Cloneable {
      * @param material  the Material of the item
      */
     public CustomItemStack(ItemStack itemStack, Material material) {
-        this.delegate = ItemStackUtil.getCleanItem(itemStack);
+        this(ItemStackUtil.getCleanItem(itemStack));
         this.delegate.setType(material);
     }
 
@@ -366,7 +364,8 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the delegate Bukkit ItemStack
      */
-    public ItemStack getDelegate() {
+    @Override
+    public ItemStack delegate() {
         return delegate.clone();
     }
 }

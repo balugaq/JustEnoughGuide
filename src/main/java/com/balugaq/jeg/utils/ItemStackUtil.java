@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -362,5 +363,17 @@ public final class ItemStackUtil {
         }
 
         return array;
+    }
+
+    @SuppressWarnings("MathClampMigration")
+    @Range(from = 1, to = 99)
+    public static int getValidItemAmountAtLeastOne(ItemStack itemStack) {
+        // stack may overstack, but we still need to handle them.
+        return Math.max(1, Math.min(itemStack.getAmount(), itemStack.getMaxStackSize()));
+    }
+
+    @Range(from = 0, to = 99)
+    public static int getValidItemAmount(ItemStack itemStack) {
+        return Math.min(itemStack.getAmount(), itemStack.getMaxStackSize());
     }
 }

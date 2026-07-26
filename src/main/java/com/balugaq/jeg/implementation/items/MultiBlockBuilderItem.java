@@ -41,25 +41,23 @@ public class MultiBlockBuilderItem extends JEGSlimefunItem implements NotPlaceab
         super(itemGroup, item, recipeType, recipe);
         this.multiBlock = multiBlock;
 
-        addItemHandler((ItemUseHandler) e -> {
-            e.getClickedBlock().ifPresent(block -> {
-                Player player = e.getPlayer();
-                boolean alongX = player.getFacing() == BlockFace.NORTH || player.getFacing() == BlockFace.SOUTH;
-                if (MultiBlockBuilder.buildMultiblock(
-                    multiBlock,
-                    block.getLocation().clone().add(0, 1, 0),
-                    player.getFacing().getOppositeFace(),
-                    alongX,
-                    true
-                )) {
-                    if (!player.isOp() && player.getGameMode() != GameMode.CREATIVE) {
-                        e.getItem().setAmount(e.getItem().getAmount() - 1);
-                    }
-                    player.sendMessage(ChatColors.color("&a多方块 " + multiBlock.getSlimefunItem().getItemName() + " 搭建成功！"));
-                } else {
-                    player.sendMessage(ChatColors.color("&c多方块 " + multiBlock.getSlimefunItem().getItemName() + " 搭建失败！"));
+        addItemHandler((ItemUseHandler) e -> e.getClickedBlock().ifPresent(block -> {
+            Player player = e.getPlayer();
+            boolean alongX = player.getFacing() == BlockFace.NORTH || player.getFacing() == BlockFace.SOUTH;
+            if (MultiBlockBuilder.buildMultiblock(
+                multiBlock,
+                block.getLocation().clone().add(0, 1, 0),
+                player.getFacing().getOppositeFace(),
+                alongX,
+                true
+            )) {
+                if (!player.isOp() && player.getGameMode() != GameMode.CREATIVE) {
+                    e.getItem().setAmount(e.getItem().getAmount() - 1);
                 }
-            });
-        });
+                player.sendMessage(ChatColors.color("&a多方块 " + multiBlock.getSlimefunItem().getItemName() + " 搭建成功！"));
+            } else {
+                player.sendMessage(ChatColors.color("&c多方块 " + multiBlock.getSlimefunItem().getItemName() + " 搭建失败！"));
+            }
+        }));
     }
 }

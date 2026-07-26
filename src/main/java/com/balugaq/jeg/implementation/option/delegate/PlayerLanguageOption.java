@@ -28,7 +28,6 @@ import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerLanguageChangeEvent;
-import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideOption;
 import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import io.github.thebusybiscuit.slimefun4.core.services.sounds.SoundEffect;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -48,7 +47,6 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -56,7 +54,7 @@ import java.util.Optional;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"DataFlowIssue", "deprecation", "ConstantValue"})
+@SuppressWarnings({"DataFlowIssue", "deprecation"})
 @NullMarked
 public class PlayerLanguageOption implements PrioritySlimefunGuideOption<String> {
     @Override

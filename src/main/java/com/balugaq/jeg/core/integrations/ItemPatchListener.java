@@ -45,6 +45,7 @@ public interface ItemPatchListener extends Listener, Keyed {
         return sfi == null ? new ItemStack(dirty.getType()) : sfi.getItem();
     }
 
+    @SuppressWarnings("EmptyMethod")
     default void tagMeta(ItemMeta meta) {
         // Fix https://github.com/balugaq/JustEnoughGuide/issues/93
         // meta.getPersistentDataContainer().set(getKey(), PersistentDataType.BOOLEAN, true);

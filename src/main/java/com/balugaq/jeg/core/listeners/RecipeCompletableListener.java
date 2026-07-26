@@ -51,7 +51,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -89,7 +88,7 @@ import java.util.function.BiConsumer;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"unused", "ConstantValue"})
+@SuppressWarnings({"unused", "ConstantValue", "removal"})
 @NullMarked
 public class RecipeCompletableListener implements ItemPatchListener {
     public static final NamespacedKey RECIPE_COMPLETE_EXIT_KEY = KeyUtil.newKey("recipe_complete_exit");
@@ -136,17 +135,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
                     for (var entry : map.entrySet()) {
                         ItemStack itemStack = entry.getKey();
-                        int amount = entry.getValue();
-                        int stacks = amount / Math.max(1, itemStack.getMaxStackSize());
-                        int left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
-                        String amountString = "" + amount;
-                        if (amount > itemStack.getMaxStackSize()) {
-                            amountString += " ( " + stacks + " 组";
-                            if (left > 0) {
-                                amountString += " + " + left + " 个";
-                            }
-                            amountString += ")";
-                        }
+                        String amountString = getAmountString(entry, itemStack);
                         if (PaperLib.isPaper()) {
                             var builder = Component.text().color(NamedTextColor.RED).append(Component.text("缺少 "));
                             var itemBuilder = Component.text(ItemStackHelper.getDisplayName(itemStack));
@@ -166,6 +155,21 @@ public class RecipeCompletableListener implements ItemPatchListener {
                 }
             }, 1L, 20L
         );
+    }
+
+    private static String getAmountString(Map.Entry<ItemStack, Integer> entry, ItemStack itemStack) {
+        int amount = entry.getValue();
+        int stacks = amount / Math.max(1, itemStack.getMaxStackSize());
+        int left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
+        String amountString = "" + amount;
+        if (amount > itemStack.getMaxStackSize()) {
+            amountString += " ( " + stacks + " 组";
+            if (left > 0) {
+                amountString += " + " + left + " 个";
+            }
+            amountString += ")";
+        }
+        return amountString;
     }
 
     /**
@@ -450,10 +454,10 @@ public class RecipeCompletableListener implements ItemPatchListener {
                 if (lore.size() >= 7 && applied) {
                     // Remove last two lines
                     if (lore.size() >= 7) {
-                        lore.remove(lore.size() - 1);
+                        lore.removeLast();
                     }
                     if (lore.size() >= 6) {
-                        lore.remove(lore.size() - 1);
+                        lore.removeLast();
                     }
                 }
 
@@ -493,10 +497,10 @@ public class RecipeCompletableListener implements ItemPatchListener {
                 if (lore.size() >= 7 && applied) {
                     // Remove last two lines
                     if (lore.size() >= 7) {
-                        lore.remove(lore.size() - 1);
+                        lore.removeLast();
                     }
                     if (lore.size() >= 6) {
-                        lore.remove(lore.size() - 1);
+                        lore.removeLast();
                     }
                 }
 

@@ -98,7 +98,7 @@ import java.util.logging.Logger;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"unused", "deprecation"})
+@SuppressWarnings({"unused", "deprecation", "unchecked", "UnnecessaryUnicodeEscape"})
 @UtilityClass
 @NullMarked
 public final class GuideUtil {
@@ -297,9 +297,7 @@ public final class GuideUtil {
             RTSSearchGroup.newRTSInventoryFor(
                 pl,
                 getLastGuideMode(pl),
-                (s, snapshot) -> {
-                    GuideUtil.handleRTSClick(profile, pl, s, snapshot);
-                },
+                (s, snapshot) -> GuideUtil.handleRTSClick(profile, pl, s, snapshot),
                 new int[]{
                     AnvilGUI.Slot.INPUT_LEFT,
                     AnvilGUI.Slot.INPUT_RIGHT,
@@ -475,10 +473,8 @@ public final class GuideUtil {
         for (int ss : format.getChars(Formats.Char.CER_PATCH)) {
             menu.addItem(
                 ss, PatchScope.Cer.patch(p, getCerMenuButton()),
-                (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> {
-                    new CERRecipeGroup(pl, machine, MachineData.get(machine).wrap())
-                        .open(pl, profile, getLastGuideMode(pl));
-                })
+                (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.CerButtonClickEvent(pl, itemstack, slot, action, menu, implementation)).ifSuccess(() -> new CERRecipeGroup(pl, machine, MachineData.get(machine).wrap())
+                    .open(pl, profile, getLastGuideMode(pl)))
             );
         }
     }

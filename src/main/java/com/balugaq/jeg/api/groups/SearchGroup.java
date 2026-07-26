@@ -80,7 +80,7 @@ import java.util.stream.Collectors;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"deprecation", "unused", "ConstantValue", "JavaExistingMethodCanBeUsed"})
+@SuppressWarnings({"deprecation", "unused", "ConstantValue", "JavaExistingMethodCanBeUsed", "removal"})
 @NullMarked
 public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final ConcurrentHashMap<UUID, String> searchTerms = new ConcurrentHashMap<>();
@@ -696,23 +696,20 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     }
 
                     List<ItemStack> displayRecipes = null;
-                    if (slimefunItem instanceof AContainer ac) {
-                        displayRecipes = ac.getDisplayRecipes();
-                    } else if (slimefunItem instanceof MultiBlockMachine mbm) {
+                    switch(slimefunItem){case AContainer ac->displayRecipes = ac.getDisplayRecipes();
+case MultiBlockMachine mbm->{
                         try {
                             displayRecipes = mbm.getDisplayRecipes();
                         } catch (Exception ignored) {
                         }
-                    } else if (SpecialMenuProvider.ENABLED_LogiTech
-                            && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null
-                            && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(
-                            slimefunItem)
-                            && slimefunItem instanceof RecipeDisplayItem rdi) {
+}case RecipeDisplayItem rdi when SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(
+                            slimefunItem)->{
                         try {
                             displayRecipes = rdi.getDisplayRecipes();
                         } catch (Exception ignored) {
                         }
-                    }
+}default->{
+}}
                     if (displayRecipes != null) {
                         List<String> displayNames = new ArrayList<>();
                         for (ItemStack itemStack : displayRecipes) {

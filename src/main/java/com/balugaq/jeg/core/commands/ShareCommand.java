@@ -37,7 +37,7 @@ import java.util.List;
  * @author balugaq
  * @since 2.0
  */
-@SuppressWarnings("SwitchStatementWithTooFewBranches")
+@SuppressWarnings({"SwitchStatementWithTooFewBranches", "removal"})
 @Getter
 @NullMarked
 public class ShareCommand implements JEGCommand {

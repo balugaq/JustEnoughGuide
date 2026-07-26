@@ -26,7 +26,6 @@ import com.balugaq.jeg.api.objects.enums.FilterType;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.implementation.items.MultiBlockBuilderItem;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.ClipboardUtil;
@@ -41,8 +40,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
@@ -871,7 +868,7 @@ public interface OnClick {
          * @author balugaq
          * @since 2.0
          */
-        @NullMarked
+        @SuppressWarnings("removal")@NullMarked
         class Normal implements RecipeType {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of(
@@ -1422,7 +1419,7 @@ public interface OnClick {
          * @since 2.0
          */
         @NullMarked
-        @SuppressWarnings("CodeBlock2Expr")
+        @SuppressWarnings({"CodeBlock2Expr", "removal"})
         class Normal implements Item {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of(

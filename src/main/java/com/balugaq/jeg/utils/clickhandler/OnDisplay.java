@@ -186,7 +186,7 @@ public interface OnDisplay {
                         ? ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(itemGroup.getAddon()))
                         : ChatColors.color("&8\u21E8 &f" + LocalHelper.getAddonName(
                         itemGroup.getAddon(),
-                        itemGroup.getItems().get(0).getId()
+                        itemGroup.getItems().getFirst().getId()
                     )),
                     ChatColors.color("&e右键以取消收藏物品组")
                 );
@@ -219,6 +219,7 @@ public interface OnDisplay {
          * @author balugaq
          * @since 2.0
          */
+        @SuppressWarnings("removal")
         @RequiredArgsConstructor
         @Data
         class Locked implements ItemGroup {
@@ -255,6 +256,7 @@ public interface OnDisplay {
          * @author balugaq
          * @since 2.0
          */
+        @SuppressWarnings("removal")
         @RequiredArgsConstructor
         @Data
         class NoPermission implements ItemGroup {

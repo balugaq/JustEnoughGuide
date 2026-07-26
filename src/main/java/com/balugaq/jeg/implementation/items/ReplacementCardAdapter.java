@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
  * @author balugaq
  * @since 2.1
  */
+@SuppressWarnings({"unused", "removal"})
 @UtilityClass
 @NullMarked
 public class ReplacementCardAdapter {
@@ -96,7 +97,7 @@ public class ReplacementCardAdapter {
             if (methodLogiTech_getReplaceCard_sf != null) {
                 for (SlimefunItem sf : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
                     ItemStack item = sf.getItem();
-                    if (item == null || !item.getType().isItem() || item.getType().getMaxStackSize() != 1) {
+                    if (!item.getType().isItem() || item.getType().getMaxStackSize() != 1) {
                         continue;
                     }
 

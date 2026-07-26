@@ -24,7 +24,6 @@ import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
-import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -36,7 +35,6 @@ import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
@@ -96,7 +94,7 @@ import java.util.logging.Level;
  * @see GroupTierEditorListener
  * @since 1.0
  */
-@SuppressWarnings({"deprecation", "unused", "UnnecessaryUnicodeEscape"})
+@SuppressWarnings({"deprecation", "unused"})
 @NullMarked
 public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementation {
     NamespacedKey UNLOCK_ITEM_KEY = new NamespacedKey(JustEnoughGuide.getInstance(), "unlock_item");
@@ -134,9 +132,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
 
         int pages = (itemGroup.getItems().size() - 1) / getMaxItemsPerPage() + 1;
         Format format = Formats.sub;
-        GuideUtil.commonRender(menu, format, profile, p, itemGroup, page, pages, np -> {
-            openItemGroup(profile, itemGroup, np);
-        });
+        GuideUtil.commonRender(menu, format, profile, p, itemGroup, page, pages, np -> openItemGroup(profile, itemGroup, np));
 
         List<Integer> indexes = format.getChars(Formats.Char.CONTENT);
         int itemGroupIndex = getMaxItemsPerPage() * (Math.max(page, 1) - 1);
@@ -291,9 +287,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             }
 
             int pages = target == subGroups.size() - 1 ? page : (subGroups.size() - 1) / groupsPerPage + 1;
-            GuideUtil.commonRender(menu, format, profile, p, nested, page, pages, np -> {
-                openNestedItemGroup(p, profile, nested, np);
-            });
+            GuideUtil.commonRender(menu, format, profile, p, nested, page, pages, np -> openNestedItemGroup(p, profile, nested, np));
 
             menu.open(p);
         } catch (Exception e) {
@@ -371,9 +365,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             null,
             recipes.length > 1 ? index : 0,
             recipes.length > 1 ? recipes.length - 1 : 0,
-            np -> {
-                showMinecraftRecipe0(recipes, np, item, profile, p, true);
-            }
+            np -> showMinecraftRecipe0(recipes, np, item, profile, p, true)
         );
 
         if (addToHistory) {
@@ -632,7 +624,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
 
         List<Integer> recipeSlots = Formats.recipe_vanilla.getChars('r');
         if (choices.length == 1 && choices[0] instanceof RecipeChoice.MaterialChoice materialChoice) {
-            recipeItems[4] = new ItemStack(materialChoice.getChoices().get(0));
+            recipeItems[4] = new ItemStack(materialChoice.getChoices().getFirst());
 
             if (materialChoice.getChoices().size() > 1) {
                 task.add(recipeSlots.get(4), materialChoice);
@@ -640,7 +632,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         } else {
             for (int i = 0; i < choices.length; i++) {
                 if (choices[i] instanceof RecipeChoice.MaterialChoice materialChoice) {
-                    recipeItems[i] = new ItemStack(materialChoice.getChoices().get(0));
+                    recipeItems[i] = new ItemStack(materialChoice.getChoices().getFirst());
 
                     if (materialChoice.getChoices().size() > 1) {
                         task.add(recipeSlots.get(i), materialChoice);
@@ -729,9 +721,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             index++;
         }
 
-        GuideUtil.commonRender(menu, format, profile, p, null, page, pages, np -> {
-            openMainMenu(profile, np);
-        });
+        GuideUtil.commonRender(menu, format, profile, p, null, page, pages, np -> openMainMenu(profile, np));
 
         GuideListener.guideModeMap.put(p, getMode());
 

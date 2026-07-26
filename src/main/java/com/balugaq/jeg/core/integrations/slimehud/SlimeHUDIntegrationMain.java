@@ -54,10 +54,11 @@ import org.jspecify.annotations.NullMarked;
  * @author balugaq
  * @since 1.9
  */
+@SuppressWarnings("removal")
 @NullMarked
 public class SlimeHUDIntegrationMain implements Integration {
 
-    @SuppressWarnings({"unused", "UnstableApiUsage"})
+    @SuppressWarnings({"unused"})
     public static String getVanillaBlockName(Player player, Block block) {
         if (block.getType().isAir() || !block.getType().isItem()) {
             return "";

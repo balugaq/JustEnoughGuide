@@ -22,7 +22,7 @@ package com.balugaq.jeg.api.patches;
  * @since 2.1
  */
 public class Priorities {
-    public static int
+    public static final int
     // Usually used
     GuideModeOption                               = 100,
     FireworksOption                               = 110,

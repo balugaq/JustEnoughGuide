@@ -56,14 +56,14 @@ public class RecipeCompleteProvider {
 
     public static void addSource(SlimefunSource source) {
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
-            slimefunSources.add(0, source);
+            slimefunSources.addFirst(source);
             slimefunSources.sort(Comparator.comparingInt(Source::handleLevel));
         }
     }
 
     public static void addSource(VanillaSource source) {
         if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
-            vanillaSources.add(0, source);
+            vanillaSources.addFirst(source);
         }
     }
 
@@ -149,7 +149,7 @@ public class RecipeCompleteProvider {
     }
 
     public static void openSlimefun(RecipeCompleteSession session) {
-        RecipeCompleteProvider.getSlimefunSources().stream().findFirst().get().openGuide(session);
+        RecipeCompleteProvider.getSlimefunSources().stream().findFirst().ifPresent(source -> source.openGuide(session));
     }
 
     public static void openVanilla(RecipeCompleteSession session) {

@@ -40,6 +40,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
@@ -63,11 +64,11 @@ public class RecipeCompleteSession {
     private final Set<Source> notHandleable = new HashSet<>();
     private final Map<ItemStack, Set<Source>> itemNotIn = new HashMap<>();
     private Player player;
-    private GuideEvents.ItemButtonClickEvent event;
-    private Location target;
+    private GuideEvents.@UnknownNullability ItemButtonClickEvent event;
+    private @UnknownNullability Location target;
     private Block block;
-    private Inventory inventory;
-    private BlockMenu menu;
+    private @UnknownNullability Inventory inventory;
+    private @UnknownNullability BlockMenu menu;
     private ClickAction clickAction;
     private @Nullable SlimefunItem slimefunItem;
     private @Range(from = 0, to = 53) int[] ingredientSlots;
@@ -83,6 +84,7 @@ public class RecipeCompleteSession {
         if (player == null) return null;
         var session = new RecipeCompleteSession();
         session.player = player;
+        session.block = menu.getBlock();
         session.menu = menu;
         session.clickAction = clickAction;
         session.ingredientSlots = ingredientSlots;
