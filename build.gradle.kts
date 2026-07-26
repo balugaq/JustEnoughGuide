@@ -18,7 +18,6 @@
 plugins {
     java
     id("com.gradleup.shadow") version "9.0.0"
-    id("maven-publish")
 }
 
 group = "io.github.balugaq"
@@ -131,25 +130,5 @@ tasks {
 
     build {
         dependsOn(shadowJar)
-    }
-}
-
-// Publishing configuration for Maven Central
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            // from(components["java"])
-            artifact(tasks.shadowJar)
-        }
-    }
-    repositories {
-        maven {
-            name = "central"
-            url = uri("https://central.sonatype.com/api/v1/publisher/")
-            credentials {
-                username = project.findProperty("centralUsername") as String? ?: ""
-                password = project.findProperty("centralPassword") as String? ?: ""
-            }
-        }
     }
 }
