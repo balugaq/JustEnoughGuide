@@ -19,11 +19,11 @@
 
 plugins {
     java
-    id("com.gradleup.shadow") version "9.6.1"
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
 group = "io.github.balugaq"
-version = "2.1.36"
+version = "2.1.37"
 
 repositories {
     mavenCentral()

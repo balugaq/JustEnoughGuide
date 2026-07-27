@@ -299,30 +299,21 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
 
         LOADED = true;
         Debug.debug("Initializing Search Group...");
-        Timer.start();
         JustEnoughGuide.runLaterAsync(() -> {
+            var tm = Timer.start();
             // Initialize asynchronously
             int i = 0;
             for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
                 try {
                     ENABLED_ITEMS.put(item, i);
                     i += 1;
-                    if (item.isHidden() && !SHOW_HIDDEN_ITEM_GROUPS) {
+                    if ((item.isHidden() && !SHOW_HIDDEN_ITEM_GROUPS)
+                        || item.getItemGroup() instanceof DontShowInSearch
+                        || item.isDisabled()
+                        || item.getRecipe() == null) {
                         continue;
                     }
 
-                    if (item.getItemGroup() instanceof DontShowInSearch) {
-                        continue;
-                    }
-
-                    ItemStack[] r = item.getRecipe();
-                    if (r == null) {
-                        continue;
-                    }
-
-                    if (item.isDisabled()) {
-                        continue;
-                    }
                     AVAILABLE_ITEMS.add(item);
                     try {
                         String id = item.getId();
@@ -871,9 +862,8 @@ case MultiBlockMachine mbm->{
                 }
             }
 
+            tm.logs();
             Debug.debug("Cache initialized.");
-
-            Timer.log();
             Debug.debug("Search Group initialized.");
             Debug.debug("Enabled items: " + ENABLED_ITEMS.size());
             Debug.debug("Available items: " + AVAILABLE_ITEMS.size());
@@ -884,7 +874,7 @@ case MultiBlockMachine mbm->{
                     .size());
             Debug.debug("Cache 1 (Keywords): " + CACHE.size());
             Debug.debug("Cache 2 (Display Recipes): " + CACHE2.size());
-        }, 1L);
+        }, 3L);
     }
     // @formatter:on
 

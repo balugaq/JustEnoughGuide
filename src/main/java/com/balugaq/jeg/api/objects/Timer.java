@@ -18,6 +18,7 @@
 package com.balugaq.jeg.api.objects;
 
 import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -29,9 +30,7 @@ import org.jspecify.annotations.NullMarked;
 @SuppressWarnings("unused")
 @NullMarked
 public class Timer {
-    public static long start;
-    public
-    final String name;
+    public final String name;
     public long starts;
 
     /**
@@ -41,29 +40,14 @@ public class Timer {
      */
     public Timer(String name) {
         this.name = name;
+        starts();
     }
 
     /**
      * Starts the timer.
      */
-    public static void start() {
-        start = System.nanoTime();
-    }
-
-    /**
-     * Logs the time elapsed since the last start.
-     */
-    public static void log() {
-        Debug.debug("[Static] Time elapsed: " + stop() / 1_000_000.0F + "ms");
-    }
-
-    /**
-     * Stops the timer.
-     *
-     * @return The time elapsed in nanoseconds.
-     */
-    public static long stop() {
-        return System.nanoTime() - start;
+    public static Timer start() {
+        return new Timer(ReflectionUtil.getCallerClassName());
     }
 
     /**
