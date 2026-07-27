@@ -42,8 +42,9 @@ public abstract class AbstractBooleanGuideOption implements PrioritySlimefunGuid
     }
 
     public boolean getSelectedOption(Player p) {
-        return (defaultValue() && !PersistentDataAPI.hasByte(p, getKey())) ||
-            PersistentDataAPI.getByte(p, getKey()) == 1;
+        return PersistentDataAPI.hasByte(p, getKey())
+            ? PersistentDataAPI.getByte(p, getKey()) == 1
+            : defaultValue();
     }
 
     @Override
