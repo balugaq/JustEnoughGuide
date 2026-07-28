@@ -92,7 +92,7 @@ Feel free to submit issues and pull requests to help improve this plugin.
 
 ## License
 
-This project is open-sourced under the MIT License.
+This project is open-sourced under the GPLv3 License.
 
 
 
