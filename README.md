@@ -43,8 +43,6 @@ The plugin provides extensive configuration options that allow server administra
 
 ```yaml
 guide:
-  survival-improvements: true     # Enable survival mode guide improvements
-  cheat-improvements: true        # Enable cheat mode guide improvements
   survival-guide-title: "..."     # Survival mode guide title
   cheat-guide-title: "..."        # Cheat mode guide title
 
@@ -74,7 +72,6 @@ The plugin includes Chinese translations for a large number of Slimefun addons, 
 ## Technical Features
 
 - **High Performance**: Uses asynchronous processing and caching mechanisms to ensure smooth experience
-- **Strong Compatibility**: Compatible with most Slimefun addons
 - **Easy Configuration**: All features can be adjusted through configuration files
 - **Modular Design**: Independent functional modules that can be enabled/disabled as needed
 
@@ -98,7 +95,7 @@ This project is open-sourced under the GPLv3 License.
 
 # JustEnoughGuide - 更好的粘液书
 
-JustEnoughGuide（简称JEG）是一个针对Slimefun的插件附属，它显著改进了原版Slimefun指南书的功能和用户体验。该插件旨在为Minecraft服务器提供更直观、更高效的Slimefun物品制作指南。
+JustEnoughGuide（简称JEG）是一个针对 Slimefun 的插件附属，它显著改进了原版Slimefun指南书的功能和用户体验。该插件旨在为 Minecraft 服务器提供更直观、更高效的 Slimefun 物品制作指南。
 
 ## 主要改进功能
 
@@ -119,7 +116,7 @@ JustEnoughGuide（简称JEG）是一个针对Slimefun的插件附属，它显著
 
 ### 4. 多种指南选项
 - **新手指引**：为新手玩家提供更友好的指引功能
-- **EMC显示**：显示物品的EMC值（适用于相关附属）
+- **EMC 显示**：显示物品的 EMC 值（适用于相关附属）
 - **配方分享**：允许玩家分享物品配方
 - **递归配方填充**：自动填充配方中的子配方
 
@@ -139,8 +136,6 @@ JustEnoughGuide（简称JEG）是一个针对Slimefun的插件附属，它显著
 
 ```yaml
 guide:
-  survival-improvements: true     # 启用生存模式指南改进
-  cheat-improvements: true        # 启用作弊模式指南改进
   survival-guide-title: "..."     # 生存模式指南标题
   cheat-guide-title: "..."        # 作弊模式指南标题
 
@@ -170,22 +165,21 @@ improvements:
 ## 技术特性
 
 - **高性能**：使用异步处理和缓存机制确保流畅体验
-- **兼容性强**：与大多数Slimefun附属兼容
 - **易于配置**：所有功能都可通过配置文件调整
 - **模块化设计**：各功能模块独立，可根据需要启用/禁用
 
 ## 使用方法
 
-1. 将插件放入服务器plugins文件夹
+1. 将插件放入服务器 `plugins` 文件夹
 2. 启动服务器以生成配置文件
 3. 根据需要修改配置文件
 4. 重启服务器使配置生效
-5. 玩家使用Slimefun指南书时将自动应用所有改进
+5. 玩家使用 Slimefun 指南书时将自动应用所有改进
 
 ## 贡献
 
-欢迎提交Issue和Pull Request来帮助改进这个插件。
+欢迎提交 Issue 和 Pull Request 来帮助改进这个插件。
 
 ## 许可证
 
-本项目基于MIT许可证开源。
+本项目基于 GPLv3 许可证开源。
