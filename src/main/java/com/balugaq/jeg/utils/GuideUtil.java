@@ -599,17 +599,21 @@ public final class GuideUtil {
                         groups.add(group);
                     } else {
                         var sm = group.getClass().getSimpleName();
-                        if ("AdvancementsItemGroup".equals(sm)) {
-                            continue;
+                        if (group instanceof FlexItemGroup flexItemGroup && sm.equals("RSCItemGroup")
+                            && !flexItemGroup.isVisible(p, profile, SlimefunGuideMode.CHEAT_MODE)) {
+                            // check if we really shouldn't display it.
+                            var tp = ReflectionUtil.getValue(group, "type", Enum.class);
+                            if (tp != null && "seasonal".equals(tp.name())) {
+                                continue;
+                            }
                         }
+                        if ("AdvancementsItemGroup".equals(sm)) continue;
                         if (!(group instanceof SubItemGroup) && !sm.equals("DummyItemGroup")) {
                             String key = group.getKey().getKey();
-                            if (sm.equals("SubGroup")) {
-                                if (!key.equals("infinity_cheat") && !key.equals("omc_forge_cheat")) {
-                                    continue;
-                                }
-                            }
-                            if (key.equals("momotech_final_")) {
+                            if ((sm.equals("SubGroup")
+                                && !key.equals("infinity_cheat")
+                                && !key.equals("omc_forge_cheat")
+                            ) || key.equals("momotech_final_")) {
                                 continue;
                             }
                             specialGroups.add(group);

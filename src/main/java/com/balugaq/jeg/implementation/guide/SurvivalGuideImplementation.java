@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.guide;
 
 import com.balugaq.jeg.api.editor.GroupResorter;
+import com.balugaq.jeg.api.interfaces.APIFallback;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -82,10 +83,11 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         JEGSlimefunGuideImplementation.super.openSearch(profile, input, addToHistory);
     }
 
-    // 0-based fallback to 1-based index
+    // 0-based index
+    @APIFallback
     @Override
     public void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
-        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index + 1, addToHistory);
+        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index, addToHistory);
     }
 
     @Override

@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.guide;
 
 import com.balugaq.jeg.api.editor.GroupResorter;
+import com.balugaq.jeg.api.interfaces.APIFallback;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.utils.GuideUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -80,10 +81,11 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         JEGSlimefunGuideImplementation.super.displayItem(profile, item, addToHistory);
     }
 
-    // 0-based fallback to 1-based index
+    // 0-based index
+    @APIFallback
     @Override
     public void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
-        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index + 1, addToHistory);
+        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index, addToHistory);
     }
 
     @Override

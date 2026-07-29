@@ -400,7 +400,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         }
 
         if (item instanceof VanillaItemShade vis) {
-            displayItem(profile, vis.getCustomIcon(), 1, true);
+            JEGSlimefunGuideImplementation.this.displayItem0(profile, vis.getCustomIcon(), 1, true);
             return;
         }
 
@@ -651,8 +651,14 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         }
     }
 
-    // 1-based index
+    // 0-based to 1-based index
+    @APIFallback
     default void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
+        displayItem0(profile, item, index + 1, addToHistory);
+    }
+
+    // 1-based index
+    default void displayItem0(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
         Player p = profile.getPlayer();
 
         if (p == null || item == null || item.getType() == Material.AIR) {
