@@ -637,4 +637,6 @@ debug: false
 
 data:
   # Do not change this value unless you know what you are doing.
-  config-version: 20260714
+  config-version: 20260729
+
+click-print-warning: true

@@ -29,6 +29,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.utils.ClipboardUtil;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -1572,7 +1573,15 @@ public interface OnClick {
 
         @Override
         default boolean onClick(Player player, int i, ItemStack itemStack, ClickAction clickAction) {
+            tryPrintWarning();
             return false;
+        }
+
+        static void tryPrintWarning() {
+            if (JustEnoughGuide.getConfigManager().isClickPrintWarning()) {
+                Debug.warn("方法被误使用，请与相关附属开发者联系，或在配置文件中关闭 click-print-warning 以取消警告");
+                Debug.dumpStack();
+            }
         }
     }
 

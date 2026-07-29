@@ -90,6 +90,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean SLIMEFUN_ID_DISPLAY;
     private final boolean ADAPT_REPLACEMENT_CARDS;
     private final boolean AUTO_ADD_RECIPE_COMPLETE_BUTTON;
+    private final boolean CLICK_PRINT_WARNING;
     private final int CONFIG_VERSION;
 
     public ConfigManager(JavaPlugin plugin) {
@@ -341,6 +342,7 @@ public class ConfigManager extends AbstractManager {
         this.NO_REPLACEMENT_CARD_COMPANION_ADDONS = cfg.getStringList("no-replacement-card-companion-addons");
         this.NO_AUTO_ADD_RECIPE_COMPLETE_BLOCKS = cfg.getStringList("no-replacement-card-companion-blocks");
         this.NO_AUTO_ADD_RECIPE_COMPLETE_ADDONS = cfg.getStringList("no-replacement-card-companion-addons");
+        this.CLICK_PRINT_WARNING = cfg.getBoolean("click-print-warning", true);
         this.CONFIG_VERSION = cfg.getInt("data.config-version", 0);
 
         configUpdate();
@@ -604,5 +606,9 @@ public class ConfigManager extends AbstractManager {
 
     public int getConfigVersion() {
         return CONFIG_VERSION;
+    }
+
+    public boolean isClickPrintWarning() {
+        return CLICK_PRINT_WARNING;
     }
 }
