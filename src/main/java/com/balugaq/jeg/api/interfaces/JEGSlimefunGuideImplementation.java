@@ -326,6 +326,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         group.open(p, profile, getMode());
     }
 
+    // 1-based index
     default void showMinecraftRecipe0(
         Recipe[] recipes,
         int index,
@@ -333,7 +334,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         final PlayerProfile profile,
         final Player p,
         boolean addToHistory) {
-        Recipe recipe = recipes[index];
+        Recipe recipe = recipes[index - 1];
 
         @Nullable ItemStack[] recipeItems = new ItemStack[9];
         RecipeType recipeType = RecipeType.NULL;
@@ -363,8 +364,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             profile,
             p,
             null,
-            recipes.length > 1 ? index : 0,
-            recipes.length > 1 ? recipes.length - 1 : 0,
+            index,
+            recipes.length,
             np -> showMinecraftRecipe0(recipes, np, item, profile, p, true)
         );
 
@@ -399,11 +400,11 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         }
 
         if (item instanceof VanillaItemShade vis) {
-            displayItem(profile, vis.getCustomIcon(), 0, true);
+            displayItem(profile, vis.getCustomIcon(), 1, true);
             return;
         }
 
-        if (OpenBigRecipeMenuWhenPossibleGuideOption.instance().isEnabled(p)) {
+        if (OpenBigRecipeMenuWhenPossibleGuideOption.instance().isEnabled(p) && SpecialMenuProvider.isSpecialItem(item)) {
             try {
                 SpecialMenuProvider.open(p, profile, GuideUtil.getLastGuideMode(p), item);
                 return;
@@ -530,9 +531,17 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             List<Integer> ds = format.getChars(Formats.Char.RECIPE_DISPLAY);
             int length = ds.size();
             int pages = (recipes.size() - 1) / length + 1; // 1-based
-            GuideUtil.addPageButtons(menu, format, profile, p, null, page, pages, np -> {
-                displayRecipes0(p, profile, menu, sfItem, np);
-                Sounds.playFor(p, Sounds.GUIDE_BUTTON_CLICK_SOUND);
+            GuideUtil.addPageButtons(menu, format, profile, p, null, page, pages, new GuideUtil.PageOpener() {
+                @Override
+                public void open(int np) {
+                    displayRecipes0(p, profile, menu, sfItem, np);
+                    Sounds.playFor(p, Sounds.GUIDE_BUTTON_CLICK_SOUND);
+                }
+
+                @Override
+                public boolean rmHistory() {
+                    return false;
+                }
             });
 
             List<Integer> fds = RecipeDisplayFormat.fenceShuffle(ds);
@@ -642,6 +651,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         }
     }
 
+    // 1-based index
     default void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
         Player p = profile.getPlayer();
 

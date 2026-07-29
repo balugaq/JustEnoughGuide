@@ -121,27 +121,6 @@ public class GuideListener implements Listener {
         }
     }
 
-    @Internal
-    public void openGuideSync(Player player, SlimefunGuideMode mode) {
-        JustEnoughGuide.runLater(() -> {
-            Optional<PlayerProfile> optional = PlayerProfile.find(player);
-
-            if (optional.isPresent()) {
-                PlayerProfile profile = optional.get();
-                SlimefunGuideImplementation guide = GuideUtil.getGuide(player, mode);
-                SlimefunGuideMode lastMode = guideModeMap.get(player);
-                guideModeMap.put(player, mode);
-                if (lastMode != mode) {
-                    GuideUtil.openMainMenu(player, profile, mode, 1);
-                } else {
-                    profile.getGuideHistory().openLastEntry(guide);
-                }
-            } else {
-                GuideUtil.openMainMenuAsync(player, mode, 1);
-            }
-        }, 1L);
-    }
-
     @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract(PlayerRightClickEvent)")
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onInteract(PlayerRightClickEvent e) {

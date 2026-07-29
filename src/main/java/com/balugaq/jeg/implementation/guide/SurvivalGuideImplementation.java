@@ -82,9 +82,10 @@ public class SurvivalGuideImplementation extends SurvivalSlimefunGuide implement
         JEGSlimefunGuideImplementation.super.openSearch(profile, input, addToHistory);
     }
 
+    // 0-based fallback to 1-based index
     @Override
     public void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
-        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index, addToHistory);
+        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index + 1, addToHistory);
     }
 
     @Override

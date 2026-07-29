@@ -80,9 +80,10 @@ public class CheatGuideImplementation extends CheatSheetSlimefunGuide implements
         JEGSlimefunGuideImplementation.super.displayItem(profile, item, addToHistory);
     }
 
+    // 0-based fallback to 1-based index
     @Override
     public void displayItem(PlayerProfile profile, @Nullable ItemStack item, int index, boolean addToHistory) {
-        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index, addToHistory);
+        JEGSlimefunGuideImplementation.super.displayItem(profile, item, index + 1, addToHistory);
     }
 
     @Override

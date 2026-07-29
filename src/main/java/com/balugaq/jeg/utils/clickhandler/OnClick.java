@@ -1534,7 +1534,7 @@ public interface OnClick {
                                 if (slimefunItem != null) {
                                     guide.displayItem(profile, slimefunItem, true);
                                 } else {
-                                    guide.displayItem(profile, item, 0, true);
+                                    guide.displayItem(profile, item, 1, true);
                                 }
                             }
                     ),

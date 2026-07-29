@@ -752,7 +752,9 @@ public final class GuideUtil {
         for (int ss : slots) {
             menu.addItem(ss, PatchScope.PreviousPage.patch(profile, ChestMenuUtils.getPreviousButton(player, currentPage, maxPage)));
             menu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(p, item, slot, action, menu, impl)).ifSuccess(() -> {
-                removeLastEntry(profile.getGuideHistory());
+                if (opener == null || opener.rmHistory()) {
+                    removeLastEntry(profile.getGuideHistory());
+                }
                 int newPage = Math.max(currentPage - 1, 1);
                 if (group instanceof BaseGroup<?> baseGroup) {
                     BaseGroup<?> newGroup = baseGroup.getByPage(newPage);
@@ -853,7 +855,9 @@ public final class GuideUtil {
             menu.addItem(ss, PatchScope.NextPage.patch(profile, ChestMenuUtils.getNextButton(player, currentPage, maxPage)));
             menu.addMenuClickHandler(ss, (p, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(p, item, slot, action, menu, impl))
                 .ifSuccess(() -> {
-                    removeLastEntry(profile.getGuideHistory());
+                    if (opener == null || opener.rmHistory()) {
+                        removeLastEntry(profile.getGuideHistory());
+                    }
                     int newPage = Math.min(currentPage + 1, maxPage);
                     if (group instanceof BaseGroup<?> baseGroup) {
                         BaseGroup<?> newGroup = baseGroup.getByPage(newPage);
@@ -990,5 +994,8 @@ public final class GuideUtil {
     @FunctionalInterface
     public interface PageOpener {
         void open(int page);
+        default boolean rmHistory() {
+            return true;
+        }
     }
 }
