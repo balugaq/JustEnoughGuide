@@ -24,9 +24,11 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -40,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author balugaq
@@ -56,6 +60,9 @@ public class GroupResorter {
     public static @Nullable FileConfiguration config = null;
 
     public static void load() {
+        // Re-read tiers.yml from disk so manual edits take effect on reload
+        // instead of being overwritten by the stale in-memory cache.
+        config = tiersFile.exists() ? YamlConfiguration.loadConfiguration(tiersFile) : null;
         loadInternal();
     }
 
@@ -63,13 +70,15 @@ public class GroupResorter {
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     private static void loadInternal() {
         JustEnoughGuide.runLater(() -> {
-            if (!hasCfg()) {
+            if (!tiersFile.exists()) {
                 int i = 0;
                 for (ItemGroup itemGroup :
                     new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                     setTier(itemGroup, i++);
                     setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                    setCustomNameCfg(getKey(itemGroup), false);
                 }
+                saveCfg();
                 return;
             }
             int offset = 0;
@@ -77,7 +86,8 @@ public class GroupResorter {
             for (ItemGroup itemGroup : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                 oldTiers.put(itemGroup, itemGroup.getTier());
 
-                Integer cfg = getTierCfg(getKey(itemGroup));
+                String key = getKey(itemGroup);
+                Integer cfg = getTierCfg(key);
                 if (cfg != null) {
                     setTier(itemGroup, cfg + offset);
                 } else {
@@ -85,15 +95,21 @@ public class GroupResorter {
                         // New ItemGroup
                         // Sort by related order.
                         setTier(itemGroup, getTier(lastItemGroup) + 1);
-                        setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                        setCustomNameCfg(key, false);
                         offset += 1;
                     } else {
                         // By default
                         setTier(itemGroup, itemGroup.getTier());
                     }
                 }
+                // name is plugin-managed by default (customname: false),
+                // so keep it in sync with the real display name unless the user opted in.
+                if (!isCustomNameEnabled(key)) {
+                    setNameCfg(key, getDisplayName(itemGroup));
+                }
                 lastItemGroup = itemGroup;
             }
+            saveCfg();
         }, 1L);
     }
 
@@ -133,8 +149,60 @@ public class GroupResorter {
         getOrCreateConfig().set(key + ".name", name);
     }
 
+    public static void setCustomNameCfg(final String key, final boolean enabled) {
+        getOrCreateConfig().set(key + ".customname", enabled);
+    }
+
+    public static boolean isCustomNameEnabled(final String key) {
+        return getOrCreateConfig().getBoolean(key + ".customname", false);
+    }
+
     public static String getDisplayName(final ItemGroup itemGroup) {
         return itemGroup.getUnlocalizedName();
+    }
+
+    /**
+     * Matches hex color codes like {@code &#FFAA00} or {@code #FFAA00}.
+     */
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("(?:&|§)?#([0-9a-fA-F]{6})");
+
+    /**
+     * Converts hex color codes ({@code &#RRGGBB} / {@code #RRGGBB}) into the legacy
+     * {@code &x&R&R&G&G&B&B} format so {@link ChatColors#color(String)} can render them.
+     */
+    private static String translateHexColors(String input) {
+        if (!input.contains("#")) {
+            return input;
+        }
+        Matcher matcher = HEX_COLOR_PATTERN.matcher(input);
+        StringBuilder sb = new StringBuilder();
+        while (matcher.find()) {
+            StringBuilder replacement = new StringBuilder("&x");
+            for (char c : matcher.group(1).toLowerCase().toCharArray()) {
+                replacement.append('&').append(c);
+            }
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement.toString()));
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+
+    /**
+     * Applies the custom name configured in tiers.yml to the given item stack.
+     * Only applied when the item group's {@code customname} flag is set to true,
+     * otherwise the original stack is returned untouched.
+     */
+    public static ItemStack applyName(final ItemGroup itemGroup, final ItemStack item) {
+        if (!isCustomNameEnabled(getKey(itemGroup))) {
+            return item;
+        }
+        final String name = getNameCfg(getKey(itemGroup));
+        if (name == null) {
+            return item;
+        }
+        final ItemStack copy = item.clone();
+        copy.editMeta(meta -> meta.setDisplayName(ChatColors.color(translateHexColors(name))));
+        return copy;
     }
 
     public static FileConfiguration getOrCreateConfig() {

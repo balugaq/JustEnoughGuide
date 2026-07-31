@@ -1,14 +1,22 @@
 ####################################################
 # group_id:                                        #
 #   nested:                                        #
+#     customname: false                            #
 #     name: "abab"                                 #
 #     tier: 1                                      #
 #   sub:                                           #
 #     group_id2:                                   #
+#       customname: false                          #
 #       name: "abab2"                              #
 #       tier: 2                                    #
 #     group_id3:                                   #
+#       customname: false                          #
 #       name: "abab3"                              #
 #       tier: 3                                    #
+#                                                  #
+# name 必须用双引号包裹，否则颜色代码会导致 YAML 解析失败。#
+# 支持：                                            #
+#   & 颜色代码，如 "&a绿色名字"                        #
+#   HEX 颜色，如 "&#FFAA00橙色名字" / "#FFAA00"       #
 ####################################################
 

@@ -18,6 +18,7 @@
 package com.balugaq.jeg.utils.clickhandler;
 
 import city.norain.slimefun4.VaultIntegration;
+import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.interfaces.CustomIconDisplay;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.VanillaItemShade;
@@ -160,7 +161,10 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                    slot, PatchScope.ItemGroup.patch(player, itemGroup.getItem(player)),
+                    slot, GroupResorter.applyName(
+                        itemGroup,
+                        PatchScope.ItemGroup.patch(player, itemGroup.getItem(player))
+                    ),
                     OnClick.ItemGroup.Normal.create(guide, menu, itemGroup)
                 );
             }
@@ -206,7 +210,10 @@ public interface OnDisplay {
                 });
 
                 menu.addItem(
-                    slot, PatchScope.ItemGroup.patch(player, icon), OnClick.ItemGroup.Bookmark.create(
+                    slot, GroupResorter.applyName(
+                        itemGroup,
+                        PatchScope.ItemGroup.patch(player, icon)
+                    ), OnClick.ItemGroup.Bookmark.create(
                         guide,
                         menu,
                         itemGroup
