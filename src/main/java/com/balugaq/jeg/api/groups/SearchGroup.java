@@ -308,7 +308,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     ENABLED_ITEMS.put(item, i);
                     i += 1;
                     if ((item.isHidden() && !SHOW_HIDDEN_ITEM_GROUPS)
-                        || item.getItemGroup() instanceof DontShowInSearch
+                        || item.getItemGroup().getClass().isAnnotationPresent(DontShowInSearch.class)
                         || item.isDisabled()
                         || item.getRecipe() == null) {
                         continue;
