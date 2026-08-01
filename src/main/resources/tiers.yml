@@ -1,16 +1,16 @@
 ####################################################
 # group_id:                                        #
 #   nested:                                        #
-#     customname: false                            #
+#     custom_name: false                           #
 #     name: "abab"                                 #
 #     tier: 1                                      #
 #   sub:                                           #
 #     group_id2:                                   #
-#       customname: false                          #
+#       custom_name: false                         #
 #       name: "abab2"                              #
 #       tier: 2                                    #
 #     group_id3:                                   #
-#       customname: false                          #
+#       custom_name: false                         #
 #       name: "abab3"                              #
 #       tier: 3                                    #
 #                                                  #

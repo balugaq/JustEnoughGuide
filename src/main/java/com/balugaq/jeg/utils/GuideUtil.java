@@ -416,6 +416,22 @@ public final class GuideUtil {
         return BOOK_MARK_MENU_BUTTON;
     }
 
+    /**
+     * Builds the display icon for an item group, applying the JEG patch chain and
+     * the custom name configured in tiers.yml.
+     */
+    public static ItemStack getItemGroupDisplayIcon(Player player, ItemGroup itemGroup) {
+        return getItemGroupDisplayIcon(player, itemGroup, itemGroup.getItem(player));
+    }
+
+    /**
+     * Builds the display icon for an item group based on the given icon,
+     * applying the JEG patch chain and the custom name configured in tiers.yml.
+     */
+    public static ItemStack getItemGroupDisplayIcon(Player player, ItemGroup itemGroup, ItemStack icon) {
+        return GroupResorter.applyName(itemGroup, PatchScope.ItemGroup.patch(player, icon));
+    }
+
     @SuppressWarnings("deprecation")
     public static void addItemMarkButton(
         ChestMenu menu,
