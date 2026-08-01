@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author balugaq
+ * @author mc506lw
  * @since 2.1
  */
 @UtilityClass
