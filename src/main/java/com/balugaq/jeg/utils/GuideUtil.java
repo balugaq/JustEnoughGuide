@@ -615,8 +615,9 @@ public final class GuideUtil {
                         groups.add(group);
                     } else {
                         var sm = group.getClass().getSimpleName();
-                        if (group instanceof FlexItemGroup flexItemGroup && sm.equals("RSCItemGroup")
-                            && !flexItemGroup.isVisible(p, profile, SlimefunGuideMode.CHEAT_MODE)) {
+                        if (group instanceof FlexItemGroup flexItemGroup && sm.startsWith("RSCItemGroup")
+                            /* Skip nested/normal */
+                            && !flexItemGroup.isVisible/*InMainMenu*/(p, profile, SlimefunGuideMode.CHEAT_MODE)) {
                             // check if we really shouldn't display it.
                             var tp = ReflectionUtil.getValue(group, "type", Enum.class);
                             if (tp != null && "seasonal".equals(tp.name())) {
