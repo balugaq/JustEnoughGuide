@@ -59,8 +59,9 @@ public @interface DisplayInCheatMode {
             return isSpecial(group)
                     || (namespace.equals("danktech2") && key.equals("main"))
                     || (namespace.equals("slimeframe") && key.equals("wf_main"))
-                    || (namespace.equals("finaltech-changed") && (key.equals("_finaltech_category_main")))
-                    || (namespace.equals("finaltech") && (key.equals("finaltech_category_main")));
+                    || (namespace.equals("finaltech-changed") && key.equals("_finaltech_category_main"))
+                    || (namespace.equals("finaltech") && key.equals("finaltech_category_main"))
+                    || (namespace.equals("networks") && key.equals("ntw_expansion_category_main"));
             // @formatter:on
         }
 

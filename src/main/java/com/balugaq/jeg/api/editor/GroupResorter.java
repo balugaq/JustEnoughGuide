@@ -20,6 +20,7 @@ package com.balugaq.jeg.api.editor;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.StringUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
@@ -251,6 +252,9 @@ public class GroupResorter {
         }
 
         Slimefun.getRegistry().getAllItemGroups().sort(Comparator.comparingInt(ItemGroup::getTier));
+
+        // invalid cache
+        GuideUtil.getCachedMainMenu().clear();
     }
 
     @SuppressWarnings("unused")

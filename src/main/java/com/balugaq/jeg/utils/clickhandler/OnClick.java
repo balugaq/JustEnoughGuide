@@ -528,10 +528,9 @@ public interface OnClick {
                                             GroupResorter.swap(selected, itemGroup);
                                             GroupResorter.setSelectedGroup(player, null);
                                             player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
-                                            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                                            if (profile == null) return;
-                                            guide.openItemGroup(profile, itemGroup, page);
+                                            GuideUtil.refreshCurrentPage(player);
                                         }
+                                        return;
                                     }
                                 }
 
@@ -556,9 +555,10 @@ public interface OnClick {
                                             GroupResorter.swap(selected, itemGroup);
                                             GroupResorter.setSelectedGroup(player, null);
                                             player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
-                                            guide.openItemGroup(profile, itemGroup, page);
+                                            GuideUtil.refreshCurrentPage(player);
                                         }
                                     }
+                                    return;
                                 }
 
                                 guide.openItemGroup(profile, itemGroup, page);

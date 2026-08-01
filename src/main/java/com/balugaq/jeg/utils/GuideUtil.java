@@ -67,6 +67,8 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.chat.ChatInput;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -84,9 +86,11 @@ import org.jspecify.annotations.NullMarked;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -120,8 +124,15 @@ public final class GuideUtil {
         ));
     private static boolean rtsLoad = false;
 
+    @Getter
+    private static final Int2ObjectOpenHashMap<List<ItemGroup>> cachedMainMenu = new Int2ObjectOpenHashMap<>();
+
+    public static int getGuideModeIndex(SlimefunGuideMode mode, boolean guideTierMode) {
+        return mode.ordinal() + (guideTierMode ? 2 : 0);
+    }
+
     public static void openMainMenuAsync(Player player) {
-        openMainMenuAsync(player, getLastGuide(player).getMode());
+        openMainMenuAsync(player, getLastGuideMode(player));
     }
 
     public static void openMainMenuAsync(Player player, SlimefunGuideMode mode) {
@@ -577,8 +588,21 @@ public final class GuideUtil {
         return Bukkit.getPlayer(uuid);
     }
 
+    public static void tryRefreshMainMenuCache(Player p, PlayerProfile prf, SlimefunGuideMode mode, boolean guideTierMode) {
+        int idx = getGuideModeIndex(mode, guideTierMode);
+        if (!cachedMainMenu.containsKey(idx)) {
+            cachedMainMenu.put(idx, mode == SlimefunGuideMode.CHEAT_MODE ? getVisibleItemGroupsCheat0(p, prf, guideTierMode) : getVisibleItemGroupsSurvival0(p, prf, guideTierMode));
+        }
+    }
+
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     public static List<ItemGroup> getVisibleItemGroupsCheat(Player p, PlayerProfile profile, boolean guideTierMode) {
+        tryRefreshMainMenuCache(p, profile, SlimefunGuideMode.CHEAT_MODE, guideTierMode);
+        return cachedMainMenu.get(getGuideModeIndex(SlimefunGuideMode.CHEAT_MODE, guideTierMode));
+    }
+
+    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
+    public static List<ItemGroup> getVisibleItemGroupsCheat0(Player p, PlayerProfile profile, boolean guideTierMode) {
         List<ItemGroup> groups = new ArrayList<>();
         List<ItemGroup> specialGroups = new ArrayList<>();
         List<ItemGroup> survival = getVisibleItemGroupsSurvival(p, profile, guideTierMode);
@@ -611,7 +635,9 @@ public final class GuideUtil {
                 if (group instanceof SeasonalItemGroup) {
                     specialGroups.add(group);
                 } else {
-                    if (survival.contains(group) || (group.isVisible(p) && !group.isHidden(p))) {
+                    if (survival.contains(group) || (group instanceof FlexItemGroup flex
+                        ? flex.isVisible(p, profile, SlimefunGuideMode.CHEAT_MODE)
+                        : (group.isVisible(p) && !group.isHidden(p)))) {
                         groups.add(group);
                     } else {
                         var sm = group.getClass().getSimpleName();
@@ -620,7 +646,7 @@ public final class GuideUtil {
                             && !flexItemGroup.isVisible/*InMainMenu*/(p, profile, SlimefunGuideMode.CHEAT_MODE)) {
                             // check if we really shouldn't display it.
                             var tp = ReflectionUtil.getValue(group, "type", Enum.class);
-                            if (tp != null && "seasonal".equals(tp.name())) {
+                            if (tp != null && !"seasonal".equals(tp.name())) {
                                 continue;
                             }
                         }
@@ -653,8 +679,13 @@ public final class GuideUtil {
         return groups;
     }
 
-    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     public static List<ItemGroup> getVisibleItemGroupsSurvival(Player p, PlayerProfile profile, boolean guideTierMode) {
+        tryRefreshMainMenuCache(p, profile, SlimefunGuideMode.SURVIVAL_MODE, guideTierMode);
+        return cachedMainMenu.get(getGuideModeIndex(SlimefunGuideMode.SURVIVAL_MODE, guideTierMode));
+    }
+
+    @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
+    public static List<ItemGroup> getVisibleItemGroupsSurvival0(Player p, PlayerProfile profile, boolean guideTierMode) {
         List<ItemGroup> groups = new ArrayList<>();
 
         for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
@@ -896,6 +927,11 @@ public final class GuideUtil {
         for (int s : format.getChars(Formats.Char.SETTINGS_PANEL_BUTTON)) {
             menu.addItem(s, PatchScope.Settings.patch(profile, ChestMenuUtils.getMenuButton(player)));
             menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl, item, slot, action, menu, getLastGuide(pl))).ifSuccess(() -> {
+                if (GroupResorter.isSelecting(pl)) {
+                    pl.sendMessage(ChatColors.color("&c当前模式下不能打开设置界面!"));
+                    return false;
+                }
+
                 JEGGuideSettings.openSettings(pl, pl.getInventory().getItemInMainHand());
                 return false;
             }));
@@ -1006,6 +1042,20 @@ public final class GuideUtil {
                 return false;
             }));
         }
+    }
+
+    public void refreshCurrentPage(Player player) {
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+        if (profile == null) return;
+        GuideHistory history = profile.getGuideHistory();
+        Deque<?> queue = ReflectionUtil.getValue(history, "queue", Deque.class);
+        if (queue == null) return;
+        if (queue.isEmpty()) {
+            openMainMenuAsync(player);
+            return;
+        }
+
+        ReflectionUtil.invokeMethod(history, "open", getLastGuide(player), queue.getLast());
     }
 
     /**
