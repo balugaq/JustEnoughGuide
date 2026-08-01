@@ -160,7 +160,7 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                    slot, PatchScope.ItemGroup.patch(player, itemGroup.getItem(player)),
+                    slot, GuideUtil.getItemGroupDisplayIcon(player, itemGroup),
                     OnClick.ItemGroup.Normal.create(guide, menu, itemGroup)
                 );
             }
@@ -206,7 +206,8 @@ public interface OnDisplay {
                 });
 
                 menu.addItem(
-                    slot, PatchScope.ItemGroup.patch(player, icon), OnClick.ItemGroup.Bookmark.create(
+                    slot, GuideUtil.getItemGroupDisplayIcon(player, itemGroup, icon),
+                    OnClick.ItemGroup.Bookmark.create(
                         guide,
                         menu,
                         itemGroup

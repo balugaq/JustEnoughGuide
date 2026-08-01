@@ -20,6 +20,7 @@ package com.balugaq.jeg.api.editor;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.StringUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
@@ -27,6 +28,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -56,6 +58,9 @@ public class GroupResorter {
     public static @Nullable FileConfiguration config = null;
 
     public static void load() {
+        // Re-read tiers.yml from disk so manual edits take effect on reload
+        // instead of being overwritten by the stale in-memory cache.
+        config = tiersFile.exists() ? YamlConfiguration.loadConfiguration(tiersFile) : null;
         loadInternal();
     }
 
@@ -63,13 +68,15 @@ public class GroupResorter {
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     private static void loadInternal() {
         JustEnoughGuide.runLater(() -> {
-            if (!hasCfg()) {
+            if (!tiersFile.exists()) {
                 int i = 0;
                 for (ItemGroup itemGroup :
                     new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                     setTier(itemGroup, i++);
                     setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                    setCustomNameCfg(getKey(itemGroup), false);
                 }
+                saveCfg();
                 return;
             }
             int offset = 0;
@@ -77,7 +84,8 @@ public class GroupResorter {
             for (ItemGroup itemGroup : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                 oldTiers.put(itemGroup, itemGroup.getTier());
 
-                Integer cfg = getTierCfg(getKey(itemGroup));
+                String key = getKey(itemGroup);
+                Integer cfg = getTierCfg(key);
                 if (cfg != null) {
                     setTier(itemGroup, cfg + offset);
                 } else {
@@ -85,15 +93,21 @@ public class GroupResorter {
                         // New ItemGroup
                         // Sort by related order.
                         setTier(itemGroup, getTier(lastItemGroup) + 1);
-                        setNameCfg(getKey(itemGroup), getDisplayName(itemGroup));
+                        setCustomNameCfg(key, false);
                         offset += 1;
                     } else {
                         // By default
                         setTier(itemGroup, itemGroup.getTier());
                     }
                 }
+                // name is plugin-managed by default (custom_name: false),
+                // so keep it in sync with the real display name unless the user opted in.
+                if (!isCustomNameEnabled(key)) {
+                    setNameCfg(key, getDisplayName(itemGroup));
+                }
                 lastItemGroup = itemGroup;
             }
+            saveCfg();
         }, 1L);
     }
 
@@ -133,8 +147,34 @@ public class GroupResorter {
         getOrCreateConfig().set(key + ".name", name);
     }
 
+    public static void setCustomNameCfg(final String key, final boolean enabled) {
+        getOrCreateConfig().set(key + ".custom_name", enabled);
+    }
+
+    public static boolean isCustomNameEnabled(final String key) {
+        return getOrCreateConfig().getBoolean(key + ".custom_name", false);
+    }
+
     public static String getDisplayName(final ItemGroup itemGroup) {
         return itemGroup.getUnlocalizedName();
+    }
+
+    /**
+     * Applies the custom name configured in tiers.yml to the given item stack.
+     * Only applied when the item group's {@code custom_name} flag is set to true,
+     * otherwise the original stack is returned untouched.
+     */
+    public static ItemStack applyName(final ItemGroup itemGroup, final ItemStack item) {
+        if (!isCustomNameEnabled(getKey(itemGroup))) {
+            return item;
+        }
+        final String name = getNameCfg(getKey(itemGroup));
+        if (name == null) {
+            return item;
+        }
+        final ItemStack copy = item.clone();
+        copy.editMeta(meta -> meta.setDisplayName(StringUtil.translateHexColors(name)));
+        return copy;
     }
 
     public static FileConfiguration getOrCreateConfig() {
