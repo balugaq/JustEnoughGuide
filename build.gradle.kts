@@ -48,7 +48,7 @@ repositories {
 
 dependencies {
     // Paper API
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.87-stable")
     compileOnly("com.github.SlimefunGuguProject:Slimefun4:2025.1.2")
 
     // Libraries to be packaged (shadow)
