@@ -61,22 +61,20 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
     private static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
 
     static {
-        JustEnoughGuide.runLater(
-            () -> {
-                boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
-                try {
-                    for (Material material : Material.values()) {
-                        if (!material.isAir() && material.isItem() && !material.isLegacy()) {
-                            slimefunItems.add(createSlimefunItem(material));
-                        }
+        JustEnoughGuide.runLater(() -> {
+            boolean before = JustEnoughGuide.disableAutomaticallyLoadItems();
+            try {
+                for (Material material : Material.values()) {
+                    if (!material.isAir() && material.isItem() && !material.isLegacy()) {
+                        slimefunItems.add(createSlimefunItem(material));
                     }
-                } catch (Exception e) {
-                    Debug.trace(e);
-                } finally {
-                    JustEnoughGuide.setAutomaticallyLoadItems(before);
                 }
-            }, 1L
-        );
+            } catch (Exception e) {
+                Debug.trace(e);
+            } finally {
+                JustEnoughGuide.setAutomaticallyLoadItems(before);
+            }
+        }, 1L);
     }
 
     public VanillaItemsGroup(NamespacedKey key, ItemStack icon) {
@@ -96,14 +94,6 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
         return vi;
     }
 
-    /**
-     * Always returns false.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     * @return false.
-     */
     @Override
     public boolean isVisible(
         final Player player,
@@ -112,13 +102,6 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
         return true;
     }
 
-    /**
-     * Opens the group for the player.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     */
     @Override
     public void open(
         final Player player,
@@ -136,11 +119,11 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
         ChestMenu chestMenu = new ChestMenu("原版物品");
 
         Format format = Formats.sub;
-        int maxPage = (slimefunItems.size() - 1) / format.getChars('i').size() + 1;
+        int maxPage = (slimefunItems.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
         GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
 
-        List<Integer> contentSlots = Formats.sub.getChars('i');
+        List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < slimefunItems.size()) {

@@ -66,10 +66,10 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
         ChestMenu chestMenu = new ChestMenu("收藏页 - JEG");
 
         Format format = Formats.sub;
-        int maxPage = (this.bookmarks.size() - 1) / format.getChars('i').size() + 1;
+        int maxPage = (this.bookmarks.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
         GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
 
-        List<Integer> contentSlots = format.getChars('i');
+        List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index >= this.bookmarks.size()) {

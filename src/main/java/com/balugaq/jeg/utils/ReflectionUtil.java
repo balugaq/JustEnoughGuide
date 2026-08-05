@@ -19,7 +19,6 @@ package com.balugaq.jeg.utils;
 
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
@@ -66,6 +65,7 @@ public class ReflectionUtil {
             }
             clazz = clazz.getSuperclass();
         }
+        Debug.debug("Field " + fieldName + " not found in " + clazz.getSimpleName());
         return null;
     }
 
@@ -77,11 +77,11 @@ public class ReflectionUtil {
             }
             declaredField.setAccessible(true);
             declaredField.set(null, value);
+            return true;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Debug.trace(e);
             return false;
         }
-        return true;
     }
 
     public static @Nullable Object getStaticValue(Class<?> clazz, String field) {
@@ -135,6 +135,7 @@ public class ReflectionUtil {
             }
             clazz = clazz.getSuperclass();
         }
+        Debug.debug("Method " + methodName + " not found in " + clazz.getSimpleName());
         return null;
     }
 
@@ -145,6 +146,7 @@ public class ReflectionUtil {
             }
             clazz = clazz.getSuperclass();
         }
+        Debug.debug("Superclass " + className + " not found in " + clazz.getSimpleName());
         return null;
     }
 
@@ -154,13 +156,14 @@ public class ReflectionUtil {
             if (field != null) {
                 field.setAccessible(true);
                 return (T) field.get(object);
+            } else {
+                Debug.debug("Value not found: field=" + fieldName + " class=" + object.getClass().getSimpleName());
+                return null;
             }
         } catch (IllegalAccessException e) {
             Debug.trace(e);
             return null;
         }
-
-        return null;
     }
 
     public static @Nullable Object getValue(Object object, String fieldName) {
@@ -169,13 +172,14 @@ public class ReflectionUtil {
             if (field != null) {
                 field.setAccessible(true);
                 return field.get(object);
+            } else {
+                Debug.debug("Value not found: field=" + fieldName + ", class=" + object.getClass().getSimpleName());
+                return null;
             }
         } catch (IllegalAccessException e) {
             Debug.trace(e);
             return null;
         }
-
-        return null;
     }
 
     public static <T, V> @Nullable T getProperty(Object o, Class<V> clazz, String fieldName)
@@ -187,13 +191,16 @@ public class ReflectionUtil {
             Object result = field.get(o);
             field.setAccessible(b);
             return (T) result;
+        } else {
+            Debug.debug("Cannot get property: field=" + fieldName + ", clazz=" + clazz.getSimpleName());
+            return null;
         }
-
-        return null;
     }
 
-    public static @Nullable Pair<Field, Class<?>> getDeclaredFieldsRecursively(
-        Class<?> clazz, String fieldName) {
+    /**
+     * @author m1919810
+     */
+    public static @Nullable Pair<Field, Class<?>> getDeclaredFieldsRecursively(Class<?> clazz, String fieldName) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -201,6 +208,7 @@ public class ReflectionUtil {
         } catch (Exception e) {
             clazz = clazz.getSuperclass();
             if (clazz == null) {
+                Debug.debug("Field not found: field=" + fieldName + " class=" + clazz);
                 return null;
             } else {
                 return getDeclaredFieldsRecursively(clazz, fieldName);
@@ -208,8 +216,7 @@ public class ReflectionUtil {
         }
     }
 
-    public static @Nullable Constructor<?> getConstructor(
-        Class<?> clazz, @Nullable Class<?> @Nullable ... parameterTypes) {
+    public static @Nullable Constructor<?> getConstructor(Class<?> clazz, @Nullable Class<?> @Nullable ... parameterTypes) {
         try {
             return clazz.getDeclaredConstructor(parameterTypes);
         } catch (NoSuchMethodException e) {
@@ -235,35 +242,43 @@ public class ReflectionUtil {
     }
 
     @Nullable
-    public static Object invokeMethod(
-        Object object, String methodName, @Nullable Object @Nullable ... args) {
-        Method method;
+    public static Method findMethod(Class<?> clazz, String methodName, @Nullable Object @Nullable ... args) {
         if (args == null) {
-            method = getMethod(object.getClass(), methodName, 1);
-        } else {
-            boolean containsNull = false;
-            for (Object arg : args) {
-                if (arg == null) {
-                    containsNull = true;
-                    break;
-                }
-            }
+            // it is called like: `findMethod(clazz, methodName, null)`, null refers to a null argument
+            return getMethod(clazz, methodName, 1);
+        }
 
-            if (containsNull) {
-                method = getMethod(object.getClass(), methodName, args.length);
-            } else {
-                method = getMethod(
-                    object.getClass(),
-                    methodName,
-                    Arrays.stream(args)
-                        .filter(Objects::nonNull)
-                        .map(Object::getClass)
-                        .toArray(Class[]::new)
-                );
+        boolean containsNull = false;
+        for (Object arg : args) {
+            if (arg == null) {
+                containsNull = true;
+                break;
             }
         }
 
+        if (containsNull) {
+            // find by parameter count
+            return getMethod(clazz, methodName, args.length);
+        }
+
+        // find by parameter types
+        return getMethod(
+            clazz,
+            methodName,
+            Arrays.stream(args)
+                .filter(Objects::nonNull)
+                .map(Object::getClass)
+                .toArray(Class[]::new)
+        );
+    }
+
+    @Nullable
+    public static Object invokeMethod(
+        Object object, String methodName, @Nullable Object @Nullable ... args) {
+        Method method = findMethod(object.getClass(), methodName, args);
+
         if (method == null) {
+            Debug.debug("Method not found: " + methodName);
             return null;
         }
 
@@ -282,6 +297,7 @@ public class ReflectionUtil {
             }
             clazz = clazz.getSuperclass();
         }
+        Debug.debug("Method not found: name=" + methodName + ", class=" + clazz + ", parameterCount=" + parameterCount);
         return null;
     }
 
@@ -316,6 +332,7 @@ public class ReflectionUtil {
             }
             clazz = clazz.getSuperclass();
         }
+        Debug.debug("Method not found: name=" + methodName + ", class=" + clazz + ", parameterTypes=" + Arrays.toString(parameterTypes));
         return null;
     }
 
@@ -339,32 +356,7 @@ public class ReflectionUtil {
     public static Object invokeStaticMethod(
         Class<?> clazz, String methodName, @Nullable Object @Nullable ... args) {
 
-        Method method;
-        if (args == null) {
-            method = getMethod(clazz, methodName, 1);
-        } else {
-            boolean containsNull = false;
-            for (Object arg : args) {
-                if (arg == null) {
-                    containsNull = true;
-                    break;
-                }
-            }
-
-            if (containsNull) {
-                method = getMethod(clazz, methodName, args.length);
-            } else {
-                method = getMethod(
-                    clazz,
-                    methodName,
-                    Arrays.stream(args)
-                        .filter(Objects::nonNull)
-                        .map(Object::getClass)
-                        .toArray(Class[]::new)
-                );
-            }
-        }
-
+        Method method = findMethod(clazz, methodName, args);
         if (method == null) {
             return null;
         }

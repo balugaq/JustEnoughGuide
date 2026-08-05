@@ -22,6 +22,7 @@ import com.balugaq.jeg.core.listeners.BundleListener;
 import com.balugaq.jeg.core.listeners.CerPatchListener;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
 import com.balugaq.jeg.core.listeners.GuideGUIFixListener;
+import com.balugaq.jeg.core.listeners.GuideHistoryPatchListener;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.MenuListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
@@ -88,6 +89,7 @@ public class ListenerManager extends AbstractManager {
         listeners.add(new SlimefunGuideOptionPatchFixListener());
         listeners.add(new SlimefunRegistryFinalizeListener());
         listeners.add(new ReplacementCardAdaptItemListener());
+        listeners.add(new GuideHistoryPatchListener());
     }
 
     public void registerListener(Listener listener) {

@@ -23,11 +23,9 @@ import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
+import com.balugaq.jeg.utils.formatter.Format;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
@@ -58,96 +56,24 @@ public class SubKeybindsItemsGroup extends BaseGroup<SubKeybindsItemsGroup> {
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu menu = new ChestMenu("&6选择你要编辑的按键控制子集");
 
-        OnClick.preset(menu);
+        Format format = Formats.keybinds;
+        int pages = (OnClick.keybindSets().size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
+        GuideUtil.commonRender(menu, format, playerProfile, player, this, this.page, pages);
 
-        SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
-
-        for (int ss : Formats.keybinds.getChars('B')) {
-            menu.addItem(ss, PatchScope.Background.patch(playerProfile, ChestMenuUtils.getBackground()));
-            menu.addMenuClickHandler(ss, ChestMenuUtils.getEmptyClickHandler());
-        }
-
-        for (int ss : Formats.keybinds.getChars('b')) {
-            menu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
-            menu.addMenuClickHandler(
-                ss, (pl, s, is, action) -> EventUtil.callEvent(
-                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            GuideUtil.goBack(guideHistory);
-                        }
-                        return false;
-                    })
-            );
-        }
-
-        int pages = (OnClick.keybindSets().size() - 1) / Formats.keybinds.getChars('i').size() + 1;
         int i = 0;
-        for (int s : Formats.keybinds.getChars('i')) {
-            int k = Formats.keybinds.getChars('i').size() * (page - 1) + i++;
-            if (k < subKeybindsSet.size()) {
-                OnClick keybinds = subKeybindsSet.get(k);
-                menu.addItem(s, PatchScope.SubKeybindsSet.patch(player, GuideUtil.getKeybindIcon(keybinds)));
-                menu.addMenuClickHandler(
-                    s,
-                    (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SubKeybindsButtonClickEvent(pl, item, slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE))).ifSuccess(() -> {
-                        GuideUtil.openKeybindGui(player, keybinds);
-                        return false;
-                    })
-                );
-            }
-        }
-
-        for (int s : Formats.keybinds.getChars('P')) {
-            menu.addItem(
-                s, PatchScope.PreviousPage.patch(
-                    player, ChestMenuUtils.getPreviousButton(
-                        player, page,
-                        pages
-                    )
-                )
-            );
+        for (int s : format.getChars(Formats.Char.CONTENT)) {
+            int k = format.getChars(Formats.Char.CONTENT).size() * (page - 1) + i++;
+            if (k >= subKeybindsSet.size()) break;
+            OnClick keybinds = subKeybindsSet.get(k);
+            menu.addItem(s, PatchScope.SubKeybindsSet.patch(player, GuideUtil.getKeybindIcon(keybinds)));
             menu.addMenuClickHandler(
-                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
-                    pl,
-                    item,
-                    slot,
-                    action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                )).ifSuccess(() -> {
-                    if (page - 1 > 0) {
-                        getByPage(page - 1).open(pl, playerProfile, slimefunGuideMode);
-                    }
-
+                s,
+                (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SubKeybindsButtonClickEvent(pl, item, slot, action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE))).ifSuccess(() -> {
+                    GuideUtil.openKeybindGui(player, keybinds);
                     return false;
                 })
             );
         }
-
-        for (int s : Formats.keybinds.getChars('N')) {
-            menu.addItem(s, PatchScope.NextPage.patch(player, ChestMenuUtils.getNextButton(player, page, pages)));
-            menu.addMenuClickHandler(
-                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
-                    pl, item,
-                    slot,
-                    action,
-                    menu,
-                    GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                )).ifSuccess(() -> {
-                    int next = page + 1;
-
-                    if (page + 1 <= pages) {
-                        getByPage(page + 1).open(pl, playerProfile, slimefunGuideMode);
-                    }
-
-                    return false;
-                })
-            );
-        }
-        Formats.keybinds.renderCustom(menu);
 
         return menu;
     }

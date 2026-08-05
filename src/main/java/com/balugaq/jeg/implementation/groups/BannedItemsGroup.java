@@ -69,12 +69,12 @@ public class BannedItemsGroup extends BaseGroup<BannedItemsGroup> {
         ChestMenu chestMenu = new ChestMenu("已禁用的物品");
 
         Format format = Formats.sub;
-        int maxPage = (this.slimefunItemList.size() - 1) / format.getChars('i').size() + 1;
+        int maxPage = (this.slimefunItemList.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
         GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
 
         var impl = GuideUtil.getLastJEGGuide(player);
         if (impl == null) return chestMenu;
-        List<Integer> contentSlots = Formats.sub.getChars('i');
+        List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.slimefunItemList.size()) {

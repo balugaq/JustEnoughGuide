@@ -17,10 +17,12 @@
 
 package com.balugaq.jeg.core.listeners;
 
+import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +30,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Deque;
-import java.util.Optional;
 
 /**
  * @author balugaq
@@ -46,36 +47,40 @@ public class SpecialMenuFixListener implements Listener {
     @EventHandler
     public void onSpecialMenuClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
-        Optional<PlayerProfile> optional = PlayerProfile.find(player);
-        if (optional.isPresent()) {
-            PlayerProfile profile = optional.get();
-            try {
-                @SuppressWarnings("unchecked")
-                Deque<Object> queue = (Deque<Object>) ReflectionUtil.getValue(profile.getGuideHistory(), "queue");
-                if (queue == null || queue.isEmpty()) {
-                    return;
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+        if (profile == null) return;
+
+        GuideHistory history = profile.getGuideHistory();
+        if (history instanceof JEGGuideHistory jeg) {
+            jeg.removeTailPlaceholders();
+            return;
+        }
+
+        try {
+            @SuppressWarnings("unchecked")
+            Deque<?> queue = (Deque<Object>) ReflectionUtil.getValue(history, "queue");
+            if (queue == null || queue.isEmpty()) {
+                return;
+            }
+
+            do {
+                for (Object entry : queue) {
+                    Object object = ReflectionUtil.getValue(entry, "object");
                 }
 
-                do {
-                    for (Object entry : queue) {
-                        Object object = ReflectionUtil.getValue(entry, "object");
-                    }
-
-                    Object entry = queue.getLast();
-                    Object object = ReflectionUtil.getValue(entry, "object");
-                    if (!(object instanceof String string)) {
-                        return;
-                    }
-                    if (SpecialMenuProvider.PLACEHOLDER_SEARCH_TERM.equals(string)) {
-                        // remove the last entry from the queue, which is the random search term
-                        queue.removeLast();
-                    } else {
-                        return;
-                    }
-                } while (!queue.isEmpty());
-            } catch (Exception e) {
-                Debug.debug(e);
-            }
+                Object entry = queue.getLast();
+                Object object = ReflectionUtil.getValue(entry, "object");
+                if (!(object instanceof String string)) {
+                    return;
+                }
+                if (SpecialMenuProvider.PLACEHOLDER_SEARCH_TERM.equals(string)) {
+                    queue.removeLast();
+                } else {
+                    return;
+                }
+            } while (!queue.isEmpty());
+        } catch (Exception e) {
+            Debug.debug(e);
         }
     }
 }

@@ -185,10 +185,10 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
         ChestMenu chestMenu = new ChestMenu("&a性价比预览（仅供参考）");
 
         Format format = Formats.sub;
-        int maxPage = (iconsLength() - 1) / format.getChars('i').size() + 1;
+        int maxPage = (iconsLength() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
         GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
 
-        List<Integer> contentSlots = Formats.sub.getChars('i');
+        List<Integer> contentSlots = Formats.sub.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {
             var m = (page - 1) * contentSlots.size() + i;
             if (m < iconsLength()) {

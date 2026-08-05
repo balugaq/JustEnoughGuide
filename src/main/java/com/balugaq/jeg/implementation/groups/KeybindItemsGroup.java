@@ -26,6 +26,7 @@ import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.clickhandler.BaseAction;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.clickhandler.PermissibleAction;
+import com.balugaq.jeg.utils.formatter.Format;
 import com.balugaq.jeg.utils.formatter.Formats;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
@@ -70,45 +71,21 @@ public class KeybindItemsGroup extends BaseGroup<KeybindItemsGroup> {
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu menu = new ChestMenu("&6选择你要编辑的按键控制");
 
-        OnClick.preset(menu);
-
-        SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
-
-        for (int ss : Formats.keybind.getChars('B')) {
-            menu.addItem(ss, PatchScope.Background.patch(playerProfile, ChestMenuUtils.getBackground()));
-            menu.addMenuClickHandler(ss, ChestMenuUtils.getEmptyClickHandler());
-        }
-
-        for (int ss : Formats.keybind.getChars('b')) {
-            menu.addItem(ss, PatchScope.Back.patch(player, ChestMenuUtils.getBackButton(player)));
-            menu.addMenuClickHandler(
-                ss, (pl, s, is, action) -> EventUtil.callEvent(
-                        new GuideEvents.BackButtonClickEvent(pl, is, s, action, menu, implementation))
-                    .ifSuccess(() -> {
-                        GuideHistory guideHistory = playerProfile.getGuideHistory();
-                        if (action.isShiftClicked()) {
-                            SlimefunGuide.openMainMenu(
-                                playerProfile, slimefunGuideMode, guideHistory.getMainMenuPage());
-                        } else {
-                            GuideUtil.goBack(guideHistory);
-                        }
-                        return false;
-                    })
-            );
-        }
-
+        Format format = Formats.keybind;
         int max = Math.min(
-            Formats.keybind.getChars('x').size(), Math.min(
-                Formats.keybind.getChars('y').size(),
-                Formats.keybind.getChars('z').size()
+            format.getChars(Formats.Char.ACTION_KEY).size(), Math.min(
+                format.getChars(Formats.Char.KEY_ACTION_GAP).size(),
+                format.getChars(Formats.Char.ACTION).size()
             )
         );
         int pages = (actions.size() - 1) / max + 1;
+        GuideUtil.commonRender(menu, format, playerProfile, player, this, this.page, pages);
+
         for (int i = 0; i < max; i++) {
             int k = max * (page - 1) + i;
-            int x = Formats.keybind.getChars('x').get(i);
-            int y = Formats.keybind.getChars('y').get(i);
-            int z = Formats.keybind.getChars('z').get(i);
+            int x = format.getChars(Formats.Char.ACTION_KEY).get(i);
+            int y = format.getChars(Formats.Char.KEY_ACTION_GAP).get(i);
+            int z = format.getChars(Formats.Char.ACTION).get(i);
             if (k < actions.size()) {
                 BaseAction action = actions.get(k);
                 BaseAction mappedAction = BaseAction.remap(player, keybind, action);
@@ -130,63 +107,11 @@ public class KeybindItemsGroup extends BaseGroup<KeybindItemsGroup> {
                     })
                 );
             } else {
-                menu.addItem(x, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()));
-                menu.addItem(y, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()));
-                menu.addItem(z, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()));
-                menu.addMenuClickHandler(x, ChestMenuUtils.getEmptyClickHandler());
-                menu.addMenuClickHandler(y, ChestMenuUtils.getEmptyClickHandler());
-                menu.addMenuClickHandler(z, ChestMenuUtils.getEmptyClickHandler());
+                menu.addItem(x, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()), ChestMenuUtils.getEmptyClickHandler());
+                menu.addItem(y, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()), ChestMenuUtils.getEmptyClickHandler());
+                menu.addItem(z, PatchScope.Background.patch(player, ChestMenuUtils.getBackground()), ChestMenuUtils.getEmptyClickHandler());
             }
         }
-
-        for (int s : Formats.keybind.getChars('P')) {
-            menu.addItem(
-                s, PatchScope.PreviousPage.patch(
-                    player, ChestMenuUtils.getPreviousButton(
-                        player, page,
-                        pages
-                    )
-                )
-            );
-            menu.addMenuClickHandler(
-                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.PreviousButtonClickEvent(
-                    pl,
-                    item,
-                    slot,
-                    action, menu, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                )).ifSuccess(() -> {
-                    if (page - 1 > 0) {
-                        getByPage(page - 1).open(player, playerProfile, slimefunGuideMode);
-                    }
-
-                    return false;
-                })
-            );
-        }
-
-        for (int s : Formats.keybind.getChars('N')) {
-            menu.addItem(s, PatchScope.NextPage.patch(player, ChestMenuUtils.getNextButton(player, page, pages)));
-            menu.addMenuClickHandler(
-                s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.NextButtonClickEvent(
-                    pl, item,
-                    slot,
-                    action,
-                    menu,
-                    GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE)
-                )).ifSuccess(() -> {
-                    int next = page + 1;
-
-                    if (page + 1 <= pages) {
-                        getByPage(page + 1).open(player, playerProfile, slimefunGuideMode);
-                    }
-
-                    return false;
-                })
-            );
-        }
-        Formats.keybind.renderCustom(menu);
-
-        menu.open(player);
 
         return menu;
     }

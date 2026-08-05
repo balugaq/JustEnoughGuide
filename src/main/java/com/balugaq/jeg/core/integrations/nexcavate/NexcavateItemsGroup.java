@@ -81,7 +81,7 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
         ChestMenu chestMenu = new ChestMenu("文明复兴物品");
 
         Format format = Formats.sub;
-        List<Integer> contentSlots = format.getChars('i');
+        List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
         int maxPage = (this.slimefunItemList.size() - 1) / contentSlots.size() + 1;
         GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, page, maxPage);
 

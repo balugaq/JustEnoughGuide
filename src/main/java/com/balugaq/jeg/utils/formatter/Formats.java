@@ -132,7 +132,10 @@ public class Formats {
         SLIMEFUN_WIKI_PAGE = 'W',
         ADDONS = 'l',
         UNOFFICIAL_TIPS = 'z',
-        UNKNOWN_FEATURE = 'U'
+        UNKNOWN_FEATURE = 'U',
+        ACTION_KEY = 'x',
+        KEY_ACTION_GAP = 'y',
+        ACTION = 'z'
         ;
     }
 }

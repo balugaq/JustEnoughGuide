@@ -23,6 +23,7 @@ import com.balugaq.jeg.api.objects.enums.RecipeCompleteOpenMode;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
+import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.base.Source;
@@ -244,7 +245,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
     public static void saveOriginGuideHistory(PlayerProfile profile) {
         GuideHistory oldHistory = profile.getGuideHistory();
-        GuideHistory newHistory = new GuideHistory(profile);
+        GuideHistory newHistory = new JEGGuideHistory(profile);
         ReflectionUtil.setValue(newHistory, "mainMenuPage", oldHistory.getMainMenuPage());
         LinkedList<?> queue = ReflectionUtil.getValue(oldHistory, "queue", LinkedList.class);
         ReflectionUtil.setValue(newHistory, "queue", queue != null ? queue.clone() : new LinkedList<>());
@@ -253,7 +254,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     public static void clearGuideHistory(PlayerProfile profile) {
-        ReflectionUtil.setValue(profile, "guideHistory", new GuideHistory(profile));
+        ReflectionUtil.setValue(profile, "guideHistory", new JEGGuideHistory(profile));
     }
 
     @Deprecated(forRemoval = true)

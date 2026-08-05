@@ -255,6 +255,7 @@ public class GroupResorter {
 
         // invalid cache
         GuideUtil.getCachedMainMenu().clear();
+        GuideUtil.getCachedAllGroups().clear();
     }
 
     @SuppressWarnings("unused")

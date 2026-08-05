@@ -30,11 +30,13 @@ import com.balugaq.jeg.api.interfaces.DisplayInSurvivalMode;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
+import com.balugaq.jeg.api.objects.PageOpener;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
+import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.listeners.GuideListener;
@@ -76,6 +78,7 @@ import net.wesjd.anvilgui.version.VersionMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -84,16 +87,16 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This class contains utility methods for the guide system.
@@ -123,6 +126,12 @@ public final class GuideUtil {
             "&e&l性价比界面（仅供参考）"
         ));
     private static boolean rtsLoad = false;
+
+    @Getter
+    private static final Map<NamespacedKey, ItemGroup> cachedAllGroups = new HashMap<>();
+
+    @Getter
+    private static final List<ItemGroup> cachedAllGroupsList = new ArrayList<>();
 
     @Getter
     private static final Int2ObjectOpenHashMap<List<ItemGroup>> cachedMainMenu = new Int2ObjectOpenHashMap<>();
@@ -166,13 +175,18 @@ public final class GuideUtil {
     }
 
     public static void removeLastEntry(GuideHistory guideHistory) {
-        try {
-            Method getLastEntry = guideHistory.getClass().getDeclaredMethod("getLastEntry", boolean.class);
-            getLastEntry.setAccessible(true);
-            getLastEntry.invoke(guideHistory, true);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            Debug.trace(e);
+        if (guideHistory instanceof JEGGuideHistory jeg) {
+            jeg.removeLastEntry();
+            return;
         }
+
+        ReflectionUtil.invokeMethod(guideHistory, "getLastEntry", true);
+    }
+
+    @Nullable
+    public static JEGSlimefunGuideImplementation asJEG(SlimefunGuideImplementation guide) {
+        if (guide instanceof JEGSlimefunGuideImplementation jeg) return jeg;
+        return getJEGGuide(guide.getMode());
     }
 
     public boolean checkRTS(Player pl) {
@@ -323,6 +337,11 @@ public final class GuideUtil {
 
     @SuppressWarnings("DataFlowIssue")
     public static void goBack(GuideHistory history) {
+        if (history instanceof JEGGuideHistory jeg) {
+            jeg.goBack();
+            return;
+        }
+
         goBack(ReflectionUtil.getValue(history, "profile", PlayerProfile.class));
     }
 
@@ -331,6 +350,11 @@ public final class GuideUtil {
         if (p == null) return;
 
         GuideHistory history = profile.getGuideHistory();
+        if (history instanceof JEGGuideHistory jeg) {
+            jeg.goBack();
+            return;
+        }
+
         var entry = ReflectionUtil.invokeMethod(history, "getLastEntry", true);
         var guide = getLastGuide(p);
 
@@ -385,6 +409,14 @@ public final class GuideUtil {
     @ApiStatus.Obsolete
     public static SlimefunGuideImplementation getSlimefunGuide(SlimefunGuideMode mode) {
         return Slimefun.getRegistry().getSlimefunGuide(mode);
+    }
+
+    @ApiStatus.Obsolete
+    @Nullable
+    public static JEGSlimefunGuideImplementation getJEGGuide(SlimefunGuideMode mode) {
+        var guide = getSlimefunGuide(mode);
+        if (guide instanceof JEGSlimefunGuideImplementation jeg) return jeg;
+        return null;
     }
 
     @Nullable
@@ -588,7 +620,34 @@ public final class GuideUtil {
         return Bukkit.getPlayer(uuid);
     }
 
+    public static boolean groupsChanged() {
+        List<ItemGroup> current = Slimefun.getRegistry().getAllItemGroups();
+
+        // don't use equals method, since Slimefun check them only by key, instead of content.
+        if (current.size() != cachedAllGroups.size()) return true;
+        GroupResorter.sort(current);
+
+        for (int i = 0; i < current.size(); i++) {
+            // check by reference
+            if (current.get(i) != cachedAllGroupsList.get(i)) return true;
+        }
+
+        return false;
+    }
+
+    public static void tryRefreshCacheGroups() {
+        if (cachedAllGroups.isEmpty() || groupsChanged()) {
+            cachedAllGroups.clear();
+            cachedAllGroupsList.clear();
+            cachedAllGroups.putAll(Slimefun.getRegistry().getAllItemGroups().stream().collect(Collectors.toMap(ItemGroup::getKey, itemGroup -> itemGroup)));
+            cachedAllGroupsList.addAll(Slimefun.getRegistry().getAllItemGroups());
+            cachedMainMenu.clear();
+        }
+    }
+
     public static void tryRefreshMainMenuCache(Player p, PlayerProfile prf, SlimefunGuideMode mode, boolean guideTierMode) {
+        tryRefreshCacheGroups();
+
         int idx = getGuideModeIndex(mode, guideTierMode);
         if (!cachedMainMenu.containsKey(idx)) {
             cachedMainMenu.put(idx, mode == SlimefunGuideMode.CHEAT_MODE ? getVisibleItemGroupsCheat0(p, prf, guideTierMode) : getVisibleItemGroupsSurvival0(p, prf, guideTierMode));
@@ -1059,14 +1118,24 @@ public final class GuideUtil {
     }
 
     /**
-     * @author balugaq
-     * @since 2.1
+     * Handle hot-reload cases
      */
-    @FunctionalInterface
-    public interface PageOpener {
-        void open(int page);
-        default boolean rmHistory() {
-            return true;
-        }
+    public static ItemGroup refreshGroup(ItemGroup group) {
+        var cached = cachedAllGroups.get(group.getKey());
+        if (cached != null) return cached;
+
+        // fallback
+        return group;
+    }
+
+    /**
+     * Handle hot-reload cases
+     */
+    public static SlimefunItem refreshSlimefunItem(SlimefunItem slimefunItem) {
+        var cached = SlimefunItem.getById(slimefunItem.getId());
+        if (cached != null) return cached;
+
+        // fallback
+        return slimefunItem;
     }
 }

@@ -21,6 +21,7 @@ import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.BookmarkGroup;
 import com.balugaq.jeg.api.groups.ItemMarkGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
+import com.balugaq.jeg.api.objects.PageOpener;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
@@ -32,11 +33,7 @@ import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
 import com.balugaq.jeg.implementation.items.GroupTierEditorGuide;
 import com.balugaq.jeg.implementation.option.OpenBigRecipeMenuWhenPossibleGuideOption;
 import com.balugaq.jeg.implementation.option.delegate.LearningAnimationOption;
-import com.balugaq.jeg.utils.Debug;
-import com.balugaq.jeg.utils.EventUtil;
-import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ReflectionUtil;
-import com.balugaq.jeg.utils.SpecialMenuProvider;
+import com.balugaq.jeg.utils.*;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.compatibility.Sounds;
@@ -370,7 +367,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         );
 
         if (addToHistory) {
-            profile.getGuideHistory().add(item, index);
+            // 1-based -> 0-based
+            profile.getGuideHistory().add(item, index - 1);
         }
 
         displayItem(menu, profile, p, item, result, recipeType, recipeItems, task, format);
@@ -387,7 +385,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             profile,
             item,
             addToHistory,
-            item instanceof RecipeDisplayItem ? Formats.recipe_display : Formats.recipe
+            item instanceof RecipeDisplayItem rdi && !rdi.getDisplayRecipes().isEmpty() ? Formats.recipe_display : Formats.recipe
         );
     }
 
@@ -431,8 +429,8 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
 
         displayItem(menu, profile, p, item, result, recipeType, recipe, task, format);
 
-        if (item instanceof RecipeDisplayItem recipeDisplayItem) {
-            displayRecipes0(p, profile, menu, recipeDisplayItem, 1);
+        if (item instanceof RecipeDisplayItem rdi) {
+            displayRecipes0(p, profile, menu, rdi, 1);
         }
 
         GuideUtil.addBigRecipeButton(menu, format, profile, p, item);
@@ -518,36 +516,35 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     default void displayRecipes0(Player p, PlayerProfile profile, ChestMenu menu, RecipeDisplayItem sfItem, int page) {
         List<ItemStack> recipes = sfItem.getDisplayRecipes();
 
-        if (!recipes.isEmpty()) {
-            // setSize
-            Format format = Formats.recipe_display;
-            menu.addItem(format.getSize() - 1, Converter.getItem());
+        if (recipes.isEmpty()) return;
+        // setSize
+        Format format = Formats.recipe_display;
+        menu.addItem(format.getSize() - 1, Converter.getItem());
 
-            if (page == 1) {
-                GuideUtil.addBackgroundItems(menu, format, profile, PatchScope.RecipeDisplay.patch(p,
-                    Converter.getItem(ChestMenuUtils.getBackground(), sfItem.getRecipeSectionLabel(p))));
+        if (page == 1) {
+            GuideUtil.addBackgroundItems(menu, format, profile, PatchScope.RecipeDisplay.patch(p,
+                Converter.getItem(ChestMenuUtils.getBackground(), sfItem.getRecipeSectionLabel(p))));
+        }
+
+        List<Integer> ds = format.getChars(Formats.Char.RECIPE_DISPLAY);
+        int length = ds.size();
+        int pages = (recipes.size() - 1) / length + 1; // 1-based
+        GuideUtil.addPageButtons(menu, format, profile, p, null, page, pages, new PageOpener() {
+            @Override
+            public void open(int np) {
+                displayRecipes0(p, profile, menu, sfItem, np);
+                Sounds.playFor(p, Sounds.GUIDE_BUTTON_CLICK_SOUND);
             }
 
-            List<Integer> ds = format.getChars(Formats.Char.RECIPE_DISPLAY);
-            int length = ds.size();
-            int pages = (recipes.size() - 1) / length + 1; // 1-based
-            GuideUtil.addPageButtons(menu, format, profile, p, null, page, pages, new GuideUtil.PageOpener() {
-                @Override
-                public void open(int np) {
-                    displayRecipes0(p, profile, menu, sfItem, np);
-                    Sounds.playFor(p, Sounds.GUIDE_BUTTON_CLICK_SOUND);
-                }
-
-                @Override
-                public boolean rmHistory() {
-                    return false;
-                }
-            });
-
-            List<Integer> fds = RecipeDisplayFormat.fenceShuffle(ds);
-            for (int index = 0; index < length; index++) {
-                addDisplayRecipe0(menu, profile, recipes, fds.get(index), index, page);
+            @Override
+            public boolean rmHistory() {
+                return false;
             }
+        });
+
+        List<Integer> fds = RecipeDisplayFormat.fenceShuffle(ds);
+        for (int index = 0; index < length; index++) {
+            addDisplayRecipe0(menu, profile, recipes, fds.get(index), index, page);
         }
     }
 
