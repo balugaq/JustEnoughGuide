@@ -33,6 +33,7 @@ import java.util.Objects;
 /**
  * @author Final_ROOT
  * @author balugaq
+ * @author m1919810
  * @since 1.0
  */
 @SuppressWarnings({"unchecked", "unused"})
@@ -318,7 +319,7 @@ public class ReflectionUtil {
                     if (!match) {
                         match = true;
                         for (int i = 0; i < parameterTypes.length; i++) {
-                            if (!method.getParameterTypes()[i].isAssignableFrom(parameterTypes[i])) {
+                            if (!wrapClass(method.getParameterTypes()[i]).isAssignableFrom(wrapClass(parameterTypes[i]))) {
                                 match = false;
                                 break;
                             }

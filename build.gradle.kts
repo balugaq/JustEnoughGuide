@@ -81,6 +81,7 @@ dependencies {
     compileOnly("com.github.balugaq:EMCTech:d6e4b43d23")
     compileOnly("com.github.balugaq:SlimeHUD:ad7a52fead")
     compileOnly("com.github.balugaq:SlimeFunRecipe:ef222864d0")
+    compileOnly("com.github.balugaq:RykenSlimeCustomizer:fc6c0a3f35")
 
     // System-scoped local JARs
     compileOnly(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))

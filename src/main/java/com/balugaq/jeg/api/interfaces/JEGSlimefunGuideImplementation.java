@@ -317,8 +317,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
 
         String searchTerm = ChatColor.stripColor(input.toLowerCase(Locale.ROOT));
         SearchGroup.searchTerms.put(p.getUniqueId(), searchTerm);
-        SearchGroup group = new SearchGroup(
-            this, p, searchTerm, JustEnoughGuide.getConfigManager().isPinyinSearch(), true);
+        SearchGroup group = new SearchGroup(this, p, searchTerm, JustEnoughGuide.getConfigManager().isPinyinSearch());
         group.open(p, profile, getMode());
     }
 

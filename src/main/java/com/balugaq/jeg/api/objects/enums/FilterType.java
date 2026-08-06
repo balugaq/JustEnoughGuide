@@ -26,7 +26,9 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.ref.Reference;
 import java.util.ArrayList;
@@ -35,103 +37,95 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author balugaq
  * @since 1.1
  */
 @SuppressWarnings({"ConstantValue", "deprecation"})
+@NullMarked
 @Getter
 public enum FilterType {
     BY_FULL_NAME(
-        "!!",
+        Flag.prefix("!!"),
         SearchGroup::isFullNameApplicable
     ),
-    BY_RECIPE_ITEM_NAME(
-        Set.of("#", "能做"), (player, item, lowerFilterValue, pinyin) -> {
+    BY_RECIPE_ITEM_NAME(Set.of(Flag.prefix("#"), Flag.suffix("能做")), (player, item, filterValue, pinyin) -> {
         ItemStack[] recipe = item.getRecipe();
         if (recipe == null) {
             return false;
         }
 
         for (ItemStack itemStack : recipe) {
-            if (SearchGroup.isSearchFilterApplicable(itemStack, lowerFilterValue, false)) {
+            if (SearchGroup.isSearchFilterApplicable(itemStack, filterValue, false)) {
                 return true;
             }
         }
 
         return false;
-    }
-    ),
-    BY_RECIPE_TYPE_NAME(
-        "$", (player, item, lowerFilterValue, pinyin) -> {
+    }),
+    BY_RECIPE_TYPE_NAME(Flag.prefix("$"), (player, item, filterValue, pinyin) -> {
         ItemStack recipeTypeIcon = item.getRecipeType().getItem(player);
         if (recipeTypeIcon == null) {
             return false;
         }
 
-        return SearchGroup.isSearchFilterApplicable(recipeTypeIcon, lowerFilterValue, false);
-    }
-    ),
-    BY_DISPLAY_ITEM_NAME(
-        Set.of("%", "产"),
-        (player, item, lowerFilterValue, pinyin) -> {
-            // Use the pre-built name cache populated during SearchGroup.init().
-            // This avoids calling getDisplayRecipes() at search time, which would
-            // clone SlimefunItemStacks, construct CraftMetaSkull/CraftPlayerProfile
-            // objects, and ultimately fire Mojang sessionserver HTTP requests.
-            List<String> cached = SearchGroup.DISPLAY_ITEM_NAMES_CACHE.get(item.getId());
-            if (cached != null) {
-                for (String name : cached) {
-                    if (name.contains(lowerFilterValue)) return true;
-                }
+        return SearchGroup.isSearchFilterApplicable(recipeTypeIcon, filterValue, false);
+    }),
+    BY_DISPLAY_ITEM_NAME(Set.of(Flag.prefix("%"), Flag.suffix("产")), (player, item, filterValue, pinyin) -> {
+        // Use the pre-built name cache populated during SearchGroup.init().
+        // This avoids calling getDisplayRecipes() at search time, which would
+        // clone SlimefunItemStacks, construct CraftMetaSkull/CraftPlayerProfile
+        // objects, and ultimately fire Mojang sessionserver HTTP requests.
+        List<String> cached = SearchGroup.DISPLAY_ITEM_NAMES_CACHE.get(item.getId());
+        if (cached != null) {
+            for (String name : cached) {
+                if (name.contains(filterValue)) return true;
             }
-
-            // SPECIAL_CACHE: addons may register extra searchable strings at runtime.
-            String id = item.getId();
-            Reference<Set<String>> ref = SearchGroup.SPECIAL_CACHE.get(id);
-            if (ref != null) {
-                Set<String> cache = ref.get();
-                if (cache != null) {
-                    for (String s : cache) {
-                        if (SearchGroup.isSearchFilterApplicable(s, lowerFilterValue, false)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
         }
-    ),
-    BY_ADDON_NAME(
-        "@", (player, item, lowerFilterValue, pinyin) -> {
+
+        // SPECIAL_CACHE: addons may register extra searchable strings at runtime.
+        String id = item.getId();
+
+        Set<String> cache = SearchGroup.SPECIAL_CACHE.get(id);
+        if (cache != null) {
+            for (String s : cache) {
+                if (SearchGroup.isSearchFilterApplicable(s, filterValue, false)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }),
+    BY_ADDON_NAME(Flag.prefix("@"), (player, item, filterValue, pinyin) -> {
         SlimefunAddon addon = item.getAddon();
         String localAddonName = LocalHelper.getAddonName(addon, item.getId()).toLowerCase();
         String originModName = (addon == null ? "Slimefun" : addon.getName()).toLowerCase();
-        return localAddonName.contains(lowerFilterValue) || originModName.contains(lowerFilterValue);
-    }
-    ),
+        return localAddonName.contains(filterValue) || originModName.contains(filterValue);
+    }),
     BY_ITEM_NAME(
-        "!", SearchGroup::isSearchFilterApplicable
+        Flag.prefix("!"), SearchGroup::isSearchFilterApplicable
     ),
     BY_ITEM_LORE(
-        "^", (player, item, lowerFilterValue, pinyin) -> {
+        Flag.prefix("^"), (player, item, filterValue, pinyin) -> {
         ItemMeta meta = item.getItem().getItemMeta();
         if (meta == null) return false;
         List<String> s = meta.getLore();
         if (s == null) return false;
         for (String lore : s) {
-            if (SearchGroup.isSearchFilterApplicable(lore, lowerFilterValue, pinyin)) {
+            if (SearchGroup.isSearchFilterApplicable(lore, filterValue, pinyin)) {
                 return true;
             }
         }
         return false;
-    }
-    ),
+    }),
     BY_MATERIAL_NAME(
-        "~",
-        (player, item, lowerFilterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(lowerFilterValue)
+        Flag.prefix("~"),
+        (player, item, filterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(filterValue)
     );
 
     @Unmodifiable
@@ -152,27 +146,42 @@ public enum FilterType {
             .toList();
     }
 
-    private final Set<String> symbols;
-    private final DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter;
+    private final Set<Flag> flags;
+    private final Filter filter;
 
-    FilterType(String symbol, DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
+    FilterType(Flag symbol, Filter filter) {
         this(Set.of(symbol), filter);
     }
 
     /**
      * Constructs a new FilterType instance with the specified flag and filter function.
      *
-     * @param symbols The string symbols that represent the filter type.
+     * @param flags The flags that represent the filter type.
      * @param filter  The filter function to determine whether an item matches the filter.
      */
-    FilterType(Set<String> symbols, DiFunction<Player, SlimefunItem, String, Boolean, Boolean> filter) {
-        this.symbols = symbols;
+    FilterType(Set<Flag> flags, Filter filter) {
+        this.flags = flags;
         this.filter = filter;
     }
 
     @Unmodifiable
     public static List<FilterType> lengthSortedValues() {
         return lengthSortedValues;
+    }
+
+    public static String quoteFlags(String str) {
+        for (FilterType filterType : FilterType.values()) {
+            for (var symbol : filterType.getSymbols()) {
+                // Quote the flag to be used as a literal replacement
+                str = str.replaceAll(Pattern.quote(symbol), Matcher.quoteReplacement(symbol));
+            }
+        }
+
+        return str;
+    }
+
+    public Set<String> getSymbols() {
+        return flags.stream().map(Flag::flag).collect(Collectors.toSet());
     }
 
     @Deprecated(forRemoval = true)
@@ -185,12 +194,80 @@ public enum FilterType {
         return getFirstSymbol();
     }
 
+    @ApiStatus.Obsolete
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public String getFirstSymbol() {
         return getSymbols().stream().findFirst().get();
     }
 
-    public interface DiFunction<A, B, C, D, R> {
-        R apply(A a, B b, C c, D d);
+    /**
+     * @author balugaq
+     * @since 1.1
+     */
+    @NullMarked
+    @ApiStatus.Obsolete
+    public interface Filter {
+        boolean apply(Player player, SlimefunItem item, String filterValue, boolean pinyin);
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.1
+     */
+    @NullMarked
+    @ApiStatus.Obsolete
+    public interface Flag {
+        Type type();
+        String flag();
+        default int length() {
+            return flag().length();
+        }
+
+        @ApiStatus.Obsolete
+        static PrefixFlag prefix(String flag) {
+            return new PrefixFlag(flag);
+        }
+
+        @ApiStatus.Obsolete
+        static SuffixFlag suffix(String flag) {
+            return new SuffixFlag(flag);
+        }
+
+        /**
+         * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        @ApiStatus.Obsolete
+        record PrefixFlag(String flag) implements Flag {
+            @Override
+            public Type type() {
+                return Type.PREFIX;
+            }
+        }
+
+        /**
+         * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        @ApiStatus.Obsolete
+        record SuffixFlag(String flag) implements Flag {
+            @Override
+            public Type type() {
+                return Type.PREFIX;
+            }
+        }
+
+        /**
+         * @author balugaq
+         * @since 2.1
+         */
+        @NullMarked
+        @ApiStatus.Obsolete
+        enum Type {
+            PREFIX,
+            SUFFIX
+        }
     }
 }
