@@ -687,20 +687,27 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                     }
 
                     List<ItemStack> displayRecipes = null;
-                    switch(slimefunItem){case AContainer ac->displayRecipes = ac.getDisplayRecipes();
-case MultiBlockMachine mbm->{
-                        try {
-                            displayRecipes = mbm.getDisplayRecipes();
-                        } catch (Exception ignored) {
+                    switch(slimefunItem) {
+                        case AContainer ac-> {
+                            displayRecipes = ac.getDisplayRecipes();
                         }
-}case RecipeDisplayItem rdi when SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(
-                            slimefunItem)->{
-                        try {
-                            displayRecipes = rdi.getDisplayRecipes();
-                        } catch (Exception ignored) {
+                        case MultiBlockMachine mbm-> {
+                            try {
+                                displayRecipes = mbm.getDisplayRecipes();
+                            } catch (Exception ignored) {
+                            }
                         }
-}default->{
-}}
+                        case RecipeDisplayItem rdi -> {
+                            if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(slimefunItem)) {
+                            try {
+                                displayRecipes = rdi.getDisplayRecipes();
+                            } catch (Exception ignored) {
+                            }
+                            }
+                        }
+                        default->{
+                        }
+                    }
                     if (displayRecipes != null) {
                         List<String> displayNames = new ArrayList<>();
                         for (ItemStack itemStack : displayRecipes) {

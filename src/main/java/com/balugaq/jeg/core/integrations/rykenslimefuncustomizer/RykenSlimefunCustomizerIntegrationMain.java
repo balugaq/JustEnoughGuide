@@ -20,6 +20,7 @@ package com.balugaq.jeg.core.integrations.rykenslimefuncustomizer;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.core.integrations.Integration;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -123,6 +124,7 @@ public class RykenSlimefunCustomizerIntegrationMain implements Integration {
 
         rrc("FVV_FAST_DEVINE_ALTAR", FVV_FAST_DEVINE_ALTAR_SLOTS, true);
         rrc("FVV_FAST_LIQUEFACTION_BASIN", FVV_FAST_LIQUEFACTION_BASIN_SLOTS, true);
+        JustEnoughGuide.getListenerManager().registerListener(new SearchGroupIndexRebuildListener());
     }
 
     @Override
