@@ -41,7 +41,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -50,11 +49,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-import static com.balugaq.jeg.api.groups.SearchGroup.*;
+import static com.balugaq.jeg.api.groups.SearchGroup.AVAILABLE_ITEMS;
+import static com.balugaq.jeg.api.groups.SearchGroup.DISPLAY_ITEM_NAMES_CACHE;
+import static com.balugaq.jeg.api.groups.SearchGroup.DISPLAY_RECIPES_CACHE;
+import static com.balugaq.jeg.api.groups.SearchGroup.ENABLED_ITEMS;
+import static com.balugaq.jeg.api.groups.SearchGroup.KEYWORD_CACHE;
+import static com.balugaq.jeg.api.groups.SearchGroup.SPECIAL_CACHE;
+import static com.balugaq.jeg.api.groups.SearchGroup.inBanlist;
+import static com.balugaq.jeg.api.groups.SearchGroup.inBlacklist;
 
-@SuppressWarnings("removal")
+@SuppressWarnings({"removal", "deprecation"})
 public class SearchGroupLoader {
     private static void initInfinityExpansionStoneworksFactory() {
         // InfinityExpansion StoneworksFactory
@@ -167,6 +174,10 @@ public class SearchGroupLoader {
         }
     }
 
+    private static void addToCache(Set<String> cache, String s) {
+        if (!inBanlist(s)) cache.add(s);
+    }
+
     private static void addToCache(Map<Character, Set<SlimefunItem>> cache, String s, SlimefunItem slimefunItem) {
         for (char d : s.toCharArray()) {
             addToCache(cache, Character.toLowerCase(d), slimefunItem);
@@ -174,7 +185,7 @@ public class SearchGroupLoader {
     }
 
     private static void addToCache(Map<Character, Set<SlimefunItem>> cache, char d, SlimefunItem slimefunItem) {
-        cache.putIfAbsent(d, new HashSet<>());
+        cache.computeIfAbsent(d, k -> new HashSet<>());
         Set<SlimefunItem> set = cache.get(d);
         if (!inBanlist(slimefunItem) && !inBlacklist(slimefunItem)) {
             set.add(slimefunItem);
@@ -184,13 +195,177 @@ public class SearchGroupLoader {
     private static void initInfinityExpansionVoidHarvester() {
         // InfinityExpansion VoidHarvester
         SlimefunItem item2 = SlimefunItem.getById("VOID_BIT");
-        if (item2 != null) {
-            Set<String> cache2 = new HashSet<>();
-            checkBan(item2.getItemName(), s -> {
-                cache2.add(s);
-                SPECIAL_CACHE.put("VOID_HARVESTER", cache2);
-                SPECIAL_CACHE.put("INFINITY_VOID_HARVESTER", cache2);
-            });
+        if (item2 == null) return;
+        Set<String> cache2 = new HashSet<>();
+        checkBan(item2.getItemName(), s -> {
+            cache2.add(s);
+            SPECIAL_CACHE.put("VOID_HARVESTER", cache2);
+            SPECIAL_CACHE.put("INFINITY_VOID_HARVESTER", cache2);
+        });
+    }
+
+    private static boolean loadDynatechAbstractElectricMachine(SlimefunItem item, Set<String> cache) {
+        if (!ItemStackUtil.isInstanceSimple(item, "AbstractElectricMachine")) return false;
+        if (!(ReflectionUtil.getValue(item, "recipes") instanceof List<?> recipes)) return false;
+        // DynaTech - AbstractElectricMachine
+        // recipes -> List<MachineRecipe>
+        for (var recipe : recipes) {
+            if (recipe instanceof MachineRecipe machineRecipe) {
+                for (ItemStack input : machineRecipe.getInput()) {
+                    String s = ItemStackHelper.getDisplayName(input);
+                    if (!inBanlist(s)) {
+                        cache.add(s);
+                    }
+                }
+                for (ItemStack output : machineRecipe.getOutput()) {
+                    String s = ItemStackHelper.getDisplayName(output);
+                    addToCache(cache, s);
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean loadInfinityLibMachineBlock(SlimefunItem item, Set<String> cache) {
+        if (!ItemStackUtil.isInstanceSimple(item, "MachineBlock")) return false;
+        if (!(ReflectionUtil.getValue(item, "recipes") instanceof List<?> recipes)) return false;
+        // InfinityLib - MachineBlock
+        for (var recipe : recipes) {
+            String[] strings = (String[]) ReflectionUtil.getValue(recipe, "strings");
+            if (strings == null) continue;
+
+            for (String string : strings) {
+                SlimefunItem slimefunItem = SlimefunItem.getById(string);
+                if (slimefunItem != null) {
+                    addToCache(cache, slimefunItem.getItemName());
+                    continue;
+                }
+
+                Material material = Material.getMaterial(string);
+                if (material == null) continue;
+                addToCache(cache, ItemStackHelper.getDisplayName(new ItemStack(material)));
+            }
+
+            ItemStack output = (ItemStack) ReflectionUtil.getValue(recipe, "output");
+            if (output == null) continue;
+            addToCache(cache, ItemStackHelper.getDisplayName(output));
+        }
+        return true;
+    }
+
+    private static boolean loadInfinityExpansionGrowingMachine(SlimefunItem item, Set<String> cache) {
+        if (!ItemStackUtil.isInstanceSimple(item, "GrowingMachine")) return false;
+        if (!(ReflectionUtil.getValue(item, "recipes") instanceof EnumMap<?,?> map)) return false;
+        for (var obj : map.values()) {
+            if (!(obj instanceof ItemStack[] items)) return false;
+            for (ItemStack itemStack : items) {
+                addToCache(cache, ItemStackHelper.getDisplayName(itemStack));
+            }
+        }
+        return true;
+    }
+
+    private static boolean loadInfinityExpansionResourceSynthesizer(SlimefunItem item, Set<String> cache) {
+        // InfinityExpansion ResourceSynthesizer
+        if (!ItemStackUtil.isInstanceSimple(item, "ResourceSynthesizer")) return false;
+        if (!(ReflectionUtil.getValue(item, "recipes") instanceof SlimefunItemStack[] recipes)) return false;
+        for (SlimefunItemStack slimefunItemStack : recipes) {
+            SlimefunItem slimefunItem = slimefunItemStack.getItem();
+            if (slimefunItem == null) continue;
+            addToCache(cache, slimefunItem.getItemName());
+        }
+        return true;
+    }
+
+    private static boolean loadInfinityExpansionMaterialGenerator(SlimefunItem item, Set<String> cache) {
+        // InfinityExpansion MaterialGenerator
+        if (!ItemStackUtil.isInstanceSimple(item, "MaterialGenerator")) return false;
+        if (!(ReflectionUtil.getValue(item, "material") instanceof Material material)) return false;
+        addToCache(cache, ItemStackHelper.getDisplayName(new ItemStack(material)));
+        return true;
+    }
+
+    private static boolean loadInfinityExpansionSingularityConstructor(SlimefunItem item, Set<String> cache) {
+        // InfinityExpansion SingularityConstructor
+        if (!ItemStackUtil.isInstanceSimple(item, "SingularityConstructor")) return false;
+        if (!(ReflectionUtil.getValue(item, "RECIPE_LIST") instanceof List<?> recipes)) return false;
+        for (Object recipe : recipes) {
+            if (!(ReflectionUtil.getValue(recipe, "input") instanceof ItemStack input)) return false;
+            addToCache(cache, ItemStackHelper.getDisplayName(input));
+            if (!(ReflectionUtil.getValue(recipe, "output") instanceof SlimefunItemStack output)) return false;
+            SlimefunItem slimefunItem = output.getItem();
+            if (slimefunItem != null) addToCache(cache, slimefunItem.getItemName());
+        }
+        return true;
+    }
+
+    private static boolean loadRykenCustomTemplateMachine(SlimefunItem item, Set<String> cache) {
+        // RykenSlimefunCustomizer - CustomTemplateMachine
+        if (!ItemStackUtil.isInstanceSimple(item, "CustomTemplateMachine")) return false;
+        if (!(ReflectionUtil.getValue(item, "templates") instanceof List<?> templates)) return false;
+
+        for (var template : templates) {
+            Object o = ReflectionUtil.getValue(template, "recipes");
+            if (o == null) o = ReflectionUtil.invokeMethod(template, "recipes");
+            if (!(o instanceof List<?> recipes)) continue;
+
+            for (Object recipe : recipes) {
+                if (!(recipe instanceof MachineRecipe machineRecipe)) continue;
+                for (ItemStack output : machineRecipe.getOutput()) {
+                    addToCache(cache, ItemStackHelper.getDisplayName(output));
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean loadRykenCustomMaterialGenerator(SlimefunItem item, Set<String> cache) {
+        // RykenSlimeCustomizer - CustomMaterialGenerator
+        if (!ItemStackUtil.isInstanceSimple(item, "CustomMaterialGenerator")) return false;
+        if (!(ReflectionUtil.getValue(item, "generation") instanceof List<?> generation)) return false;
+
+        for (Object g : generation) {
+            if (!(g instanceof ItemStack itemStack)) continue;
+            addToCache(cache, ItemStackHelper.getDisplayName(itemStack));
+        }
+        return true;
+    }
+
+    private static boolean loadChineseLocalizedCustomMaterialGenerator(SlimefunItem item, Set<String> cache) {
+        // Chinese Localized SlimeCustomizer - CustomMaterialGenerator
+        if (!ItemStackUtil.isInstanceSimple(item, "CustomMaterialGenerator")) return false;
+        if (!(ReflectionUtil.getValue(item, "output") instanceof ItemStack output)) return false;
+
+        addToCache(cache, ItemStackHelper.getDisplayName(output));
+        return true;
+    }
+
+    private static boolean loadInfinityExpansionStrainerBase(SlimefunItem item, Set<String> cache) {
+        // InfinityExpansion - StrainerBase
+        if (!ItemStackUtil.isInstanceSimple(item, "StrainerBase")) return false;
+        if (!(ReflectionUtil.getValue(item, "OUTPUTS") instanceof ItemStack[] outputs)) return false;
+
+        for (ItemStack output : outputs) {
+            addToCache(cache, ItemStackHelper.getDisplayName(output));
+        }
+        return true;
+    }
+
+    private static boolean loadInfinityExpansionQuarry(SlimefunItem item, Set<String> cache) {
+        // InfinityExpansion - Quarry
+        if (!ItemStackUtil.isInstanceSimple(item, "Quarry")) return false;
+        if (!(ReflectionUtil.getValue(item, "outputs") instanceof Material[] outputs)) return false;
+
+        for (Material material : outputs) {
+            addToCache(cache, ItemStackHelper.getDisplayName(new ItemStack(material)));
+        }
+        return true;
+    }
+
+    @SafeVarargs
+    private static void findAny(SlimefunItem item, Set<String> cache, BiPredicate<SlimefunItem, Set<String>>... functions) {
+        for (var function : functions) {
+            if (function.test(item, cache)) return;
         }
     }
 
@@ -200,7 +375,7 @@ public class SearchGroupLoader {
         for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
             ENABLED_ITEMS.put(item, i);
             i += 1;
-            if ((item.isHidden() && !SHOW_HIDDEN_ITEM_GROUPS)
+            if ((item.isHidden() && !Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch())
                 || item.getItemGroup().getClass().isAnnotationPresent(DontShowInSearch.class)
                 || item.isDisabled()
                 || item.getRecipe() == null) {
@@ -212,264 +387,54 @@ public class SearchGroupLoader {
             String id = item.getId();
             if (SPECIAL_CACHE.containsKey(id)) continue;
 
-            // <editor-fold desc="反射">
-            try {
-                Set<String> cache = new HashSet<>();
+            Set<String> cache = new HashSet<>();
 
-                // init cache
-                Object Orecipes = ReflectionUtil.getValue(item, "recipes");
-                if (Orecipes == null) {
-                    Object Omaterial = ReflectionUtil.getValue(item, "material");
-                    if (Omaterial == null) {
-                        Object ORECIPE_LIST = ReflectionUtil.getValue(item, "RECIPE_LIST");
-                        if (ORECIPE_LIST == null) {
-                            Object Ooutputs = ReflectionUtil.getValue(item, "outputs");
-                            if (Ooutputs == null) {
-                                Object OOUTPUTS = ReflectionUtil.getValue(item, "OUTPUTS");
-                                if (OOUTPUTS == null) {
-                                    Object Ooutput = ReflectionUtil.getValue(item, "output");
-                                    if (Ooutput == null) {
-                                        Object Ogeneration = ReflectionUtil.getValue(item, "generation");
-                                        if (Ogeneration == null) {
-                                            Object Otemplates = ReflectionUtil.getValue(item, "templates");
-                                            if (Otemplates == null) {
-                                                continue;
-                                            }
+            findAny(item, cache,
+                SearchGroupLoader::loadInfinityLibMachineBlock,
+                SearchGroupLoader::loadDynatechAbstractElectricMachine,
+                SearchGroupLoader::loadInfinityExpansionGrowingMachine,
+                SearchGroupLoader::loadInfinityExpansionResourceSynthesizer,
+                SearchGroupLoader::loadInfinityExpansionMaterialGenerator,
+                SearchGroupLoader::loadInfinityExpansionSingularityConstructor,
+                SearchGroupLoader::loadRykenCustomTemplateMachine,
+                SearchGroupLoader::loadRykenCustomMaterialGenerator,
+                SearchGroupLoader::loadChineseLocalizedCustomMaterialGenerator,
+                SearchGroupLoader::loadInfinityExpansionStrainerBase,
+                SearchGroupLoader::loadInfinityExpansionQuarry
+            );
 
-                                            // RykenSlimefunCustomizer
-                                            // CustomTemplateMachine
-                                            else if (Otemplates instanceof List<?> templates) {
-                                                for (Object template : templates) {
-                                                    Object _Orecipes =
-                                                        ReflectionUtil.getValue(
-                                                            template,
-                                                            "recipes"
-                                                        );
-                                                    if (_Orecipes == null) {
-                                                        Method method =
-                                                            ReflectionUtil.getMethod(template.getClass(), "recipes");
-                                                        if (method != null) {
-                                                            try {
-                                                                method.setAccessible(true);
-                                                                _Orecipes = method.invoke(template);
-                                                            } catch (Exception ignored) {
-                                                            }
-                                                        }
-                                                    }
-
-                                                    if (_Orecipes instanceof List<?> _recipes) {
-                                                        for (Object _recipe : _recipes) {
-                                                            if (_recipe instanceof MachineRecipe machineRecipe) {
-                                                                ItemStack[] _output = machineRecipe.getOutput();
-                                                                for (ItemStack __output : _output) {
-                                                                    String s = ItemStackHelper.getDisplayName(__output);
-                                                                    if (!inBanlist(s)) {
-                                                                        cache.add(s);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        // RykenSlimeCustomizer CustomMaterialGenerator
-                                        else if (Ogeneration instanceof List<?> generation) {
-                                            for (Object g : generation) {
-                                                if (g instanceof ItemStack itemStack) {
-                                                    String s =
-                                                        ItemStackHelper.getDisplayName(itemStack);
-                                                    if (!inBanlist(s)) {
-                                                        cache.add(s);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    // Chinese Localized SlimeCustomizer
-                                    // CustomMaterialGenerator
-                                    else if (Ooutput instanceof ItemStack output) {
-                                        String s = ItemStackHelper.getDisplayName(output);
-                                        if (!inBanlist(s)) {
-                                            cache.add(s);
-                                        }
-                                    }
-                                }
-                                // InfinityExpansion StrainerBase
-                                if (OOUTPUTS instanceof ItemStack[] outputs) {
-                                    if (!ItemStackUtil.isInstanceSimple(item, "StrainerBase")) {
-                                        continue;
-                                    }
-                                    for (ItemStack output : outputs) {
-                                        String s = ItemStackHelper.getDisplayName(output);
-                                        if (!inBanlist(s)) {
-                                            cache.add(s);
-                                        }
-                                    }
-                                }
-                            }
-                            // InfinityExpansion Quarry
-                            else if (Ooutputs instanceof Material[] outputs) {
-                                if (!ItemStackUtil.isInstanceSimple(item, "Quarry")) {
-                                    continue;
-                                }
-                                for (Material material : outputs) {
-                                    String s = ItemStackHelper.getDisplayName(
-                                        new ItemStack(material));
-                                    if (!inBanlist(s)) {
-                                        cache.add(s);
-                                    }
-                                }
-                            }
-                        }
-                        // InfinityExpansion SingularityConstructor
-                        else if (ORECIPE_LIST instanceof List<?> recipes) {
-                            if (!ItemStackUtil.isInstanceSimple(item, "SingularityConstructor")) {
-                                continue;
-                            }
-                            for (Object recipe : recipes) {
-                                ItemStack input = (ItemStack)
-                                    ReflectionUtil.getValue(recipe, "input");
-                                if (input != null) {
-                                    String s = ItemStackHelper.getDisplayName(input);
-                                    if (!inBanlist(s)) {
-                                        cache.add(s);
-                                    }
-                                }
-                                SlimefunItemStack output = (SlimefunItemStack)
-                                    ReflectionUtil.getValue(recipe, "output");
-                                if (output != null) {
-                                    SlimefunItem slimefunItem = output.getItem();
-                                    if (slimefunItem != null) {
-                                        String s = slimefunItem.getItemName();
-                                        if (!inBanlist(s)) {
-                                            cache.add(s);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        // InfinityExpansion MaterialGenerator
-                        if (!ItemStackUtil.isInstanceSimple(item, "MaterialGenerator")) {
-                            continue;
-                        }
-                        String s =
-                            ItemStackHelper.getDisplayName(new ItemStack((Material) Omaterial));
-                        if (!inBanlist(s)) {
-                            cache.add(s);
-                        }
-                    }
-                }
-                // InfinityExpansion ResourceSynthesizer
-                else if (Orecipes instanceof SlimefunItemStack[] recipes) {
-                    if (!ItemStackUtil.isInstanceSimple(item, "ResourceSynthesizer")) {
-                        continue;
-                    }
-                    for (SlimefunItemStack slimefunItemStack : recipes) {
-                        SlimefunItem slimefunItem = slimefunItemStack.getItem();
-                        if (slimefunItem != null) {
-                            String s = slimefunItem.getItemName();
-                            if (!inBanlist(s)) {
-                                cache.add(s);
-                            }
-                        }
-                    }
-                }
-                // InfinityExpansion GrowingMachine
-                else if (Orecipes instanceof EnumMap<?, ?> recipes) {
-                    if (!ItemStackUtil.isInstanceSimple(item, "GrowingMachine")) {
-                        continue;
-                    }
-                    recipes.values().forEach(obj -> {
-                        ItemStack[] items = (ItemStack[]) obj;
-                        for (ItemStack itemStack : items) {
-                            String s = ItemStackHelper.getDisplayName(itemStack);
-                            if (!inBanlist(s)) {
-                                cache.add(s);
-                            }
-                        }
-                    });
-                }
-                // InfinityExpansion MachineBlock
-                else if (Orecipes instanceof List<?> recipes) {
-                    if (ItemStackUtil.isInstanceSimple(item, "MachineBlock")) {
-                        // InfinityLib - MachineBlock
-                        for (Object recipe : recipes) {
-                            String[] strings = (String[])
-                                ReflectionUtil.getValue(recipe, "strings");
-                            if (strings == null) {
-                                continue;
-                            }
-                            for (String string : strings) {
-                                SlimefunItem slimefunItem =
-                                    SlimefunItem.getById(string);
-                                if (slimefunItem != null) {
-                                    String s = slimefunItem.getItemName();
-                                    if (!inBanlist(s)) {
-                                        cache.add(s);
-                                    }
-                                } else {
-                                    Material material = Material.getMaterial(string);
-                                    if (material != null) {
-                                        String s = ItemStackHelper.getDisplayName(
-                                            new ItemStack(material));
-                                        if (!inBanlist(s)) {
-                                            cache.add(s);
-                                        }
-                                    }
-                                }
-                            }
-
-                            ItemStack output = (ItemStack)
-                                ReflectionUtil.getValue(recipe, "output");
-                            if (output != null) {
-                                String s = ItemStackHelper.getDisplayName(output);
-                                if (!inBanlist(s)) {
-                                    cache.add(s);
-                                }
-                            }
-                        }
-                    } else if (ItemStackUtil.isInstanceSimple(item, "AbstractElectricMachine")) {
-                        // DynaTech - AbstractElectricMachine
-                        // recipes -> List<MachineRecipe>
-                        for (Object recipe : recipes) {
-                            if (recipe instanceof MachineRecipe machineRecipe) {
-                                for (ItemStack input : machineRecipe.getInput()) {
-                                    String s = ItemStackHelper.getDisplayName(input);
-                                    if (!inBanlist(s)) {
-                                        cache.add(s);
-                                    }
-                                }
-                                for (ItemStack output : machineRecipe.getOutput()) {
-                                    String s = ItemStackHelper.getDisplayName(output);
-                                    if (!inBanlist(s)) {
-                                        cache.add(s);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (!cache.isEmpty()) {
-                    SPECIAL_CACHE.put(id, cache);
-                }
-            } catch (Exception ignored) {
-            }
-            // </editor-fold>
+            if (!cache.isEmpty()) SPECIAL_CACHE.put(id, cache);
         }
 
         initInfinityExpansionStoneworksFactory();
         initInfinityExpansionVoidHarvester();
         initInfinityExpansionMobDataCard();
+        initFluffyMachinesSmartFactory();
+        initCommon();
 
+        for (String s : JustEnoughGuide.getConfigManager().getSharedChars()) {
+            shareCache(KEYWORD_CACHE, s);
+            shareCache(DISPLAY_RECIPES_CACHE, s);
+        }
+
+        tm.logs();
+        Debug.debug("Cache initialized.");
+        Debug.debug("Search Group initialized.");
+        Debug.debug("Enabled items: " + ENABLED_ITEMS.size());
+        Debug.debug("Available items: " + AVAILABLE_ITEMS.size());
+        Debug.debug("Machine blocks cache: " + SPECIAL_CACHE.size());
+        Debug.debug("Shared cache: " + JustEnoughGuide.getConfigManager().getSharedChars().size());
+        Debug.debug("Cache 1 (Keywords): " + KEYWORD_CACHE.size());
+        Debug.debug("Cache 2 (Display Recipes): " + DISPLAY_RECIPES_CACHE.size());
+    }
+
+    private static void initCommon() {
         for (SlimefunItem slimefunItem : AVAILABLE_ITEMS) {
             String name = ChatColor.stripColor(slimefunItem.getItemName());
-            addToCache(CACHE, name, slimefunItem);
+            addToCache(KEYWORD_CACHE, name, slimefunItem);
 
             if (JustEnoughGuide.getConfigManager().isPinyinSearch()) {
-                addToCache(CACHE, PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER, ""), slimefunItem);
+                addToCache(KEYWORD_CACHE, PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER, ""), slimefunItem);
             }
 
             List<ItemStack> displayRecipes = getDisplayRecipes(slimefunItem);
@@ -486,7 +451,7 @@ public class SearchGroupLoader {
                     // Also populate the character-index CACHE2 as before.
                     for (char c : name2.toCharArray()) {
                         char d = Character.toLowerCase(c);
-                        addToCache(CACHE2, d, slimefunItem);
+                        addToCache(DISPLAY_RECIPES_CACHE, d, slimefunItem);
                     }
                 }
                 if (!displayNames.isEmpty()) {
@@ -495,39 +460,22 @@ public class SearchGroupLoader {
             }
 
             String id = slimefunItem.getId();
-            Set<String> cache2 = SPECIAL_CACHE.get(id);
-            if (cache2 != null) {
-                for (String s : cache2) {
-                    addToCache(CACHE2, s, slimefunItem);
+            Set<String> cache = SPECIAL_CACHE.get(id);
+            if (cache != null) {
+                for (String s : cache) {
+                    addToCache(DISPLAY_RECIPES_CACHE, s, slimefunItem);
                 }
             }
         }
-
-        initFluffyMachinesSmartFactory();
-
-        for (String s : JustEnoughGuide.getConfigManager().getSharedChars()) {
-            shareCache(CACHE, s);
-            shareCache(CACHE2, s);
-        }
-
-        tm.logs();
-        Debug.debug("Cache initialized.");
-        Debug.debug("Search Group initialized.");
-        Debug.debug("Enabled items: " + ENABLED_ITEMS.size());
-        Debug.debug("Available items: " + AVAILABLE_ITEMS.size());
-        Debug.debug("Machine blocks cache: " + SPECIAL_CACHE.size());
-        Debug.debug("Shared cache: " + JustEnoughGuide.getConfigManager().getSharedChars().size());
-        Debug.debug("Cache 1 (Keywords): " + CACHE.size());
-        Debug.debug("Cache 2 (Display Recipes): " + CACHE2.size());
     }
 
     private static @Nullable List<ItemStack> getDisplayRecipes(SlimefunItem slimefunItem) {
         List<ItemStack> displayRecipes = null;
-        switch(slimefunItem) {
-            case AContainer ac-> {
+        switch (slimefunItem) {
+            case AContainer ac -> {
                 displayRecipes = ac.getDisplayRecipes();
             }
-            case MultiBlockMachine mbm-> {
+            case MultiBlockMachine mbm -> {
                 try {
                     displayRecipes = mbm.getDisplayRecipes();
                 } catch (Exception ignored) {
@@ -541,7 +489,7 @@ public class SearchGroupLoader {
                     }
                 }
             }
-            default->{
+            default -> {
             }
         }
         return displayRecipes;
@@ -561,10 +509,9 @@ public class SearchGroupLoader {
         }
 
         // 所有字符共享同一个 Set 引用
-        if (!foundChars.isEmpty() && !allItems.isEmpty()) {
-            for (char c : foundChars) {
-                cache.put(c, allItems);  // 直接覆盖，共享同一个对象
-            }
+        if (foundChars.isEmpty()) return;
+        for (char c : foundChars) {
+            cache.put(c, allItems);  // 直接覆盖，共享同一个对象
         }
     }
 }

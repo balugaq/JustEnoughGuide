@@ -66,7 +66,6 @@ import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -377,7 +376,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getLogger().info("成功启用此附属");
     }
 
-    private void unloadInternal() {
+    public void unloadInternal() {
         CustomGroupConfigurations.unload();
         GroupResorter.rollback();
 
@@ -445,6 +444,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
 
         ReplacementCardAdapter.getReplacementCards().clear();
+        SearchGroup.LOADED = false;
     }
 
     /**

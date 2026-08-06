@@ -49,12 +49,12 @@ public class CommandManager extends AbstractManager {
 
     public CommandManager(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.commands = new JEGCommands(plugin);
+        this.commands = new JEGCommands();
         this.commands.addCommand(new HelpCommand());
         this.commands.addCommand(new ReloadCommand());
         this.commands.addCommand(new CacheCommand());
         this.commands.addCommand(new GTEGCommand());
-        this.commands.addCommand(new DisableCommand(plugin));
+        this.commands.addCommand(new DisableCommand());
         this.commands.addCommand(new CategoriesCommand());
         this.commands.addCommand(new ShareCommand());
         this.commands.addCommand(new ViewItemCommand());

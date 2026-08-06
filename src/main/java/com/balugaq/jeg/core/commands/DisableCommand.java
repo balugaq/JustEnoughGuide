@@ -17,14 +17,13 @@
 
 package com.balugaq.jeg.core.commands;
 
-import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.interfaces.JEGCommand;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
@@ -35,16 +34,10 @@ import java.util.List;
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings({"ClassCanBeRecord", "deprecation", "SwitchStatementWithTooFewBranches"})
+@SuppressWarnings({"deprecation", "SwitchStatementWithTooFewBranches"})
 @Getter
 @NullMarked
 public class DisableCommand implements JEGCommand {
-    private final Plugin plugin;
-
-    public DisableCommand(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {
@@ -84,8 +77,7 @@ public class DisableCommand implements JEGCommand {
     private void onReload(CommandSender sender) {
         sender.sendMessage(ChatColor.GREEN + "Disabling plugin...");
         try {
-            plugin.onDisable();
-            SearchGroup.LOADED = false;
+            JustEnoughGuide.getInstance().unloadInternal();
             sender.sendMessage(ChatColor.GREEN + "plugin has been disabled.");
         } catch (Exception e) {
             sender.sendMessage(ChatColor.RED + "Failed to disable plugin.");

@@ -23,7 +23,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -41,12 +40,10 @@ import java.util.List;
 @Getter
 @NullMarked
 public class JEGCommands implements TabExecutor {
-    private final JavaPlugin plugin;
     private final List<JEGCommand> commands = new ArrayList<>();
     private final JEGCommand defaultCommand;
 
-    public JEGCommands(JavaPlugin plugin) {
-        this.plugin = plugin;
+    public JEGCommands() {
         this.defaultCommand = new HelpCommand();
     }
 

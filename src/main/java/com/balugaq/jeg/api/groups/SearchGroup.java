@@ -32,7 +32,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
@@ -40,10 +39,8 @@ import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -68,15 +65,17 @@ import java.util.stream.Collectors;
 public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final ConcurrentHashMap<UUID, String> searchTerms = new ConcurrentHashMap<>();
 
-    public static final Char2ObjectOpenHashMap<Set<SlimefunItem>> CACHE =
-        new Char2ObjectOpenHashMap<>(); // fast way for by item name
-    public static final Char2ObjectOpenHashMap<Set<SlimefunItem>> CACHE2 =
-        new Char2ObjectOpenHashMap<>(); // fast way for by display item name
+    public static final Char2ObjectOpenHashMap<Set<SlimefunItem>> KEYWORD_CACHE =
+        new Char2ObjectOpenHashMap<>(); // fast path for by item name
+    public static final Char2ObjectOpenHashMap<Set<SlimefunItem>> DISPLAY_RECIPES_CACHE =
+        new Char2ObjectOpenHashMap<>(); // fast path for by display item name
     public static final Map<String, Set<String>> SPECIAL_CACHE = new HashMap<>();
 
+    public static final String DELIMITER = ",";
+
     static {
-        CACHE.defaultReturnValue(null);
-        CACHE2.defaultReturnValue(null);
+        KEYWORD_CACHE.defaultReturnValue(null);
+        DISPLAY_RECIPES_CACHE.defaultReturnValue(null);
     }
 
     /**
@@ -95,15 +94,11 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
      */
     public static final Map<String, List<String>> DISPLAY_ITEM_NAMES_CACHE = new ConcurrentHashMap<>(5000);
 
-    public static final Boolean SHOW_HIDDEN_ITEM_GROUPS =
-        Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch();
-    public static final Integer DEFAULT_HASH_SIZE = 5000;
-    public static final Map<SlimefunItem, Integer> ENABLED_ITEMS = new HashMap<>(DEFAULT_HASH_SIZE);
-    public static final Set<SlimefunItem> AVAILABLE_ITEMS = new HashSet<>(DEFAULT_HASH_SIZE);
-
-    public static final JavaPlugin JAVA_PLUGIN = JustEnoughGuide.getInstance();
-
+    public static final int DEFAULT_MAP_SIZE = 5000;
+    public static final Map<SlimefunItem, Integer> ENABLED_ITEMS = new HashMap<>(DEFAULT_MAP_SIZE);
+    public static final Set<SlimefunItem> AVAILABLE_ITEMS = new HashSet<>(DEFAULT_MAP_SIZE);
     public static boolean LOADED = false;
+
     public final SlimefunGuideImplementation implementation;
     public final Player player;
     public final String searchTerm;
@@ -446,8 +441,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     }
 
     public List<SlimefunItem> filterItems(Player player, String searchTerm, boolean pinyin) {
-        StringBuilder actualSearchTermBuilder = new StringBuilder();
-        String[] split = searchTerm.split(","); // don't use the space " ", since it is used in many item names
+        StringBuilder sb = new StringBuilder();
+        String[] split = searchTerm.split(DELIMITER); // don't use the space " ", since it is used in many item names
         EnumMap<FilterType, String> filters = new EnumMap<>(FilterType.class);
         for (String s : split) {
             boolean isFilter = false;
@@ -468,12 +463,10 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
                 }
             }
 
-            if (!isFilter) {
-                actualSearchTermBuilder.append(s).append(" ");
-            }
+            if (!isFilter) sb.append(s).append(DELIMITER); // pad the delimiter
         }
 
-        String actualSearchTerm = FilterType.quoteFlags(actualSearchTermBuilder.toString().trim());
+        String actualSearchTerm = FilterType.quoteFlags(sb.toString().trim());
 
         Set<SlimefunItem> result = new HashSet<>(36 * 4);
         // The unfiltered items
@@ -482,8 +475,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             .toList());
 
         if (!actualSearchTerm.isBlank()) {
-            result.addAll(matchItems(actualSearchTerm, CACHE));
-            result.addAll(matchItems(actualSearchTerm, CACHE2));
+            result.addAll(matchItems(actualSearchTerm, KEYWORD_CACHE));
+            result.addAll(matchItems(actualSearchTerm, DISPLAY_RECIPES_CACHE));
         }
 
         // Filter items
@@ -507,19 +500,16 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         for (char c : searchTerm.toCharArray()) {
             Set<SlimefunItem> items = cache.get(c);
             if (items == null || items.isEmpty()) {
-                return Collections.emptySet(); // 任意字符无匹配，直接返回空
+                return Collections.emptySet();
             }
 
             if (result == null) {
                 result = new HashSet<>(items);
             } else {
-                result.retainAll(items); // 直接用原集合，无需创建新HashSet
+                result.retainAll(items);
             }
 
-            // 早期终止：如果结果已为空，无需继续
-            if (result.isEmpty()) {
-                return Collections.emptySet();
-            }
+            if (result.isEmpty()) return Collections.emptySet();
         }
         return result != null ? result : Collections.emptySet();
     }

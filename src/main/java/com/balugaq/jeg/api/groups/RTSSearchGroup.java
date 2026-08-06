@@ -230,7 +230,7 @@ public class RTSSearchGroup extends FlexItemGroup {
         }
         try {
             AnvilGUI.Builder builder = new AnvilGUI.Builder()
-                .plugin(SearchGroup.JAVA_PLUGIN)
+                .plugin(JustEnoughGuide.getInstance())
                 .itemLeft(BACK_ICON.apply(player))
                 .itemRight(Models.INPUT_TEXT_ICON)
                 .itemOutput(ItemStackUtil.air())

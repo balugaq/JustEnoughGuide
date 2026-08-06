@@ -26,14 +26,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
 
-import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * This is the implementation of the "/jeg cache" command. It allows the server administrator to check the validity of
+ * This is the implementation of the "/jeg cache" command. It allows the server operators to check the validity of
  * the cache for a given character.
  *
  * @author balugaq
@@ -51,21 +50,21 @@ public class CacheCommand implements JEGCommand {
             }
 
             case 2 -> {
-                return List.of("1", "2");
+                return List.of("1", "2", "kw", "keyword", "dr", "display_recipes");
             }
 
             case 3 -> {
                 switch (args[1]) {
-                    case "1" -> {
-                        List<String> result = new ArrayList<>(SearchGroup.CACHE.keySet().stream()
+                    case "1", "kw", "keyword" -> {
+                        List<String> result = new ArrayList<>(SearchGroup.KEYWORD_CACHE.keySet().stream()
                             .sorted()
                             .map(String::valueOf)
                             .toList());
                         result.add("clear");
                         return result;
                     }
-                    case "2" -> {
-                        List<String> result = new ArrayList<>(SearchGroup.CACHE2.keySet().stream()
+                    case "2", "dr", "display_recipes" -> {
+                        List<String> result = new ArrayList<>(SearchGroup.DISPLAY_RECIPES_CACHE.keySet().stream()
                             .sorted()
                             .map(String::valueOf)
                             .toList());
@@ -113,50 +112,48 @@ public class CacheCommand implements JEGCommand {
             return;
         }
         String section = args[1];
-        Map<Character, Reference<Set<SlimefunItem>>> cache;
+        Map<Character, Set<SlimefunItem>> cache;
         String command = args[2];
         switch (section) {
-            case "1" -> cache = SearchGroup.CACHE;
-            case "2" -> cache = SearchGroup.CACHE2;
+            case "1", "kw", "keyword" -> cache = SearchGroup.KEYWORD_CACHE;
+            case "2", "dr", "display_recipes" -> cache = SearchGroup.DISPLAY_RECIPES_CACHE;
             default -> {
                 sender.sendMessage(ChatColor.RED + "Invalid section number. Please choose 1 or 2.");
                 return;
             }
         }
 
-        if (cache != null) {
-            if ("clear".equalsIgnoreCase(command)) {
-                cache.clear();
-                sender.sendMessage(ChatColor.GREEN + "Cache " + section + " cleared.");
-                return;
-            }
+        if (cache == null) {
+            sender.sendMessage(ChatColor.RED + "Invalid cache.");
+            return;
+        }
 
-            Character key = command.charAt(0);
-            sender.sendMessage(ChatColor.GREEN + "Checking cache " + section + " for " + key + "...");
-            if (cache.containsKey(key)) {
-                Integer size = null;
-                Reference<Set<SlimefunItem>> ref = cache.get(key);
-                if (ref != null) {
-                    Set<SlimefunItem> set = ref.get();
-                    if (set != null) {
-                        size = set.size();
-                        sender.sendMessage(ChatColor.GREEN + "Items: ");
-                        for (SlimefunItem item : set) {
-                            sender.sendMessage(ChatColor.GREEN + " - " + item.getItemName());
-                        }
-                    }
-                }
+        if ("clear".equalsIgnoreCase(command)) {
+            cache.clear();
+            sender.sendMessage(ChatColor.GREEN + "Cache " + section + " cleared.");
+            return;
+        }
 
-                sender.sendMessage(ChatColor.GREEN + "Cache for " + key + " is valid.");
-                sender.sendMessage(ChatColor.GREEN + "Cache size: " + cache.size());
-                if (size != null) {
-                    sender.sendMessage(ChatColor.GREEN + "Character set size: " + size);
-                }
-            } else {
-                sender.sendMessage(ChatColor.RED + "Cache for " + key + " is invalid.");
+        char key = command.charAt(0);
+        sender.sendMessage(ChatColor.GREEN + "Checking cache " + section + " for " + key + "...");
+        if (!cache.containsKey(key)) {
+            sender.sendMessage(ChatColor.RED + "Cache for " + key + " is invalid.");
+            return;
+        }
+        int size = -1;
+        Set<SlimefunItem> set = cache.get(key);
+        if (set != null) {
+            size = set.size();
+            sender.sendMessage(ChatColor.GREEN + "Items: ");
+            for (SlimefunItem item : set) {
+                sender.sendMessage(ChatColor.GREEN + " - " + item.getItemName());
             }
-        } else {
-            sender.sendMessage(ChatColor.RED + "Invalid section number. Please choose 1 or 2.");
+        }
+
+        sender.sendMessage(ChatColor.GREEN + "Cache for " + key + " is valid.");
+        sender.sendMessage(ChatColor.GREEN + "Cache size: " + cache.size());
+        if (size != -1) {
+            sender.sendMessage(ChatColor.GREEN + "Character set size: " + size);
         }
     }
 }
