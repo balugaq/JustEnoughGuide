@@ -638,7 +638,7 @@ public class GuideUtil {
         if (cachedAllGroups.isEmpty() || groupsChanged()) {
             cachedAllGroups.clear();
             cachedAllGroupsList.clear();
-            cachedAllGroups.putAll(Slimefun.getRegistry().getAllItemGroups().stream().collect(Collectors.toMap(ItemGroup::getKey, itemGroup -> itemGroup)));
+            cachedAllGroups.putAll(Slimefun.getRegistry().getAllItemGroups().stream().collect(Collectors.toMap(ItemGroup::getKey, itemGroup -> itemGroup, (a, b) -> a)));
             cachedAllGroupsList.addAll(Slimefun.getRegistry().getAllItemGroups());
             cachedMainMenu.clear();
         }
@@ -1121,6 +1121,14 @@ public class GuideUtil {
      */
     public static ItemGroup refreshGroup(ItemGroup group) {
         tryRefreshCacheGroups();
+
+        // Fuck ProductState
+        // Never, never, never register two item groups with the same key
+        if (JustEnoughGuide.getIntegrationManager().isEnabledProductState()
+            && group.getKey().getKey().equals("sub_ag_jiqi_shengchanxing")) {
+            return group;
+        }
+
         var cached = cachedAllGroups.get(group.getKey());
         if (cached != null) return cached;
 

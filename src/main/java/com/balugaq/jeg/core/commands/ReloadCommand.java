@@ -33,16 +33,10 @@ import java.util.List;
  * @author balugaq
  * @since 1.1
  */
-@SuppressWarnings({"ClassCanBeRecord", "SwitchStatementWithTooFewBranches"})
+@SuppressWarnings("SwitchStatementWithTooFewBranches")
 @Getter
 @NullMarked
 public class ReloadCommand implements JEGCommand {
-    private final Plugin plugin;
-
-    public ReloadCommand(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {
@@ -76,6 +70,6 @@ public class ReloadCommand implements JEGCommand {
         Command command,
         String label,
         String[] args) {
-        JustEnoughGuide.reload(plugin, sender);
+        JustEnoughGuide.reload(sender);
     }
 }

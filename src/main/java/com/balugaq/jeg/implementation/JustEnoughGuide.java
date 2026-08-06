@@ -221,7 +221,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getScheduler().runTimerAsync(runnable, delay, period);
     }
 
-    public static void reload(@Nullable Plugin plugin, CommandSender sender) {
+    public static void reload(CommandSender sender) {
+        var plugin = getInstance();
         sender.sendMessage(ChatColor.GREEN + "Reloading plugin...");
         try {
             if (plugin == null) {
@@ -229,15 +230,12 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 return;
             }
 
-            plugin.onDisable();
+            plugin.unloadInternal();
             plugin.onEnable();
-            plugin.reloadConfig(); // 1st reload
-            SearchGroup.LOADED = false;
-            SearchGroup.init();
-            plugin.reloadConfig(); // 2nd reload
+            plugin.reloadConfig();
             SlimefunRegistryFinalizeListener.getTasks().forEach(Runnable::run);
             SlimefunRegistryFinalizeListener.clearTasks();
-            sender.sendMessage(ChatColor.GREEN + "plugin has been reloaded.");
+            Debug.log("Plugin reloaded.");
         } catch (Exception e) {
             sender.sendMessage(ChatColor.RED + "Failed to reload plugin.");
             Debug.trace(e);
@@ -379,11 +377,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getLogger().info("成功启用此附属");
     }
 
-    /**
-     * Cleans up resources and shuts down the plugin.
-     */
-    @Override
-    public void onDisable() {
+    private void unloadInternal() {
         CustomGroupConfigurations.unload();
         GroupResorter.rollback();
 
@@ -451,6 +445,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
 
         ReplacementCardAdapter.getReplacementCards().clear();
+    }
+
+    /**
+     * Cleans up resources and shuts down the plugin.
+     */
+    @Override
+    public void onDisable() {
+        unloadInternal();
 
         this.bookmarkManager = null;
         this.integrationManager = null;

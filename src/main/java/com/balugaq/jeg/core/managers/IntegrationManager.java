@@ -117,6 +117,7 @@ public class IntegrationManager extends AbstractManager {
     private boolean enabledObsidianExpansion;
     private boolean enabledOreWorkshop;
     private boolean enabledPlaceholderAPI;
+    private boolean enabledProductState;
     private boolean enabledRSCEditor;
     private boolean enabledRykenSlimefunCustomizer;
     private boolean enabledSimpleUtils;
@@ -169,6 +170,7 @@ public class IntegrationManager extends AbstractManager {
             this.enabledObsidianExpansion = pm.isPluginEnabled("ObsidianExpansion");
             this.enabledOreWorkshop = pm.isPluginEnabled("OreWorkshop");
             this.enabledPlaceholderAPI = pm.isPluginEnabled("PlaceholderAPI");
+            this.enabledProductState = pm.isPluginEnabled("ProductState");
             this.enabledRSCEditor = pm.isPluginEnabled("RSCEditor");
             this.enabledRykenSlimefunCustomizer = pm.isPluginEnabled("RykenSlimefunCustomizer");
             this.enabledSimpleUtils = pm.isPluginEnabled("SimpleUtils");
