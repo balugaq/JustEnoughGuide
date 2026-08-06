@@ -21,6 +21,7 @@ import com.balugaq.jeg.api.objects.annotations.PatchCode;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.SlimefunGuideOpenEvent;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -29,7 +30,6 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -96,7 +96,7 @@ public class GuideListener implements Listener {
     @Internal
     public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
         ItemStack item = e.getItem();
-        if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
+        if (StackUtils.itemsMatch(item, SlimefunGuide.getItem(layout), false, false, false)) {
             if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
                 Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true);
                 return Event.Result.DENY;
@@ -140,7 +140,7 @@ public class GuideListener implements Listener {
             if (p.isSneaking()) {
                 JEGGuideSettings.openSettings(
                     p,
-                    p.hasPermission("slimefun.cheat.items")
+                    p.isOp() || p.hasPermission("slimefun.cheat.items")
                         ? e.getItem()
                         : SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE)
                 );

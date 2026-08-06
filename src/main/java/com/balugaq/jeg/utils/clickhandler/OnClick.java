@@ -882,7 +882,7 @@ public interface OnClick {
                             "right-click", "查找使用此配方类型的物品", Material.NAME_TAG, (guide, player, slot, recipeType,
                                                                                            action, menu, page) -> {
                                 String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
-                                player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.getFirstSymbol() + ChatColor.stripColor(recipeTypeName));
+                                player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.apply(ChatColor.stripColor(recipeTypeName)));
                             }
                     ),
                     Action.of(
@@ -1429,7 +1429,7 @@ public interface OnClick {
                                 String itemName = ItemStackHelper.getDisplayName(item).trim();
                                 while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                                player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.getFirstSymbol() + ChatColor.stripColor(itemName));
+                                player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.apply(ChatColor.stripColor(itemName)));
                             }
                     ),
                     Action.of(
@@ -1444,7 +1444,7 @@ public interface OnClick {
                                 String itemName = ItemStackHelper.getDisplayName(item).trim();
                                 while (itemName.contains(" ")) itemName = itemName.substring(0, itemName.indexOf(" "));
 
-                                player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.getFirstSymbol() + ChatColor.stripColor(itemName));
+                                player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.apply(ChatColor.stripColor(itemName)));
                             }
                     ),
                     Action.of(

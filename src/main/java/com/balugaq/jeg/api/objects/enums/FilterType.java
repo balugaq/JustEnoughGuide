@@ -75,7 +75,9 @@ public enum FilterType {
 
         return SearchGroup.isSearchFilterApplicable(recipeTypeIcon, filterValue, false);
     }),
-    BY_DISPLAY_ITEM_NAME(Set.of(Flag.prefix("%"), Flag.suffix("产")), (player, item, filterValue, pinyin) -> {
+    BY_DISPLAY_ITEM_NAME(Set.of(Flag.prefix("%"), Flag.suffix("能产")), (player, item, filterValue, pinyin) -> {
+        // ignore pinyin here, since it lags much more if pinyin is applied.
+
         // Use the pre-built name cache populated during SearchGroup.init().
         // This avoids calling getDisplayRecipes() at search time, which would
         // clone SlimefunItemStacks, construct CraftMetaSkull/CraftPlayerProfile
@@ -83,7 +85,7 @@ public enum FilterType {
         List<String> cached = SearchGroup.DISPLAY_ITEM_NAMES_CACHE.get(item.getId());
         if (cached != null) {
             for (String name : cached) {
-                if (name.contains(filterValue)) return true;
+                if (SearchGroup.isSearchFilterApplicable(name, filterValue, false)) return true;
             }
         }
 
@@ -200,6 +202,10 @@ public enum FilterType {
         return getSymbols().stream().findFirst().get();
     }
 
+    public String apply(String raw) {
+        return flags.stream().findFirst().get().apply(raw);
+    }
+
     /**
      * @author balugaq
      * @since 1.1
@@ -219,6 +225,8 @@ public enum FilterType {
     public interface Flag {
         Type type();
         String flag();
+        String apply(String raw);
+
         default int length() {
             return flag().length();
         }
@@ -244,6 +252,11 @@ public enum FilterType {
             public Type type() {
                 return Type.PREFIX;
             }
+
+            @Override
+            public String apply(String raw) {
+                return flag + raw;
+            }
         }
 
         /**
@@ -256,6 +269,11 @@ public enum FilterType {
             @Override
             public Type type() {
                 return Type.PREFIX;
+            }
+
+            @Override
+            public String apply(String raw) {
+                return raw + flag;
             }
         }
 
