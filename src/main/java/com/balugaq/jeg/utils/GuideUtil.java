@@ -30,7 +30,6 @@ import com.balugaq.jeg.api.interfaces.DisplayInSurvivalMode;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
-import com.balugaq.jeg.api.objects.PageOpener;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
@@ -108,7 +107,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"unused", "deprecation", "unchecked", "UnnecessaryUnicodeEscape"})
 @UtilityClass
 @NullMarked
-public final class GuideUtil {
+public class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
     private static final ItemStack BOOK_MARK_MENU_BUTTON =
         Converter.getItem(new SlimefunItemStack(
@@ -1121,6 +1120,7 @@ public final class GuideUtil {
      * Handle hot-reload cases
      */
     public static ItemGroup refreshGroup(ItemGroup group) {
+        tryRefreshCacheGroups();
         var cached = cachedAllGroups.get(group.getKey());
         if (cached != null) return cached;
 
@@ -1137,5 +1137,18 @@ public final class GuideUtil {
 
         // fallback
         return slimefunItem;
+    }
+
+    /**
+     * @author balugaq
+     * @since 2.1
+     */
+    @FunctionalInterface
+    public interface PageOpener {
+        void open(int page);
+
+        default boolean rmHistory() {
+            return true;
+        }
     }
 }

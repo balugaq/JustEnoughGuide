@@ -21,7 +21,6 @@ import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.BookmarkGroup;
 import com.balugaq.jeg.api.groups.ItemMarkGroup;
 import com.balugaq.jeg.api.groups.SearchGroup;
-import com.balugaq.jeg.api.objects.PageOpener;
 import com.balugaq.jeg.api.objects.collection.data.Bookmark;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
@@ -529,7 +528,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         List<Integer> ds = format.getChars(Formats.Char.RECIPE_DISPLAY);
         int length = ds.size();
         int pages = (recipes.size() - 1) / length + 1; // 1-based
-        GuideUtil.addPageButtons(menu, format, profile, p, null, page, pages, new PageOpener() {
+        GuideUtil.addPageButtons(menu, format, profile, p, null, page, pages, new GuideUtil.PageOpener() {
             @Override
             public void open(int np) {
                 displayRecipes0(p, profile, menu, sfItem, np);
