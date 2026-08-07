@@ -43,8 +43,7 @@ import java.util.Map;
 @NullMarked
 public class CustomGroupConfigurations {
     public static final String FILE_NAME = "custom-groups.yml";
-    public static final File fileCustomGroups =
-        new File(JustEnoughGuide.getInstance().getDataFolder(), FILE_NAME);
+    public static final File fileCustomGroups = new File(JustEnoughGuide.getInstance().getDataFolder(), FILE_NAME);
 
     @Getter
     private static final List<CustomGroupConfiguration> configurations = new ArrayList<>();

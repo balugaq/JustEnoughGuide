@@ -353,7 +353,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.rtsBackpackManager.load();
 
         setupServerUUID();
-        SearchGroup.init();
+        SearchGroup.tryInit();
         GroupResorter.load();
 
         SpecialMenuProvider.loadConfiguration();

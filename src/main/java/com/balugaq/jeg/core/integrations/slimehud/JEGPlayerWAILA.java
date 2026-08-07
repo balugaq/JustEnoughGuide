@@ -49,6 +49,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -76,7 +77,7 @@ public class JEGPlayerWAILA extends PlayerWAILA {
             if (kyoriBossBar == null) {
                 if (PlatformUtil.isPaper() && IS_1_20_1) {
                     String bossbarColor =
-                        SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase();
+                        SlimeHUD.getInstance().getConfig().getString("waila.bossbar-color").trim().toLowerCase(Locale.ROOT);
                     kyoriBossBar = BossBar.bossBar(
                         Component.text(""), 1.0f, toBossBarColor(bossbarColor),
                         BossBar.Overlay.PROGRESS, new HashSet<>()
@@ -99,9 +100,9 @@ public class JEGPlayerWAILA extends PlayerWAILA {
     }
 
     public static BossBar.Color toBossBarColor(String color) {
-        return switch (color.trim().toLowerCase()) {
+        return switch (color.trim().toLowerCase(Locale.ROOT)) {
             case "red", "yellow", "green", "blue", "purple", "pink", "white" ->
-                BossBar.Color.valueOf(color.toUpperCase());
+                BossBar.Color.valueOf(color.toUpperCase(Locale.ROOT));
             case "default", "inherit" -> BossBar.Color.WHITE;
             default -> {
                 SlimeHUD.log(

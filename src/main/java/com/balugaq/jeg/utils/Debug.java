@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -272,7 +273,7 @@ public class Debug {
             getPlugin()
                 .getLogger()
                 .severe("====================AN FATAL OCCURRED"
-                    + (doing != null ? (" WHEN " + doing.toUpperCase()) : "") + "====================");
+                    + (doing != null ? (" WHEN " + doing.toUpperCase(Locale.ROOT)) : "") + "====================");
             getPlugin()
                 .getLogger()
                 .severe(

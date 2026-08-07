@@ -26,10 +26,12 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
 import lombok.experimental.UtilityClass;
 import net.Zrips.CMILib.Colors.CMIChatColor;
+import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,6 +42,7 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -182,7 +185,7 @@ public final class ItemStackUtil {
 
         ItemStack itemStack;
 
-        switch (type.toLowerCase()) {
+        switch (type.toLowerCase(Locale.ROOT)) {
             case "none" -> {
                 return new ItemStack(Material.AIR, 1);
             }
@@ -205,7 +208,7 @@ public final class ItemStackUtil {
                 itemStack = Converter.getItem(head, name, lore);
             }
             case "slimefun" -> {
-                SlimefunItem sfItem = SlimefunItem.getById(material.toUpperCase());
+                SlimefunItem sfItem = SlimefunItem.getById(material.toUpperCase(Locale.ROOT));
                 if (sfItem != null) {
                     itemStack = Converter.getItem(sfItem.getItem().clone());
                     itemStack.editMeta(m -> {
@@ -286,7 +289,7 @@ public final class ItemStackUtil {
                 String enchantName = s2[0];
                 int lvl = Integer.parseInt(s2[1]);
 
-                Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName.toLowerCase()));
+                Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName.toLowerCase(Locale.ROOT)));
                 if (enchantment == null) {
                     Debug.severe("Icon 定义 " + c + " 无法读取附属 " + enchant + ", 跳过添加此附魔");
                     continue;
@@ -375,5 +378,13 @@ public final class ItemStackUtil {
     @Range(from = 0, to = 99)
     public static int getValidItemAmount(ItemStack itemStack) {
         return Math.min(itemStack.getAmount(), itemStack.getMaxStackSize());
+    }
+
+    public static String getItemName(Player player, SlimefunItem slimefunItem) {
+        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimefunTranslation()) {
+            return SlimefunTranslationAPI.getItemName(SlimefunTranslationAPI.getUser(player), slimefunItem);
+        }
+
+        return slimefunItem.getItemName();
     }
 }

@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,8 +106,8 @@ public enum FilterType {
     }),
     BY_ADDON_NAME(Flag.prefix("@"), (player, item, filterValue, pinyin) -> {
         SlimefunAddon addon = item.getAddon();
-        String localAddonName = LocalHelper.getAddonName(addon, item.getId()).toLowerCase();
-        String originModName = (addon == null ? "Slimefun" : addon.getName()).toLowerCase();
+        String localAddonName = LocalHelper.getAddonName(addon, item.getId()).toLowerCase(Locale.ROOT);
+        String originModName = (addon == null ? "Slimefun" : addon.getName()).toLowerCase(Locale.ROOT);
         return localAddonName.contains(filterValue) || originModName.contains(filterValue);
     }),
     BY_ITEM_NAME(
@@ -127,7 +128,8 @@ public enum FilterType {
     }),
     BY_MATERIAL_NAME(
         Flag.prefix("~"),
-        (player, item, filterValue, pinyin) -> item.getItem().getType().name().toLowerCase().contains(filterValue)
+        (player, item, filterValue, pinyin) ->
+            item.getItem().getType().name().toLowerCase(Locale.ROOT).contains(filterValue)
     );
 
     @Unmodifiable

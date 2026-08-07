@@ -23,7 +23,7 @@ plugins {
 }
 
 group = "io.github.balugaq"
-version = "2.1.44"
+version = "2.1.45"
 
 repositories {
     mavenCentral()

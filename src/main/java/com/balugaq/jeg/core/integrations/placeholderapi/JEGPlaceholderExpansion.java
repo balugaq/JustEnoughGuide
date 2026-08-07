@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -35,7 +36,7 @@ import java.util.Optional;
 public class JEGPlaceholderExpansion extends PlaceholderExpansion {
     @Override
     public @NotNull String getIdentifier() {
-        return JustEnoughGuide.getInstance().getRepo().toLowerCase();
+        return JustEnoughGuide.getInstance().getRepo().toLowerCase(Locale.ROOT);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class JEGPlaceholderExpansion extends PlaceholderExpansion {
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         Player p = player.getPlayer();
         if (p == null) return null;
-        var option = JEGGuideSettings.getOption(params.toLowerCase());
+        var option = JEGGuideSettings.getOption(params.toLowerCase(Locale.ROOT));
         if (option == null) return null;
         Optional<?> ov = option.getSelectedOption(p, GuideUtil.getLastGuide(p).getItem());
         return ov.map(Object::toString).orElse(null);

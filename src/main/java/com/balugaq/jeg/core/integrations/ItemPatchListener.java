@@ -30,6 +30,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Locale;
+
 /**
  * @author balugaq
  */
@@ -52,7 +54,7 @@ public interface ItemPatchListener extends Listener, Keyed {
     }
 
     default NamespacedKey getKey() {
-        return KeyUtil.newKey(getClass().getSimpleName().toLowerCase());
+        return KeyUtil.newKey(getClass().getSimpleName().toLowerCase(Locale.ROOT));
     }
 
     default boolean isTagged(@Nullable ItemStack stack) {

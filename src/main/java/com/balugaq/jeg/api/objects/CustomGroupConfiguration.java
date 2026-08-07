@@ -44,6 +44,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -149,7 +150,7 @@ public class CustomGroupConfiguration implements IParsable {
                 .map(s -> (Object) s)
                 .toList());
         objects.addAll(Arrays.stream(items)
-            .map(s -> SlimefunItem.getById(s.toUpperCase()))
+            .map(s -> SlimefunItem.getById(s.toUpperCase(Locale.ROOT)))
             .filter(Objects::nonNull)
             .map(s -> (Object) s)
             .toList());
@@ -209,7 +210,7 @@ public class CustomGroupConfiguration implements IParsable {
             itemStack = getURLLike(material);
             if (itemStack != null) return itemStack = Converter.getItem(itemStack, this.name);
 
-            Material material = Material.getMaterial(this.material.toUpperCase());
+            Material material = Material.getMaterial(this.material.toUpperCase(Locale.ROOT));
             if (material == null || !material.isItem() || material.isLegacy()) {
                 Debug.warn("自定义物品组存在无效的 material: " + this.material);
                 return itemStack = new ItemStack(Material.STONE);

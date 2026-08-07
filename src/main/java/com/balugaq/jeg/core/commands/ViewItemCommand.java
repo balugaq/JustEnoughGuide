@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This is the implementation of the "/jeg viewitem" command.
@@ -78,8 +79,8 @@ public class ViewItemCommand implements JEGCommand {
         if (sender instanceof Player player) {
             if (args.length >= 2) {
                 String id = args[1];
-                SlimefunItem slimefunItem = SlimefunItem.getById(id.toUpperCase());
-                if (slimefunItem == null || slimefunItem.isDisabledIn(player.getWorld())) {
+                SlimefunItem slimefunItem = SlimefunItem.getById(id.toUpperCase(Locale.ROOT));
+                if (slimefunItem == null || (!player.isOp() && slimefunItem.isDisabledIn(player.getWorld()))) {
                     player.sendMessage(ChatColors.color("&c无法查看 ID 为 " + id + "物品"));
                     return;
                 }

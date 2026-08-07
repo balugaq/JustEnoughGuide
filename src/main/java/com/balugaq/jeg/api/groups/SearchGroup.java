@@ -19,10 +19,10 @@ package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.SearchGroupLoader;
 import com.balugaq.jeg.api.objects.enums.FilterType;
-import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.clickhandler.OnDisplay;
 import com.balugaq.jeg.utils.formatter.Format;
 import com.balugaq.jeg.utils.formatter.Formats;
@@ -80,7 +80,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
 
     /**
      * Pre-built cache of display item names per Slimefun item ID.
-     * Populated once during {@link #init()} alongside CACHE2.
+     * Populated once during {@link #tryInit()} alongside CACHE2.
      * <p>
      * Key: Slimefun item ID.<br>
      * Value: unmodifiable list of lower-cased display names from
@@ -118,9 +118,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         final String searchTerm,
         boolean pinyin) {
         super();
-        if (!LOADED) {
-            init();
-        }
+        tryInit();
         this.page = 1;
         this.searchTerm = searchTerm;
         this.pinyin = pinyin;
@@ -141,28 +139,15 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     }
 
     public static boolean isFullNameApplicable(Player player, SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
-        if (slimefunItem == null) {
-            return false;
-        }
+        if (slimefunItem == null) return false;
 
-        String itemName = ChatColor.stripColor(SlimefunTranslationIntegrationMain.getTranslatedItemName(player, slimefunItem)).toLowerCase(Locale.ROOT);
-
-        if (itemName.isEmpty()) {
-            return false;
-        }
+        String itemName = ChatColor.stripColor(ItemStackUtil.getItemName(player, slimefunItem)).toLowerCase(Locale.ROOT);
+        if (itemName.isEmpty()) return false;
 
         // Quick escape for common cases
-        boolean result = itemName.equalsIgnoreCase(searchTerm.toLowerCase());
-        if (result) {
-            return true;
-        }
+        if (itemName.equalsIgnoreCase(searchTerm.toLowerCase(Locale.ROOT))) return true;
 
-        if (pinyin) {
-            final String pinyinFirstLetter = getPinyin(itemName);
-            return pinyinFirstLetter.equalsIgnoreCase(searchTerm.toLowerCase());
-        }
-
-        return false;
+        return pinyin && getPinyin(itemName).equalsIgnoreCase(searchTerm.toLowerCase(Locale.ROOT));
     }
 
     public static String getPinyin(String string) {
@@ -174,48 +159,34 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     }
 
     public static boolean isSearchFilterApplicable(Player player, SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
-        if (slimefunItem == null) {
-            return false;
-        }
-        String itemName = ChatColor.stripColor(SlimefunTranslationIntegrationMain.getTranslatedItemName(player, slimefunItem)).toLowerCase(Locale.ROOT);
-        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
+        if (slimefunItem == null) return false;
+
+        String itemName = ChatColor.stripColor(ItemStackUtil.getItemName(player, slimefunItem)).toLowerCase(Locale.ROOT);
+        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(Locale.ROOT), pinyin);
     }
 
     public static boolean isSearchFilterApplicable(String itemName, String searchTerm, boolean pinyin) {
-        if (itemName.isEmpty()) {
-            return false;
-        }
+        if (itemName.isEmpty()) return false;
 
         // Quick escape for common cases
-        boolean result = itemName.contains(searchTerm);
-        if (result) {
-            return true;
-        }
+        if (itemName.contains(searchTerm)) return true;
 
-        if (pinyin) {
-            final String pinyinFirstLetter = getPinyin(itemName);
-            return pinyinFirstLetter.contains(searchTerm);
-        }
-
-        return false;
+        return pinyin && getPinyin(itemName).contains(searchTerm);
     }
 
     @Deprecated
     public static boolean isSearchFilterApplicable(SlimefunItem slimefunItem, String searchTerm, boolean pinyin) {
-        if (slimefunItem == null) {
-            return false;
-        }
+        if (slimefunItem == null) return false;
+        
         String itemName = ChatColor.stripColor(slimefunItem.getItemName()).toLowerCase(Locale.ROOT);
-        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
+        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(Locale.ROOT), pinyin);
     }
 
     public static boolean isSearchFilterApplicable(ItemStack itemStack, String searchTerm, boolean pinyin) {
-        if (itemStack == null) {
-            return false;
-        }
-        String itemName =
-            ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack)).toLowerCase(Locale.ROOT);
-        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(), pinyin);
+        if (itemStack == null) return false;
+        
+        String itemName = ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack)).toLowerCase(Locale.ROOT);
+        return isSearchFilterApplicable(itemName, searchTerm.toLowerCase(Locale.ROOT), pinyin);
     }
 
     public static List<SlimefunItem> filterItems(
@@ -224,7 +195,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         String filterValue,
         boolean pinyin,
         List<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
+        String lowerFilterValue = filterValue.toLowerCase(Locale.ROOT);
         return items.stream()
             .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
             .toList();
@@ -237,7 +208,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         boolean pinyin,
         List<ItemStack> items,
         boolean passNonSlimefun) {
-        String lowerFilterValue = filterValue.toLowerCase();
+        String lowerFilterValue = filterValue.toLowerCase(Locale.ROOT);
         return items.stream()
             .filter(item -> {
                 SlimefunItem sf = SlimefunItem.getByItem(item);
@@ -253,7 +224,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         String filterValue,
         boolean pinyin,
         Set<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
+        String lowerFilterValue = filterValue.toLowerCase(Locale.ROOT);
         return items.stream()
             .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
             .collect(Collectors.toSet());
@@ -266,7 +237,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         boolean pinyin,
         Set<ItemStack> items,
         boolean passNonSlimefun) {
-        String lowerFilterValue = filterValue.toLowerCase();
+        String lowerFilterValue = filterValue.toLowerCase(Locale.ROOT);
         return items.stream()
             .filter(item -> {
                 SlimefunItem sf = SlimefunItem.getByItem(item);
@@ -279,10 +250,8 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     /**
      * Initializes the search group by populating caches and preparing data.
      */
-    public static void init() {
-        if (LOADED) {
-            return;
-        }
+    public static void tryInit() {
+        if (LOADED) return;
 
         LOADED = true;
         Debug.debug("Initializing Search Group...");
@@ -319,21 +288,15 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
 
     public static boolean onlyAscii(String str) {
         for (char c : str.toCharArray()) {
-            if (c > 127) {
-                return false;
-            }
+            if (c > 127) return false;
         }
         return true;
     }
 
     public static int levenshteinDistance(String s1, String s2) {
-        if (s1.length() < s2.length()) {
-            return levenshteinDistance(s2, s1);
-        }
+        if (s1.length() < s2.length()) return levenshteinDistance(s2, s1);
 
-        if (s2.isEmpty()) {
-            return s1.length();
-        }
+        if (s2.isEmpty()) return s1.length();
 
         int[] previousRow = new int[s2.length() + 1];
         for (int i = 0; i <= s2.length(); i++) {
@@ -414,8 +377,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         final Player player,
         final PlayerProfile playerProfile,
         final SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu =
-            new ChestMenu("你正在搜索: " + ChatUtils.crop(ChatColor.WHITE, searchTerm));
+        ChestMenu chestMenu = new ChestMenu("你正在搜索: " + ChatUtils.crop(ChatColor.WHITE, searchTerm));
 
         Format format = Formats.sub;
         int maxPage = (this.slimefunItemList.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
@@ -441,6 +403,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     }
 
     public List<SlimefunItem> filterItems(Player player, String searchTerm, boolean pinyin) {
+        if (searchTerm.isEmpty()) return Collections.emptyList();
         StringBuilder sb = new StringBuilder();
         String[] split = searchTerm.split(DELIMITER); // don't use the space " ", since it is used in many item names
         EnumMap<FilterType, String> filters = new EnumMap<>(FilterType.class);
@@ -466,7 +429,13 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             if (!isFilter) sb.append(s).append(DELIMITER); // pad the delimiter
         }
 
-        String actualSearchTerm = FilterType.quoteFlags(sb.toString().trim());
+        searchTerm = sb.toString();
+        // remove tail delimiter
+        if (searchTerm.endsWith(DELIMITER)) {
+            searchTerm = searchTerm.substring(0, searchTerm.length() - DELIMITER.length());
+        }
+
+        searchTerm = FilterType.quoteFlags(searchTerm.trim());
 
         Set<SlimefunItem> result = new HashSet<>(36 * 4);
         // The unfiltered items
@@ -474,9 +443,9 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             .filter(item -> item.getItemGroup().isAccessible(player))
             .toList());
 
-        if (!actualSearchTerm.isBlank()) {
-            result.addAll(matchItems(actualSearchTerm, KEYWORD_CACHE));
-            result.addAll(matchItems(actualSearchTerm, DISPLAY_RECIPES_CACHE));
+        if (!searchTerm.isBlank()) {
+            result.addAll(matchItems(searchTerm, KEYWORD_CACHE));
+            result.addAll(matchItems(searchTerm, DISPLAY_RECIPES_CACHE));
         }
 
         // Filter items
@@ -489,9 +458,9 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         }
 
         if (pinyin && onlyAscii(searchTerm)) {
-            return sortByPinyinContinuity(result, actualSearchTerm);
+            return sortByPinyinContinuity(result, searchTerm);
         } else {
-            return sortByNameFit(result, actualSearchTerm);
+            return sortByNameFit(result, searchTerm);
         }
     }
 
@@ -519,7 +488,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         String filterValue,
         boolean pinyin,
         List<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
+        String lowerFilterValue = filterValue.toLowerCase(Locale.ROOT);
         return items.stream()
             .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
             .toList();
@@ -530,7 +499,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         String filterValue,
         boolean pinyin,
         Set<SlimefunItem> items) {
-        String lowerFilterValue = filterValue.toLowerCase();
+        String lowerFilterValue = filterValue.toLowerCase(Locale.ROOT);
         return items.stream()
             .filter(item -> filterType.getFilter().apply(player, item, lowerFilterValue, pinyin))
             .collect(Collectors.toSet());

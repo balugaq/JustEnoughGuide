@@ -78,6 +78,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -312,7 +313,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     public static NamespacedKey getKey0() {
-        return KeyUtil.newKey(RecipeCompletableListener.class.getSimpleName().toLowerCase());
+        return KeyUtil.newKey(RecipeCompletableListener.class.getSimpleName().toLowerCase(Locale.ROOT));
     }
 
     @SuppressWarnings("deprecation")

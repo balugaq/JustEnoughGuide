@@ -21,7 +21,6 @@ import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Getter;
 import net.guizhanss.slimefuntranslation.SlimefunTranslation;
 import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
@@ -47,14 +46,6 @@ public class SlimefunTranslationIntegrationMain implements Integration {
         }
 
         return itemStack;
-    }
-
-    public static String getTranslatedItemName(Player player, SlimefunItem slimefunItem) {
-        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimefunTranslation()) {
-            return SlimefunTranslationAPI.getItemName(SlimefunTranslationAPI.getUser(player), slimefunItem);
-        }
-
-        return slimefunItem.getItemName();
     }
 
     @Override

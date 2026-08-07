@@ -43,6 +43,7 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -72,7 +73,7 @@ public abstract class AbstractItemSettingsGuideOption implements PrioritySlimefu
             if (sf == null) return null;
             return Converter.getItem(sf.getItem());
         } else if (s.startsWith("mc:")) {
-            Material material = Material.getMaterial(s.substring(3).toUpperCase());
+            Material material = Material.getMaterial(s.substring(3).toUpperCase(Locale.ROOT));
             if (material == null) return null;
             return Converter.getItem(material);
         } else {
@@ -190,7 +191,7 @@ public abstract class AbstractItemSettingsGuideOption implements PrioritySlimefu
         SlimefunItem sf = SlimefunItem.getByItem(item);
         if (sf == null) {
             Material material = item.getType();
-            setItemStack(p, k, index, "mc:" + material.name().toLowerCase());
+            setItemStack(p, k, index, "mc:" + material.name().toLowerCase(Locale.ROOT));
         } else {
             setItemStack(p, k, index, "sf:" + sf.getId());
         }

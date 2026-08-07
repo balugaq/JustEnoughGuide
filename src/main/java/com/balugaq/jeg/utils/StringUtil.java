@@ -21,6 +21,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.experimental.UtilityClass;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +50,7 @@ public class StringUtil {
         StringBuilder sb = new StringBuilder();
         while (matcher.find()) {
             StringBuilder replacement = new StringBuilder("&x");
-            for (char c : matcher.group(1).toLowerCase().toCharArray()) {
+            for (char c : matcher.group(1).toLowerCase(Locale.ROOT).toCharArray()) {
                 replacement.append('&').append(c);
             }
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement.toString()));

@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author balugaq
@@ -94,7 +95,7 @@ public class SlimefunIdPatchListener implements ItemPatchListener {
         if (lore == null) {
             lore = new ArrayList<>();
         }
-        lore.add(ChatColors.color("&8slimefun:" + sf.getId().toLowerCase()));
+        lore.add(ChatColors.color("&8slimefun:" + sf.getId().toLowerCase(Locale.ROOT)));
 
         meta.setLore(lore);
         tagMeta(meta);
