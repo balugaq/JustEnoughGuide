@@ -265,9 +265,7 @@ public class GuideUtil {
             );
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            synchronized (RTSSearchGroup.RTS_PAGES) {
-                RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-            }
+            RTSSearchGroup.RTS_PAGES.put(pl, newPage);
         }
     }
 
@@ -293,9 +291,7 @@ public class GuideUtil {
             );
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            synchronized (RTSSearchGroup.RTS_PAGES) {
-                RTSSearchGroup.RTS_PAGES.put(pl, newPage);
-            }
+            RTSSearchGroup.RTS_PAGES.put(pl, newPage);
         }
     }
 

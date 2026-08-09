@@ -177,7 +177,7 @@ public class ReplacementCardAdapter {
                 newSf.load();
             } catch (IllegalStateException ex) {
                 if (ex.getMessage().equals("Asynchronous Recipe Add!")) {
-                    JustEnoughGuide.runNextTick(newSf::load);
+                    JustEnoughGuide.runAsync(newSf::load);
                 }
             } catch (Exception ignored) {
             }

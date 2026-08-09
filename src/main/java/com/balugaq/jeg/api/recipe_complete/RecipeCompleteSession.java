@@ -248,6 +248,6 @@ public class RecipeCompleteSession {
 
     @Override
     public String toString() {
-        return "RecipeCompleteSession{type=" + (inventory == null ? "sf" : "vanilla") + ", player=" + player.getName() + "}";
+        return "RecipeCompleteSession{type=" + (inventory == null ? "sf" : "vanilla") + ", player=" + player.getUniqueId() + "}";
     }
 }

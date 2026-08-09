@@ -49,6 +49,7 @@ import com.balugaq.jeg.utils.UUIDUtils;
 import com.balugaq.jeg.utils.formatter.Formats;
 import com.balugaq.jeg.utils.platform.PlatformUtil;
 import com.balugaq.jeg.utils.platform.scheduler.TaskScheduler;
+import com.tcoded.folialib.FoliaLib;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
@@ -146,6 +147,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private JEGMetrics metrics = null;
 
     @Getter
+    @UnknownNullability
+    private FoliaLib foliaLib = null;
+
+    @Getter
     private int javaVersion = 0;
 
     public JustEnoughGuide() {
@@ -175,11 +180,11 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     }
 
     public static void postServerStartup(Runnable runnable) {
-        JustEnoughGuide.runNextTick(runnable);
+        JustEnoughGuide.runAsync(runnable);
     }
 
-    public static void runNextTick(Runnable runnable) {
-        getScheduler().runNextTick(runnable);
+    public static void runAsync(Runnable runnable) {
+        getScheduler().runAsync(runnable);
     }
 
     public static TaskScheduler getScheduler() {
@@ -294,6 +299,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             onDisable();
             return;
         }
+
+        this.foliaLib = new FoliaLib(JustEnoughGuide.getInstance());
 
         PlatformUtil.initialize();
         this.scheduler = TaskScheduler.create();

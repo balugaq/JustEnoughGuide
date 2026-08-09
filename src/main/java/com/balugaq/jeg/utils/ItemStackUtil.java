@@ -17,7 +17,6 @@
 
 package com.balugaq.jeg.utils;
 
-import com.balugaq.jeg.api.objects.annotations.Author;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -60,7 +59,10 @@ public final class ItemStackUtil {
     private static final ItemStack AIR = new ItemStack(Material.AIR);
     @Unmodifiable
     private static final ItemStack BARRIER = new ItemStack(Material.BARRIER);
-    @Author("lijinhong11")
+
+    /**
+     * @author lijinhong11
+     */
     private static final Map<String, String> materialMappings = Map.of(
         "GRASS", "SHORT_GRASS",
         "SHORT_GRASS", "GRASS",
@@ -106,8 +108,11 @@ public final class ItemStackUtil {
         }
     }
 
+    /**
+     * @author lijinhong11
+     * @author balugaq
+     */
     @Nullable
-    @Author("lijinhong11 & balugaq")
     public static ItemStack readItem(char c, @Nullable ConfigurationSection section) {
         if (section == null) {
             return null;
@@ -159,9 +164,12 @@ public final class ItemStackUtil {
         }
     }
 
+    /**
+     * @author lijinhong11
+     * @author balugaq
+     */
     @Nullable
     @SuppressWarnings("deprecation")
-    @Author("lijinhong11 & balugaq")
     public static ItemStack readItem(
         char c,
         final ConfigurationSection section,
@@ -302,7 +310,9 @@ public final class ItemStackUtil {
         return glow ? doGlow(itemStack) : itemStack;
     }
 
-    @Author("lijinhong11")
+    /**
+     * @author lijinhong11
+     */
     public static ItemStack doGlow(ItemStack item) {
         item.addUnsafeEnchantment(Enchantment.INFINITY, 1);
         item.addItemFlags(ItemFlag.HIDE_ENCHANTS);

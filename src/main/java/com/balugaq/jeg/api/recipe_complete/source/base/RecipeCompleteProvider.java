@@ -154,7 +154,7 @@ public class RecipeCompleteProvider {
 
     public static void openVanilla(RecipeCompleteSession session) {
         RecipeCompleteProvider.getVanillaSources().stream().findFirst().ifPresent(source -> {
-            RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(session.getPlayer());
+            RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(session.getPlayer().getUniqueId());
             source.openGuide(session);
         });
     }

@@ -25,15 +25,14 @@ import org.jspecify.annotations.NullMarked;
  * @author balugaq
  * @since 2.0
  */
-@Getter
 @NullMarked
 public class BukkitTaskScheduler implements TaskScheduler {
-    public void runNextTick(Runnable runnable) {
-        getBukkitScheduler().runTask(getPlugin(), runnable);
-    }
-
     public BukkitScheduler getBukkitScheduler() {
         return TaskScheduler.getServer().getScheduler();
+    }
+
+    public void runAsync(Runnable runnable) {
+        getBukkitScheduler().runTask(getPlugin(), runnable);
     }
 
     public void runLater(Runnable runnable, long delay) {

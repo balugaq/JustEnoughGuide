@@ -76,7 +76,7 @@ public interface RecipeCompletableAdapter {
                 return false;
             }
 
-            if (RecipeCompletableListener.isSelectingItemStackToRecipeComplete(player)) {
+            if (RecipeCompletableListener.isSelectingItemStackToRecipeComplete(player.getUniqueId())) {
                 var session = RecipeCompleteSession.getSession(player);
                 if (session == null) return false;
                 if (session.getMenu() != null && session.getMenu().getLocation().equals(blockMenu.getLocation())) {
@@ -87,7 +87,7 @@ public interface RecipeCompletableAdapter {
                 }
             }
 
-            RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(player);
+            RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(player.getUniqueId());
             int[] slots = RecipeCompletableListener.getIngredientSlots(slimefunItem);
             boolean unordered = RecipeCompletableListener.isUnordered(slimefunItem);
             var session = RecipeCompleteSession.create(blockMenu, player, action, slots, unordered, 1);

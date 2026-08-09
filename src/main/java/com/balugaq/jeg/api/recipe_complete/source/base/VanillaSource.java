@@ -42,13 +42,13 @@ public interface VanillaSource extends Source {
     @SuppressWarnings({"deprecation", "UnusedReturnValue"})
     @Override
     default boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
-        Debug.debug(session + " open guide for " + session.getPlayer().getName());
+        Debug.debug(session + " open guide for " + session.getPlayer().getUniqueId());
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
 
         var p = GuideUtil.updatePlayer(player);
         if (p == null) return false;
-        GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p);
+        GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p.getUniqueId());
         if (clickAction.isRightClicked() && lastEvent != null) {
             handleSession(session, lastEvent, clickAction, false, callback);
             return true;

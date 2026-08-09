@@ -319,14 +319,9 @@ public interface Source {
 
     default void sendMissingMaterial(Player player, ItemStack itemStack) {
         if (NoticeMissingMaterialGuideOption.isEnabled(player)) {
-            var k = GuideUtil.updatePlayer(player);
-            if (k == null) return;
+            RecipeCompletableListener.missingMaterials.computeIfAbsent(player.getUniqueId(), k -> new ArrayList<>());
 
-            if (!RecipeCompletableListener.missingMaterials.containsKey(k)) {
-                RecipeCompletableListener.missingMaterials.put(k, new ArrayList<>());
-            }
-
-            var v = RecipeCompletableListener.missingMaterials.get(k);
+            var v = RecipeCompletableListener.missingMaterials.get(player.getUniqueId());
             synchronized (v) {
                 v.add(itemStack);
             }

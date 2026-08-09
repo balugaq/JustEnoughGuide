@@ -54,13 +54,13 @@ public interface TaskScheduler {
         return JustEnoughGuide.getInstance();
     }
 
-    default void runNextTick(Supplier<?> callable) {
-        runNextTick(() -> {
+    default void runAsync(Supplier<?> callable) {
+        runAsync(() -> {
             callable.get();
         });
     }
 
-    void runNextTick(Runnable runnable);
+    void runAsync(Runnable runnable);
 
     default void runLater(Supplier<?> callable, long delay) {
         runLater(() -> {

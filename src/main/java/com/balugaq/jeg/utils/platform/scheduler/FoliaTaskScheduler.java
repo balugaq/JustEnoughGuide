@@ -30,18 +30,13 @@ import org.jspecify.annotations.NullMarked;
 @Getter
 @NullMarked
 public class FoliaTaskScheduler extends PaperTaskScheduler {
-    private final FoliaLib foliaLib;
 
-    public FoliaTaskScheduler() {
-        foliaLib = new FoliaLib(JustEnoughGuide.getInstance());
-    }
-
-    public void runNextTick(Runnable runnable) {
-        getPlatformScheduler().runNextTick(tsk -> runnable.run());
+    public void runAsync(Runnable runnable) {
+        getPlatformScheduler().runAsync(tsk -> runnable.run());
     }
 
     public PlatformScheduler getPlatformScheduler() {
-        return foliaLib.getScheduler();
+        return JustEnoughGuide.getInstance().getFoliaLib().getScheduler();
     }
 
     public void runLater(Runnable runnable, long delay) {

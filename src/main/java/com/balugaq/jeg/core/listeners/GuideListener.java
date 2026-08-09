@@ -17,7 +17,6 @@
 
 package com.balugaq.jeg.core.listeners;
 
-import com.balugaq.jeg.api.objects.annotations.PatchCode;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -29,6 +28,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -87,12 +87,9 @@ public class GuideListener implements Listener {
         }
     }
 
-    @Internal
-    public static void openGuideAsync(Player player, SlimefunGuideMode mode) {
-        JustEnoughGuide.runLaterAsync(() -> openGuide(player, mode), 1L);
-    }
-
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)")
+    /**
+     * @see SlimefunGuideListener#tryOpenGuide(Player, PlayerRightClickEvent, SlimefunGuideMode)
+     */
     @Internal
     public static Event.Result tryOpenGuide(Player p, PlayerRightClickEvent e, SlimefunGuideMode layout) {
         ItemStack item = e.getItem();
@@ -121,7 +118,9 @@ public class GuideListener implements Listener {
         }
     }
 
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onInteract(PlayerRightClickEvent)")
+    /**
+     * @see SlimefunGuideListener#onInteract(PlayerRightClickEvent)
+     */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onInteract(PlayerRightClickEvent e) {
         Player p = e.getPlayer();
@@ -150,7 +149,9 @@ public class GuideListener implements Listener {
         }
     }
 
-    @PatchCode("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener.onJoin(PlayerJoinEvent)")
+    /**
+     * @see SlimefunGuideListener#onJoin(PlayerJoinEvent)
+     */
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (this.giveOnFirstJoin && !e.getPlayer().hasPlayedBefore()) {
