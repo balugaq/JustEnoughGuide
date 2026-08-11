@@ -1,4 +1,4 @@
-@file:Suppress("VulnerableLibrariesLocal")
+@file:Suppress("VulnerableLibrariesLocal", "UnstableApiUsage")
 
 /*
 * Copyright (c) 2024-2026 balugaq
@@ -16,10 +16,9 @@
 * along with this program. If not, see <https://www.gnu.org/licenses/>.
 *
 */
-
 plugins {
     java
-    id("com.gradleup.shadow") version "9.4.1"
+    alias(libs.plugins.shadow.jar)
 }
 
 group = "io.github.balugaq"
@@ -47,41 +46,41 @@ repositories {
 }
 
 dependencies {
-    // Paper API
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    compileOnly("com.github.SlimefunGuguProject:Slimefun4:2025.1.2")
+    // Paper & Slimefun 编译仅依赖
+    compileOnly(libs.paper.api)
+    compileOnly(libs.slimefun4)
 
-    // Libraries to be packaged (shadow)
-    implementation("org.bstats:bstats-bukkit:3.2.1")
-    implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
-    implementation("com.github.balugaq:AnvilGUI:ca2ef9e187")
-    implementation("com.tcoded:FoliaLib:0.5.2")
-    implementation("net.byteflux:libby-bukkit:1.3.2")
-    implementation("org.jetbrains:annotations:26.1.0")
-    implementation("org.jspecify:jspecify:1.0.0")
+    // 需内嵌打包的依赖
+    implementation(libs.bstats.bukkit)
+    implementation(libs.more.persistent.data.types)
+    implementation(libs.anvilgui)
+    implementation(libs.folia.lib)
+    implementation(libs.libby.bukkit)
+    implementation(libs.jetbrains.annotations)
+    implementation(libs.jspecify)
 
-    compileOnly("com.google.code.findbugs:annotations:3.0.1u2")
-    compileOnly("org.projectlombok:lombok:1.18.46")
-    annotationProcessor("org.projectlombok:lombok:1.18.46")
+    compileOnly(libs.findbugs.annotations)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 
-    // Downloaded in LibraryManager
-    compileOnly("com.github.houbb:pinyin:0.4.0")
-    compileOnly("com.github.houbb:opencc4j:1.14.0")
-    compileOnly("com.github.houbb:heaven:0.13.0")
-    compileOnly("com.github.houbb:nlp-common:0.0.5")
+    // LibraryManager动态加载依赖
+    compileOnly(libs.houbb.pinyin)
+    compileOnly(libs.houbb.opencc4j)
+    compileOnly(libs.houbb.heaven)
+    compileOnly(libs.houbb.nlp.common)
 
-    compileOnly("net.guizhanss:GuizhanLibPlugin:2.5.0")
-    compileOnly("net.guizhanss:SlimefunTranslation:e6da231617")
-    compileOnly("me.clip:placeholderapi:2.12.3")
+    compileOnly(libs.guizhan.lib)
+    compileOnly(libs.slimefun.translation)
+    compileOnly(libs.placeholderapi)
 
-    compileOnly("com.github.ytdd9527:NetworksExpansion:0cfc607e89")
-    compileOnly("com.github.balugaq:SlimeAE:40ff388e88")
-    compileOnly("com.github.Zrips:CMILib:1.5.9.6")
-    compileOnly("com.github.TimetownDev:GuguSlimefunLib:3f1830a50b")
-    compileOnly("com.github.balugaq:EMCTech:d6e4b43d23")
-    compileOnly("com.github.balugaq:SlimeHUD:ad7a52fead")
-    compileOnly("com.github.balugaq:SlimeFunRecipe:ef222864d0")
-    compileOnly("com.github.balugaq:RykenSlimeCustomizer:fc6c0a3f35")
+    compileOnly(libs.networks.expansion)
+    compileOnly(libs.slime.ae)
+    compileOnly(libs.cmi.lib)
+    compileOnly(libs.gugu.slimefun.lib)
+    compileOnly(libs.emc.tech)
+    compileOnly(libs.slime.hud)
+    compileOnly(libs.slimefun.recipe)
+    compileOnly(libs.ryken.slime.customizer)
 
     // System-scoped local JARs
     compileOnly(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))

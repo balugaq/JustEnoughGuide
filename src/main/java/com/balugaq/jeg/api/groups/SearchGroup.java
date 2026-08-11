@@ -35,7 +35,7 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"deprecation", "unused", "ConstantValue", "JavaExistingMethodCanBeUsed", "removal"})
+@SuppressWarnings({"deprecation", "unused", "ConstantValue", "JavaExistingMethodCanBeUsed"})
 @NullMarked
 public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final ConcurrentHashMap<UUID, String> searchTerms = new ConcurrentHashMap<>();

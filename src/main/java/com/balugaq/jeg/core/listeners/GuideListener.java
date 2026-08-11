@@ -19,6 +19,7 @@ package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
@@ -114,6 +115,7 @@ public class GuideListener implements Listener {
         try {
             openGuide(p, mode);
         } catch (Exception ex) {
+            Debug.trace(ex);
             PlayerProfile.find(e.getPlayer()).ifPresent(profile -> GuideUtil.removeLastEntry(profile.getGuideHistory()));
         }
     }

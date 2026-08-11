@@ -1,0 +1,75 @@
+[versions]
+# Plugin
+shadow = "9.4.1"
+lombok = "1.18.46"
+findbugsAnnotations = "3.0.1u2"
+jetbrainsAnnotations = "26.1.0"
+jspecify = "1.0.0"
+
+# Paper & Slimefun
+paperApi = "1.21.11-R0.1-SNAPSHOT"
+slimefun4 = "2025.1.2"
+
+# Shadow打包依赖
+bstatsBukkit = "3.2.1"
+morePersistentDataTypes = "2.4.0"
+foliaLib = "0.5.2"
+libbyBukkit = "1.3.2"
+
+# 第三方插件/库版本
+placeholderapi = "2.12.3"
+guizhanLibPlugin = "2.5.0"
+cmiLib = "1.5.9.6"
+
+# JitPack短commit哈希（直接写入版本位）
+anvilgui = "ca2ef9e187"
+slimefunTranslation = "e6da231617"
+networksExpansion = "0cfc607e89"
+slimeAE = "40ff388e88"
+guguSlimefunLib = "3f1830a50b"
+emcTech = "d6e4b43d23"
+slimeHUD = "ad7a52fead"
+slimeFunRecipe = "ef222864d0"
+rykenSlimeCustomizer = "fc6c0a3f35"
+
+# 拼音/NLP工具
+houbbPinyin = "0.4.0"
+houbbOpencc4j = "1.14.0"
+houbbHeaven = "0.13.0"
+houbbNlpCommon = "0.0.5"
+
+[libraries]
+# 编译仅依赖
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paperApi" }
+slimefun4 = { module = "com.github.SlimefunGuguProject:Slimefun4", version.ref = "slimefun4" }
+findbugs-annotations = { module = "com.google.code.findbugs:annotations", version.ref = "findbugsAnnotations" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+# JitPack工具类
+anvilgui = { module = "com.github.balugaq:AnvilGUI", version.ref = "anvilgui" }
+# Shadow内嵌依赖
+bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstatsBukkit" }
+more-persistent-data-types = { module = "com.jeff-media:MorePersistentDataTypes", version.ref = "morePersistentDataTypes" }
+folia-lib = { module = "com.tcoded:FoliaLib", version.ref = "foliaLib" }
+libby-bukkit = { module = "net.byteflux:libby-bukkit", version.ref = "libbyBukkit" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrainsAnnotations" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+# Houbb系列
+houbb-pinyin = { module = "com.github.houbb:pinyin", version.ref = "houbbPinyin" }
+houbb-opencc4j = { module = "com.github.houbb:opencc4j", version.ref = "houbbOpencc4j" }
+houbb-heaven = { module = "com.github.houbb:heaven", version.ref = "houbbHeaven" }
+houbb-nlp-common = { module = "com.github.houbb:nlp-common", version.ref = "houbbNlpCommon" }
+# 插件依赖
+guizhan-lib = { module = "net.guizhanss:GuizhanLibPlugin", version.ref = "guizhanLibPlugin" }
+slimefun-translation = { module = "net.guizhanss:SlimefunTranslation", version.ref = "slimefunTranslation" }
+placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }
+networks-expansion = { module = "com.github.ytdd9527:NetworksExpansion", version.ref = "networksExpansion" }
+slime-ae = { module = "com.github.balugaq:SlimeAE", version.ref = "slimeAE" }
+cmi-lib = { module = "com.github.Zrips:CMILib", version.ref = "cmiLib" }
+gugu-slimefun-lib = { module = "com.github.TimetownDev:GuguSlimefunLib", version.ref = "guguSlimefunLib" }
+emc-tech = { module = "com.github.balugaq:EMCTech", version.ref = "emcTech" }
+slime-hud = { module = "com.github.balugaq:SlimeHUD", version.ref = "slimeHUD" }
+slimefun-recipe = { module = "com.github.balugaq:SlimeFunRecipe", version.ref = "slimeFunRecipe" }
+ryken-slime-customizer = { module = "com.github.balugaq:RykenSlimeCustomizer", version.ref = "rykenSlimeCustomizer" }
+
+[plugins]
+shadow-jar = { id = "com.gradleup.shadow", version.ref = "shadow" }

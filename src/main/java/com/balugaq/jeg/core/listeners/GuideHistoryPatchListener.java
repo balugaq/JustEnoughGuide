@@ -22,6 +22,7 @@ import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.events.AsyncProfileLoadEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -29,9 +30,9 @@ import org.bukkit.event.Listener;
  * @since 2.1
  */
 public class GuideHistoryPatchListener implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onProfileLoad(AsyncProfileLoadEvent event) {
-        Debug.debug("Patched " + event.getProfile().getPlayer().getName() + "'s Slimefun PlayerProfile");
+        Debug.log("Patched " + event.getProfile().getPlayer().getName() + "'s Slimefun PlayerProfile");
         ReflectionUtil.setValue(event.getProfile(), "guideHistory", new JEGGuideHistory(event.getProfile()));
     }
 }

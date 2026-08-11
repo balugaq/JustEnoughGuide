@@ -35,7 +35,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.RandomizedSet;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -187,8 +187,10 @@ public class SearchGroupLoader {
     private static void addToCache(Map<Character, Set<SlimefunItem>> cache, char d, SlimefunItem slimefunItem) {
         cache.computeIfAbsent(d, k -> new HashSet<>());
         Set<SlimefunItem> set = cache.get(d);
-        if (!inBanlist(slimefunItem) && !inBlacklist(slimefunItem)) {
-            set.add(slimefunItem);
+        if (!inBanlist(slimefunItem)) {
+            if (cache == KEYWORD_CACHE || cache == DISPLAY_RECIPES_CACHE && !inBlacklist(slimefunItem)) {
+                set.add(slimefunItem);
+            }
         }
     }
 
