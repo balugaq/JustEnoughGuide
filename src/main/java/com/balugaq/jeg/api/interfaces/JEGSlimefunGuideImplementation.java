@@ -122,7 +122,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             return;
         }
 
-        profile.getGuideHistory().add(itemGroup, page);
+        GuideUtil.getProfile(profile).getGuideHistory().add(itemGroup, page);
 
         ChestMenu menu = create0(p);
 
@@ -220,7 +220,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
 
     default void openNestedItemGroup(
         Player p, PlayerProfile profile, NestedItemGroup nested, int page) {
-        GuideHistory history = profile.getGuideHistory();
+        GuideHistory history = GuideUtil.getProfile(profile).getGuideHistory();
 
         history.add(nested, page);
 
@@ -366,7 +366,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
 
         if (addToHistory) {
             // 1-based -> 0-based
-            profile.getGuideHistory().add(item, index - 1);
+            GuideUtil.getProfile(profile).getGuideHistory().add(item, index - 1);
         }
 
         displayItem(menu, profile, p, item, result, recipeType, recipeItems, task, format);
@@ -418,7 +418,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         AsyncRecipeChoiceTask task = new AsyncRecipeChoiceTask();
 
         if (addToHistory) {
-            profile.getGuideHistory().add(item);
+            GuideUtil.getProfile(profile).getGuideHistory().add(item);
         }
 
         ItemStack result = item.getRecipeOutput();
@@ -479,7 +479,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                     menu, this
                 )).ifSuccess(() -> {
                     if (action.isShiftClicked()) {
-                        openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
+                        openMainMenu(profile, GuideUtil.getProfile(profile).getGuideHistory().getMainMenuPage());
                     } else {
                         GuideUtil.goBack(history);
                     }
@@ -503,7 +503,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                     action,
                     menu, this
                 )).ifSuccess(() -> {
-                    openMainMenu(profile, profile.getGuideHistory().getMainMenuPage());
+                    openMainMenu(profile, GuideUtil.getProfile(profile).getGuideHistory().getMainMenuPage());
                     return false;
                 })
             );
@@ -584,7 +584,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         Debug.warn("我们正在尝试恢复玩家 \"" + p.getName() + "\" 的指南...");
         PlayerProfile profile = PlayerProfile.find(p).orElse(null);
         if (profile == null) return;
-        GuideUtil.removeLastEntry(profile.getGuideHistory());
+        GuideUtil.removeLastEntry(profile);
     }
 
     @Override
@@ -706,7 +706,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             return;
         }
 
-        GuideHistory history = profile.getGuideHistory();
+        GuideHistory history = GuideUtil.getProfile(profile).getGuideHistory();
         history.clear();
         history.setMainMenuPage(page);
 

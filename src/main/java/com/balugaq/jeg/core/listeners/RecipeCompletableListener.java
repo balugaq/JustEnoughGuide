@@ -230,8 +230,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     }
 
     public static PlayerProfile getPlayerProfile(OfflinePlayer player) {
-        // Shouldn't be null;
-        return PlayerProfile.find(player).orElseThrow(() -> new RuntimeException("PlayerProfile not found"));
+        return GuideUtil.getProfile(player);
     }
 
     public static void saveOriginGuideHistory(PlayerProfile profile) {

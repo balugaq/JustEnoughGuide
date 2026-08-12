@@ -54,13 +54,13 @@ public class KeybindsItemsGroup extends BaseGroup<KeybindsItemsGroup> {
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu menu = new ChestMenu("&6选择你要编辑的按键控制集");
 
         Format format = Formats.keybinds;
         int pages = (OnClick.keybindSets().size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(menu, format, playerProfile, player, this, this.page, pages);
+        GuideUtil.commonRender(menu, format, profile, player, this, this.page, pages);
 
         int i = 0;
         for (int s : format.getChars(Formats.Char.CONTENT)) {

@@ -81,11 +81,11 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
     @Override
     public void open(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunGuideMode slimefunGuideMode) {
         if (actions.isEmpty()) {
-            playerProfile.getGuideHistory().add(this, this.page);
-            this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
+            GuideUtil.getProfile(profile).getGuideHistory().add(this, this.page);
+            this.generateMenu(player, profile, slimefunGuideMode).open(player);
             return;
         }
 
@@ -102,14 +102,10 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
             player.closeInventory();
             player.chat(s.substring(5).replace("%player%", player.getName()));
         } else if (s.startsWith("lookupitem ")) {
-            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-            if (profile == null) return;
             SlimefunItem item = SlimefunItem.getById(s.substring(11));
             if (item == null) return;
             GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).displayItem(profile, item, true);
         } else if (s.startsWith("lookupgroup ")) {
-            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-            if (profile == null) return;
             for (ItemGroup group : new ArrayList<>(Slimefun.getRegistry().getAllItemGroups())) {
                 if (group.getKey().toString().equals(s.substring(12))) {
                     GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE).openItemGroup(profile, group, 1);
@@ -124,7 +120,7 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
 
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu(ItemStackHelper.getDisplayName(getItem(player)));
 
@@ -133,7 +129,7 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
         Format format = Formats.sub;
         int maxPage = (this.objects.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
+        GuideUtil.commonRender(chestMenu, format, profile, player, this, this.page, maxPage);
 
         List<Integer> contentSlots = Formats.sub.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {
@@ -148,7 +144,7 @@ public abstract class MixedGroup<T extends BaseGroup<T>> extends BaseGroup<T> {
                         if (GuideUtil.getGuide(
                             player, GuideUtil.getLastGuideMode(player)
                         ) instanceof JEGSlimefunGuideImplementation guide) {
-                            guide.showItemGroup0(chestMenu, player, playerProfile, itemGroup, contentSlots.get(i));
+                            guide.showItemGroup0(chestMenu, player, profile, itemGroup, contentSlots.get(i));
                         }
                     }
                     case ItemStack itemStack ->

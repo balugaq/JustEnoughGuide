@@ -97,7 +97,7 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
     @Override
     public boolean isVisible(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         return true;
     }
@@ -105,22 +105,22 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
     @Override
     public void open(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
-        playerProfile.getGuideHistory().add(this, this.page);
-        this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
+        GuideUtil.getProfile(profile).getGuideHistory().add(this, this.page);
+        this.generateMenu(player, profile, slimefunGuideMode).open(player);
     }
 
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("原版物品");
 
         Format format = Formats.sub;
         int maxPage = (slimefunItems.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
+        GuideUtil.commonRender(chestMenu, format, profile, player, this, this.page, maxPage);
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
 
         List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
@@ -134,21 +134,6 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
         }
 
         return chestMenu;
-    }
-
-    /**
-     * Reopens the menu for the player.
-     *
-     * @param player            The player who opened the group.
-     * @param playerProfile     The player's profile.
-     * @param slimefunGuideMode The Slimefun guide mode.
-     */
-    public void refresh(
-        final Player player,
-        final PlayerProfile playerProfile,
-        final SlimefunGuideMode slimefunGuideMode) {
-        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-        this.open(player, playerProfile, slimefunGuideMode);
     }
 
     @Override

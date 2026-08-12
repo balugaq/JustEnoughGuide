@@ -72,14 +72,14 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
     @Override
     public boolean isVisible(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         return false;
     }
 
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("添加收藏物 - JEG");
 
@@ -91,18 +91,18 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             itemGroup instanceof BookmarkRelocation relocation
                 ? relocation.getBackButton(implementation, player)
                 : format.getChars(Formats.Char.BACK),
-            playerProfile,
+            profile,
             player
         );
 
-        GuideUtil.addSettingsPanelButton(chestMenu, format, playerProfile, player);
+        GuideUtil.addSettingsPanelButton(chestMenu, format, profile, player);
 
         GuideUtil.addSearchButton(
             chestMenu,
             itemGroup instanceof BookmarkRelocation relocation
                 ? relocation.getSearchButton(implementation, player)
                 : format.getChars(Formats.Char.SEARCH),
-            playerProfile,
+            profile,
             player
         );
 
@@ -112,7 +112,7 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             itemGroup instanceof BookmarkRelocation relocation
                 ? relocation.getPreviousButton(implementation, player)
                 : format.getChars(Formats.Char.PREVIOUS_PAGE),
-            playerProfile,
+            profile,
             player,
             this,
             page,
@@ -124,7 +124,7 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             itemGroup instanceof BookmarkRelocation relocation
                 ? relocation.getNextButton(implementation, player)
                 : format.getChars(Formats.Char.NEXT_PAGE),
-            playerProfile,
+            profile,
             player,
             this,
             page,
@@ -136,7 +136,7 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             itemGroup instanceof BookmarkRelocation relocation
                 ? relocation.getBorder(implementation, player)
                 : format.getChars(Formats.Char.BACKGROUND),
-            playerProfile,
+            profile,
             Models.ITEM_MARK_BACKGROUND
         );
 
@@ -153,9 +153,9 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
             }
         }
 
-        GuideUtil.addRTSButton(chestMenu, format, playerProfile, player);
-        GuideUtil.addBookMarkButton(chestMenu, format, playerProfile, player, this);
-        GuideUtil.addItemMarkButton(chestMenu, format, playerProfile, player, this);
+        GuideUtil.addRTSButton(chestMenu, format, profile, player);
+        GuideUtil.addBookMarkButton(chestMenu, format, profile, player, this);
+        GuideUtil.addItemMarkButton(chestMenu, format, profile, player, this);
 
         if (!(itemGroup instanceof BookmarkRelocation)) {
             format.renderCustom(chestMenu);

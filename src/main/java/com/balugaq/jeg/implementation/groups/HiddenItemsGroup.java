@@ -75,13 +75,13 @@ public class HiddenItemsGroup extends BaseGroup<HiddenItemsGroup> {
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("隐藏物品");
 
         Format format = Formats.sub;
         int maxPage = (this.slimefunItemList.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
+        GuideUtil.commonRender(chestMenu, format, profile, player, this, this.page, maxPage);
 
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
         List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);

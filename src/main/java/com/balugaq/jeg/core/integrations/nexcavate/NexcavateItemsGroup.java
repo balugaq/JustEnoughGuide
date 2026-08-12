@@ -76,14 +76,14 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("文明复兴物品");
 
         Format format = Formats.sub;
         List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
         int maxPage = (this.slimefunItemList.size() - 1) / contentSlots.size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, page, maxPage);
+        GuideUtil.commonRender(chestMenu, format, profile, player, this, page, maxPage);
 
         var impl = GuideUtil.getLastJEGGuide(player);
         if (impl == null) return chestMenu;

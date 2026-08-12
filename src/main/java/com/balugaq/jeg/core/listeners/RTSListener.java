@@ -485,7 +485,7 @@ public class RTSListener implements Listener {
             SlimefunGuideMode mode = openingPlayers.get(player);
             SlimefunGuideImplementation implementation =
                 GuideUtil.getSlimefunGuide(mode);
-            PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+            PlayerProfile profile = GuideUtil.getProfile(player);
             if (profile != null) {
                 SlimefunItem slimefunItem = SlimefunItem.getById(itemStack
                     .getItemMeta()

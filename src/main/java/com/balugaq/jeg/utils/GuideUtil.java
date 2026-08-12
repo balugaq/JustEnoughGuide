@@ -78,6 +78,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -171,6 +172,10 @@ public class GuideUtil {
      */
     public static void openMainMenu(Player player, PlayerProfile profile, SlimefunGuideMode mode, int selectedPage) {
         getGuide(player, mode).openMainMenu(profile, selectedPage);
+    }
+
+    public static void removeLastEntry(PlayerProfile profile) {
+        removeLastEntry(getProfile(profile).getGuideHistory());
     }
 
     public static void removeLastEntry(GuideHistory guideHistory) {
@@ -605,6 +610,25 @@ public class GuideUtil {
             action.material(),
             ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")")
         );
+    }
+
+    private static PlayerProfile tryPatchPlayerProfile(PlayerProfile profile) {
+        GuideHistory history = profile.getGuideHistory();
+        if (!(history instanceof JEGGuideHistory jeg)) {
+            ReflectionUtil.setValue(profile, "guideHistory", new JEGGuideHistory(profile));
+        }
+        return profile;
+    }
+
+    public static PlayerProfile getProfile(PlayerProfile profile) {
+        return tryPatchPlayerProfile(profile);
+    }
+
+    @Nullable
+    public static PlayerProfile getProfile(OfflinePlayer player) {
+        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+        if (profile == null) return null;
+        return tryPatchPlayerProfile(profile);
     }
 
     public static @Nullable Player updatePlayer(Player player) {

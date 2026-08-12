@@ -270,7 +270,7 @@ public class RTSSearchGroup extends FlexItemGroup {
     @Override
     public boolean isVisible(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunGuideMode slimefunGuideMode) {
         return false;
     }
@@ -278,20 +278,19 @@ public class RTSSearchGroup extends FlexItemGroup {
     @Override
     public void open(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunGuideMode slimefunGuideMode) {
-        GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+        GuideUtil.removeLastEntry(profile);
         newRTSInventoryFor(
             player,
             slimefunGuideMode,
             (s, stateSnapshot) -> {
                 if (s == AnvilGUI.Slot.INPUT_LEFT) {
-                    PlayerProfile profile = PlayerProfile.find(player).orElse(null);
-                    if (profile == null) {
-                        return;
-                    }
+                    PlayerProfile profile2 = GuideUtil.getProfile(player);
+                    if (profile2 == null) return;
+
                     // back button clicked
-                    GuideUtil.goBack(profile.getGuideHistory());
+                    GuideUtil.goBack(profile2.getGuideHistory());
                 } else if (s == AnvilGUI.Slot.INPUT_RIGHT) {
                     // previous page button clicked
                     SearchGroup rts = RTS_SEARCH_GROUPS.get(player);

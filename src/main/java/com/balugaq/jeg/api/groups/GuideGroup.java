@@ -165,7 +165,7 @@ public abstract class GuideGroup extends BaseGroup<GuideGroup> {
     @Override
     public boolean isVisible(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         return true;
     }
@@ -173,7 +173,7 @@ public abstract class GuideGroup extends BaseGroup<GuideGroup> {
     @Nullable
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode
     ) {
         if (page < 1 || page > contents.size()) {
@@ -182,7 +182,7 @@ public abstract class GuideGroup extends BaseGroup<GuideGroup> {
         }
 
         SlimefunGuideImplementation guide = GuideUtil.getGuide(player, slimefunGuideMode);
-        playerProfile.getGuideHistory().add(this, page);
+        GuideUtil.getProfile(profile).getGuideHistory().add(this, page);
         if (!(guide instanceof JEGSlimefunGuideImplementation jeg)) {
             player.sendMessage("§cJEG 模块未启用。你不能打开 JEG 使用指南。");
             return null;
@@ -193,7 +193,7 @@ public abstract class GuideGroup extends BaseGroup<GuideGroup> {
         if (isClassic()) {
             Format format = Formats.helper;
             int maxPage = (contents.size() - 1) / 36 + 1;
-            GuideUtil.commonRender(menu, format, playerProfile, player, this, page, maxPage);
+            GuideUtil.commonRender(menu, format, profile, player, this, page, maxPage);
         }
 
         for (Map.Entry<Integer, ItemStack> entry :

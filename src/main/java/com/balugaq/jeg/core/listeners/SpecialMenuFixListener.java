@@ -19,6 +19,7 @@ package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.utils.Debug;
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -47,7 +48,7 @@ public class SpecialMenuFixListener implements Listener {
     @EventHandler
     public void onSpecialMenuClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
-        PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+        PlayerProfile profile = GuideUtil.getProfile(player);
         if (profile == null) return;
 
         GuideHistory history = profile.getGuideHistory();

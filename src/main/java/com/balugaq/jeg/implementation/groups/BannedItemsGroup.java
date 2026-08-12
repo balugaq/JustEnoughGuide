@@ -64,13 +64,13 @@ public class BannedItemsGroup extends BaseGroup<BannedItemsGroup> {
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("已禁用的物品");
 
         Format format = Formats.sub;
         int maxPage = (this.slimefunItemList.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
+        GuideUtil.commonRender(chestMenu, format, profile, player, this, this.page, maxPage);
 
         var impl = GuideUtil.getLastJEGGuide(player);
         if (impl == null) return chestMenu;

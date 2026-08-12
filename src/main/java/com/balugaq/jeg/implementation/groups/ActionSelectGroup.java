@@ -64,13 +64,13 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu menu = new ChestMenu("&6点击选择切换的按键");
 
         Format format = Formats.actionSelect;
         int pages = (actions.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(menu, format, playerProfile, player, this, this.page, pages);
+        GuideUtil.commonRender(menu, format, profile, player, this, this.page, pages);
 
         int i = 0;
         for (int s : format.getChars(Formats.Char.CONTENT)) {
@@ -91,8 +91,8 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
                     BaseAction.redirect(pl, act.parent(), keybind, act);
                     pl.closeInventory();
                     pl.sendMessage(ChatColors.color("&a已设置 " + keybind.name() + " -> " + act.name()));
-                    GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
-                    playerProfile.getGuideHistory().openLastEntry(GuideUtil.getGuide(pl, slimefunGuideMode));
+                    GuideUtil.removeLastEntry(profile);
+                    GuideUtil.getProfile(profile).getGuideHistory().openLastEntry(GuideUtil.getGuide(pl, slimefunGuideMode));
                     return false;
                 })
             );

@@ -61,13 +61,13 @@ public class BookmarkGroup extends BaseGroup<BookmarkGroup> {
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("收藏页 - JEG");
 
         Format format = Formats.sub;
         int maxPage = (this.bookmarks.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
+        GuideUtil.commonRender(chestMenu, format, profile, player, this, this.page, maxPage);
 
         List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {

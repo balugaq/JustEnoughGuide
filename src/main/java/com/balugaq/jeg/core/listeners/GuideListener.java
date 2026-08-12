@@ -81,7 +81,7 @@ public class GuideListener implements Listener {
             if (lastMode != mode) {
                 GuideUtil.openMainMenu(player, profile, mode, 1);
             } else {
-                profile.getGuideHistory().openLastEntry(guide);
+                GuideUtil.getProfile(profile).getGuideHistory().openLastEntry(guide);
             }
         } else {
             GuideUtil.openMainMenuAsync(player, mode, 1);
@@ -116,7 +116,7 @@ public class GuideListener implements Listener {
             openGuide(p, mode);
         } catch (Exception ex) {
             Debug.trace(ex);
-            PlayerProfile.find(e.getPlayer()).ifPresent(profile -> GuideUtil.removeLastEntry(profile.getGuideHistory()));
+            PlayerProfile.find(e.getPlayer()).ifPresent(GuideUtil::removeLastEntry);
         }
     }
 

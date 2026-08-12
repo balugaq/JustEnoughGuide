@@ -172,7 +172,7 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
     @Override
     public boolean isVisible(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         return false;
     }
@@ -180,13 +180,13 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
     @Override
     public ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         ChestMenu chestMenu = new ChestMenu("&a性价比预览（仅供参考）");
 
         Format format = Formats.sub;
         int maxPage = (iconsLength() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;
-        GuideUtil.commonRender(chestMenu, format, playerProfile, player, this, this.page, maxPage);
+        GuideUtil.commonRender(chestMenu, format, profile, player, this, this.page, maxPage);
 
         List<Integer> contentSlots = Formats.sub.getChars(Formats.Char.CONTENT);
         for (int i = 0; i < contentSlots.size(); i++) {

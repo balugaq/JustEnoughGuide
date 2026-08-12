@@ -595,18 +595,17 @@ public interface OnClick {
                     Action.of(
                             "right-click", "删除标记的物品组", Material.BARREL, (guide, event, player, slot, itemGroup,
                                                                                  action, menu, page) -> EventUtil.callEvent(new GuideEvents.CollectItemGroupEvent(player, itemGroup, slot, action, menu, guide)).ifSuccess(() -> {
-                                PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
-                                if (playerProfile == null) return;
-                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                PlayerProfile profile = GuideUtil.getProfile(player);
+                                if (profile == null) return;
+                                GuideUtil.removeLastEntry(profile.getGuideHistory());
                                 JustEnoughGuide.getBookmarkManager().removeBookmark(player, itemGroup);
 
-                                List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items =
-                                        JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
+                                var items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
                                 if (items == null || items.isEmpty()) {
                                     player.closeInventory();
                                     return;
                                 }
-                                new BookmarkGroup(guide, items).open(player, playerProfile, guide.getMode());
+                                new BookmarkGroup(guide, items).open(player, profile, guide.getMode());
                             })
                     )
             );
@@ -1223,12 +1222,12 @@ public interface OnClick {
                     Action.of(
                             "right-click", "删除标记的物品", Material.BARREL, (guide, player, slot, slimefunItem, item,
                                                                                action, menu, page) -> {
-                                PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
-                                if (playerProfile == null) return;
+                                PlayerProfile profile = GuideUtil.getProfile(player);
+                                if (profile == null) return;
                                 if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
                                 if (slimefunItem == null) return;
 
-                                GuideUtil.removeLastEntry(playerProfile.getGuideHistory());
+                                GuideUtil.removeLastEntry(profile);
                                 JustEnoughGuide.getBookmarkManager().removeBookmark(player, slimefunItem);
 
                                 List<com.balugaq.jeg.api.objects.collection.data.Bookmark> items =
@@ -1237,7 +1236,7 @@ public interface OnClick {
                                     player.closeInventory();
                                     return;
                                 }
-                                new BookmarkGroup(guide, items).open(player, playerProfile, guide.getMode());
+                                new BookmarkGroup(guide, items).open(player, profile, guide.getMode());
                             }
                     )
             );
@@ -1359,13 +1358,13 @@ public interface OnClick {
                                 io.github.thebusybiscuit.slimefun4.api.researches.Research research =
                                         slimefunItem.getResearch();
                                 if (research == null) return;
-                                PlayerProfile playerProfile = PlayerProfile.find(player).orElse(null);
-                                if (playerProfile == null) return;
+                                PlayerProfile profile = PlayerProfile.find(player).orElse(null);
+                                if (profile == null) return;
 
                                 research.unlockFromGuide(
                                         guide,
                                         player,
-                                        playerProfile,
+                                        profile,
                                         slimefunItem,
                                         slimefunItem.getItemGroup(),
                                         findPage(slimefunItem)

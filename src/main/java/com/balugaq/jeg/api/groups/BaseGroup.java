@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.api.groups;
 
+import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
@@ -60,7 +61,7 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
     @Override
     public boolean isVisible(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
         return !isHidden();
     }
@@ -68,10 +69,10 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
     @Override
     public void open(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
-        playerProfile.getGuideHistory().add(this, page);
-        ChestMenu menu = generateMenu(player, playerProfile, slimefunGuideMode);
+        GuideUtil.getProfile(profile).getGuideHistory().add(this, page);
+        ChestMenu menu = generateMenu(player, profile, slimefunGuideMode);
         if (menu != null) {
             menu.open(player);
         }
@@ -80,7 +81,7 @@ public abstract class BaseGroup<T extends BaseGroup<T>> extends FlexItemGroup im
     @Nullable
     protected abstract ChestMenu generateMenu(
         final Player player,
-        final PlayerProfile playerProfile,
+        final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode);
 
     public T getByPage(int page) {

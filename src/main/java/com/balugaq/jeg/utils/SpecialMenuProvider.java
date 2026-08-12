@@ -511,21 +511,18 @@ public class SpecialMenuProvider {
         return false;
     }
 
-    @SuppressWarnings("RedundantThrows")
     public static boolean open(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunGuideMode slimefunGuideMode,
         SlimefunItem slimefunItem)
         throws IllegalAccessException, InstantiationException, InvocationTargetException {
-        if (player == null) {
-            return false;
-        }
+        GuideUtil.getProfile(profile);
         if (isFinalTECHItem(slimefunItem)) {
             FlexItemGroup flexItemGroup =
-                getFinalTECHRecipeItemGroup(player, playerProfile, slimefunGuideMode, slimefunItem);
+                getFinalTECHRecipeItemGroup(player, profile, slimefunGuideMode, slimefunItem);
             if (flexItemGroup != null) {
-                flexItemGroup.open(player, playerProfile, slimefunGuideMode);
+                flexItemGroup.open(player, profile, slimefunGuideMode);
                 Debug.debug("Opened FinalTECH special menu");
                 return true;
             }
@@ -534,23 +531,23 @@ public class SpecialMenuProvider {
             Debug.debug("Opened Nexcavate special menu");
             return true;
         } else if (isLogiTechItem(slimefunItem)) {
-            openLogiTechMenu(player, playerProfile, slimefunItem);
+            openLogiTechMenu(player, profile, slimefunItem);
             Debug.debug("Opened LogiTech special menu");
             return true;
         } else if (isInfinityExpansionSingularityItem(slimefunItem)) {
-            openInfinityExpansionSingularityMenu(player, playerProfile, slimefunItem);
+            openInfinityExpansionSingularityMenu(player, profile, slimefunItem);
             Debug.debug("Opened InfinityExpansion Singularity special menu");
             return true;
         } else if (isInfinityItem(slimefunItem)) {
-            openInfinityMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
+            openInfinityMenu(player, profile, slimefunItem, slimefunGuideMode);
             Debug.debug("Opened InfinityExpansion special menu");
             return true;
         } else if (isObsidianForgeItem(slimefunItem)) {
-            openObsidianForgeMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
+            openObsidianForgeMenu(player, profile, slimefunItem, slimefunGuideMode);
             Debug.debug("Opened ObsidianExpansion special menu");
             return true;
         } else if (isGalactifunItem(slimefunItem)) {
-            openGalactifunMenu(player, playerProfile, slimefunItem, slimefunGuideMode);
+            openGalactifunMenu(player, profile, slimefunItem, slimefunGuideMode);
             Debug.debug("Opened Galactifun special menu");
             return true;
         }
@@ -560,7 +557,7 @@ public class SpecialMenuProvider {
     @Nullable
     public static FlexItemGroup getFinalTECHRecipeItemGroup(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunGuideMode slimefunGuideMode,
         SlimefunItem slimefunItem)
         throws InvocationTargetException, IllegalAccessException {
@@ -573,7 +570,7 @@ public class SpecialMenuProvider {
         }
         methodRecipeItemGroup_getBySlimefunItem.setAccessible(true);
         return (FlexItemGroup) methodRecipeItemGroup_getBySlimefunItem.invoke(
-            null, player, playerProfile, slimefunGuideMode, slimefunItem, 1);
+            null, player, profile, slimefunGuideMode, slimefunItem, 1);
     }
 
     public static void openNexcavateGuide(Player player, SlimefunItem slimefunItem)
@@ -623,7 +620,7 @@ public class SpecialMenuProvider {
     }
 
     public static void openLogiTechMenu(
-        Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
+        Player player, PlayerProfile profile, SlimefunItem slimefunItem)
         throws InvocationTargetException, IllegalAccessException {
         if (methodMenuUtils_createItemRecipeDisplay == null) {
             return;
@@ -660,7 +657,7 @@ public class SpecialMenuProvider {
         }
 
         methodCustomMenu_open.invoke(menu, player);
-        insertUselessHistory(playerProfile);
+        insertUselessHistory(profile);
     }
 
     public static boolean isInfinityExpansionSingularityItem(SlimefunItem slimefunItem) {
@@ -669,20 +666,20 @@ public class SpecialMenuProvider {
     }
 
     public static void openInfinityExpansionSingularityMenu(
-        Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem)
+        Player player, PlayerProfile profile, SlimefunItem slimefunItem)
         throws InvocationTargetException, IllegalAccessException {
         if (!ENABLED_InfinityExpansion || !ENABLED_LogiTech) {
             return;
         }
 
         if (isInfinityExpansionSingularityItem(slimefunItem)) {
-            openLogiTechMenu(player, playerProfile, slimefunItem);
+            openLogiTechMenu(player, profile, slimefunItem);
         }
     }
 
     public static void openInfinityMenu(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunItem slimefunItem,
         SlimefunGuideMode slimefunGuideMode)
         throws InvocationTargetException, InstantiationException, IllegalAccessException {
@@ -691,12 +688,12 @@ public class SpecialMenuProvider {
         }
 
         if (isInfinityItem(slimefunItem)) {
-            if (isPlayerResearchedInfinity(player, playerProfile, slimefunItem)) {
+            if (isPlayerResearchedInfinity(player, profile, slimefunItem)) {
                 if (constructorInfinityExpansion_BackEntry == null || methodInfinityGroup_openInfinityRecipe == null) {
                     return;
                 }
                 Object backEntry = constructorInfinityExpansion_BackEntry.newInstance(
-                    null, playerProfile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
+                    null, profile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
                 methodInfinityGroup_openInfinityRecipe.invoke(null, player, slimefunItem.getId(), backEntry);
                 /**
                  * Intentionally insert useless history twice to fix Back Button of InfinityGroup
@@ -704,11 +701,11 @@ public class SpecialMenuProvider {
                  * @author balugaq
                  * @since 1.3
                  */
-                insertUselessHistory(playerProfile);
-                insertUselessHistory(playerProfile);
+                insertUselessHistory(profile);
+                insertUselessHistory(profile);
             } else {
                 if (objectInfinityExpansion_INFINITY instanceof FlexItemGroup flexItemGroup) {
-                    flexItemGroup.open(player, playerProfile, slimefunGuideMode);
+                    flexItemGroup.open(player, profile, slimefunGuideMode);
                 }
             }
         }
@@ -716,7 +713,7 @@ public class SpecialMenuProvider {
 
     public static void openObsidianForgeMenu(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunItem slimefunItem,
         SlimefunGuideMode slimefunGuideMode)
         throws InvocationTargetException, InstantiationException, IllegalAccessException {
@@ -728,15 +725,15 @@ public class SpecialMenuProvider {
                 return;
             }
             Object backEntry = constructorObsidianExpansion_BackEntry.newInstance(
-                null, playerProfile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
+                null, profile, GuideUtil.getSlimefunGuide(slimefunGuideMode));
             methodObsidianExpansion_openFORGERecipe.invoke(null, player, slimefunItem.getId(), backEntry);
-            insertUselessHistory(playerProfile);
+            insertUselessHistory(profile);
         }
     }
 
     public static void openGalactifunMenu(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunItem slimefunItem,
         SlimefunGuideMode slimefunGuideMode) throws InvocationTargetException, IllegalAccessException {
         if (!ENABLED_Galactifun) {
@@ -757,7 +754,7 @@ public class SpecialMenuProvider {
                 sfis,
                 slimefunItem.getRecipe()
             );
-            methodGalactifun_displayItem.invoke(objectGalactifun_ASSEMBLY_CATEGORY, player, playerProfile, entry);
+            methodGalactifun_displayItem.invoke(objectGalactifun_ASSEMBLY_CATEGORY, player, profile, entry);
         }
     }
 
@@ -789,17 +786,17 @@ public class SpecialMenuProvider {
      * This method is used to insert useless history into the player profile. It is used to fix the bug of the special
      * menu not working in some cases.
      *
-     * @param playerProfile The player profile to insert useless history
+     * @param profile The player profile to insert useless history
      * @author balugaq
      * @see SpecialMenuFixListener
      * @since 1.3
      */
-    public static void insertUselessHistory(PlayerProfile playerProfile) {
-        playerProfile.getGuideHistory().add(PLACEHOLDER_SEARCH_TERM);
+    public static void insertUselessHistory(PlayerProfile profile) {
+        profile.getGuideHistory().add(PLACEHOLDER_SEARCH_TERM);
     }
 
     public static boolean isPlayerResearchedInfinity(
-        Player player, PlayerProfile playerProfile, SlimefunItem slimefunItem) {
+        Player player, PlayerProfile profile, SlimefunItem slimefunItem) {
         if (!ENABLED_InfinityExpansion) {
             return false;
         }
@@ -810,7 +807,7 @@ public class SpecialMenuProvider {
                 return true;
             }
 
-            return playerProfile.hasUnlocked(research);
+            return profile.hasUnlocked(research);
         }
 
         return false;
@@ -818,14 +815,14 @@ public class SpecialMenuProvider {
 
     public static void fallbackOpen(
         Player player,
-        PlayerProfile playerProfile,
+        PlayerProfile profile,
         SlimefunGuideMode slimefunGuideMode,
         SlimefunItem slimefunItem) {
         SlimefunGuideImplementation implementation = GuideUtil.getSlimefunGuide(slimefunGuideMode);
         if (implementation instanceof JEGSlimefunGuideImplementation jeg) {
-            jeg.displayItem(playerProfile, slimefunItem, true);
+            jeg.displayItem(profile, slimefunItem, true);
         } else {
-            implementation.displayItem(playerProfile, slimefunItem, true);
+            implementation.displayItem(profile, slimefunItem, true);
         }
     }
 
