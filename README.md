@@ -1,3 +1,5 @@
+
+
 # JustEnoughGuide - Better Slimefun Guide
 
 <img src="https://builds.guizhanss.com/api/badge/balugaq/JustEnoughGuide/master/latest"> [Download](https://builds.guizhanss.com/balugaq/JustEnoughGuide/master/builds)
@@ -85,7 +87,7 @@ The plugin includes Chinese translations for a large number of Slimefun addons, 
 
 ## Contributing
 
-Feel free to submit issues and pull requests to help improve this plugin.
+Feel free to submit issues and pull requests to help improve this plugin. Please also review our [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 ## License
 
