@@ -17,12 +17,29 @@
 
 package com.balugaq.jeg.core.integrations.rykenslimefuncustomizer;
 
+import com.balugaq.jeg.api.SearchGroupLoader;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.lins.mmmjjkx.rykenslimefuncustomizer.events.AddonDisableEvent;
+import org.lins.mmmjjkx.rykenslimefuncustomizer.events.AddonEnableEvent;
+import org.lins.mmmjjkx.rykenslimefuncustomizer.events.AddonLoadEvent;
 
 /**
  * @author balugaq
  * @since 2.1
  */
 public class SearchGroupIndexRebuildListener implements Listener {
-    // todo
+    @EventHandler
+    public void onEnable(AddonEnableEvent event) {
+        rebuildSearchIndex();
+    }
+
+    @EventHandler
+    public void onDisable(AddonDisableEvent event) {
+        rebuildSearchIndex();
+    }
+
+    private static void rebuildSearchIndex() {
+        SearchGroupLoader.load();
+    }
 }

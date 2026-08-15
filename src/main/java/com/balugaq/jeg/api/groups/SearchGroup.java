@@ -64,23 +64,16 @@ import java.util.stream.Collectors;
 @NullMarked
 public class SearchGroup extends BaseGroup<SearchGroup> {
     public static final ConcurrentHashMap<UUID, String> searchTerms = new ConcurrentHashMap<>();
+    public static final int DEFAULT_MAP_SIZE = 5000;
 
     public static final Char2ObjectOpenHashMap<Set<SlimefunItem>> KEYWORD_CACHE =
         new Char2ObjectOpenHashMap<>(); // fast path for by item name
     public static final Char2ObjectOpenHashMap<Set<SlimefunItem>> DISPLAY_RECIPES_CACHE =
         new Char2ObjectOpenHashMap<>(); // fast path for by display item name
     public static final Map<String, Set<String>> SPECIAL_CACHE = new HashMap<>();
-
-    public static final String DELIMITER = ",";
-
-    static {
-        KEYWORD_CACHE.defaultReturnValue(null);
-        DISPLAY_RECIPES_CACHE.defaultReturnValue(null);
-    }
-
     /**
      * Pre-built cache of display item names per Slimefun item ID.
-     * Populated once during {@link #tryInit()} alongside CACHE2.
+     * Populated once during {@link #load()} alongside CACHE2.
      * <p>
      * Key: Slimefun item ID.<br>
      * Value: unmodifiable list of lower-cased display names from
@@ -92,11 +85,17 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
      * to match display-item names without ever calling {@code getDisplayRecipes()}
      * at search time.
      */
-    public static final Map<String, List<String>> DISPLAY_ITEM_NAMES_CACHE = new ConcurrentHashMap<>(5000);
-
-    public static final int DEFAULT_MAP_SIZE = 5000;
+    public static final Map<String, List<String>> DISPLAY_ITEM_NAMES_CACHE = new ConcurrentHashMap<>(DEFAULT_MAP_SIZE);
     public static final Map<SlimefunItem, Integer> ENABLED_ITEMS = new HashMap<>(DEFAULT_MAP_SIZE);
     public static final Set<SlimefunItem> AVAILABLE_ITEMS = new HashSet<>(DEFAULT_MAP_SIZE);
+
+    public static final String DELIMITER = ",";
+
+    static {
+        KEYWORD_CACHE.defaultReturnValue(null);
+        DISPLAY_RECIPES_CACHE.defaultReturnValue(null);
+    }
+
     public static boolean LOADED = false;
 
     public final SlimefunGuideImplementation implementation;
@@ -118,7 +117,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         final String searchTerm,
         boolean pinyin) {
         super();
-        tryInit();
+        load();
         this.page = 1;
         this.searchTerm = searchTerm;
         this.pinyin = pinyin;
@@ -250,7 +249,7 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     /**
      * Initializes the search group by populating caches and preparing data.
      */
-    public static void tryInit() {
+    public static void load() {
         if (LOADED) return;
 
         LOADED = true;

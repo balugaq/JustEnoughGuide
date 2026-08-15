@@ -13,26 +13,26 @@
 
 ## 1. 项目身份与边界
 
-| 维度 | 事实 |
-| --- | --- |
-| 定位 | Minecraft Paper 服务器插件，**Slimefun4 附属**，大幅增强原版粘液指南书（搜索 / 书签 / 界面 / 配方补全 / 按键绑定等） |
-| 入口类 | `com.balugaq.jeg.implementation.JustEnoughGuide`（`extends JavaPlugin implements SlimefunAddon`） |
-| 版本目标 | Java 21 工具链、`api-version: 1.17`、最低支持 MC 1.16（推荐 1.21.10+） |
-| 依赖 | `depend: [Slimefun]`；`softdepend: [GuizhanLibPlugin(硬前置校验)、Logitech、PlaceholderAPI、SlimefunTranslation、EMCTech、SlimefunRecipe 等]` |
-| 仓库策略 | 本地仓库即开发仓库，**没有上游**；**直接在 `master` 开发**，提交与推送均由开发者本人手动执行 |
-| AI 职责范围 | 编写/修改功能代码、Bug 修复、构建/CI 维护、文档维护 |
-| AI 不负责 | 执行 `git commit` / `git push`、发布版本（这些动作由开发者手动完成） |
+| 维度      | 事实                                                                                                                                |
+|---------|-----------------------------------------------------------------------------------------------------------------------------------|
+| 定位      | Minecraft Paper 服务器插件，**Slimefun4 附属**，大幅增强原版粘液指南书（搜索 / 书签 / 界面 / 配方补全 / 按键绑定等）                                                   |
+| 入口类     | `com.balugaq.jeg.implementation.JustEnoughGuide`（`extends JavaPlugin implements SlimefunAddon`）                                   |
+| 版本目标    | Java 21 工具链、`api-version: 1.17`、最低支持 MC 1.16（推荐 1.21.10+）                                                                         |
+| 依赖      | `depend: [Slimefun]`；`softdepend: [GuizhanLibPlugin(硬前置校验)、Logitech、PlaceholderAPI、SlimefunTranslation、EMCTech、SlimefunRecipe 等]` |
+| 仓库策略    | 本地仓库即开发仓库，**没有上游**；**直接在 `master` 开发**，提交与推送均由开发者本人手动执行                                                                           |
+| AI 职责范围 | 编写/修改功能代码、Bug 修复、构建/CI 维护、文档维护                                                                                                    |
+| AI 不负责  | 执行 `git commit` / `git push`、发布版本（这些动作由开发者手动完成）                                                                                   |
 
 ### 1.1 代码包地图（改代码前先定位）
 
-| 包 | 职责 |
-| --- | --- |
-| `com.balugaq.jeg.implementation` | 插件核心装配：`JustEnoughGuide`（主类 / 启动生命周期）、`GroupsSetup/ItemsSetup`（JEG 自己的物品组与指南选项注册）、`guide.SurvivalGuideImplementation` / `guide.CheatGuideImplementation`（**替换器**，用反射覆盖 Slimefun 的 guides 实现） |
-| `com.balugaq.jeg.core.managers` | 管理器：`ConfigManager`（配置门面）、`CommandManager`、`ListenerManager`、`IntegrationManager`（软依赖插件是否启用/初始化）、`BookmarkManager`（书签）、`RTSBackpackManager`（实时搜索背包） |
-| `com.balugaq.jeg.core.listeners` | 事件监听：`RTSListener`、`RecipeCompletableListener`、`GroupTierEditorListener`（物品组排序）、`GuideListener`、`BundleListener`、`CerPatchListener` 等 |
-| `com.balugaq.jeg.core.integrations.*` | 各软依赖附属适配（`emctech`、`slimefuntranslation`、`networksexpansion`、`slimeaeplugin`…），含 `core.integrations.Integration` 接口 |
-| `com.balugaq.jeg.api` | 对外扩展点/数据模型：`groups.*`（`BaseGroup`、`SearchGroup`、`RTSSearchGroup`、`CustomGroup`）、`recipe_complete.*`、`editor.GroupResorter`（物品组排序）、`patchcuts.JEGGuideSettings`、`objects.*`（事件 / 枚举 / 数据）、`multiblock.MultiBlockBuilder` |
-| `com.balugaq.jeg.utils` | 工具类：`GuideUtil`（指南渲染 / 按键打开）、`Debug`、`ReflectionUtil`（反射 patch Slimefun 内部仓库）、`ItemStackUtil`、`formatter.*`（`Formats`/`RecipeFormat`/`Format` 自定义布局）、`clickhandler.*`（`OnClick` / `OnDisplay` / `BaseAction` / `PermissibleAction`）
+| 包                                     | 职责                                                                                                                                                                                                                                  |
+|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `com.balugaq.jeg.implementation`      | 插件核心装配：`JustEnoughGuide`（主类 / 启动生命周期）、`GroupsSetup/ItemsSetup`（JEG 自己的物品组与指南选项注册）、`guide.SurvivalGuideImplementation` / `guide.CheatGuideImplementation`（**替换器**，用反射覆盖 Slimefun 的 guides 实现）                                        |
+| `com.balugaq.jeg.core.managers`       | 管理器：`ConfigManager`（配置门面）、`CommandManager`、`ListenerManager`、`IntegrationManager`（软依赖插件是否启用/初始化）、`BookmarkManager`（书签）、`RTSBackpackManager`（实时搜索背包）                                                                                 |
+| `com.balugaq.jeg.core.listeners`      | 事件监听：`RTSListener`、`RecipeCompletableListener`、`GroupTierEditorListener`（物品组排序）、`GuideListener`、`BundleListener`、`CerPatchListener` 等                                                                                               |
+| `com.balugaq.jeg.core.integrations.*` | 各软依赖附属适配（`emctech`、`slimefuntranslation`、`networksexpansion`、`slimeaeplugin`…），含 `core.integrations.Integration` 接口                                                                                                                 |
+| `com.balugaq.jeg.api`                 | 对外扩展点/数据模型：`groups.*`（`BaseGroup`、`SearchGroup`、`RTSSearchGroup`、`CustomGroup`）、`recipe_complete.*`、`editor.GroupResorter`（物品组排序）、`patchcuts.JEGGuideSettings`、`objects.*`（事件 / 枚举 / 数据）、`multiblock.MultiBlockBuilder`             |
+| `com.balugaq.jeg.utils`               | 工具类：`GuideUtil`（指南渲染 / 按键打开）、`Debug`、`ReflectionUtil`（反射 patch Slimefun 内部仓库）、`ItemStackUtil`、`formatter.*`（`Formats`/`RecipeFormat`/`Format` 自定义布局）、`clickhandler.*`（`OnClick` / `OnDisplay` / `BaseAction` / `PermissibleAction`） |
 
 ---
 
@@ -172,15 +172,15 @@
 
 > 本地推荐使用系统 `gradle`（仓库亦提供 wrapper：`gradlew.bat`）。受限环境下可加 `--no-daemon --no-watch-fs`。
 
-| 场景 | 命令 |
-| --- | --- |
-| 标准验收构建（必须通过） | `gradle clean build` |
-| 增量编译（快速检查） | `gradle compileJava` |
-| 打 fat jar（含 relocation） | `gradle shadowJar`（`build` 已依赖它） |
-| 运行单元测试（引入 JUnit 后） | `gradle test` |
-| 查看依赖树 | `gradle dependencies` |
-| 清理产物 | `gradle clean` |
-| 产物位置 | `build/libs/JustEnoughGuide-<version>.jar` |
+| 场景                      | 命令                                         |
+|-------------------------|--------------------------------------------|
+| 标准验收构建（必须通过）            | `gradle clean build`                       |
+| 增量编译（快速检查）              | `gradle compileJava`                       |
+| 打 fat jar（含 relocation） | `gradle shadowJar`（`build` 已依赖它）           |
+| 运行单元测试（引入 JUnit 后）      | `gradle test`                              |
+| 查看依赖树                   | `gradle dependencies`                      |
+| 清理产物                    | `gradle clean`                             |
+| 产物位置                    | `build/libs/JustEnoughGuide-<version>.jar` |
 
 ---
 
@@ -210,23 +210,23 @@
 
 构造时一次性把 `config.yml` 读入 `final` 字段，并提供只读 getter。常用：
 
-| Getter | 配置键 | 默认 |
-| --- | --- | --- |
-| `isDebug()` | `debug` | false |
-| `isAutoUpdate()` | `auto-update` | true |
-| `isPinyinSearch()` | `improvements.pinyin-search` | true |
-| `isBookmark()` | `improvements.bookmark` | true |
-| `isRTSSearch()` | `improvements.rts-search` | true |
-| `isBeginnerOption()` | `improvements.beginner-option` | true |
-| `isEMCValueDisplay()` | `improvements.emc-display-option` | true |
-| `isFinalTechValueDisplay()` | `improvements.finaltech-emc-display-option` | true |
-| `isFinalTECHValueDisplay()` | `improvements.finalTECH-emc-display-option` | true |
-| `isCerPatch()` | `improvements.cer-patch` | false |
-| `isRecipeComplete()` | `recipe-complete` | true |
-| `isAutoAddRecipeCompleteButton()` | `auto-add-recipe-complete-button` | true |
-| `getBlacklist()` / `getBanList()` | `blacklist` / `banlist` | `List<String>` |
-| `getSharedChars()` | `shared-chars` | `List<String>` |
-| `getMainFormat()` / `getRecipeFormat()` / `getKeybindsFormat()` / `getKeybindFormat()` | `custom-format.*` | `List<String>` |
+| Getter                                                                                 | 配置键                                         | 默认             |
+|----------------------------------------------------------------------------------------|---------------------------------------------|----------------|
+| `isDebug()`                                                                            | `debug`                                     | false          |
+| `isAutoUpdate()`                                                                       | `auto-update`                               | true           |
+| `isPinyinSearch()`                                                                     | `improvements.pinyin-search`                | true           |
+| `isBookmark()`                                                                         | `improvements.bookmark`                     | true           |
+| `isRTSSearch()`                                                                        | `improvements.rts-search`                   | true           |
+| `isBeginnerOption()`                                                                   | `improvements.beginner-option`              | true           |
+| `isEMCValueDisplay()`                                                                  | `improvements.emc-display-option`           | true           |
+| `isFinalTechValueDisplay()`                                                            | `improvements.finaltech-emc-display-option` | true           |
+| `isFinalTECHValueDisplay()`                                                            | `improvements.finalTECH-emc-display-option` | true           |
+| `isCerPatch()`                                                                         | `improvements.cer-patch`                    | false          |
+| `isRecipeComplete()`                                                                   | `recipe-complete`                           | true           |
+| `isAutoAddRecipeCompleteButton()`                                                      | `auto-add-recipe-complete-button`           | true           |
+| `getBlacklist()` / `getBanList()`                                                      | `blacklist` / `banlist`                     | `List<String>` |
+| `getSharedChars()`                                                                     | `shared-chars`                              | `List<String>` |
+| `getMainFormat()` / `getRecipeFormat()` / `getKeybindsFormat()` / `getKeybindFormat()` | `custom-format.*`                           | `List<String>` |
 
 Contract：getter 全部**只读**；`load()`/`unload()` 由主类生命周期统一调用，业务代码不直接 reload。
 
@@ -234,15 +234,15 @@ Contract：getter 全部**只读**；`load()`/`unload()` 由主类生命周期�
 
 指南渲染与导航的门面。常用入口：
 
-| 方法 | 用途 |
-| --- | --- |
-| `getGuide(player, mode)` | 取对应模式的 Guide 实现 |
-| `openKeybindsGui(player)` | 打开按键列表界面 |
-| `openKeybindGui(player, OnClick)` | 打开单按键编辑界面 |
-| `openActionSelectGui(player, OnClick, BaseAction)` | 打开按键动作选择界面 |
-| `getVisibleItemGroupsSurvival/Cheat(p, profile, selecting)` | 按自定义顺序返回可见物品组（接 `GroupResorter.sort`） |
-| `commonRender(menu, format, ...)` | 依据 `Format` 渲染公共元素（背景/翻页等） |
-| `getKeybindIcon(OnClick)` / `getLeftActionIcon(BaseAction)` / `getActionIcon(BaseAction)` | 按键/动作图标 |
+| 方法                                                                                        | 用途                                    |
+|-------------------------------------------------------------------------------------------|---------------------------------------|
+| `getGuide(player, mode)`                                                                  | 取对应模式的 Guide 实现                       |
+| `openKeybindsGui(player)`                                                                 | 打开按键列表界面                              |
+| `openKeybindGui(player, OnClick)`                                                         | 打开单按键编辑界面                             |
+| `openActionSelectGui(player, OnClick, BaseAction)`                                        | 打开按键动作选择界面                            |
+| `getVisibleItemGroupsSurvival/Cheat(p, profile, selecting)`                               | 按自定义顺序返回可见物品组（接 `GroupResorter.sort`） |
+| `commonRender(menu, format, ...)`                                                         | 依据 `Format` 渲染公共元素（背景/翻页等）            |
+| `getKeybindIcon(OnClick)` / `getLeftActionIcon(BaseAction)` / `getActionIcon(BaseAction)` | 按键/动作图标                               |
 
 Contract：`GuideUtil.shutdown()` 在卸载时清理缓存；不手动清缓存以免与 `GroupResorter.resort()`/reload 冲突。
 
@@ -272,13 +272,13 @@ Contract：`GuideUtil.shutdown()` 在卸载时清理缓存；不手动清缓存�
 
 ### 8.7 Debug（`com.balugaq.jeg.utils.Debug`）
 
-| 方法 | 说明 |
-| --- | --- |
-| `debug(...)` | 仅 `debug: true` 时输出（开发调试） |
-| `log/warn/severe(...)` / `log(Throwable)` | 控制台彩色输出 |
-| `trace/traceExactly(e[, doing][, code])` | 异常横幅 + 堆栈，并 `dumpToFile` 落盘 `error-reports/` |
-| `dumpToFile(e, code)` | 把异常详情/环境写盘 |
-| `sendMessage(player, msg)` | 给玩家发 `[插件名]消息`（原文，不走翻译） |
+| 方法                                        | 说明                                           |
+|-------------------------------------------|----------------------------------------------|
+| `debug(...)`                              | 仅 `debug: true` 时输出（开发调试）                    |
+| `log/warn/severe(...)` / `log(Throwable)` | 控制台彩色输出                                      |
+| `trace/traceExactly(e[, doing][, code])`  | 异常横幅 + 堆栈，并 `dumpToFile` 落盘 `error-reports/` |
+| `dumpToFile(e, code)`                     | 把异常详情/环境写盘                                   |
+| `sendMessage(player, msg)`                | 给玩家发 `[插件名]消息`（原文，不走翻译）                      |
 
 Contract：只读入参、仅副作用；catch 块必须用它记异常。
 

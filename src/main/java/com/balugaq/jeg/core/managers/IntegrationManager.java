@@ -267,7 +267,7 @@ public class IntegrationManager extends AbstractManager {
 
     private void startupIntegrations() {
         for (Integration integration : integrations) {
-            Debug.log("Hooking " + integration.getHookPlugin());
+            Debug.info("Hooking " + integration.getHookPlugin());
             try {
                 integration.onEnable();
             } catch (Throwable e) {
@@ -283,7 +283,7 @@ public class IntegrationManager extends AbstractManager {
 
     public void shutdownIntegrations() {
         for (Integration integration : integrations) {
-            Debug.log("Unhooking " + integration.getHookPlugin());
+            Debug.info("Unhooking " + integration.getHookPlugin());
             try {
                 integration.onDisable();
             } catch (Throwable e) {

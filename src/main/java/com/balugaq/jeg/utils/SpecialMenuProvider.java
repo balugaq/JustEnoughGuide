@@ -96,7 +96,7 @@ public class SpecialMenuProvider {
     public static @Nullable Object objectGalactifun_ASSEMBLY_CATEGORY = null;
     public static @Nullable Method methodGalactifun_displayItem = null;
 
-    public static void loadConfiguration() {
+    public static void load() {
         IntegrationManager.scheduleRun(SpecialMenuProvider::loadConfigurationInternal);
     }
 

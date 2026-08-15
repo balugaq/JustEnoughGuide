@@ -97,7 +97,7 @@ public class JustEnoughGuideIntegrationMain implements Integration {
             }
         }
 
-        Debug.log("正在加载指南选项...");
+        Debug.info("正在加载指南选项...");
         JEGGuideSettings.patchSlimefun();
         if (JustEnoughGuide.getConfigManager().isSlimefunIdDisplay()) {
             JEGGuideSettings.addOption(SlimefunIdDisplayGuideOption.instance());
@@ -114,10 +114,10 @@ public class JustEnoughGuideIntegrationMain implements Integration {
         JEGGuideSettings.addOption(RecipeFillingWithNearbyContainerGuideOption.instance());
         JEGGuideSettings.addOption(RecipeCompleteOpenModeGuideOption.instance());
         JEGGuideSettings.addOption(OpenBigRecipeMenuWhenPossibleGuideOption.instance());
-        Debug.log("指南选项加载完毕！");
+        Debug.info("指南选项加载完毕！");
 
         if (JustEnoughGuide.getConfigManager().isAutoAddRecipeCompleteButton()) {
-            Debug.log("正在自动添加 JustEnoughGuide 配方补全按钮");
+            Debug.info("正在自动添加 JustEnoughGuide 配方补全按钮");
             Debug.debug("Added RecipeComplete Buttons at: ");
             int count = 0;
             for (var entry : new HashMap<>(Slimefun.getRegistry().getMenuPresets()).entrySet()) {
@@ -138,7 +138,7 @@ public class JustEnoughGuideIntegrationMain implements Integration {
 
                 count++;
             }
-            Debug.log("已为 " + count + " 个机器添加配方补全按钮");
+            Debug.info("已为 " + count + " 个机器添加配方补全按钮");
         }
     }
 

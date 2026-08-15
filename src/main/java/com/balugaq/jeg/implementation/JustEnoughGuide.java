@@ -63,7 +63,8 @@ import lombok.Getter;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.LibraryManager;
-import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
+import net.guizhanss.minecraft.guizhanlib.updater.GuizhanUpdater;
+import net.kyori.adventure.internal.properties.AdventureProperties;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -239,7 +240,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             plugin.reloadConfig();
             SlimefunRegistryFinalizeListener.getTasks().forEach(Runnable::run);
             SlimefunRegistryFinalizeListener.clearTasks();
-            Debug.log("Plugin reloaded.");
+            Debug.info("Plugin reloaded.");
         } catch (Exception e) {
             sender.sendMessage(ChatColor.RED + "Failed to reload plugin.");
             Debug.trace(e);
@@ -291,17 +292,25 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public void onEnable() {
         instance = this;
 
+        if (!Boolean.TRUE.equals(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.value())) {
+            Debug.warn("=======================================================================");
+            Debug.warn("检测到 net.kyori.adventure.text.warnWhenLegacyFormattingDetected = false");
+            Debug.warn("为了避免大量无效日志刷屏，我们强烈建议您添加以下 JVM 参数以禁止警告:               ");
+            Debug.warn("-Dnet.kyori.adventure.text.warn_when_legacy_formatting_detected=false  ");
+            Debug.warn("参见 https://docs.papermc.io/paper/reference/system-properties/#netkyoriadventuretextwarnwhenlegacyformattingdetected");
+            Debug.warn("=======================================================================");
+        }
+
         // Checking environment compatibility
         boolean isCompatible = environmentCheck();
 
         if (!isCompatible) {
-            getLogger().warning("环境不兼容！插件已被禁用！");
+            getLogger().warning("环境不兼容！插件已禁用！");
             onDisable();
             return;
         }
 
         this.foliaLib = new FoliaLib(JustEnoughGuide.getInstance());
-
         PlatformUtil.initialize();
         this.scheduler = TaskScheduler.create();
 
@@ -336,8 +345,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         } catch (Exception e) {
             Debug.trace(e);
         }
-        getLogger().info("已替换生存指南");
-        getLogger().info("已替换作弊指南");
 
         getLogger().info("正在加载书签...");
         this.bookmarkManager = new BookmarkManager(this);
@@ -346,7 +353,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getLogger().info("正在加载物品组...");
         GroupSetup.setup();
         JustEnoughGuide.runLaterAsync(CustomGroupConfigurations::load, 1L);
-        getLogger().info("物品组加载完毕！");
 
         if (getConfigManager().isCerPatch()) {
             getLogger().info("已启用性价比系统");
@@ -360,14 +366,12 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.rtsBackpackManager.load();
 
         setupServerUUID();
-        SearchGroup.tryInit();
+        SearchGroup.load();
         GroupResorter.load();
-
-        SpecialMenuProvider.loadConfiguration();
+        SpecialMenuProvider.load();
         ReplacementCardAdapter.load();
         MultiBlockBuilder.load();
         ThirdPartyWarnings.check();
-
         IntegrationManager.scheduleRun(JEGGuideSettings::sortOptions);
 
         getLogger().info("正在适配其他插件...");
@@ -514,7 +518,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
 
         if (!Bukkit.getServer().getPluginManager().isPluginEnabled("GuizhanLibPlugin")) {
-            getLogger().log(Level.SEVERE, "本插件需要 鬼斩前置库插件(GuizhanLibPlugin) 才能运行!");
+            getLogger().log(Level.SEVERE, "本插件需要 鬼斩前置库插件 (GuizhanLibPlugin) 才能运行!");
             getLogger().log(Level.SEVERE, "从此处下载: https://50l.cc/gzlib");
             getLogger().log(Level.SEVERE, "当出现该报错时, 作者对一切后续的报错不负责");
             return false;

@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.api;
 
+import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.interfaces.DontShowInSearch;
 import com.balugaq.jeg.api.objects.Timer;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -33,6 +34,7 @@ import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.RandomizedSet;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
@@ -44,25 +46,53 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-import static com.balugaq.jeg.api.groups.SearchGroup.AVAILABLE_ITEMS;
-import static com.balugaq.jeg.api.groups.SearchGroup.DISPLAY_ITEM_NAMES_CACHE;
-import static com.balugaq.jeg.api.groups.SearchGroup.DISPLAY_RECIPES_CACHE;
-import static com.balugaq.jeg.api.groups.SearchGroup.ENABLED_ITEMS;
-import static com.balugaq.jeg.api.groups.SearchGroup.KEYWORD_CACHE;
-import static com.balugaq.jeg.api.groups.SearchGroup.SPECIAL_CACHE;
+import static com.balugaq.jeg.api.groups.SearchGroup.DEFAULT_MAP_SIZE;
 import static com.balugaq.jeg.api.groups.SearchGroup.inBanlist;
 import static com.balugaq.jeg.api.groups.SearchGroup.inBlacklist;
 
-@SuppressWarnings({"removal", "deprecation"})
+@SuppressWarnings("deprecation")
 public class SearchGroupLoader {
+    private static final Char2ObjectOpenHashMap<Set<SlimefunItem>> KEYWORD_CACHE_MAP = new Char2ObjectOpenHashMap<>();
+    private static final Char2ObjectOpenHashMap<Set<SlimefunItem>> DISPLAY_RECIPES_CACHE_MAP = new Char2ObjectOpenHashMap<>();
+    private static final Map<String, Set<String>> SPECIAL_CACHE_MAP = new HashMap<>();
+    private static final Map<String, List<String>> DISPLAY_ITEM_NAMES_CACHE_MAP = new ConcurrentHashMap<>(DEFAULT_MAP_SIZE);
+    private static final Map<SlimefunItem, Integer> ENABLED_ITEMS_MAP = new HashMap<>(DEFAULT_MAP_SIZE);
+    private static final Set<SlimefunItem> AVAILABLE_ITEMS_SET = new HashSet<>(DEFAULT_MAP_SIZE);
+
+    public static Char2ObjectOpenHashMap<Set<SlimefunItem>> getKeywordCacheMap() {
+        return KEYWORD_CACHE_MAP;
+    }
+
+    public static Char2ObjectOpenHashMap<Set<SlimefunItem>> getDisplayRecipesCacheMap() {
+        return DISPLAY_RECIPES_CACHE_MAP;
+    }
+
+    public static Map<String, Set<String>> getSpecialCacheMap() {
+        return SPECIAL_CACHE_MAP;
+    }
+
+    public static Map<String, List<String>> getDisplayItemNamesCacheMap() {
+        return DISPLAY_ITEM_NAMES_CACHE_MAP;
+    }
+
+    public static Map<SlimefunItem, Integer> getEnabledItems() {
+        return ENABLED_ITEMS_MAP;
+    }
+
+    public static Set<SlimefunItem> getAvailableItems() {
+        return AVAILABLE_ITEMS_SET;
+    }
+
     private static void initInfinityExpansionStoneworksFactory() {
         // InfinityExpansion StoneworksFactory
         Set<Material> materials = new HashSet<>();
@@ -84,11 +114,9 @@ public class SearchGroupLoader {
         Set<String> cache = new HashSet<>();
         for (Material material : materials) {
             String s = ItemStackHelper.getDisplayName(new ItemStack(material));
-            if (!inBanlist(s)) {
-                cache.add(s);
-            }
+            checkBan(s, cache::add);
         }
-        SPECIAL_CACHE.put("STONEWORKS_FACTORY", cache);
+        getSpecialCacheMap().put("STONEWORKS_FACTORY", cache);
     }
 
     private static void checkBan(String s, Consumer<String> consumer) {
@@ -136,12 +164,10 @@ public class SearchGroupLoader {
             SlimefunItem slimefunItem = slimefunItemStack.getItem();
             if (slimefunItem != null) {
                 String s = slimefunItem.getItemName();
-                if (!inBanlist(s)) {
-                    items.add(s);
-                }
+                checkBan(s, items::add);
             }
         }
-        SPECIAL_CACHE.put("SMART_FACTORY", items);
+        getSpecialCacheMap().put("SMART_FACTORY", items);
     }
 
     private static void initInfinityExpansionMobDataCard() {
@@ -168,7 +194,7 @@ public class SearchGroupLoader {
                         cache2.add(s);
                     }
                 }
-                SPECIAL_CACHE.put(((SlimefunItem) card).getId(), cache2);
+                getSpecialCacheMap().put(((SlimefunItem) card).getId(), cache2);
             });
         } catch (Exception ignored) {
         }
@@ -188,7 +214,7 @@ public class SearchGroupLoader {
         cache.computeIfAbsent(d, k -> new HashSet<>());
         Set<SlimefunItem> set = cache.get(d);
         if (!inBanlist(slimefunItem)) {
-            if (cache == KEYWORD_CACHE || cache == DISPLAY_RECIPES_CACHE && !inBlacklist(slimefunItem)) {
+            if (cache == getKeywordCacheMap() || cache == getDisplayRecipesCacheMap() && !inBlacklist(slimefunItem)) {
                 set.add(slimefunItem);
             }
         }
@@ -201,8 +227,8 @@ public class SearchGroupLoader {
         Set<String> cache2 = new HashSet<>();
         checkBan(item2.getItemName(), s -> {
             cache2.add(s);
-            SPECIAL_CACHE.put("VOID_HARVESTER", cache2);
-            SPECIAL_CACHE.put("INFINITY_VOID_HARVESTER", cache2);
+            getSpecialCacheMap().put("VOID_HARVESTER", cache2);
+            getSpecialCacheMap().put("INFINITY_VOID_HARVESTER", cache2);
         });
     }
 
@@ -373,9 +399,16 @@ public class SearchGroupLoader {
 
     public static void load() {
         var tm = Timer.start();
+        getEnabledItems().clear();
+        getAvailableItems().clear();
+        getKeywordCacheMap().clear();
+        getDisplayRecipesCacheMap().clear();
+        getDisplayItemNamesCacheMap().clear();
+        getSpecialCacheMap().clear();
+
         int i = 0;
         for (SlimefunItem item : new ArrayList<>(Slimefun.getRegistry().getEnabledSlimefunItems())) {
-            ENABLED_ITEMS.put(item, i);
+            getEnabledItems().put(item, i);
             i += 1;
             if ((item.isHidden() && !Slimefun.getConfigManager().isShowHiddenItemGroupsInSearch())
                 || item.getItemGroup().getClass().isAnnotationPresent(DontShowInSearch.class)
@@ -384,10 +417,10 @@ public class SearchGroupLoader {
                 continue;
             }
 
-            AVAILABLE_ITEMS.add(item);
+            getAvailableItems().add(item);
 
             String id = item.getId();
-            if (SPECIAL_CACHE.containsKey(id)) continue;
+            if (getSpecialCacheMap().containsKey(id)) continue;
 
             Set<String> cache = new HashSet<>();
 
@@ -405,7 +438,7 @@ public class SearchGroupLoader {
                 SearchGroupLoader::loadInfinityExpansionQuarry
             );
 
-            if (!cache.isEmpty()) SPECIAL_CACHE.put(id, cache);
+            if (!cache.isEmpty()) getSpecialCacheMap().put(id, cache);
         }
 
         initInfinityExpansionStoneworksFactory();
@@ -415,28 +448,42 @@ public class SearchGroupLoader {
         initCommon();
 
         for (String s : JustEnoughGuide.getConfigManager().getSharedChars()) {
-            shareCache(KEYWORD_CACHE, s);
-            shareCache(DISPLAY_RECIPES_CACHE, s);
+            shareCache(getKeywordCacheMap(), s);
+            shareCache(getDisplayRecipesCacheMap(), s);
         }
+
+        SearchGroup.ENABLED_ITEMS.clear();
+        SearchGroup.AVAILABLE_ITEMS.clear();
+        SearchGroup.KEYWORD_CACHE.clear();
+        SearchGroup.DISPLAY_RECIPES_CACHE.clear();
+        SearchGroup.DISPLAY_ITEM_NAMES_CACHE.clear();
+        SearchGroup.SPECIAL_CACHE.clear();
+
+        SearchGroup.ENABLED_ITEMS.putAll(getEnabledItems());
+        SearchGroup.AVAILABLE_ITEMS.addAll(getAvailableItems());
+        SearchGroup.KEYWORD_CACHE.putAll(getKeywordCacheMap());
+        SearchGroup.DISPLAY_RECIPES_CACHE.putAll(getDisplayRecipesCacheMap());
+        SearchGroup.DISPLAY_ITEM_NAMES_CACHE.putAll(getDisplayItemNamesCacheMap());
+        SearchGroup.SPECIAL_CACHE.putAll(getSpecialCacheMap());
 
         tm.logs();
         Debug.debug("Cache initialized.");
         Debug.debug("Search Group initialized.");
-        Debug.debug("Enabled items: " + ENABLED_ITEMS.size());
-        Debug.debug("Available items: " + AVAILABLE_ITEMS.size());
-        Debug.debug("Machine blocks cache: " + SPECIAL_CACHE.size());
+        Debug.debug("Enabled items: " + SearchGroup.ENABLED_ITEMS.size());
+        Debug.debug("Available items: " + SearchGroup.AVAILABLE_ITEMS.size());
+        Debug.debug("Machine blocks cache: " + SearchGroup.SPECIAL_CACHE.size());
         Debug.debug("Shared cache: " + JustEnoughGuide.getConfigManager().getSharedChars().size());
-        Debug.debug("Cache 1 (Keywords): " + KEYWORD_CACHE.size());
-        Debug.debug("Cache 2 (Display Recipes): " + DISPLAY_RECIPES_CACHE.size());
+        Debug.debug("Cache 1 (Keywords): " + SearchGroup.KEYWORD_CACHE.size());
+        Debug.debug("Cache 2 (Display Recipes): " + SearchGroup.DISPLAY_RECIPES_CACHE.size());
     }
 
     private static void initCommon() {
-        for (SlimefunItem slimefunItem : AVAILABLE_ITEMS) {
+        for (SlimefunItem slimefunItem : getAvailableItems()) {
             String name = ChatColor.stripColor(slimefunItem.getItemName());
-            addToCache(KEYWORD_CACHE, name, slimefunItem);
+            addToCache(getKeywordCacheMap(), name, slimefunItem);
 
             if (JustEnoughGuide.getConfigManager().isPinyinSearch()) {
-                addToCache(KEYWORD_CACHE, PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER, ""), slimefunItem);
+                addToCache(getKeywordCacheMap(), PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER, ""), slimefunItem);
             }
 
             List<ItemStack> displayRecipes = getDisplayRecipes(slimefunItem);
@@ -453,19 +500,19 @@ public class SearchGroupLoader {
                     // Also populate the character-index CACHE2 as before.
                     for (char c : name2.toCharArray()) {
                         char d = Character.toLowerCase(c);
-                        addToCache(DISPLAY_RECIPES_CACHE, d, slimefunItem);
+                        addToCache(getDisplayRecipesCacheMap(), d, slimefunItem);
                     }
                 }
                 if (!displayNames.isEmpty()) {
-                    DISPLAY_ITEM_NAMES_CACHE.put(slimefunItem.getId(), List.copyOf(displayNames));
+                    getDisplayItemNamesCacheMap().put(slimefunItem.getId(), List.copyOf(displayNames));
                 }
             }
 
             String id = slimefunItem.getId();
-            Set<String> cache = SPECIAL_CACHE.get(id);
+            Set<String> cache = getSpecialCacheMap().get(id);
             if (cache != null) {
                 for (String s : cache) {
-                    addToCache(DISPLAY_RECIPES_CACHE, s, slimefunItem);
+                    addToCache(getDisplayRecipesCacheMap(), s, slimefunItem);
                 }
             }
         }

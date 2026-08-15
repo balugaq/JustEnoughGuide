@@ -19,9 +19,8 @@ package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.Setter;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +45,7 @@ import java.util.UUID;
 public class Debug {
     private static final File errorsFolder =
         new File(JustEnoughGuide.getInstance().getDataFolder(), "error-reports");
-    private static final String debugPrefix = " Debug | ";
+    private static final String debugPrefix = "Debug | ";
     @Setter
     private static @Nullable JavaPlugin plugin = null;
 
@@ -56,18 +55,20 @@ public class Debug {
         }
     }
 
+    public static ComponentLogger getLogger() {
+        return getPlugin().getComponentLogger();
+    }
+
     public static void severe(Object... objects) {
         severe(Arrays.toString(objects));
     }
 
     public static void severe(String message) {
-        log("&e ERROR | " + message);
+        getLogger().error(ComponentUtils.legacyDeserialize(CMIChatColor.translate(message)));
     }
 
-    public static void log(String message) {
-        Bukkit.getServer()
-            .getConsoleSender()
-            .sendMessage("[" + JustEnoughGuide.getInstance().getName() + "] " + ChatColors.color(message));
+    public static void info(String message) {
+        getLogger().info(ComponentUtils.legacyDeserialize(CMIChatColor.translate(message)));
     }
 
     public static void severe(Throwable e) {
@@ -85,22 +86,15 @@ public class Debug {
 
     public static void trace(Throwable e, @Nullable String doing, @Nullable Integer code) {
         try {
-            getPlugin()
-                .getLogger()
-                .severe(
-                    "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
-                        "BUG!");
+            severe("DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
             if (code != null) {
-                getPlugin().getLogger().severe("Error code: " + code);
+                severe("Error code: " + code);
             }
-            getPlugin()
-                .getLogger()
-                .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
-                    + JustEnoughGuide.getInstance().getBugTrackerURL());
+            severe("If you are sure that this is a JustEnoughGuide bug, please report to " + JustEnoughGuide.getInstance().getBugTrackerURL());
             if (doing != null) {
-                getPlugin().getLogger().severe("An unexpected error occurred while " + doing);
+                severe("An unexpected error occurred while " + doing);
             } else {
-                getPlugin().getLogger().severe("An unexpected error occurred.");
+                severe("An unexpected error occurred.");
             }
 
             e.printStackTrace();
@@ -163,7 +157,7 @@ public class Debug {
     }
 
     public static void warn(String message) {
-        log("&e WARN | " + message);
+        getLogger().warn(ComponentUtils.legacyDeserialize(CMIChatColor.translate(message)));
     }
 
     public static void severe(@Nullable Object object) {
@@ -201,7 +195,7 @@ public class Debug {
 
     public static void debug(String message) {
         if (JustEnoughGuide.getConfigManager().isDebug()) {
-            log(debugPrefix + message);
+            info(debugPrefix + message);
         }
     }
 
@@ -246,60 +240,50 @@ public class Debug {
         Thread.dumpStack();
     }
 
-    public static void log(Object... object) {
-        log(Arrays.toString(object));
+    public static void info(Object... object) {
+        info(Arrays.toString(object));
     }
 
-    public static void log(@Nullable Object object) {
-        log(object == null ? "null" : object.toString());
+    public static void info(@Nullable Object object) {
+        info(object == null ? "null" : object.toString());
     }
 
-    public static void log(String... messages) {
+    public static void info(String... messages) {
         for (String message : messages) {
-            log(message);
+            info(message);
         }
     }
 
-    public static void log(Throwable e) {
+    public static void info(Throwable e) {
         Debug.trace(e);
     }
 
-    public static void log() {
-        log("");
+    public static void info() {
+        info("");
     }
 
     public static void traceExactly(Throwable e, @Nullable String doing, @Nullable Integer code) {
         try {
-            getPlugin()
-                .getLogger()
-                .severe("====================AN FATAL OCCURRED"
-                    + (doing != null ? (" WHEN " + doing.toUpperCase(Locale.ROOT)) : "") + "====================");
-            getPlugin()
-                .getLogger()
-                .severe(
-                    "DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide " +
-                        "BUG!");
+            severe("====================AN FATAL OCCURRED" + (doing != null ? (" WHEN " + doing.toUpperCase(Locale.ROOT)) : "") + "====================");
+            severe("DO NOT REPORT THIS ERROR TO JustEnoughGuide DEVELOPERS!!! THIS IS NOT A JustEnoughGuide BUG!");
             if (code != null) {
-                getPlugin().getLogger().severe("Error code: " + code);
+                severe("Error code: " + code);
             }
-            getPlugin()
-                .getLogger()
-                .severe("If you are sure that this is a JustEnoughGuide bug, please report to "
-                    + JustEnoughGuide.getInstance().getBugTrackerURL());
+            severe("If you are sure that this is a JustEnoughGuide bug, please report to "  + JustEnoughGuide.getInstance().getBugTrackerURL());
             if (doing != null) {
-                getPlugin().getLogger().severe("An unexpected error occurred while " + doing);
+                severe("An unexpected error occurred while " + doing);
             } else {
-                getPlugin().getLogger().severe("An unexpected error occurred.");
+                severe("An unexpected error occurred.");
             }
 
             e.printStackTrace();
 
-            getPlugin().getLogger().severe("ALL EXCEPTION INFORMATION IS BELOW:");
-            getPlugin().getLogger().severe("message: " + e.getMessage());
-            getPlugin().getLogger().severe("localizedMessage: " + e.getLocalizedMessage());
-            getPlugin().getLogger().severe("cause: " + e.getCause());
-            getPlugin().getLogger().severe("stackTrace: " + Arrays.toString(e.getStackTrace()));
-            getPlugin().getLogger().severe("suppressed: " + Arrays.toString(e.getSuppressed()));
+            severe("ALL EXCEPTION INFORMATION IS BELOW:");
+            severe("message: " + e.getMessage());
+            severe("localizedMessage: " + e.getLocalizedMessage());
+            severe("cause: " + e.getCause());
+            severe("stackTrace: " + Arrays.toString(e.getStackTrace()));
+            severe("suppressed: " + Arrays.toString(e.getSuppressed()));
 
             dumpToFile(e, code);
         } catch (Throwable e2) {
