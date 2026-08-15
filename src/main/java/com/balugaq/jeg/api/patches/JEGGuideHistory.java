@@ -17,9 +17,11 @@
 
 package com.balugaq.jeg.api.patches;
 
+import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.SpecialMenuProvider;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -28,12 +30,15 @@ import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.libraries.commons.lang.Validate;
 import lombok.Getter;
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import javax.annotation.Nullable;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Objects;
 
 /**
  * @author balugaq
@@ -143,7 +148,7 @@ public class JEGGuideHistory extends GuideHistory {
         }
 
         var obj = entry.get();
-        if (indexedObject.equals(obj)) {
+        if (Objects.equals(getKey(indexedObject), getKey(obj))) { // do a shallow equals
             // just set page of existing one
             paged.setPage(page);
             return;
@@ -151,6 +156,11 @@ public class JEGGuideHistory extends GuideHistory {
 
         // add new entry
         queue.add(entryCreator.createEntry());
+    }
+
+    public static Object getKey(Object obj) {
+        if (obj instanceof Keyed keyed) return keyed.getKey(); // item group
+        return obj;
     }
 
     public void goBack() {
