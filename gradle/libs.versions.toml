@@ -4,7 +4,7 @@ shadow = "9.4.1"
 lombok = "1.18.46"
 findbugsAnnotations = "3.0.1u2"
 jetbrainsAnnotations = "26.1.0"
-jspecify = "1.0.0"
+jspecify = "1.0.1"
 
 # Paper & Slimefun
 paperApi = "1.21.11-R0.1-SNAPSHOT"
