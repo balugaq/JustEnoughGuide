@@ -25,6 +25,7 @@ import com.balugaq.jeg.core.commands.GTEGCommand;
 import com.balugaq.jeg.core.commands.HelpCommand;
 import com.balugaq.jeg.core.commands.JEGCommands;
 import com.balugaq.jeg.core.commands.ReloadCommand;
+import com.balugaq.jeg.core.commands.SearchCommand;
 import com.balugaq.jeg.core.commands.ShareCommand;
 import com.balugaq.jeg.core.commands.ViewItemCommand;
 import lombok.Getter;
@@ -58,6 +59,7 @@ public class CommandManager extends AbstractManager {
         this.commands.addCommand(new CategoriesCommand());
         this.commands.addCommand(new ShareCommand());
         this.commands.addCommand(new ViewItemCommand());
+        this.commands.addCommand(new SearchCommand());
     }
 
     public boolean registerCommands() {

@@ -57,11 +57,6 @@ public class JEGCommands implements TabExecutor {
         final Command command,
         final String label,
         final String[] args) {
-        if (!sender.isOp()) {
-            sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
-            return false;
-        }
-
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Unknown command. Type /jeg help");
             return true;

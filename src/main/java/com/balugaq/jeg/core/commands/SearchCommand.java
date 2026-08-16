@@ -18,31 +18,32 @@
 package com.balugaq.jeg.core.commands;
 
 import com.balugaq.jeg.api.interfaces.JEGCommand;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.Getter;
+import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
 /**
- * This is the implementation of the "/jeg help" command. It shows the list of available commands and their usage.
- * <p>
- * This command is also the default command when no other command is specified.
- *
+ * This is the implementation of the "/jeg search" command.
  * @author balugaq
- * @since 1.1
+ * @since 2.1
  */
 @SuppressWarnings({"deprecation", "SwitchStatementWithTooFewBranches"})
 @Getter
 @NullMarked
-public class HelpCommand implements JEGCommand {
+public class SearchCommand implements JEGCommand {
     @Override
     public List<String> onTabCompleteRaw(CommandSender sender, String[] args) {
         switch (args.length) {
             case 1 -> {
-                return List.of("help");
+                return List.of("search");
             }
 
             default -> {
@@ -59,7 +60,7 @@ public class HelpCommand implements JEGCommand {
         final String[] args) {
         if (sender.isOp()) {
             if (args.length == 1) {
-                return "help".equalsIgnoreCase(args[0]);
+                return "search".equalsIgnoreCase(args[0]);
             }
         }
         return false;
@@ -71,19 +72,31 @@ public class HelpCommand implements JEGCommand {
         Command command,
         String label,
         String[] args) {
-        onHelp(sender);
-    }
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Slimefun.getLocalization().getMessage("messages.only-players"));
+            return;
+        }
 
-    private void onHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.GREEN + "JEG Commands:");
-        sender.sendMessage(ChatColor.GREEN + "/jeg help - Show this help message");
-        sender.sendMessage(ChatColor.GREEN + "/jeg reload - Reload JEG plugin");
-        sender.sendMessage(ChatColor.GREEN + "/jeg cache <section> <key>");
-        sender.sendMessage(ChatColor.GREEN + "/jeg disable - Disable JEG plugin");
-        sender.sendMessage(ChatColor.GREEN + "/jeg gteg - Get Guide Tier Editor");
-        sender.sendMessage(ChatColor.GREEN + "/jeg categories - View all the groups");
-        sender.sendMessage(ChatColor.GREEN + "/jeg share - Share the item on your hand");
-        sender.sendMessage(ChatColor.GREEN + "/jeg viewitem <Slimefun Item> - View Slimefun item");
-        sender.sendMessage(ChatColor.GREEN + "/jeg search [item name] - Search item on hand or search your input");
+        if (args.length == 1) {
+            ItemStack stack = player.getInventory().getItemInMainHand();
+            if (stack == null || stack.getType().isAir()) {
+                stack = player.getInventory().getItemInOffHand();
+            }
+            if (stack == null || stack.getType().isAir()) {
+                sender.sendMessage(ChatColor.RED + "你必须手持一个物品在手上");
+                return;
+            }
+
+            String itemName = ItemStackHelper.getDisplayName(stack).trim();
+            player.chat("/sf search " + ChatColor.stripColor(itemName));
+            return;
+        }
+
+        StringBuilder itemName = new StringBuilder();
+        for (int i = 1; i < args.length; i++) {
+            itemName.append(args[i]);
+        }
+
+        player.chat("/sf search " + ChatColor.stripColor(itemName.toString()));
     }
 }

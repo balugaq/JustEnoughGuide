@@ -75,13 +75,11 @@ public interface OnDisplay {
     interface ItemGroup extends OnDisplay {
         DisplayType Normal = DisplayType.Normal, Bookmark = DisplayType.Bookmark;
 
-        static ItemGroup Normal(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
-                                JEGSlimefunGuideImplementation guide) {
+        static ItemGroup Normal(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, JEGSlimefunGuideImplementation guide) {
             return new Normal(player, itemGroup, guide);
         }
 
-        static ItemGroup Bookmark(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
-                                  JEGSlimefunGuideImplementation guide) {
+        static ItemGroup Bookmark(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, JEGSlimefunGuideImplementation guide) {
             return new Bookmark(player, itemGroup, guide);
         }
 
@@ -89,19 +87,16 @@ public interface OnDisplay {
             return new Locked(player, itemGroup, guide);
         }
 
-        static ItemGroup NoPermission(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup
-            , JEGSlimefunGuideImplementation guide) {
+        static ItemGroup NoPermission(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, JEGSlimefunGuideImplementation guide) {
             return new NoPermission(player, itemGroup, guide);
         }
 
-        static ItemGroup display(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
-                                 DisplayType type, SlimefunGuideImplementation guide) {
+        static ItemGroup display(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, DisplayType type, SlimefunGuideImplementation guide) {
             if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, itemGroup, type, jeg);
             return display(player, itemGroup, type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
-        static ItemGroup display(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup,
-                                 DisplayType type, JEGSlimefunGuideImplementation guide) {
+        static ItemGroup display(Player player, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, DisplayType type, JEGSlimefunGuideImplementation guide) {
             // You're supposed to precheck it before displaying
             if (guide.getMode() == SlimefunGuideMode.SURVIVAL_MODE && (!itemGroup.isVisible(player) || itemGroup.isHidden(player) || !itemGroup.isAccessible(player))) {
                 return NoPermission(player, itemGroup, guide);
@@ -160,7 +155,8 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                    slot, GuideUtil.getItemGroupDisplayIcon(player, itemGroup),
+                    slot,
+                    GuideUtil.getItemGroupDisplayIcon(player, itemGroup),
                     OnClick.ItemGroup.Normal.create(guide, menu, itemGroup)
                 );
             }
@@ -242,13 +238,11 @@ public interface OnDisplay {
                     lore.add(ItemStackHelper.getDisplayName(parent.getItem(player)));
                 }
 
-                ItemStack icon = PatchScope.LockedItemGroup.patch(
-                    player, Converter.getItem(
-                        Material.BARRIER,
-                        "&4" + Slimefun.getLocalization().getMessage(player, "guide.locked") + " &7- &f" + ItemStackHelper.getDisplayName(itemGroup.getItem(player)),
-                        lore.toArray(new String[0])
-                    )
-                );
+                ItemStack icon = PatchScope.LockedItemGroup.patch(player, Converter.getItem(
+                    Material.BARRIER,
+                    "&4" + Slimefun.getLocalization().getMessage(player, "guide.locked") + " &7- &f" + ItemStackHelper.getDisplayName(itemGroup.getItem(player)),
+                    lore.toArray(new String[0])
+                ));
                 menu.addItem(slot, icon, OnClick.BaseClickHandler.deny());
             }
         }
@@ -268,12 +262,12 @@ public interface OnDisplay {
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 menu.addItem(
-                    slot, PatchScope.NoPermission.patch(
-                        player, Converter.getItem(
-                            ChestMenuUtils.getNoPermissionItem(),
-                            ItemStackHelper.getDisplayName(itemGroup.getItem(player))
-                        )
-                    ), OnClick.BaseClickHandler.deny()
+                    slot,
+                    PatchScope.NoPermission.patch(player, Converter.getItem(
+                        ChestMenuUtils.getNoPermissionItem(),
+                        ItemStackHelper.getDisplayName(itemGroup.getItem(player))
+                    )),
+                    OnClick.BaseClickHandler.deny()
                 );
             }
         }
@@ -285,19 +279,16 @@ public interface OnDisplay {
      */
     @SuppressWarnings("unused")
     interface RecipeType extends OnDisplay {
-        static RecipeType Normal(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType,
-                                 ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
+        static RecipeType Normal(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
             return new Normal(player, recipeType, itemStack, guide);
         }
 
-        static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType
-            , ItemStack itemStack, SlimefunGuideImplementation guide) {
+        static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, SlimefunGuideImplementation guide) {
             if (guide instanceof JEGSlimefunGuideImplementation jeg) return display(player, recipeType, itemStack, jeg);
             return display(player, recipeType, itemStack, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
-        static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType
-            , ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
+        static RecipeType display(Player player, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
             return Normal(player, recipeType, itemStack, guide);
         }
 
@@ -332,16 +323,17 @@ public interface OnDisplay {
      */
     @SuppressWarnings("ConstantValue")
     interface Item extends OnDisplay {
-        DisplayType Normal = DisplayType.Normal, ItemMark = DisplayType.ItemMark, Bookmark = DisplayType.Bookmark,
+        DisplayType
+            Normal = DisplayType.Normal,
+            ItemMark = DisplayType.ItemMark,
+            Bookmark = DisplayType.Bookmark,
             Search = DisplayType.Search;
 
-        static Item Vanilla(Player player, @Nullable SlimefunItem slimefunItem, ItemStack itemStack,
-                            JEGSlimefunGuideImplementation guide) {
+        static Item Vanilla(Player player, @Nullable SlimefunItem slimefunItem, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
             return new Vanilla(player, slimefunItem, itemStack, guide);
         }
 
-        static Item Normal(Player player, SlimefunItem item, ItemStack itemStack,
-                           JEGSlimefunGuideImplementation guide) {
+        static Item Normal(Player player, SlimefunItem item, ItemStack itemStack, JEGSlimefunGuideImplementation guide) {
             return new Normal(player, item, itemStack, guide);
         }
 
@@ -374,8 +366,7 @@ public interface OnDisplay {
             return display(player, item, Converter.getItem(item.getItem()), type, guide);
         }
 
-        static Item display(Player player, SlimefunItem slimefunItem, ItemStack itemStack, DisplayType type,
-                            JEGSlimefunGuideImplementation guide) {
+        static Item display(Player player, SlimefunItem slimefunItem, ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
             if (!JEGSlimefunGuideImplementation.hasPermission0(player, slimefunItem)) {
                 return NoPermission(player, slimefunItem, guide);
             }
@@ -432,8 +423,7 @@ public interface OnDisplay {
             return display(player, itemStack, type, GuideUtil.getGuide(player, SlimefunGuideMode.SURVIVAL_MODE));
         }
 
-        static Item display(Player player, @Nullable ItemStack itemStack, DisplayType type,
-                            JEGSlimefunGuideImplementation guide) {
+        static Item display(Player player, @Nullable ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
             if (itemStack == null) {
                 return Vanilla(player, null, Converter.getItem(), guide);
             }
@@ -471,8 +461,7 @@ public interface OnDisplay {
             private final JEGSlimefunGuideImplementation guide;
 
             @Override
-            public void at(ChestMenu menu, int slot, int page) {
-                io.github.thebusybiscuit.slimefun4.api.researches.Research research = item.getResearch();
+            public void at(ChestMenu menu, int slot, int page) {io.github.thebusybiscuit.slimefun4.api.researches.Research research = item.getResearch();
                 if (research == null) return;
 
                 ItemStack icon = Converter.getItem(
