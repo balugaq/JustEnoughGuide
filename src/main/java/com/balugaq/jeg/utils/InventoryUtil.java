@@ -22,7 +22,7 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 

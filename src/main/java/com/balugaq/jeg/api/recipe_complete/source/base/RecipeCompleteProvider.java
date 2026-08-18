@@ -25,7 +25,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;

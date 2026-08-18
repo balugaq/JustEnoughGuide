@@ -22,7 +22,7 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**

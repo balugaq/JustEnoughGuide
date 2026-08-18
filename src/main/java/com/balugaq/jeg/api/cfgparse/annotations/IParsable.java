@@ -17,7 +17,7 @@
 
 package com.balugaq.jeg.api.cfgparse.annotations;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Field;

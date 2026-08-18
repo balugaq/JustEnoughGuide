@@ -26,7 +26,7 @@ import net.guizhanss.slimefuntranslation.SlimefunTranslation;
 import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
