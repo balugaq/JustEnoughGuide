@@ -22,7 +22,7 @@ plugins {
 }
 
 group = "io.github.balugaq"
-version = "2.1.48"
+version = "2.1.49"
 
 repositories {
     mavenCentral()
@@ -81,6 +81,7 @@ dependencies {
     compileOnly(libs.slime.hud)
     compileOnly(libs.slimefun.recipe)
     compileOnly(libs.ryken.slime.customizer)
+    compileOnly(libs.logi.tech)
 
     // System-scoped local JARs
     compileOnly(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))

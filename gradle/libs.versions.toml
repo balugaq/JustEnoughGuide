@@ -31,6 +31,7 @@ emcTech = "d6e4b43d23"
 slimeHUD = "ad7a52fead"
 slimeFunRecipe = "ef222864d0"
 rykenSlimeCustomizer = "3.0.5"
+logiTech = "0648f9f439"
 
 # 拼音/NLP工具
 houbbPinyin = "0.4.0"
@@ -70,5 +71,6 @@ emc-tech = { module = "com.github.balugaq:EMCTech", version.ref = "emcTech" }
 slime-hud = { module = "com.github.balugaq:SlimeHUD", version.ref = "slimeHUD" }
 slimefun-recipe = { module = "com.github.balugaq:SlimeFunRecipe", version.ref = "slimeFunRecipe" }
 ryken-slime-customizer = { module = "io.github.balugaq:RykenSlimefunCustomizer", version.ref = "rykenSlimeCustomizer" }
+logi-tech = { module = "com.github.balugaq:LogiTech", version.ref = "logiTech"}
 [plugins]
 shadow-jar = { id = "com.gradleup.shadow", version.ref = "shadow" }

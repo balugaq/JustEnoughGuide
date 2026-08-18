@@ -35,13 +35,14 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.RandomizedSet;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import me.matl114.logitech.core.CustomSlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -531,7 +532,7 @@ public class SearchGroupLoader {
                 }
             }
             case RecipeDisplayItem rdi -> {
-                if (SpecialMenuProvider.ENABLED_LogiTech && SpecialMenuProvider.classLogiTech_CustomSlimefunItem != null && SpecialMenuProvider.classLogiTech_CustomSlimefunItem.isInstance(slimefunItem)) {
+                if (SpecialMenuProvider.ENABLED_LogiTech && slimefunItem instanceof CustomSlimefunItem) {
                     try {
                         displayRecipes = rdi.getDisplayRecipes();
                     } catch (Exception ignored) {

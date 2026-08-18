@@ -26,7 +26,7 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -36,57 +36,43 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class ItemsSetup {
     public static final RecipeCompleteGuide RECIPE_COMPLETE_GUIDE;
-    public static final SlimefunItem USAGE_INFO;
-    public static final SlimefunItem MECHANISM;
-    public static final SlimefunItem SUPPORTED_ADDONS_INFO;
+    public static final JEGSlimefunItem USAGE_INFO;
+    public static final JEGSlimefunItem MECHANISM;
+    public static final JEGSlimefunItem SUPPORTED_ADDONS_INFO;
+    public static final CustomLagBlock CUSTOM_LAG_BLOCK;
     @SuppressWarnings("unused")
     @ApiStatus.Obsolete
-    public static final SlimefunItem JEG_BUTTON;
+    public static final JEGSlimefunItem JEG_BUTTON;
 
     static {
         ItemStack craftingTable = new ItemStack(Material.CRAFTING_TABLE);
         ItemStack book = new ItemStack(Material.BOOK);
+        var NO_RECIPE = new @Nullable ItemStack[]{
+            null, null, null,
+            null, null, null,
+            null, null, null
+        };
 
         RECIPE_COMPLETE_GUIDE = new RecipeCompleteGuide(
             GroupSetup.jegItemsGroup,
             Models.RECIPE_COMPLETE_GUIDE,
             RecipeType.ENHANCED_CRAFTING_TABLE,
-            // @formatter:off
-                new ItemStack[] {
-                    craftingTable, craftingTable, craftingTable,
-                    craftingTable, book, craftingTable,
-                    craftingTable, craftingTable, craftingTable
-                }
-                // @formatter:on
+            new ItemStack[] {
+                craftingTable, craftingTable, craftingTable,
+                craftingTable, book, craftingTable,
+                craftingTable, craftingTable, craftingTable
+            }
         );
 
-        USAGE_INFO = new JEGSlimefunItem(
-            GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
-            null, null, null,
-            null, null, null,
-            null, null, null
-        });
+        USAGE_INFO = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, NO_RECIPE);
 
-        MECHANISM = new JEGSlimefunItem(
-            GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, new @Nullable ItemStack[]{
-            null, null, null,
-            null, null, null,
-            null, null, null
-        });
+        MECHANISM = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, NO_RECIPE);
 
-        SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(
-            GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, new @Nullable ItemStack[]{
-            null, null, null,
-            null, null, null,
-            null, null, null
-        });
+        SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, NO_RECIPE);
 
-        JEG_BUTTON = new JEGSlimefunItem(
-            GroupSetup.jegItemsGroup, Models.JEG_RECIPE_COMPLETE_BUTTON, RecipeType.NULL, new @Nullable ItemStack[]{
-            null, null, null,
-            null, null, null,
-            null, null, null
-        });
+        JEG_BUTTON = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.JEG_RECIPE_COMPLETE_BUTTON, RecipeType.NULL, NO_RECIPE);
+
+        CUSTOM_LAG_BLOCK = new CustomLagBlock(GroupSetup.jegItemsGroup, Models.CUSTOM_LAG_BLOCK, RecipeType.NULL, NO_RECIPE);
     }
 
     public static void setup(SlimefunAddon addon) {
@@ -95,6 +81,7 @@ public class ItemsSetup {
         USAGE_INFO.register(addon);
         MECHANISM.register(addon);
         SUPPORTED_ADDONS_INFO.register(addon);
+        CUSTOM_LAG_BLOCK.register(addon);
         JustEnoughGuide.setAutomaticallyLoadItems(before);
     }
 }

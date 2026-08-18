@@ -71,7 +71,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
@@ -247,8 +247,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
         ReflectionUtil.setValue(profile, "guideHistory", new JEGGuideHistory(profile));
     }
 
-    @Nullable
-    public static GuideEvents.ItemButtonClickEvent getLastEvent(UUID uuid) {
+    public static GuideEvents.@Nullable ItemButtonClickEvent getLastEvent(UUID uuid) {
         return LAST_EVENTS.get(uuid);
     }
 

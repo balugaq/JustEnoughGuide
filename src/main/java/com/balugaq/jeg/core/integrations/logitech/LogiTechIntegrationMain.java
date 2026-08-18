@@ -30,6 +30,9 @@ import com.balugaq.jeg.utils.ItemStackUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
+import me.matl114.logitech.core.AddSlimefunItems;
+import me.matl114.logitech.core.Registries.AddDepends;
+import me.matl114.logitech.core.Registries.RecipeSupporter;
 import org.bukkit.inventory.RecipeChoice;
 import org.jspecify.annotations.NullMarked;
 
@@ -115,10 +118,10 @@ public class LogiTechIntegrationMain implements Integration {
     public static boolean isGeneratorStackable(SlimefunItem sf) {
         var className = sf.getClass().getName();
         return sf instanceof EnergyNetProvider
-            && !"me.matl114.logitech.core.Machines.Electrics.EnergyAmplifier".equals(className)
+            && !"Machines.Electrics.EnergyAmplifier".equals(className)
             && !"me.matl114.logitech.SlimefunItem.Machines.Electrics.EnergyAmplifier".equals(className)
             && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.SlimefunItem.Machines.Electrics.AbstractEnergyMachine")
-            && !ItemStackUtil.isInstance(sf, "me.matl114.logitech.core.Machines.Abstracts.AbstractEnergyMachine");
+            && !ItemStackUtil.isInstance(sf, "Machines.Abstracts.AbstractEnergyMachine");
     }
 
     public static boolean isMaterialGeneratorStackable(SlimefunItem sf) {
@@ -168,92 +171,38 @@ public class LogiTechIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
-        try {
-            // LogiTech v1.0.4
-            Class.forName("me.matl114.logitech.core.AddSlimefunItems");
-            rrc(me.matl114.logitech.core.AddSlimefunItems.CRAFT_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.ADV_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.CRUCIBLE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.ANCIENT_ALTAR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.ARMOR_FORGE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.COMPRESSOR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.ENHANCED_CRAFT_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.FURNACE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.GOLD_PAN_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.GRIND_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.MAGIC_WORKBENCH_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.ORE_CRUSHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.ORE_WASHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.PRESSURE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.SMELTERY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.TABLESAW_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            rrc(me.matl114.logitech.core.AddSlimefunItems.MULTICRAFTTABLE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-            if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
-                try {
-                    rrc(me.matl114.logitech.core.Registries.AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                } catch (Exception ignored) {
-                }
-                try {
-                    rrc(me.matl114.logitech.core.Registries.AddDepends.INFINITY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                } catch (Exception ignored) {
-                }
-            }
-            if (JustEnoughGuide.getIntegrationManager().isEnabledNetworks()) {
-                try {
-                    rrc(me.matl114.logitech.core.Registries.AddDepends.NTWWORKBENCH_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                } catch (Exception ignored) {
-                }
-            }
-        } catch (ClassNotFoundException ignored) {
-            // LogiTech v1.0.3
+        // LogiTech v1.0.4
+        rrc(AddSlimefunItems.CRAFT_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.ADV_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.CRUCIBLE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.ANCIENT_ALTAR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.ARMOR_FORGE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.COMPRESSOR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.ENHANCED_CRAFT_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.FURNACE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.GOLD_PAN_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.GRIND_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.MAGIC_WORKBENCH_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.ORE_CRUSHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.ORE_WASHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.PRESSURE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.SMELTERY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.TABLESAW_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        rrc(AddSlimefunItems.MULTICRAFTTABLE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+        if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
             try {
-                Class.forName("me.matl114.logitech.SlimefunItem.AddSlimefunItems");
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.CRAFT_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ADV_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.CRUCIBLE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ANCIENT_ALTAR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ARMOR_FORGE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.COMPRESSOR_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(
-                    me.matl114.logitech.SlimefunItem.AddSlimefunItems.ENHANCED_CRAFT_MANUAL,
-                    MANUAL_CRAFTER_INPUT_SLOTS
-                );
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.FURNACE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.GOLD_PAN_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.GRIND_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(
-                    me.matl114.logitech.SlimefunItem.AddSlimefunItems.MAGIC_WORKBENCH_MANUAL,
-                    MANUAL_CRAFTER_INPUT_SLOTS
-                );
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ORE_CRUSHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.ORE_WASHER_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.PRESSURE_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.SMELTERY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(me.matl114.logitech.SlimefunItem.AddSlimefunItems.TABLESAW_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                rrc(
-                    me.matl114.logitech.SlimefunItem.AddSlimefunItems.MULTICRAFTTABLE_MANUAL,
-                    MANUAL_CRAFTER_INPUT_SLOTS
-                );
-                if (JustEnoughGuide.getIntegrationManager().isEnabledInfinityExpansion()) {
-                    try {
-                        rrc(me.matl114.logitech.SlimefunItem.AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                    } catch (Exception ignored2) {
-                    }
-                    try {
-                        rrc(me.matl114.logitech.SlimefunItem.AddDepends.INFINITY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
-                    } catch (Exception ignored2) {
-                    }
-                }
-                if (JustEnoughGuide.getIntegrationManager().isEnabledNetworks()) {
-                    try {
-                        rrc(
-                            me.matl114.logitech.SlimefunItem.AddDepends.NTWWORKBENCH_MANUAL,
-                            MANUAL_CRAFTER_INPUT_SLOTS
-                        );
-                    } catch (Exception ignored2) {
-                    }
-                }
-            } catch (ClassNotFoundException ignored2) {
+                rrc(AddDepends.MOBDATA_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+            } catch (Exception ignored) {
+            }
+            try {
+                rrc(AddDepends.INFINITY_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+            } catch (Exception ignored) {
+            }
+        }
+        if (JustEnoughGuide.getIntegrationManager().isEnabledNetworks()) {
+            try {
+                rrc(AddDepends.NTWWORKBENCH_MANUAL, MANUAL_CRAFTER_INPUT_SLOTS);
+            } catch (Exception ignored) {
             }
         }
 
@@ -267,15 +216,9 @@ public class LogiTechIntegrationMain implements Integration {
 
         try {
             // LogiTech v1.0.4
-            stackableMachines.addAll(me.matl114.logitech.core.Registries.RecipeSupporter.STACKMACHINE_LIST.keySet());
-            stackableMaterialGenerators.addAll(me.matl114.logitech.core.Registries.RecipeSupporter.STACKMGENERATOR_LIST.keySet());
+            stackableMachines.addAll(RecipeSupporter.STACKMACHINE_LIST.keySet());
+            stackableMaterialGenerators.addAll(RecipeSupporter.STACKMGENERATOR_LIST.keySet());
         } catch (Exception ignored) {
-            // LogiTech v1.0.3
-            try {
-                stackableMachines.addAll(me.matl114.logitech.Utils.RecipeSupporter.STACKMACHINE_LIST.keySet());
-                stackableMaterialGenerators.addAll(me.matl114.logitech.Utils.RecipeSupporter.STACKMGENERATOR_LIST.keySet());
-            } catch (Exception ignored2) {
-            }
         }
 
         if (JustEnoughGuide.getConfigManager().isLogitechMachineStackableDisplay()) {

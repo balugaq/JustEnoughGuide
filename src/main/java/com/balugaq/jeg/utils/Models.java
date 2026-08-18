@@ -173,4 +173,13 @@ public class Models {
         "",
         "&e点击打开配方编辑器"
     );
+
+    public static final SlimefunItemStack CUSTOM_LAG_BLOCK = new SlimefunItemStack(
+        "JEG_CUSTOM_LAG_BLOCK",
+        Converter.getItem(
+            Material.COMMAND_BLOCK,
+            "&a自定义延时器",
+            "&a放置后打开界面，可设定该机器粘液刻耗时",
+            "&c仅 OP 可使用"
+    ));
 }

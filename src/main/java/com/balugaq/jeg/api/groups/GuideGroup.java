@@ -34,7 +34,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
@@ -93,13 +93,11 @@ public abstract class GuideGroup extends BaseGroup<GuideGroup> {
         return this;
     }
 
-    @Nullable
-    public ChestMenu.MenuClickHandler getMenuClickHandler(@Range(from = 0, to = 53) int slot) {
+    public ChestMenu.@Nullable MenuClickHandler getMenuClickHandler(@Range(from = 0, to = 53) int slot) {
         return getMenuClickHandler(1, slot);
     }
 
-    @Nullable
-    public ChestMenu.MenuClickHandler getMenuClickHandler(
+    public ChestMenu.@Nullable MenuClickHandler getMenuClickHandler(
         @Range(from = 1, to = Byte.MAX_VALUE) int page, @Range(from = 0, to = 53) int slot) {
         return Optional.ofNullable(clickHandlers.get(page))
             .orElse(new HashMap<>())
