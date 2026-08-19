@@ -19,7 +19,7 @@ package com.balugaq.jeg.utils;
 
 import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
-import com.balugaq.jeg.core.integrations.logitech.CustomMenuHandlerImpl;
+import com.balugaq.jeg.core.integrations.logitech.LogiTechSpecialMenuOpener;
 import com.balugaq.jeg.core.listeners.SpecialMenuFixListener;
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -33,9 +33,6 @@ import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideImplementation;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import lombok.experimental.UtilityClass;
-import me.matl114.logitech.utils.MenuUtils;
-import me.matl114.logitech.utils.UtilClass.MenuClass.GuideCustomMenu;
-import me.matl114.logitech.utils.UtilClass.MenuClass.MenuFactory;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -343,7 +340,7 @@ public class SpecialMenuProvider {
             Debug.debug("Opened Nexcavate special menu");
             return true;
         } else if (isLogiTechItem(slimefunItem)) {
-            openLogiTechMenu(player, profile, slimefunItem);
+            LogiTechSpecialMenuOpener.openLogiTechMenu(player, profile, slimefunItem);
             Debug.debug("Opened LogiTech special menu");
             return true;
         } else if (isInfinityExpansionSingularityItem(slimefunItem)) {
@@ -426,13 +423,6 @@ public class SpecialMenuProvider {
         }
     }
 
-    public static void openLogiTechMenu(Player player, PlayerProfile profile, SlimefunItem slimefunItem) {
-        MenuFactory factory = MenuUtils.createItemRecipeDisplay(slimefunItem, new CustomMenuHandlerImpl(), null);;
-        GuideCustomMenu menu = factory.buildGuide(null, null);
-        menu.open(player);
-        insertUselessHistory(profile);
-    }
-
     public static boolean isInfinityExpansionSingularityItem(SlimefunItem slimefunItem) {
         return classInfinityExpansion_Singularity != null
             && slimefunItem.getClass() == classInfinityExpansion_Singularity;
@@ -443,7 +433,7 @@ public class SpecialMenuProvider {
         if (!ENABLED_InfinityExpansion || !ENABLED_LogiTech) return;
 
         if (isInfinityExpansionSingularityItem(slimefunItem)) {
-            openLogiTechMenu(player, profile, slimefunItem);
+            LogiTechSpecialMenuOpener.openLogiTechMenu(player, profile, slimefunItem);
         }
     }
 
