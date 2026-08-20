@@ -1288,7 +1288,7 @@ public interface OnClick {
          * @since 2.0
          */
         @NullMarked
-        @SuppressWarnings({"CodeBlock2Expr", "removal"})
+        @SuppressWarnings("CodeBlock2Expr")
         class Normal implements Item {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                 Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", Material.FURNACE, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
@@ -1304,17 +1304,17 @@ public interface OnClick {
                 }),
                 Action.of("shift-left-click", "打开物品所在物品组/OP: 取下物品", Material.CAULDRON, (guide, player, slot, slimefunItem, item, clickAction, menu, p2) -> {
                     if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
-                    if (slimefunItem == null) return;
 
                     if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
                         int amount = 1;
                         if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
 
-                        ItemStack itemStack = MultiBlockBuilder.getItem(slimefunItem);
+                        ItemStack itemStack = slimefunItem == null ? item : MultiBlockBuilder.getItem(slimefunItem);
                         player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
                         return;
                     }
 
+                    if (slimefunItem == null) return;
                     final io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = slimefunItem.getItemGroup();
                     AtomicInteger page = new AtomicInteger(1);
                     if (GuideUtil.isTaggedGroupType(itemGroup)) {
