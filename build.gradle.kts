@@ -218,9 +218,9 @@ publishing {
             artifact(javadocJar)
 
             pom {
-                name = "RykenSlimeCustomizer"
-                description = "A config-driven Slimefun addon engine: generate Slimefun items/machines from YAML files."
-                url = "https://github.com/balugaq/RykenSlimeCustomizer"
+                name = "JustEnoughGuide"
+                description = "A Slimefun addon for Minecraft that significantly enhances the functionality and user experience of the original Slimefun guide book."
+                url = "https://github.com/balugaq/JustEnoughGuide"
                 licenses {
                     license {
                         name = "GNU General Public License v3.0 or later"
@@ -235,9 +235,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git:https://github.com/balugaq/RykenSlimeCustomizer.git"
-                    developerConnection = "scm:git:ssh://github.com/balugaq/RykenSlimeCustomizer.git"
-                    url = "https://github.com/balugaq/RykenSlimeCustomizer"
+                    connection = "scm:git:https://github.com/balugaq/JustEnoughGuide.git"
+                    developerConnection = "scm:git:ssh://github.com/balugaq/JustEnoughGuide.git"
+                    url = "https://github.com/balugaq/JustEnoughGuide"
                 }
             }
         }
