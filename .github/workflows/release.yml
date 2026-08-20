@@ -1,0 +1,66 @@
+name: Auto Release on Version Change
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'gradle.properties'
+      - 'build.gradle'
+      - 'build.gradle.kts'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Extract version
+        id: version
+        run: |
+          if [ -f "gradle.properties" ]; then
+            VERSION=$(grep "^version=" gradle.properties | cut -d'=' -f2)
+          elif [ -f "build.gradle" ]; then
+            VERSION=$(grep "^version" build.gradle | grep -o "'.*'" | tr -d "'")
+          elif [ -f "build.gradle.kts" ]; then
+            VERSION=$(grep "^version" build.gradle.kts | grep -o "\".*\"" | tr -d '"')
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: tag_check
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build with Gradle
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: Create Release
+        if: steps.tag_check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

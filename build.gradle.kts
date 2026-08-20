@@ -19,10 +19,14 @@
 plugins {
     java
     alias(libs.plugins.shadow.jar)
+    id("xyz.jpenilla.run-paper") version "3.0.2"
+    id("maven-publish")
+    id("signing")
+    id("io.github.sgtsilvio.gradle.maven-central-publishing") version "0.5.0"
 }
 
 group = "io.github.balugaq"
-version = "2.1.50"
+version = "2.1.51"
 
 repositories {
     mavenCentral()
@@ -93,10 +97,35 @@ java {
     }
 }
 
+tasks.withType<Javadoc>().configureEach {
+    // 出错（含 doclint 之外的警告）也不让 javadoc 任务失败，避免阻断构建/发布
+    isFailOnError = false
+    (options as StandardJavadocDocletOptions).apply {
+        encoding = "UTF-8"
+        charSet = "UTF-8"
+        addStringOption("Xdoclint", "none")
+    }
+}
+
+// 给所有 JavaExec 类任务（test / runServer / 以及其他 fork JVM 的任务）统一设置 UTF-8 编码，
+// 避免因本地系统默认编码（如 GBK）导致乱码。
+tasks.withType<JavaExec>().configureEach {
+    systemProperty("file.encoding", "UTF-8")
+    systemProperty("sun.stdout.encoding", "UTF-8")
+    systemProperty("sun.stderr.encoding", "UTF-8")
+}
+
+tasks.withType<JavaExec>().configureEach {
+    systemProperty("file.encoding", "UTF-8")
+    systemProperty("sun.stdout.encoding", "UTF-8")
+    systemProperty("sun.stderr.encoding", "UTF-8")
+}
+
 tasks {
     compileJava {
         options.compilerArgs.add("-Xlint:-removal")
         options.encoding = "UTF-8"
+        options.release = 21
     }
 
     shadowJar {
@@ -133,5 +162,105 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    runServer {
+        dependsOn(shadowJar)
+
+        doFirst {
+            val run = projectDir.resolve("run")
+            run.mkdirs()
+            run.resolve("eula.txt").writeText("eula=true")
+
+            val pl = run.resolve("plugins")
+            pl.mkdirs()
+            copy {
+                from(projectDir.resolve("build/libs")) {
+                    include("${name}-${version}.jar")
+                }
+                into(pl)
+            }
+        }
+
+        jvmArgs(
+            "-Dfile.encoding=UTF-8",
+            "-Dsun.jnu.encoding=UTF-8",
+            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5001",
+            "-Dnet.kyori.adventure.text.warn_when_legacy_formatting_detected=false"
+        )
+        maxHeapSize = "4G"
+        minecraftVersion("1.20.1")
+    }
+}
+
+val sourcesJar = tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+val javadocJar = tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(tasks.named<Javadoc>("javadoc"))
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "Central"
+            url = uri("https://central.sonatype.com/api/v1/publisher")
+        }
+    }
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifact(tasks.named("shadowJar"))
+            // Maven Central 发布硬性要求：附带 sources / javadoc 构件
+            artifact(sourcesJar)
+            artifact(javadocJar)
+
+            pom {
+                name = "RykenSlimeCustomizer"
+                description = "A config-driven Slimefun addon engine: generate Slimefun items/machines from YAML files."
+                url = "https://github.com/balugaq/RykenSlimeCustomizer"
+                licenses {
+                    license {
+                        name = "GNU General Public License v3.0 or later"
+                        url  = "https://www.gnu.org/licenses/gpl-3.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "balugaq"
+                        name = "balugaq"
+                        email = "balugaq@qq.com"
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/balugaq/RykenSlimeCustomizer.git"
+                    developerConnection = "scm:git:ssh://github.com/balugaq/RykenSlimeCustomizer.git"
+                    url = "https://github.com/balugaq/RykenSlimeCustomizer"
+                }
+            }
+        }
+    }
+}
+
+// 签名配置
+signing {
+    // 从环境变量或 gradle.properties 读取敏感信息；
+    // 仅在提供了签名密钥时才启用签名，避免本地 build/无密钥时配置失败
+    val signingKey = providers.gradleProperty("signingKey")
+        .orElse(providers.systemProperty("signingKey"))
+        .orElse(providers.environmentVariable("SIGNING_KEY"))
+        .orNull
+
+    val signingPassword = providers.gradleProperty("signingPassword")
+        .orElse(providers.systemProperty("signingPassword"))
+        .orElse(providers.environmentVariable("SIGNING_PASSWORD"))
+        .orNull
+    if (signingKey != null && signingPassword != null) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["mavenJava"])
+    } else {
+        // 未提供签名密钥（例如本地开发构建），跳过签名
     }
 }

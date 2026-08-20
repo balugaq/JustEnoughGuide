@@ -1,0 +1,133 @@
+name: Publish to Maven Central
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: 'Force publish even if version unchanged'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 需要获取历史记录来比较版本
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Extract current version
+        id: current_version
+        run: |
+          if [ -f "gradle.properties" ]; then
+            VERSION=$(grep "^version=" gradle.properties | cut -d'=' -f2)
+          elif [ -f "build.gradle" ]; then
+            VERSION=$(grep "^version" build.gradle | grep -o "'.*'" | tr -d "'")
+          elif [ -f "build.gradle.kts" ]; then
+            VERSION=$(grep "^version" build.gradle.kts | grep -o "\".*\"" | tr -d '"')
+          else
+            echo "No version file found"
+            exit 1
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+
+      - name: Extract previous version
+        id: previous_version
+        run: |
+          # 获取上一次提交的版本
+          git checkout HEAD^ 2>/dev/null || echo "No previous commit"
+          if [ -f "gradle.properties" ]; then
+            PREV_VERSION=$(grep "^version=" gradle.properties | cut -d'=' -f2 2>/dev/null || echo "")
+          elif [ -f "build.gradle" ]; then
+            PREV_VERSION=$(grep "^version" build.gradle | grep -o "'.*'" | tr -d "'" 2>/dev/null || echo "")
+          elif [ -f "build.gradle.kts" ]; then
+            PREV_VERSION=$(grep "^version" build.gradle.kts | grep -o "\".*\"" | tr -d '"' 2>/dev/null || echo "")
+          else
+            PREV_VERSION=""
+          fi
+          git checkout HEAD
+          echo "prev_version=$PREV_VERSION" >> $GITHUB_OUTPUT
+          echo "Previous version: $PREV_VERSION"
+
+      - name: Check if version changed
+        id: version_changed
+        run: |
+          if [ "${{ steps.current_version.outputs.version }}" != "${{ steps.previous_version.outputs.prev_version }}" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Version changed from ${{ steps.previous_version.outputs.prev_version }} to ${{ steps.current_version.outputs.version }}"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Version unchanged"
+          fi
+
+      - name: Check if version tag exists
+        id: tag_check
+        run: |
+          VERSION="${{ steps.current_version.outputs.version }}"
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag v$VERSION already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag v$VERSION does not exist"
+          fi
+
+      - name: Publish to Maven Central
+        # 版本变化且tag不存在 或 强制发布
+        if: |
+          (steps.version_changed.outputs.changed == 'true' && steps.tag_check.outputs.exists == 'false') ||
+          github.event.inputs.force_publish == 'true'
+        run: |
+          VERSION="${{ steps.current_version.outputs.version }}"
+          echo "Publishing version: $VERSION"
+          chmod +x ./gradlew
+          ./gradlew publishToMavenCentral -Pversion=$VERSION
+        env:
+          # OSSRH 账号（Sonatype JIRA 凭据）
+          OSSRH_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          # GPG 签名密钥
+          signingKey: ${{ secrets.SIGNING_KEY }}
+          signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+      - name: Create and push version tag
+        if: |
+          (steps.version_changed.outputs.changed == 'true' && steps.tag_check.outputs.exists == 'false') ||
+          github.event.inputs.force_publish == 'true'
+        run: |
+          VERSION="${{ steps.current_version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish succeeded
+        if: success()
+        run: |
+          VERSION="${{ steps.current_version.outputs.version }}"
+          echo "✅ Successfully published version $VERSION to Maven Central"
+
+      - name: Skip publish
+        if: |
+          steps.version_changed.outputs.changed == 'false' &&
+          github.event.inputs.force_publish != 'true'
+        run: |
+          echo "⏭️ Version unchanged, skipping publish"
+          echo "Current version: ${{ steps.current_version.outputs.version }}"
+          echo "Previous version: ${{ steps.previous_version.outputs.prev_version }}"
