@@ -632,6 +632,7 @@ local-translate:
   SlimeBotania: "植物魔法"
   ProductState: "AG科技 - PS" # Avoid conflict with CivilizationEvolution, AgTech
   NEKO_TECH: "猫娘科技"
+  GalaxyTech: "星河科技"
 
 # Do not change this value unless you know what you are doing.
 debug: false

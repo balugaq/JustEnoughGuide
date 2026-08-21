@@ -393,6 +393,7 @@ public class LocalHelper {
         addonLocals.put("SlimeBotania", "植物魔法");
         addonLocals.put("ProductState", "AG科技 - PS"); // Avoid conflict with CivilizationEvolution, AgTech
         addonLocals.put("NEKO_TECH", "猫娘科技");
+        addonLocals.put("GalaxyTech", "星河科技");
     }
 
     public static String getOfficialAddonName(ItemGroup itemGroup, String itemId) {
