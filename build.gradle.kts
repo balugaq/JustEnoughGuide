@@ -186,7 +186,6 @@ tasks {
         minecraftVersion("1.21.11")
     }
 }
-}
 
 val sourcesJar = tasks.register<Jar>("sourcesJar") {
     archiveClassifier.set("sources")
