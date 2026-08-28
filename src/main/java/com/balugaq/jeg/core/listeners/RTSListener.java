@@ -445,9 +445,19 @@ public class RTSListener implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (isRTSPlayer(player)) {
+            boolean keepInventory = event.getKeepInventory();
+            // Restores the real inventory back onto the player and removes RTS fake items
             tryQuitRTS(player);
-            event.setKeepInventory(true);
-            event.getDrops().clear();
+            if (!keepInventory) {
+                // The drop list was computed from the fake-item-filled inventory; replace it
+                // with the restored real items, otherwise real items are lost on death
+                event.getDrops().clear();
+                for (ItemStack item : player.getInventory().getContents()) {
+                    if (item != null && !item.getType().isAir()) {
+                        event.getDrops().add(item);
+                    }
+                }
+            }
         }
     }
 
