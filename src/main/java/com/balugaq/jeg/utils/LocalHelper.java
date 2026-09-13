@@ -394,6 +394,8 @@ public class LocalHelper {
         addonLocals.put("ProductState", "AG科技 - PS"); // Avoid conflict with CivilizationEvolution, AgTech
         addonLocals.put("NEKO_TECH", "猫娘科技");
         addonLocals.put("GalaxyTech", "星河科技");
+        addonLocals.put("xingmian", "星眠科技");
+        addonLocals.put("SlimeEasy", "简易粘液");
     }
 
     public static String getOfficialAddonName(ItemGroup itemGroup, String itemId) {
