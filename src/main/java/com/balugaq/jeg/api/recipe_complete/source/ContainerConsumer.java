@@ -15,22 +15,19 @@
  *
  */
 
-package com.balugaq.jeg.api.recipe_complete.source.base;
+package com.balugaq.jeg.api.recipe_complete.source;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import org.bukkit.entity.Player;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 2.0
+ * @since 2.1
  */
+@NullMarked
 @FunctionalInterface
-public interface RecipeHandler {
-    @SuppressWarnings("unused")
-    @Nullable List<@Nullable RecipeChoice> get(Player player, ItemStack itemStack, @Nullable SlimefunItem sf);
+public
+interface ContainerConsumer<T> {
+    ConsumeResult<T> accept(int slot, ItemStack stack, BlockMenu menu);
 }

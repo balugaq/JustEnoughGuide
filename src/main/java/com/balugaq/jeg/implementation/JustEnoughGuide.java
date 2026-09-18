@@ -24,8 +24,9 @@ import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
-import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
+import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayGuideOption;
+import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
 import com.balugaq.jeg.core.managers.BookmarkManager;
 import com.balugaq.jeg.core.managers.CommandManager;
@@ -371,6 +372,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         SpecialMenuProvider.load();
         ReplacementCardAdapter.load();
         MultiBlockBuilder.load();
+        RecipeCompletableListener.load();
         ThirdPartyWarnings.check();
         IntegrationManager.scheduleRun(JEGGuideSettings::sortOptions);
 

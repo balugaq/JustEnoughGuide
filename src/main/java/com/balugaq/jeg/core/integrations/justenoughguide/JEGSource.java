@@ -17,7 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.justenoughguide;
 
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import com.balugaq.jeg.api.recipe_complete.source.Source;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;

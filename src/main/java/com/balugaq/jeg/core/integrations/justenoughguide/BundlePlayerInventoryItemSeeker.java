@@ -18,9 +18,9 @@
 package com.balugaq.jeg.core.integrations.justenoughguide;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.KeyUtil;
+import com.balugaq.jeg.utils.RecipeCompleteUtils;
 import com.balugaq.jeg.utils.StackUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -39,8 +39,8 @@ import java.util.ArrayList;
 public class BundlePlayerInventoryItemSeeker implements RecipeCompletableListener.PlayerInventoryItemSeeker {
     @SuppressWarnings("ConstantValue")
     @Override
-    public @NonNegative int getItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item, int amount) {
-        if (!item.getType().name().contains("BUNDLE")) {
+    public @NonNegative long getItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item, long amount) {
+        if (!item.getType().name().endsWith("BUNDLE")) {
             return 0;
         }
 
@@ -69,17 +69,49 @@ public class BundlePlayerInventoryItemSeeker implements RecipeCompletableListene
                 got += existing;
                 items.set(idx, null);
             } else {
-                innerItem.setAmount(existing - amount);
+                innerItem.setAmount((int) (existing - amount));
                 amount = 0;
             }
 
             if (amount <= 0) {
-                bundle.setItems(Source.trimItems(items));
+                bundle.setItems(RecipeCompleteUtils.trimItems(items));
                 item.setItemMeta(meta);
                 return got;
             }
         }
-        bundle.setItems(Source.trimItems(items));
+        bundle.setItems(RecipeCompleteUtils.trimItems(items));
+        item.setItemMeta(meta);
+        return got;
+    }
+
+    @SuppressWarnings("ConstantValue")
+    @Override
+    public @NonNegative long countItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item) {
+        if (!item.getType().name().endsWith("BUNDLE")) {
+            return 0;
+        }
+
+        var meta = item.getItemMeta();
+        if (!(meta instanceof BundleMeta bundle)) {
+            return 0;
+        }
+
+        var origin = bundle.getItems();
+        if (origin == null || origin.isEmpty()) {
+            return 0;
+        }
+
+        var items = new ArrayList<>(origin);
+        long got = 0;
+        for (ItemStack innerItem : items) {
+            if (innerItem == null || innerItem.getType() == Material.AIR || !StackUtils.itemsMatch(innerItem, target)) {
+                continue;
+            }
+
+            int existing = innerItem.getAmount();
+            got += existing;
+        }
+        bundle.setItems(RecipeCompleteUtils.trimItems(items));
         item.setItemMeta(meta);
         return got;
     }

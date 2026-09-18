@@ -37,8 +37,57 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class ShulkerBoxPlayerInventoryItemSeeker implements RecipeCompletableListener.PlayerInventoryItemSeeker {
     @Override
-    public @NonNegative int getItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item, int amount) {
-        if (!item.getType().name().contains("SHULKER_BOX")) {
+    public @NonNegative long getItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item, long amount) {
+        if (!item.getType().name().endsWith("SHULKER_BOX")) {
+            return 0;
+        }
+
+        var meta = item.getItemMeta();
+        if (!(meta instanceof BlockStateMeta blockStateMeta)) {
+            return 0;
+        }
+
+        var blockState = blockStateMeta.getBlockState();
+        if (!(blockState instanceof Container container)) {
+            return 0;
+        }
+
+        Inventory shulker = container.getInventory();
+        long got = 0;
+        for (int idx = 0; idx < shulker.getSize(); idx++) {
+            ItemStack innerItem = shulker.getItem(idx);
+
+            if (innerItem == null || innerItem.getType() == Material.AIR || !StackUtils.itemsMatch(innerItem, target)) {
+                continue;
+            }
+
+            int innerItemAmount = innerItem.getAmount();
+
+            if (innerItemAmount <= amount) {
+                amount -= innerItemAmount;
+                got += innerItemAmount;
+                shulker.clear(idx);
+            } else {
+                innerItem.setAmount((int) (innerItemAmount - amount));
+                got += amount;
+                shulker.setItem(idx, item);
+                amount = 0;
+            }
+
+            if (amount <= 0) {
+                blockStateMeta.setBlockState(blockState);
+                item.setItemMeta(blockStateMeta);
+                return got;
+            }
+        }
+        blockStateMeta.setBlockState(blockState);
+        item.setItemMeta(blockStateMeta);
+        return got;
+    }
+
+    @Override
+    public @NonNegative long countItemStack(final RecipeCompleteSession session, final ItemStack target, final ItemStack item) {
+        if (!item.getType().name().endsWith("SHULKER_BOX")) {
             return 0;
         }
 
@@ -62,26 +111,8 @@ public class ShulkerBoxPlayerInventoryItemSeeker implements RecipeCompletableLis
             }
 
             int innerItemAmount = innerItem.getAmount();
-
-            if (innerItemAmount <= amount) {
-                amount -= innerItemAmount;
-                got += innerItemAmount;
-                shulker.clear(idx);
-            } else {
-                innerItem.setAmount(innerItemAmount - amount);
-                got += amount;
-                shulker.setItem(idx, item);
-                amount = 0;
-            }
-
-            if (amount <= 0) {
-                blockStateMeta.setBlockState(blockState);
-                item.setItemMeta(blockStateMeta);
-                return got;
-            }
+            got += innerItemAmount;
         }
-        blockStateMeta.setBlockState(blockState);
-        item.setItemMeta(blockStateMeta);
         return got;
     }
 

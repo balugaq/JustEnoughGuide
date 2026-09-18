@@ -18,9 +18,10 @@
 package com.balugaq.jeg.core.integrations.justenoughguide;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
+import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -36,9 +37,15 @@ public interface PlayerInventorySource extends JEGSource {
     }
 
     @Override
-    @Nullable
-    default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
-        return getItemStackFromPlayerInventory(session, itemStack);
+    @NonNegative
+    default long getItemStack(RecipeCompleteSession session, ItemStack itemStack, long need) {
+        return ReflectionUtil.getItemStackFromPlayerInventory(session, itemStack, need);
+    }
+
+    @Override
+    @NonNegative
+    default long countAmount(RecipeCompleteSession session, ItemStack template) {
+        return ReflectionUtil.countAmountFromPlayerInventory(session, template);
     }
 
     @Override

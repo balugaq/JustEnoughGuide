@@ -25,11 +25,10 @@ import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
+import com.balugaq.jeg.api.recipe_complete.source.Source;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemSeeker;
-import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
 import com.balugaq.jeg.utils.Debug;
@@ -43,16 +42,10 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
-import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -91,7 +84,7 @@ import java.util.function.BiConsumer;
  * @author balugaq
  * @since 1.9
  */
-@SuppressWarnings({"unused", "ConstantValue", "removal"})
+@SuppressWarnings({"unused", "ConstantValue"})
 @NullMarked
 public class RecipeCompletableListener implements ItemPatchListener {
     public static final NamespacedKey RECIPE_COMPLETE_EXIT_KEY = KeyUtil.newKey("recipe_complete_exit");
@@ -107,73 +100,8 @@ public class RecipeCompletableListener implements ItemPatchListener {
     public static final ArrayList<SlimefunItem> NOT_APPLICABLE_ITEMS = new ArrayList<>();
     public static final ConcurrentHashMap<UUID, Location> DISPENSER_LISTENING = new ConcurrentHashMap<>();
     public static final NamespacedKey LAST_RECIPE_COMPLETE_KEY = KeyUtil.newKey("last_recipe_complete");
-    public static final ConcurrentHashMap<UUID, ArrayList<ItemStack>> missingMaterials = new ConcurrentHashMap<>();
     public static final Map<NamespacedKey, PlayerInventoryItemSeeker> PLAYER_INVENTORY_ITEM_GETTERS = new HashMap<>();
     private static @UnknownNullability ItemStack RECIPE_COMPLETABLE_BOOK_ITEM = null;
-
-    static {
-        JustEnoughGuide.runTimerAsync(
-            () -> {
-                for (UUID uuid : missingMaterials.keySet()) {
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player == null || !player.isOnline()) {
-                        continue;
-                    }
-
-                    var v = missingMaterials.get(uuid);
-                    ArrayList<ItemStack> clone;
-                    if (v != null) {
-                        synchronized (v) {
-                            clone = new ArrayList<>(v);
-                            v.clear();
-                        }
-                    } else {
-                        clone = new ArrayList<>();
-                    }
-
-                    Map<ItemStack, Integer> map = new HashMap<>();
-                    for (ItemStack item : clone) {
-                        map.merge(StackUtils.getAsQuantity(item, 1), item.getAmount(), Integer::sum);
-                    }
-
-                    for (var entry : map.entrySet()) {
-                        ItemStack itemStack = entry.getKey();
-                        String amountString = getAmountString(entry, itemStack);
-                        if (PaperLib.isPaper()) {
-                            var builder = Component.text().color(NamedTextColor.RED).append(Component.text("缺少 "));
-                            var itemBuilder = Component.text(ItemStackHelper.getDisplayName(itemStack));
-                            SlimefunItem sf = SlimefunItem.getByItem(itemStack);
-                            if (sf != null) {
-                                itemBuilder = itemBuilder
-                                    .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击查看"))))
-                                    .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
-                            }
-                            builder.color(NamedTextColor.GRAY).append(itemBuilder);
-                            builder.append(Component.text().color(NamedTextColor.GREEN).append(Component.text(" x")).append(Component.text(amountString)));
-                            player.sendMessage(builder);
-                        } else {
-                            player.sendMessage(ChatColors.color("&c缺少 &7" + ItemStackHelper.getDisplayName(itemStack) + " &r&ax&7" + amountString));
-                        }
-                    }
-                }
-            }, 1L, 20L
-        );
-    }
-
-    private static String getAmountString(Map.Entry<ItemStack, Integer> entry, ItemStack itemStack) {
-        int amount = entry.getValue();
-        int stacks = amount / Math.max(1, itemStack.getMaxStackSize());
-        int left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
-        String amountString = "" + amount;
-        if (amount > itemStack.getMaxStackSize()) {
-            amountString += " ( " + stacks + " 组";
-            if (left > 0) {
-                amountString += " + " + left + " 个";
-            }
-            amountString += ")";
-        }
-        return amountString;
-    }
 
     /**
      * @param slimefunItem the {@link SlimefunItem} to add
@@ -737,6 +665,15 @@ public class RecipeCompletableListener implements ItemPatchListener {
          * @return gotten item stack amount
          */
         @NonNegative
-        int getItemStack(RecipeCompleteSession session, ItemStack target, ItemStack item, int need);
+        long getItemStack(RecipeCompleteSession session, ItemStack target, ItemStack item, long need);
+
+        /**
+         * @param session The session
+         * @param target  The target item
+         * @param item    The item to be checked or handled
+         * @return gotten item stack amount
+         */
+        @NonNegative
+        long countItemStack(RecipeCompleteSession session, ItemStack target, ItemStack item);
     }
 }

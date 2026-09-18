@@ -15,7 +15,7 @@
  *
  */
 
-package com.balugaq.jeg.api.recipe_complete.source.base;
+package com.balugaq.jeg.api.recipe_complete.source;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
@@ -25,7 +25,9 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -114,8 +116,9 @@ public class RecipeCompleteProvider {
         specialRecipeHandlers.clear();
     }
 
-    @Nullable
-    public static ItemStack getItemStack(RecipeCompleteSession session, ItemStack template) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public static long countAmount(RecipeCompleteSession session, ItemStack template) {
+        long amt = 0;
         for (SlimefunSource source : slimefunSources) {
             if (session.isNotHandleable(source)) {
                 continue;
@@ -137,25 +140,74 @@ public class RecipeCompleteProvider {
                 if (session.itemNotIn(source, possibleTemplate)) {
                     continue;
                 }
-                var result = source.getItemStack(session, possibleTemplate);
-                if (result != null) {
-                    return result;
+                long amt0 = source.countAmount(session, possibleTemplate);
+                if (amt0 == 0) {
+                    session.setItemNotIn(source, possibleTemplate);
+                } else {
+                    amt = clampLong(amt, amt0);
+                }
+            }
+        }
+        return amt;
+    }
+
+    @Range(from = Long.MIN_VALUE, to = Long.MAX_VALUE)
+    public static long clampLong(long amt, long add) {
+        long result = amt + add;
+        // 只有当 amt 和 add 同号，且结果与 amt 异号时才发生溢出
+        if (((amt ^ result) & (add ^ result)) < 0) {
+            // 溢出：add > 0 表示正溢出，add < 0 表示负溢出
+            return add > 0 ? Long.MAX_VALUE : Long.MIN_VALUE;
+        }
+        return result;
+    }
+
+    /**
+     * @return gotten
+     */
+    @NonNegative
+    public static long getItemStack(RecipeCompleteSession session, ItemStack template, long need) {
+        long total = 0;
+        for (SlimefunSource source : slimefunSources) {
+            if (session.isNotHandleable(source)) {
+                continue;
+            }
+            if (!source.handleable(session)) {
+                session.setNotHandleable(source);
+                continue;
+            }
+            List<ItemStack> replacementCards = new ArrayList<>();
+            if (JustEnoughGuide.getConfigManager().isAdaptReplacementCards()) {
+                List<ItemStack> cards = ReplacementCardAdapter.getReplacementCards(template);
+                if (cards != null) {
+                    replacementCards.addAll(cards);
+                }
+            }
+            replacementCards.add(template);
+
+            for (ItemStack possibleTemplate : replacementCards) {
+                if (session.itemNotIn(source, possibleTemplate)) {
+                    continue;
+                }
+                var gotten = source.getItemStack(session, possibleTemplate, need);
+                need -= gotten;
+                total += need;
+                if (need <= 0) {
+                    return total;
                 }
 
                 session.setItemNotIn(source, possibleTemplate);
             }
         }
-        return null;
+        return 0;
     }
 
     public static void openSlimefun(RecipeCompleteSession session) {
-        RecipeCompleteProvider.getSlimefunSources().stream().findFirst().ifPresent(source -> source.openGuide(session));
+        SlimefunSource.openGuide(session, null);
     }
 
     public static void openVanilla(RecipeCompleteSession session) {
-        RecipeCompleteProvider.getVanillaSources().stream().findFirst().ifPresent(source -> {
-            RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(session.getPlayer().getUniqueId());
-            source.openGuide(session);
-        });
+        RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(session.getPlayer().getUniqueId());
+        VanillaSource.openGuide(session, null);
     }
 }

@@ -15,12 +15,11 @@
  *
  */
 
-package com.balugaq.jeg.api.recipe_complete.source.base;
+package com.balugaq.jeg.api.recipe_complete.source;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
-import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
@@ -42,10 +41,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface SlimefunSource extends Source {
     @SuppressWarnings("deprecation")
-    @Override
-    default boolean openGuide(
-        RecipeCompleteSession session,
-        @Nullable Runnable callback) {
+    static boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
         Debug.debug(session + " open guide for " + session.getPlayer().getUniqueId());
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
@@ -70,27 +66,14 @@ public interface SlimefunSource extends Source {
     }
 
     @CanIgnoreReturnValue
-    default boolean completeRecipeWithGuide(
-        RecipeCompleteSession session) {
+    static boolean completeRecipeWithGuide(RecipeCompleteSession session) {
         BlockMenu blockMenu = session.getMenu();
         boolean unordered = session.isUnordered();
         int[] ingredientSlots = session.getIngredientSlots();
-        return completeRecipeWithGuide(
-            session,
-            (slot) -> {
-                if (slot < blockMenu.getSize()) {
-                    return blockMenu.getItemInSlot(slot);
-                }
-                return null;
-            },
-            (template, i) ->
-                BlockMenuUtil.fits(blockMenu, template, unordered ? ingredientSlots : new int[]{ingredientSlots[i]}),
-            (received, i) ->
-                BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})
-        );
+        return Source.completeRecipeWithGuide(session, ContainerInteractor.slimefun(blockMenu, unordered, ingredientSlots));
     }
 
-    default void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenMenu, @Nullable Runnable callback) {
+    static void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenMenu, @Nullable Runnable callback) {
         BlockMenu blockMenu = session.getMenu();
 
         session.setEvent(event);

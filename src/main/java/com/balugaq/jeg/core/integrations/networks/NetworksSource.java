@@ -18,8 +18,8 @@
 package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
+import com.balugaq.jeg.api.recipe_complete.source.Source;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import io.github.sefiraat.networks.network.NetworkRoot;
@@ -28,7 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
@@ -50,14 +50,14 @@ public interface NetworksSource extends Source {
 
     @Override
     @SuppressWarnings({"unchecked", "removal"})
-    @Nullable
-    default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
+    @NonNegative
+    default long getItemStack(RecipeCompleteSession session, ItemStack itemStack, long need) {
         Player player = session.getPlayer();
         // Issue #67
         Set<NetworkRoot> roots = (Set<NetworkRoot>) session.getCache(this, Set.class);
         if (roots == null) {
             roots = NetworksIntegrationMain.findNearbyNetworkRoots(session.getLocation());
-            if (roots.isEmpty()) return null;
+            if (roots.isEmpty()) return 0;
 
             session.setCache(this, roots);
         }
@@ -68,17 +68,36 @@ public interface NetworksSource extends Source {
             if (JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion()) {
                 var got = root.getItemStack0(player.getLocation(), request);
                 if (got != null && got.getType() != Material.AIR) {
-                    return got;
+                    return got.getAmount();
                 }
             } else {
                 var got = root.getItemStack(request);
                 if (got != null && got.getType() != Material.AIR) {
-                    return got;
+                    return got.getAmount();
                 }
             }
         }
 
-        return null;
+        return 0;
+    }
+
+    @Override
+    default long countAmount(RecipeCompleteSession session, ItemStack template) {
+        Set<NetworkRoot> roots = (Set<NetworkRoot>) session.getCache(this, Set.class);
+        if (roots == null) {
+            roots = NetworksIntegrationMain.findNearbyNetworkRoots(session.getLocation());
+            if (roots.isEmpty()) return 0;
+
+            session.setCache(this, roots);
+        }
+
+        long total = 0;
+        for (var root : roots) {
+            var got = root.getAmount(template);
+            total += got;
+        }
+
+        return total;
     }
 
     @Override

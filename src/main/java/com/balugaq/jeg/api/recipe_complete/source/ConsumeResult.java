@@ -15,20 +15,21 @@
  *
  */
 
-package com.balugaq.jeg.core.integrations.networks;
+package com.balugaq.jeg.api.recipe_complete.source;
 
-import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.SlimefunSource;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
  * @author balugaq
- * @since 1.9
+ * @since 2.1
  */
 @NullMarked
-public class NetworksRecipeCompleteSlimefunSource implements SlimefunSource, NetworksSource {
-    @Override
-    public boolean handleable(final RecipeCompleteSession session) {
-        return NetworksSource.super.handleable(session);
+public
+record ConsumeResult<T>(boolean breakLoop, @Nullable T result) {
+    private static final ConsumeResult<?> CONTINUE = new ConsumeResult<>(false, null);
+
+    public static <T> ConsumeResult<T> continueIt() {
+        return (ConsumeResult<T>) CONTINUE;
     }
 }

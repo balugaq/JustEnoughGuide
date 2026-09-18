@@ -36,7 +36,7 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
-import static com.balugaq.jeg.api.recipe_complete.source.base.Source.RECIPE_DEPTH_THRESHOLD;
+import static com.balugaq.jeg.utils.ReflectionUtil.RECIPE_DEPTH_THRESHOLD;
 
 /**
  * @author balugaq

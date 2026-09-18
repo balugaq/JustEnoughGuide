@@ -15,14 +15,13 @@
  *
  */
 
-package com.balugaq.jeg.api.recipe_complete.source.base;
+package com.balugaq.jeg.api.recipe_complete.source;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.InventoryUtil;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
@@ -40,8 +39,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface VanillaSource extends Source {
     @SuppressWarnings({"deprecation", "UnusedReturnValue"})
-    @Override
-    default boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
+    static boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
         Debug.debug(session + " open guide for " + session.getPlayer().getUniqueId());
         Player player = session.getPlayer();
         ClickAction clickAction = session.getClickAction();
@@ -64,27 +62,14 @@ public interface VanillaSource extends Source {
         return true;
     }
 
-    @Override
-    default boolean completeRecipeWithGuide(RecipeCompleteSession session) {
+    static boolean completeRecipeWithGuide(RecipeCompleteSession session) {
         Inventory inventory = session.getInventory();
         int[] ingredientSlots = session.getIngredientSlots();
         boolean unordered = session.isUnordered();
-        return completeRecipeWithGuide(
-            session,
-            (slot) -> {
-                if (slot < inventory.getSize()) {
-                    return inventory.getItem(slot);
-                }
-                return null;
-            },
-            (received, i) ->
-                InventoryUtil.fits(inventory, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]}),
-            (received, i) ->
-                InventoryUtil.pushItem(inventory, received, unordered ? ingredientSlots : new int[]{ingredientSlots[i]})
-        );
+        return Source.completeRecipeWithGuide(session, ContainerInteractor.vanilla(inventory, unordered, ingredientSlots));
     }
 
-    default void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenInventory, @Nullable Runnable callback) {
+    static void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenInventory, @Nullable Runnable callback) {
         session.setEvent(event);
         int times = 1;
         if (reopenInventory ? clickAction.isRightClicked() : clickAction.isShiftClicked()) {

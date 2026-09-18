@@ -19,9 +19,10 @@ package com.balugaq.jeg.api.recipe_complete;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import com.balugaq.jeg.api.recipe_complete.source.Source;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.AccessLevel;
@@ -188,7 +189,7 @@ public class RecipeCompleteSession {
     }
 
     public boolean isExpired() {
-        return expired || pushed > 3456 || !Source.depthInRange(player, recipeDepth);
+        return expired || pushed > 3456 || !ReflectionUtil.depthInRange(player, recipeDepth);
     }
 
     public static void setExpired(Player player) {

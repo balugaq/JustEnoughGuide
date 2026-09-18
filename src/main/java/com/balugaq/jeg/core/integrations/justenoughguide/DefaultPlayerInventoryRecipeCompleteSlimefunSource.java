@@ -17,7 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.justenoughguide;
 
-import com.balugaq.jeg.api.recipe_complete.source.base.SlimefunSource;
+import com.balugaq.jeg.api.recipe_complete.source.SlimefunSource;
 import org.jspecify.annotations.NullMarked;
 
 /**

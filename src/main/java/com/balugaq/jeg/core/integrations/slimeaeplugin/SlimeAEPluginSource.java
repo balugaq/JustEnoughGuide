@@ -18,8 +18,8 @@
 package com.balugaq.jeg.core.integrations.slimeaeplugin;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.base.RecipeCompleteProvider;
-import com.balugaq.jeg.api.recipe_complete.source.base.Source;
+import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
+import com.balugaq.jeg.api.recipe_complete.source.Source;
 import com.balugaq.jeg.utils.ItemStackUtil;
 import me.ddggdd135.guguslimefunlib.items.ItemKey;
 import me.ddggdd135.slimeae.api.interfaces.IStorage;
@@ -76,8 +76,26 @@ public interface SlimeAEPluginSource extends Source {
     }
 
     @Override
+    default long countAmount(RecipeCompleteSession session, ItemStack template) {
+        Set<IStorage> networkStorages = (Set<IStorage>) session.getCache(this, Set.class);
+        if (networkStorages == null) {
+            networkStorages = SlimeAEPluginIntegrationMain.findNearbyIStorages(session.getLocation());
+            if (networkStorages.isEmpty()) return 0;
+
+            session.setCache(this, networkStorages);
+        }
+
+        // get from networkStorage
+        long total = 0;
+        for (var networkStorage : networkStorages) {
+            total += networkStorage.getStorageUnsafe().getKey(new ItemKey(template));
+        }
+
+        return total;
+    }
+
+    @Override
     default int handleLevel() {
         return RecipeCompleteProvider.SLIME_AE_PLUGIN_HANDLE_LEVEL;
     }
-
 }
