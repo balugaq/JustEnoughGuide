@@ -18,3 +18,28 @@ commands:
       - justenoughguide
     description: /justenoughguide
     usage: /justenoughguide <sub>
+permissions:
+  jeg.reload:
+    description: Reload the JEG plugin
+    default: op
+  jeg.disable:
+    description: Disable the JEG plugin
+    default: op
+  jeg.cache:
+    description: Inspect JEG search caches
+    default: op
+  jeg.gteg:
+    description: Get the Guide Tier Editor item
+    default: op
+  jeg.categories:
+    description: View all Slimefun item groups
+    default: op
+  jeg.search:
+    description: Search for items
+    default: op
+  jeg.viewitem:
+    description: View a Slimefun item by id
+    default: true
+  jeg.share:
+    description: Share the item in hand
+    default: true

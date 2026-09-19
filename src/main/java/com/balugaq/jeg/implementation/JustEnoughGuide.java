@@ -332,10 +332,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.commandManager = new CommandManager(this);
         this.commandManager.load();
 
-        if (!commandManager.registerCommands()) {
-            getLogger().warning("注册指令失败！");
-        }
-
         getLogger().info("正在替换指南...");
         Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
         newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalGuideImplementation());

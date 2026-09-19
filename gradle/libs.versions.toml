@@ -32,6 +32,8 @@ slimeHUD = "ad7a52fead"
 slimeFunRecipe = "ef222864d0"
 rykenSlimeCustomizer = "3.0.5"
 logiTech = "0648f9f439"
+# 命令框架 ACF（仅 Aikar 仓库提供，社区只用 SNAPSHOT）
+acfPaper = "0.5.1-SNAPSHOT"
 
 # 拼音/NLP工具
 houbbPinyin = "0.4.0"
@@ -72,5 +74,7 @@ slime-hud = { module = "com.github.balugaq:SlimeHUD", version.ref = "slimeHUD" }
 slimefun-recipe = { module = "com.github.balugaq:SlimeFunRecipe", version.ref = "slimeFunRecipe" }
 ryken-slime-customizer = { module = "io.github.balugaq:RykenSlimefunCustomizer", version.ref = "rykenSlimeCustomizer" }
 logi-tech = { module = "com.github.balugaq:LogiTech", version.ref = "logiTech"}
+# 命令框架 ACF（注解驱动命令系统）
+acf-paper = { module = "co.aikar:acf-paper", version.ref = "acfPaper" }
 [plugins]
 shadow-jar = { id = "com.gradleup.shadow", version.ref = "shadow" }

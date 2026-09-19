@@ -32,6 +32,7 @@ repositories {
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://jitpack.io")
+    maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.tcoded.com/releases")
@@ -62,6 +63,8 @@ dependencies {
     implementation(libs.libby.bukkit)
     implementation(libs.jetbrains.annotations)
     implementation(libs.jspecify)
+    // 命令框架 ACF（注解驱动命令系统，shade 进 fat jar）
+    implementation(libs.acf.paper)
 
     compileOnly(libs.findbugs.annotations)
     compileOnly(libs.lombok)
@@ -118,6 +121,8 @@ tasks.withType<JavaExec>().configureEach {
 tasks {
     compileJava {
         options.compilerArgs.add("-Xlint:-removal")
+        // ACF 需要 -parameters 才能用参数名自动生成 Syntax 提示
+        options.compilerArgs.add("-parameters")
         options.encoding = "UTF-8"
         options.release = 21
     }
@@ -134,6 +139,9 @@ tasks {
         relocate("com.jeff_media", "com.balugaq.jeg.libraries.jeff_media")
         relocate("org.bstats", "com.balugaq.jeg.libraries.bstats")
         relocate("net.wesjd.anvilgui", "com.balugaq.jeg.libraries.anvilgui")
+        // ACF 命令框架 shade/relocate，避免同服多插件类冲突
+        relocate("co.aikar.commands", "com.balugaq.jeg.libraries.acf.commands")
+        relocate("co.aikar.locales", "com.balugaq.jeg.libraries.acf.locales")
 
         // Exclude unwanted files
         exclude("META-INF/*")
