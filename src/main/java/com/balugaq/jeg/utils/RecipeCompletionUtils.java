@@ -34,7 +34,10 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
@@ -168,13 +171,13 @@ public class RecipeCompletionUtils {
      * 计算最多能存入多少份 stacks
      *
      * @param stacks         单份配方（可能含重复类型，需要聚合）
-     * @param existingMap    现有库存：物品类型 -> 总数量
      * @return 最多能存入的份数
      */
-    public static int maxCraftableUnordered(
+    private static int maxCraftableUnordered(
         List<ItemStack> stacks,
-        Map<ItemStack, Long> existingMap,
-        int freeSlots
+        Map<ItemStack, Long> leftCapacity,
+        int freeSlots,
+        int maxTimes
     ) {
         // 1. 聚合单份配方的需求：类型 -> 每份所需数量
         Map<ItemStack, Long> perCraft = new HashMap<>();
@@ -189,115 +192,92 @@ public class RecipeCompletionUtils {
             return 0;
         }
 
-        // 3. 对每种类型计算：单份需求 need，已有 stock
-        //    先尽量用库存抵扣；抵扣不够的部分，每一份都要占用 1 个空槽（且该类型一旦占用，后续份数可复用）
-        long maxByItems = Long.MAX_VALUE;
-
-        for (var entry : perCraft.entrySet()) {
-            ItemStack type = entry.getKey();
-            long needPerCraft = entry.getValue();          // 每份需要多少
-            long stock = existingMap.getOrDefault(type, 0L); // 已有多少
-
-            // 已有库存能覆盖多少份（向下取整）
-            long coveredByStock = stock / needPerCraft;
-
-            // 库存覆盖之后，还需要用空槽补充的份数
-            // 每补充一份，需要占用 1 个空槽（因为该类型必须新开一个槽放）
-            // 因此该类型最多支持：coveredByStock + 可用空槽数
-            // 但注意：空槽是全类型共享的，不能简单相加，需要全局考虑
-            maxByItems = Math.min(maxByItems, coveredByStock);
+        // 2. 二分找最大可行份数
+        long hi = maxTimes;
+        long lo = 1;
+        long best = 1;
+        while (lo <= hi) {
+            long mid = lo + (hi - lo) / 2;
+            if (canCraftWithSlots(mid, perCraft, leftCapacity, freeSlots)) {
+                best = mid;
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
         }
-
-        // 4. 上面只算了"库存能覆盖的份数"，剩余不足的需要空槽
-        //    正确的做法是：先看纯库存能撑多少份，再逐份尝试用空槽补差
-        return tryWithEmptySlots(perCraft, existingMap, freeSlots);
+        return (int) best;
     }
 
-    private static int tryWithEmptySlots(
+    /** 判定：做 n 份，缺口需要多少空槽，是否 <= freeSlots */
+    private static boolean canCraftWithSlots(
+        long n,
         Map<ItemStack, Long> perCraft,
-        Map<ItemStack, Long> existingMap,
+        Map<ItemStack, Long> leftCapacity,
         int freeSlots
     ) {
-        // 先算纯库存（不消耗空槽）能支持多少份
-        long base = Long.MAX_VALUE;
+        int slotsNeeded = 0;
         for (var e : perCraft.entrySet()) {
-            long stock = existingMap.getOrDefault(e.getKey(), 0L);
-            base = Math.min(base, stock / e.getValue());
+            ItemStack type = e.getKey();
+            long need = e.getValue() * n;
+            long capacity = leftCapacity.getOrDefault(type, 0L); // 还能再放的数量
+            long overflow = need - capacity; // 如果没溢出，就不用开新槽
+            if (overflow <= 0) continue;
+
+            int maxStack = type.getMaxStackSize();
+            int slotsForType = (int) ((overflow + maxStack - 1) / maxStack);
+            slotsNeeded += slotsForType;
+            if (slotsNeeded > freeSlots) return false;
         }
-        if (base == Long.MAX_VALUE) base = 0;
-
-        // 从 base 开始，逐份尝试，看能否用空槽补足差额
-        long result = base;
-        while (freeSlots > 0) {
-            long next = result + 1; // 尝试做第 next 份
-            int slotsNeeded = 0;
-            boolean possible = true;
-
-            for (var e : perCraft.entrySet()) {
-                ItemStack type = e.getKey();
-                long need = e.getValue() * next;              // 做 next 份总共需要
-                long stock = existingMap.getOrDefault(type, 0L);
-                long shortage = need - stock;
-                if (shortage > 0) {
-                    // 缺的部分需要新开一个空槽放这种物品
-                    // 但一个空槽能放多少？取决于该槽最终能堆多少——这里假设一个槽能放满该物品
-                    // 如果 shortage <= 单槽最大堆叠数，则占 1 个空槽即可
-                    int maxStack = type.getMaxStackSize();
-                    int slotsForType = (int) ((shortage + maxStack - 1) / maxStack);
-                    slotsNeeded += slotsForType;
-                    if (slotsNeeded > freeSlots) {
-                        possible = false;
-                        break;
-                    }
-                }
-            }
-
-            if (!possible) break;
-            freeSlots -= slotsNeeded;
-            result = next;
-        }
-        return (int) result;
+        return true;
     }
 
-    public static int maxCraftable(int maxTimes, boolean unordered, int[] ingredientSlots, ContainerInteractor interactor, List<@Nullable RecipeChoice> choices) {
+    public static IntObjectPair<Map<ItemStack, IntSet>> maxCraftable(int maxTimes, boolean unordered, int[] ingredientSlots, ContainerInteractor interactor, List<@Nullable RecipeChoice> choices) {
         if (unordered) {
-            // slot to occupied
             int freeSlots = 0;
-            Map<ItemStack, Long> existingMap = new HashMap<>();
+            // 这里存入每个物品可以在原有位置上再放多少
+            Map<ItemStack, Long> leftCapacity = new HashMap<>();
+            Map<ItemStack, IntSet> leftCapacitySlots = new HashMap<>();
             for (var slot : ingredientSlots) {
                 ItemStack stack = interactor.getExistingStack(slot);
                 if (stack == null || stack.getType() == Material.AIR) {
                     freeSlots++;
                 } else {
-                    existingMap.compute(StackUtils.getAsQuantity(stack, 1), (k, v) -> v == null ? stack.getAmount() : v + stack.getAmount());
+                    if (stack.getAmount() >= stack.getMaxStackSize()) continue;
+                    var amt = stack.getMaxStackSize() - stack.getAmount();
+                    var key = StackUtils.getAsQuantity(stack, 1);
+                    leftCapacity.compute(key, (k, v) -> v == null ? amt : v + amt);
+                    leftCapacitySlots.putIfAbsent(key, new IntOpenHashSet());
+                    leftCapacitySlots.get(key).add(slot);
                 }
             }
             Map<ItemStack, Integer> batchMap = new HashMap<>();
             for (var choice : choices) {
+                if (choice == null) continue;
                 var stack = toItemStacks(choice).getFirst();
                 batchMap.compute(StackUtils.getAsQuantity(stack, 1), (k, v) -> v == null ? stack.getAmount() : v + stack.getAmount());
             }
             List<ItemStack> batch = batchMap.entrySet().stream().map(e -> StackUtils.getAsQuantity(e.getKey(), e.getValue())).toList();
-            maxTimes = Math.min(maxTimes, maxCraftableUnordered(batch, existingMap, freeSlots));
-            return maxTimes;
-        }
+            maxTimes = Math.min(maxTimes, maxCraftableUnordered(batch, leftCapacity, freeSlots, maxTimes));
+            return IntObjectPair.of(maxTimes, leftCapacitySlots);
+        } else {
+            // ordered recipe
+            for (var slot : ingredientSlots) {
+                ItemStack stack = interactor.getExistingStack(slot);
+                for (var choice : choices) {
+                    var template = toItemStacks(choice).getFirst();
+                    if (stack != null && stack.getType() != Material.AIR) {
+                        if (!StackUtils.itemsMatch(stack, template) || stack.getAmount() >= template.getMaxStackSize()) {
+                            // 无法放置
+                            return IntObjectPair.of(0, null);
+                        }
 
-        // ordered recipe
-        for (var slot : ingredientSlots) {
-            ItemStack stack = interactor.getExistingStack(slot);
-            for (var choice : choices) {
-                var template = toItemStacks(choice).getFirst();
-                if (stack != null && stack.getType() != Material.AIR) {
-                    if (!StackUtils.itemsMatch(stack, template) || stack.getAmount() >= template.getMaxStackSize()) {
-                        // 无法放置
-                        return 0;
+                        // stack maybe overstacked
+                        maxTimes = Math.min(maxTimes, Math.max(0, template.getMaxStackSize() - stack.getAmount()) / template.getAmount());
                     }
-
-                    maxTimes = Math.min(maxTimes, (template.getMaxStackSize() - stack.getAmount()) / template.getAmount());
                 }
             }
+            return IntObjectPair.of(maxTimes, null);
         }
-        return maxTimes;
     }
 
     public static String getAmountString(ItemStack itemStack, long amount) {
@@ -314,8 +294,14 @@ public class RecipeCompletionUtils {
         return amountString;
     }
 
+    public static Iterable<Integer> mergeSlots(IntSet slots1, int[] slots2) {
+        IntLinkedOpenHashSet set = new IntLinkedOpenHashSet(slots1);
+        for (int i : slots2) set.add(i);
+        return set;
+    }
+
     public static int[] mergeSlots(int[]... slots) {
-        IntOpenHashSet set = new IntOpenHashSet();
+        IntLinkedOpenHashSet set = new IntLinkedOpenHashSet();
         for (int[] slot : slots)
             for (int i : slot) set.add(i);
         return set.toIntArray();

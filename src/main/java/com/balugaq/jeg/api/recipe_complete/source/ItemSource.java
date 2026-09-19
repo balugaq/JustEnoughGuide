@@ -24,6 +24,7 @@ import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -97,6 +98,7 @@ public interface ItemSource {
 
         Player player = GuideUtil.updatePlayer(event.getPlayer());
         if (player == null) return false;
+        event.setCancelled(true);
 
         // involves amounts in choices
         List<@Nullable RecipeChoice> choices = RecipeCompletionUtils.getRecipe(player, sf, targetItem);
@@ -113,24 +115,25 @@ public interface ItemSource {
             maxTimes = Math.min(maxTimes, (int) cnt / template.getAmount());
         }
 
-        // maxCraftable 有点耗时，所以先检测一下
-        if (maxTimes == 0) {
+        if (maxTimes <= 0) {
+            // 无法放置
+            player.sendMessage(ChatColors.color("&c[配方补全] 没有足够的材料！"));
+            return false;
+        }
+
+        var craftResult = RecipeCompletionUtils.maxCraftable(maxTimes, unordered, ingredientSlots, interactor, choices);
+        if (craftResult.leftInt() <= 0) {
             // 无法放置
             player.sendMessage(ChatColors.color("&c[配方补全] 没有足够的位置放置材料！"));
             return false;
         }
 
-        maxTimes = RecipeCompletionUtils.maxCraftable(maxTimes, unordered, ingredientSlots, interactor, choices);
-        if (maxTimes == 0) {
-            // 无法放置
-            player.sendMessage(ChatColors.color("&c[配方补全] 没有足够的位置放置材料！"));
-            return false;
-        }
-
-        if (maxTimes < session.getTimes()) {
+        if (craftResult.leftInt() < maxTimes) {
             // 可供放置的位置不足，这部分另外提醒
-            player.sendMessage(ChatColors.color("&e[配方补全] 可供放置材料的位置不足！至多合成 " + session.getTimes() + " -> " + maxTimes + " 次！"));
+            player.sendMessage(ChatColors.color("&e[配方补全] 可供放置材料的位置不足！至多放置 " + session.getTimes() + " -> " + craftResult.leftInt() + " 份材料！"));
         }
+
+        maxTimes = craftResult.leftInt();
 
         // 获取物品并推送
         Map<ItemStack, Integer> missingMap = new HashMap<>();
@@ -159,11 +162,12 @@ public interface ItemSource {
 
             if (receivedAmount > 0) {
                 var stk = StackUtils.getAsQuantity(itemStack, receivedAmount);
-                interactor.pushItem(stk, i);
+                var key = StackUtils.getAsQuantity(stk, 1);
+                interactor.pushItem(stk, i, craftResult.right().getOrDefault(key, IntSet.of()));
                 // 防止出现目标容器在计算期间容量变化导致无法推送物品
                 session.setPushed(session.getPushed() + receivedAmount - stk.getAmount());
                 if (stk.getAmount() > 0) {
-                    pushFailed.compute(StackUtils.getAsQuantity(stk, 1), (k, v) -> v == null ? stk.getAmount() : stk.getAmount() + v);
+                    pushFailed.compute(key, (k, v) -> v == null ? stk.getAmount() : stk.getAmount() + v);
                 }
             }
         }
@@ -194,7 +198,6 @@ public interface ItemSource {
             }
         }
 
-        event.setCancelled(true);
         return true;
     }
 

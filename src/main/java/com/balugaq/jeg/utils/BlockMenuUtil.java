@@ -44,7 +44,7 @@ public class BlockMenuUtil {
     public static Map<ItemStack, Integer> pushItem(
         final BlockMenu blockMenu,
         final @Nullable ItemStack[] items,
-        @Range(from = 0, to = 53) final int... slots) {
+        final Iterable<@Range(from = 0, to = 53) Integer> slots) {
         if (items == null || items.length == 0) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty array");
@@ -63,7 +63,7 @@ public class BlockMenuUtil {
     public static Map<ItemStack, Integer> pushItem(
         final BlockMenu blockMenu,
         final @Nullable List<ItemStack> items,
-        @Range(from = 0, to = 53) final int... slots) {
+        final Iterable<@Range(from = 0, to = 53) Integer> slots) {
         if (items == null || items.isEmpty()) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty list");
@@ -87,7 +87,20 @@ public class BlockMenuUtil {
     public static ItemStack pushItem(
         final BlockMenu blockMenu,
         final @Nullable ItemStack item,
-        @Range(from = 0, to = 53) final int... slots) {
+        final @Range(from = 0, to = 53) int... slots) {
+        List<Integer> slotsList = new ArrayList<>(slots.length);
+        for (int slot :slots) {
+            slotsList.add(slot);
+        }
+        return pushItem(blockMenu, item, slotsList);
+    }
+
+    @CanIgnoreReturnValue
+    @Nullable
+    public static ItemStack pushItem(
+        final BlockMenu blockMenu,
+        final @Nullable ItemStack item,
+        final Iterable<@Range(from = 0, to = 53) Integer> slots) {
         if (item == null || item.getType() == Material.AIR) {
             return null;
             // throw new IllegalArgumentException("Cannot push null or AIR");

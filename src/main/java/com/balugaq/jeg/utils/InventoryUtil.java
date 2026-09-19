@@ -86,6 +86,18 @@ public class InventoryUtil {
         final Inventory inventory,
         final @Nullable ItemStack item,
         @Range(from = 0, to = 53) final int... slots) {
+        List<Integer> slotsList = new ArrayList<>(slots.length);
+        for (int slot :slots) {
+            slotsList.add(slot);
+        }
+        return pushItem(inventory, item, slotsList);
+    }
+
+    @Nullable
+    public static ItemStack pushItem(
+        final Inventory inventory,
+        final @Nullable ItemStack item,
+        final Iterable<@Range(from = 0, to = 53) Integer> slots) {
         if (item == null || item.getType() == Material.AIR) {
             return null;
             // throw new IllegalArgumentException("Cannot push null or AIR");

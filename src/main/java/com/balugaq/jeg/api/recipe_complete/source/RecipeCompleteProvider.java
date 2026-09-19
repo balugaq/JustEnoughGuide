@@ -165,12 +165,14 @@ public class RecipeCompleteProvider {
                 }
                 var gotten = source.getItemStack(session, possibleTemplate, need);
                 need -= gotten;
-                total += need;
+                total += gotten;
                 if (need <= 0) {
                     return total;
                 }
 
-                session.setItemNotIn(source, possibleTemplate);
+                if (gotten <= 0) {
+                    session.setItemNotIn(source, possibleTemplate);
+                }
             }
         }
         return 0;

@@ -29,7 +29,9 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -118,7 +120,7 @@ public final class JustEnoughGuideAPI {
          *
          * @see #openSlimefun(BlockMenu, Player, ClickAction, int[], boolean, int)
          */
-        public boolean openVanilla(org.bukkit.block.Block block, org.bukkit.inventory.Inventory inventory, Player player, ClickAction clickAction, int[] ingredientSlots, boolean unordered, int recipeDepth) {
+        public boolean openVanilla(Block block, Inventory inventory, Player player, ClickAction clickAction, int[] ingredientSlots, boolean unordered, int recipeDepth) {
             RecipeCompleteSession session = RecipeCompleteSession.create(block, inventory, player, clickAction, ingredientSlots, unordered, recipeDepth);
             if (session == null) {
                 return false;

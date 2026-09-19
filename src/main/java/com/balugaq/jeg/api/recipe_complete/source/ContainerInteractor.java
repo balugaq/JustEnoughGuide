@@ -19,11 +19,14 @@ package com.balugaq.jeg.api.recipe_complete.source;
 
 import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.InventoryUtil;
+import com.balugaq.jeg.utils.RecipeCompletionUtils;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
+
 
 /**
  * @author balugaq
@@ -36,7 +39,7 @@ interface ContainerInteractor {
 
     boolean fits(ItemStack stack, int ingredientIndex);
 
-    void pushItem(ItemStack stack, int ingredientIndex);
+    void pushItem(ItemStack stack, int ingredientIndex, IntSet capacitySlots);
 
     static ContainerInteractor slimefun(BlockMenu blockMenu, boolean unordered, int[] ingredientSlots) {
         return new ContainerInteractor() {
@@ -56,8 +59,12 @@ interface ContainerInteractor {
             }
 
             @Override
-            public void pushItem(ItemStack received, int ingredientIndex) {
-                BlockMenuUtil.pushItem(blockMenu, received, unordered ? ingredientSlots : new int[]{ingredientSlots[ingredientIndex]});
+            public void pushItem(ItemStack received, int ingredientIndex, IntSet capacitySlots) {
+                if (unordered) {
+                    BlockMenuUtil.pushItem(blockMenu, received, RecipeCompletionUtils.mergeSlots(capacitySlots, ingredientSlots));
+                } else {
+                    BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[ingredientIndex]);
+                }
             }
         };
     }
@@ -78,8 +85,12 @@ interface ContainerInteractor {
             }
 
             @Override
-            public void pushItem(ItemStack received, int ingredientIndex) {
-                InventoryUtil.pushItem(inventory, received, unordered ? ingredientSlots : new int[]{ingredientSlots[ingredientIndex]});
+            public void pushItem(ItemStack received, int ingredientIndex, IntSet capacitySlots) {
+                if (unordered) {
+                    InventoryUtil.pushItem(inventory, received, RecipeCompletionUtils.mergeSlots(capacitySlots, ingredientSlots));
+                } else {
+                    InventoryUtil.pushItem(inventory, received, ingredientSlots[ingredientIndex]);
+                }
             }
         };
     }
