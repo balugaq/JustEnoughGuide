@@ -20,9 +20,8 @@ package com.balugaq.jeg.core.integrations.justenoughguide;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
-import com.balugaq.jeg.utils.ReflectionUtil;
+import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -37,14 +36,13 @@ public interface PlayerNearbyContainerSource extends JEGSource {
     }
 
     @Override
-    @Nullable
-    default ItemStack getItemStack(RecipeCompleteSession session, ItemStack itemStack) {
-        return getItemStackFromNearbyContainer(session.getPlayer(), session.getTarget(), itemStack);
+    default long getItemStack(RecipeCompleteSession session, ItemStack itemStack, long need) {
+        return RecipeCompletionUtils.getItemStackFromNearbyContainer(session.getPlayer(), session.getTarget(), itemStack, need);
     }
 
     @Override
     default long countAmount(RecipeCompleteSession session, ItemStack template) {
-        return ReflectionUtil.countAmountFromNearbyContainer(session.getPlayer(), session.getTarget(), template);
+        return RecipeCompletionUtils.countAmountFromNearbyContainer(session.getPlayer(), session.getTarget(), template);
     }
 
     @Override

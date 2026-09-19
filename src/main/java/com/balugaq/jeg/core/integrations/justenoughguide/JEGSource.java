@@ -17,7 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.justenoughguide;
 
-import com.balugaq.jeg.api.recipe_complete.source.Source;
+import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
@@ -27,7 +27,7 @@ import org.jspecify.annotations.NullMarked;
  * @since 2.0
  */
 @NullMarked
-public interface JEGSource extends Source {
+public interface JEGSource extends ItemSource {
     @Override
     default JavaPlugin plugin() {
         return JustEnoughGuide.getInstance();

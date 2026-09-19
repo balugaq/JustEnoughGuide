@@ -24,9 +24,12 @@ import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -75,7 +78,7 @@ public class NetworksIntegrationMain implements Integration {
         return plugin;
     }
 
-    public static Set<NetworkRoot> findNearbyNetworkRoots(Location location) {
+    public static Set<NetworkRoot> findNearbyNetworkRoots(Player p, Location location) {
         Set<NetworkRoot> roots = new HashSet<>();
 
         for (BlockFace blockFace : VALID_FACES) {
@@ -89,7 +92,7 @@ public class NetworksIntegrationMain implements Integration {
                 case DOWN -> clone.set(clone.getBlockX(), clone.getBlockY() - 1, clone.getBlockZ());
             }
             NodeDefinition def2 = NetworkStorage.getNode(clone);
-            if (def2 != null && def2.getNode() != null) {
+            if (def2 != null && def2.getNode() != null && Slimefun.getProtectionManager().hasPermission(p, clone, Interaction.INTERACT_BLOCK)) {
                 roots.add(def2.getNode().getRoot());
             }
         }
@@ -116,8 +119,7 @@ public class NetworksIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
-        RecipeCompleteProvider.addSource(new NetworksRecipeCompleteSlimefunSource());
-        RecipeCompleteProvider.addSource(new NetworksRecipeCompleteVanillaSource());
+        RecipeCompleteProvider.addSource(new NetworksSource() {});
 
         rrc("NTW_RECIPE_ENCODER", ENCODER_RECIPE_SLOTS, false);
         rrc("NTW_CRAFTING_GRID", CRAFTING_GRID_RECIPE_SLOTS, false);

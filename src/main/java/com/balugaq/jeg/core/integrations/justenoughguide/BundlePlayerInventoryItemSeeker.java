@@ -20,7 +20,7 @@ package com.balugaq.jeg.core.integrations.justenoughguide;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.RecipeCompleteUtils;
+import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import com.balugaq.jeg.utils.StackUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -74,12 +74,12 @@ public class BundlePlayerInventoryItemSeeker implements RecipeCompletableListene
             }
 
             if (amount <= 0) {
-                bundle.setItems(RecipeCompleteUtils.trimItems(items));
+                bundle.setItems(RecipeCompletionUtils.trimItems(items));
                 item.setItemMeta(meta);
                 return got;
             }
         }
-        bundle.setItems(RecipeCompleteUtils.trimItems(items));
+        bundle.setItems(RecipeCompletionUtils.trimItems(items));
         item.setItemMeta(meta);
         return got;
     }
@@ -111,7 +111,7 @@ public class BundlePlayerInventoryItemSeeker implements RecipeCompletableListene
             int existing = innerItem.getAmount();
             got += existing;
         }
-        bundle.setItems(RecipeCompleteUtils.trimItems(items));
+        bundle.setItems(RecipeCompletionUtils.trimItems(items));
         item.setItemMeta(meta);
         return got;
     }

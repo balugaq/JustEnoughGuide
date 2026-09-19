@@ -48,40 +48,14 @@ public class RecipeCompleteProvider {
     public static final int PLAYER_NEARBY_CONTAINER_HANDLE_LEVEL = 20;
 
     @Getter
-    private static final List<SlimefunSource> slimefunSources = new ArrayList<>();
-
-    @Getter
-    private static final List<VanillaSource> vanillaSources = new ArrayList<>();
+    private static final List<ItemSource> sources = new ArrayList<>();
 
     @Getter
     private static final List<RecipeHandler> specialRecipeHandlers = new ArrayList<>();
 
-    public static void addSource(SlimefunSource source) {
-        if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
-            slimefunSources.addFirst(source);
-            slimefunSources.sort(Comparator.comparingInt(Source::handleLevel));
-        }
-    }
-
-    public static void addSource(VanillaSource source) {
-        if (JustEnoughGuide.getConfigManager().isRecipeComplete()) {
-            vanillaSources.addFirst(source);
-        }
-    }
-
-    @Nullable
-    public static SlimefunSource removeSlimefunSource(SlimefunSource source) {
-        return slimefunSources.remove(source) ? source : null;
-    }
-
-    @Nullable
-    public static SlimefunSource removeSlimefunSource(JavaPlugin plugin) {
-        for (SlimefunSource source : slimefunSources) {
-            if (source.plugin().equals(plugin)) {
-                return slimefunSources.remove(source) ? source : null;
-            }
-        }
-        return null;
+    public static void addSource(ItemSource source) {
+        sources.addFirst(source);
+        sources.sort(Comparator.comparingInt(ItemSource::handleLevel));
     }
 
     @CanIgnoreReturnValue
@@ -96,30 +70,30 @@ public class RecipeCompleteProvider {
     }
 
     @Nullable
-    public static VanillaSource removeVanillaSource(VanillaSource source) {
-        return vanillaSources.remove(source) ? source : null;
+    public static ItemSource removeItemSource(VanillaRecipeCompletion source) {
+        return sources.remove(source) ? source : null;
     }
 
     @Nullable
-    public static VanillaSource removeVanillaSource(JavaPlugin plugin) {
-        for (VanillaSource source : vanillaSources) {
+    public static ItemSource removeItemSource(JavaPlugin plugin) {
+        for (var source : sources) {
             if (source.plugin().equals(plugin)) {
-                return vanillaSources.remove(source) ? source : null;
+                return sources.remove(source) ? source : null;
             }
         }
         return null;
     }
 
     public static void shutdown() {
-        slimefunSources.clear();
-        vanillaSources.clear();
+        sources.clear();
         specialRecipeHandlers.clear();
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
     public static long countAmount(RecipeCompleteSession session, ItemStack template) {
+        // 这个 countAmount 扫描范围会有重叠，只能作为一个参考
         long amt = 0;
-        for (SlimefunSource source : slimefunSources) {
+        for (var source : sources) {
             if (session.isNotHandleable(source)) {
                 continue;
             }
@@ -168,7 +142,7 @@ public class RecipeCompleteProvider {
     @NonNegative
     public static long getItemStack(RecipeCompleteSession session, ItemStack template, long need) {
         long total = 0;
-        for (SlimefunSource source : slimefunSources) {
+        for (var source : sources) {
             if (session.isNotHandleable(source)) {
                 continue;
             }
@@ -203,11 +177,11 @@ public class RecipeCompleteProvider {
     }
 
     public static void openSlimefun(RecipeCompleteSession session) {
-        SlimefunSource.openGuide(session, null);
+        SlimefunRecipeCompletion.openGuide(session, null);
     }
 
     public static void openVanilla(RecipeCompleteSession session) {
         RecipeCompletableListener.allowSelectingItemStackToRecipeComplete(session.getPlayer().getUniqueId());
-        VanillaSource.openGuide(session, null);
+        VanillaRecipeCompletion.openGuide(session, null);
     }
 }

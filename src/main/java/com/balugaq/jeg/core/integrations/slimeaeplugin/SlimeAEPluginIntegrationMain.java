@@ -23,12 +23,15 @@ import com.balugaq.jeg.core.integrations.Integration;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import me.ddggdd135.slimeae.SlimeAEPlugin;
 import me.ddggdd135.slimeae.api.interfaces.IStorage;
 import me.ddggdd135.slimeae.core.NetworkInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
@@ -66,7 +69,7 @@ public class SlimeAEPluginIntegrationMain implements Integration {
         return plugin;
     }
 
-    public static Set<IStorage> findNearbyIStorages(Location location) {
+    public static Set<IStorage> findNearbyIStorages(Player p, Location location) {
         Set<IStorage> networkStorages = new HashSet<>();
 
         for (BlockFace blockFace : VALID_FACES) {
@@ -82,7 +85,7 @@ public class SlimeAEPluginIntegrationMain implements Integration {
             NetworkInfo def2 = SlimeAEPlugin.getNetworkData().getNetworkInfo(clone);
             if (def2 != null) {
                 var storage = getIStorage(def2);
-                if (storage != null) {
+                if (storage != null && Slimefun.getProtectionManager().hasPermission(p, clone, Interaction.INTERACT_BLOCK)) {
                     networkStorages.add(storage);
                 }
             }
@@ -115,10 +118,7 @@ public class SlimeAEPluginIntegrationMain implements Integration {
 
     @Override
     public void onEnable() {
-        if (JustEnoughGuide.getIntegrationManager().isEnabledSlimeAEPlugin()) {
-            RecipeCompleteProvider.addSource(new SlimeAEPluginRecipeCompleteSlimefunSource());
-            RecipeCompleteProvider.addSource(new SlimeAEPluginRecipeCompleteVanillaSource());
-        }
+        RecipeCompleteProvider.addSource(new SlimeAEPluginSource() {});
 
         rrc("ME_CRAFTING_TERMINAL", CRAFTING_TERMINAL_INPUT_SLOTS, false);
         rrc("ME_PATTERN_TERMINAL", PATTERN_TERMINAL_INPUT_SLOTS, false);

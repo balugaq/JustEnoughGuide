@@ -22,6 +22,7 @@ import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ import org.jspecify.annotations.NullMarked;
  */
 @SuppressWarnings({"SameReturnValue", "unused", "deprecation"})
 @NullMarked
-public interface VanillaSource extends Source {
+public interface VanillaRecipeCompletion extends ItemSource {
     @SuppressWarnings({"deprecation", "UnusedReturnValue"})
     static boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
         Debug.debug(session + " open guide for " + session.getPlayer().getUniqueId());
@@ -46,6 +47,7 @@ public interface VanillaSource extends Source {
 
         var p = GuideUtil.updatePlayer(player);
         if (p == null) return false;
+        session.setPlayer(p);
         GuideEvents.ItemButtonClickEvent lastEvent = RecipeCompletableListener.getLastEvent(p.getUniqueId());
         if (clickAction.isRightClicked() && lastEvent != null) {
             handleSession(session, lastEvent, clickAction, false, callback);
@@ -60,13 +62,6 @@ public interface VanillaSource extends Source {
         );
         RecipeCompletableListener.tagGuideOpen(player);
         return true;
-    }
-
-    static boolean completeRecipeWithGuide(RecipeCompleteSession session) {
-        Inventory inventory = session.getInventory();
-        int[] ingredientSlots = session.getIngredientSlots();
-        boolean unordered = session.isUnordered();
-        return Source.completeRecipeWithGuide(session, ContainerInteractor.vanilla(inventory, unordered, ingredientSlots));
     }
 
     static void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenInventory, @Nullable Runnable callback) {
@@ -84,10 +79,8 @@ public interface VanillaSource extends Source {
             session.cancel();
             return;
         }
-        for (int i = 0; i < session.getTimes(); i++) {
-            completeRecipeWithGuide(session);
-        }
 
+        RecipeCompletionUtils.completeRecipeWithGuide(session);
         if (reopenInventory) session.getPlayer().openInventory(session.getInventory());
         if (callback != null) callback.run();
         session.complete();

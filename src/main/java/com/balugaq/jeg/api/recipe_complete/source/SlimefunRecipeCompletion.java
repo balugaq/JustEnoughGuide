@@ -22,8 +22,8 @@ import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -39,7 +39,7 @@ import org.jspecify.annotations.NullMarked;
  */
 @SuppressWarnings({"unused", "deprecation"})
 @NullMarked
-public interface SlimefunSource extends Source {
+public interface SlimefunRecipeCompletion extends ItemSource {
     @SuppressWarnings("deprecation")
     static boolean openGuide(RecipeCompleteSession session, @Nullable Runnable callback) {
         Debug.debug(session + " open guide for " + session.getPlayer().getUniqueId());
@@ -63,14 +63,6 @@ public interface SlimefunSource extends Source {
         );
         RecipeCompletableListener.tagGuideOpen(player);
         return true;
-    }
-
-    @CanIgnoreReturnValue
-    static boolean completeRecipeWithGuide(RecipeCompleteSession session) {
-        BlockMenu blockMenu = session.getMenu();
-        boolean unordered = session.isUnordered();
-        int[] ingredientSlots = session.getIngredientSlots();
-        return Source.completeRecipeWithGuide(session, ContainerInteractor.slimefun(blockMenu, unordered, ingredientSlots));
     }
 
     static void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenMenu, @Nullable Runnable callback) {
@@ -98,6 +90,7 @@ public interface SlimefunSource extends Source {
         if (event.getMenu().getMenuClickHandler(event.getClickedSlot()) instanceof OnClick.Item.ClickHandler data) {
             session.setSlimefunItem(data.getSlimefunItem());
         }
+
         session.setMenu(actualMenu);
         session.setTarget(actualMenu.getLocation());
         session.setTimes(times);
@@ -107,7 +100,8 @@ public interface SlimefunSource extends Source {
             session.cancel();
             return;
         }
-        completeRecipeWithGuide(session);
+
+        RecipeCompletionUtils.completeRecipeWithGuide(session);
         if (reopenMenu) actualMenu.open(session.getPlayer());
         if (callback != null) callback.run();
         session.complete();

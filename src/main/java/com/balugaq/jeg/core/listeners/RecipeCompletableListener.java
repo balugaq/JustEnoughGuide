@@ -26,7 +26,7 @@ import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
-import com.balugaq.jeg.api.recipe_complete.source.Source;
+import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemSeeker;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
@@ -652,7 +652,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     /**
      * @author balugaq
      * @see ShulkerBoxPlayerInventoryItemSeeker
-     * @see Source#getItemStackFromPlayerInventory(RecipeCompleteSession, ItemStack, int)
+     * @see ItemSource#getItemStackFromPlayerInventory(RecipeCompleteSession, ItemStack, int)
      * @since 2.1
      */
     @NullMarked

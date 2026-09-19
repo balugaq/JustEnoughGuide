@@ -19,10 +19,10 @@ package com.balugaq.jeg.api.recipe_complete;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
-import com.balugaq.jeg.api.recipe_complete.source.Source;
+import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
-import com.balugaq.jeg.utils.ReflectionUtil;
+import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.AccessLevel;
@@ -61,9 +61,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings({"deprecation", "unused", "ConstantValue"})
 public class RecipeCompleteSession {
     private static Map<Player, RecipeCompleteSession> SESSIONS = new ConcurrentHashMap<>();
-    private final Map<Source, Object> cache = new HashMap<>();
-    private final Set<Source> notHandleable = new HashSet<>();
-    private final Map<ItemStack, Set<Source>> itemNotIn = new HashMap<>();
+    private final Map<ItemSource, Object> cache = new HashMap<>();
+    private final Set<ItemSource> notHandleable = new HashSet<>();
+    private final Map<ItemStack, Set<ItemSource>> itemNotIn = new HashMap<>();
     private Player player;
     private GuideEvents.@UnknownNullability ItemButtonClickEvent event;
     private @UnknownNullability Location target;
@@ -166,12 +166,12 @@ public class RecipeCompleteSession {
     }
 
     @Nullable
-    public <T> T getCache(Source source, Class<T> clazz) {
+    public <T> T getCache(ItemSource source, Class<T> clazz) {
         var obj = cache.get(source);
         return clazz.isInstance(obj) ? clazz.cast(obj) : null;
     }
 
-    public void setCache(Source source, Object obj) {
+    public void setCache(ItemSource source, Object obj) {
         cache.put(source, obj);
     }
 
@@ -180,16 +180,16 @@ public class RecipeCompleteSession {
         return block != null ? block.getLocation() : menu.getLocation();
     }
 
-    public boolean isNotHandleable(Source source) {
+    public boolean isNotHandleable(ItemSource source) {
         return notHandleable.contains(source);
     }
 
-    public void setNotHandleable(Source source) {
+    public void setNotHandleable(ItemSource source) {
         notHandleable.add(source);
     }
 
     public boolean isExpired() {
-        return expired || pushed > 3456 || !ReflectionUtil.depthInRange(player, recipeDepth);
+        return expired || pushed > 3456 || !RecipeCompletionUtils.depthInRange(player, recipeDepth);
     }
 
     public static void setExpired(Player player) {
@@ -236,11 +236,11 @@ public class RecipeCompleteSession {
         return canStart(this);
     }
 
-    public boolean itemNotIn(Source source, ItemStack itemStack) {
+    public boolean itemNotIn(ItemSource source, ItemStack itemStack) {
         return itemNotIn.containsKey(itemStack) && itemNotIn.get(itemStack).contains(source);
     }
 
-    public void setItemNotIn(Source source, ItemStack itemStack) {
+    public void setItemNotIn(ItemSource source, ItemStack itemStack) {
         if (!itemNotIn.containsKey(itemStack)) {
             itemNotIn.put(itemStack, new HashSet<>());
         }

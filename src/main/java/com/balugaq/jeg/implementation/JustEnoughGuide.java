@@ -372,7 +372,6 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         SpecialMenuProvider.load();
         ReplacementCardAdapter.load();
         MultiBlockBuilder.load();
-        RecipeCompletableListener.load();
         ThirdPartyWarnings.check();
         IntegrationManager.scheduleRun(JEGGuideSettings::sortOptions);
 

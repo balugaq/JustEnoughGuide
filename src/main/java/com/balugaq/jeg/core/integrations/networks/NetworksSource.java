@@ -19,9 +19,9 @@ package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
-import com.balugaq.jeg.api.recipe_complete.source.Source;
+import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
-import com.balugaq.jeg.utils.ItemStackUtil;
+import com.balugaq.netex.api.interfaces.FeedbackSendable;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import org.bukkit.Material;
@@ -38,14 +38,14 @@ import java.util.Set;
  * @since 2.0
  */
 @NullMarked
-public interface NetworksSource extends Source {
+public interface NetworksSource extends ItemSource {
     @Override
     default JavaPlugin plugin() {
         return NetworksIntegrationMain.getPlugin();
     }
 
     default boolean handleable(RecipeCompleteSession session) {
-        return !NetworksIntegrationMain.findNearbyNetworkRoots(session.getLocation()).isEmpty();
+        return !NetworksIntegrationMain.findNearbyNetworkRoots(session.getPlayer(), session.getLocation()).isEmpty();
     }
 
     @Override
@@ -56,36 +56,45 @@ public interface NetworksSource extends Source {
         // Issue #67
         Set<NetworkRoot> roots = (Set<NetworkRoot>) session.getCache(this, Set.class);
         if (roots == null) {
-            roots = NetworksIntegrationMain.findNearbyNetworkRoots(session.getLocation());
+            roots = NetworksIntegrationMain.findNearbyNetworkRoots(session.getPlayer(), session.getLocation());
             if (roots.isEmpty()) return 0;
 
             session.setCache(this, roots);
         }
 
         // get from root
-        ItemRequest request = new ItemRequest(itemStack, ItemStackUtil.getValidItemAmountAtLeastOne(itemStack));
+        ItemRequest request = new ItemRequest(itemStack, (int) need);
+        long got = 0;
+        var loc = player.getLocation();
         for (var root : roots) {
             if (JustEnoughGuide.getIntegrationManager().isEnabledNetworksExpansion()) {
-                var got = root.getItemStack0(player.getLocation(), request);
-                if (got != null && got.getType() != Material.AIR) {
-                    return got.getAmount();
+                boolean subscribedBefore = FeedbackSendable.hasSubscribed(player, loc);
+                // 这样玩家可以看到网拓发的 Feedback 信息
+                FeedbackSendable.subscribe(player, loc);
+                // 以玩家位置为单位支持限流
+                var gotten = root.getItemStack0(loc, request);
+                if (gotten != null && gotten.getType() != Material.AIR) {
+                    got += gotten.getAmount();
                 }
+                if (!subscribedBefore) FeedbackSendable.unsubscribe(player, loc); // 恢复
+                if (got >= need) return got;
             } else {
-                var got = root.getItemStack(request);
-                if (got != null && got.getType() != Material.AIR) {
-                    return got.getAmount();
+                var gotten = root.getItemStack(request);
+                if (gotten != null && gotten.getType() != Material.AIR) {
+                    got += gotten.getAmount();
                 }
+                if (got >= need) return got;
             }
         }
 
-        return 0;
+        return got;
     }
 
     @Override
     default long countAmount(RecipeCompleteSession session, ItemStack template) {
         Set<NetworkRoot> roots = (Set<NetworkRoot>) session.getCache(this, Set.class);
         if (roots == null) {
-            roots = NetworksIntegrationMain.findNearbyNetworkRoots(session.getLocation());
+            roots = NetworksIntegrationMain.findNearbyNetworkRoots(session.getPlayer(), session.getLocation());
             if (roots.isEmpty()) return 0;
 
             session.setCache(this, roots);

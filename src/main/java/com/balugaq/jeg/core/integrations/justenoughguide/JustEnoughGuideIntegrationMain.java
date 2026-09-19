@@ -68,10 +68,8 @@ public class JustEnoughGuideIntegrationMain implements Integration {
     @CallTimeSensitive(CallTimeSensitive.AfterSlimefunLoaded)
     @Override
     public void onEnable() {
-        RecipeCompleteProvider.addSource(new DefaultPlayerNearbyContainerRecipeCompleteSlimefunSource());
-        RecipeCompleteProvider.addSource(new DefaultPlayerNearbyContainerRecipeCompleteVanillaSource());
-        RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteSlimefunSource());
-        RecipeCompleteProvider.addSource(new DefaultPlayerInventoryRecipeCompleteVanillaSource());
+        RecipeCompleteProvider.addSource(new PlayerNearbyContainerSource() {});
+        RecipeCompleteProvider.addSource(new PlayerInventorySource() {});
 
         if (!JustEnoughGuide.getConfigManager().isDisabledBundleInteraction()
             && MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_17)) {
