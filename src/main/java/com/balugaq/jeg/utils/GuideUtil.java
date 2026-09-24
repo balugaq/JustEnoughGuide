@@ -32,11 +32,13 @@ import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.objects.collection.data.MachineData;
+import com.balugaq.jeg.api.objects.enums.ClickSide;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.api.recipe_complete.CompletionBehaviour;
 import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
@@ -45,6 +47,7 @@ import com.balugaq.jeg.implementation.groups.ActionSelectGroup;
 import com.balugaq.jeg.implementation.groups.KeybindItemsGroup;
 import com.balugaq.jeg.implementation.groups.KeybindsItemsGroup;
 import com.balugaq.jeg.implementation.groups.SubKeybindsItemsGroup;
+import com.balugaq.jeg.implementation.option.RecipeCompletionGuideOption;
 import com.balugaq.jeg.utils.clickhandler.BaseAction;
 import com.balugaq.jeg.utils.clickhandler.OnClick;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -901,16 +904,20 @@ public class GuideUtil {
         addBackButton(menu, format.getChars(Formats.Char.BACK), profile, player);
     }
 
+    public static ItemStack getBackButton(Player player) {
+        return ChestMenuUtils.getBackButton(
+            player,
+            "",
+            ChatColor.GRAY + Slimefun.getLocalization().getMessage(player, "guide.back.guide"));
+    }
+
     public static void addBackButton(ChestMenu menu, List<Integer> slots, PlayerProfile profile, Player player) {
         var impl = getLastJEGGuide(player);
         if (impl == null) return;
         GuideHistory history = profile.getGuideHistory();
         ItemStack backIcon;
         if (history.size() > 1) {
-            backIcon = ChestMenuUtils.getBackButton(
-                player,
-                "",
-                ChatColor.GRAY + Slimefun.getLocalization().getMessage(player, "guide.back.guide"));
+            backIcon = getBackButton(player);
         } else {
             backIcon = ChestMenuUtils.getBackButton(
                 player,
@@ -1165,6 +1172,42 @@ public class GuideUtil {
 
         // fallback
         return slimefunItem;
+    }
+
+    public static void openRecipeCompletionGui(Player player) {
+        ChestMenu menu = new ChestMenu(ChatColors.color("&e配方补全数量设置"));
+        menu.addItem(0, getBackButton(player), (p, s, i, a) -> {
+            JEGGuideSettings.openSettings(p);
+            return false;
+        });
+        int[] backgroundSlots = new int[] {1, 3, 4, 5, 7, 8, 13};
+        for (int i : backgroundSlots) {
+            menu.addItem(i, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
+        }
+        var currLeft = RecipeCompletionGuideOption.get(player, ClickSide.LEFT);
+        menu.addItem(2, Converter.getItem(
+            Material.GOLDEN_APPLE,
+            "&a点击下方按钮以编辑左键配方补全的次数",
+            "&e当前次数: " + currLeft.timesString(player, ClickSide.LEFT)
+        ), ChestMenuUtils.getEmptyClickHandler());
+
+        var currRight = RecipeCompletionGuideOption.get(player, ClickSide.RIGHT);
+        menu.addItem(6, Converter.getItem(
+            Material.GOLDEN_APPLE,
+            "&a点击下方按钮以编辑右键配方补全的次数",
+            "&e当前次数: " + currLeft.timesString(player, ClickSide.RIGHT)
+        ), ChestMenuUtils.getEmptyClickHandler());
+
+        int i = 0;
+        for (var be : CompletionBehaviour.values()) {
+            menu.addItem(9 + i++, be.icon(currLeft), be.onClick(ClickSide.LEFT));
+        }
+
+        int j = 0;
+        for (var be : CompletionBehaviour.values()) {
+            menu.addItem(14 + j++, be.icon(currRight), be.onClick(ClickSide.RIGHT));
+        }
+        menu.open(player);
     }
 
     /**

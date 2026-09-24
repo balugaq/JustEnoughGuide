@@ -79,6 +79,10 @@ public class JEGGuideSettings {
         pages.put(p.getUniqueId(), page);
     }
 
+    public static void openSettings(final Player p) {
+        openSettings(p, GuideUtil.getLastGuide(p).getItem());
+    }
+
     public static void openSettings(final Player p, final ItemStack guide) {
         openSettings(p, guide, getLastPage(p));
     }

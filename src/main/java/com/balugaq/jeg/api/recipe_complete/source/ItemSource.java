@@ -25,6 +25,9 @@ import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -107,19 +110,7 @@ public interface ItemSource {
             return false;
         }
 
-        int maxTimes = session.getTimes();
-        for (var choice : choices) {
-            if (choice == null) continue;
-            var template = RecipeCompletionUtils.toItemStacks(choice).getFirst();
-            long cnt = RecipeCompleteProvider.countAmount(session, template);
-            maxTimes = Math.min(maxTimes, (int) cnt / template.getAmount());
-        }
-
-        if (maxTimes <= 0) {
-            // 无法放置
-            player.sendMessage(ChatColors.color("&c[配方补全] 没有足够的材料！"));
-            return false;
-        }
+        int maxTimes = times;
 
         var craftResult = RecipeCompletionUtils.maxCraftable(maxTimes, unordered, ingredientSlots, interactor, choices);
         if (craftResult.leftInt() <= 0) {
@@ -128,9 +119,9 @@ public interface ItemSource {
             return false;
         }
 
-        if (craftResult.leftInt() < maxTimes) {
+        if (craftResult.leftInt() < times) {
             // 可供放置的位置不足，这部分另外提醒
-            player.sendMessage(ChatColors.color("&e[配方补全] 可供放置材料的位置不足！至多放置 " + session.getTimes() + " -> " + craftResult.leftInt() + " 份材料！"));
+            player.sendMessage(ChatColors.color("&e[配方补全] 可供放置材料的位置不足！至多放置 " + craftResult.leftInt() + " / " + times + " 份材料！(" + (craftResult.leftInt() * 100 / times) + "%)"));
         }
 
         maxTimes = craftResult.leftInt();
@@ -156,13 +147,13 @@ public interface ItemSource {
                     RecipeCompletionUtils.sendMissingMaterial(player, itemStack, amt - receivedAmount);
                 } else {
                     // schedule -> 补全材料的材料配方
-                    missingMap.compute(StackUtils.getAsQuantity(itemStack, 1), (k, v) -> v == null ? amt - receivedAmount : v + amt - receivedAmount);
+                    missingMap.compute(StackUtils.asKey(itemStack), (k, v) -> v == null ? amt - receivedAmount : v + amt - receivedAmount);
                 }
             }
 
             if (receivedAmount > 0) {
                 var stk = StackUtils.getAsQuantity(itemStack, receivedAmount);
-                var key = StackUtils.getAsQuantity(stk, 1);
+                var key = StackUtils.asKey(itemStack);
                 interactor.pushItem(stk, i, craftResult.right().getOrDefault(key, IntSet.of()));
                 // 防止出现目标容器在计算期间容量变化导致无法推送物品
                 session.setPushed(session.getPushed() + receivedAmount - stk.getAmount());
@@ -172,19 +163,26 @@ public interface ItemSource {
             }
         }
 
+        boolean sendHeadMessage = false;
         if (!missingMap.isEmpty()) {
             if (RecipeCompletionUtils.depthInRange(player, recipeDepth + 1)) {
-                session.setRecipeDepth(session.getRecipeDepth() + 1);
                 for (var e : missingMap.entrySet()) {
+                    if (!sendHeadMessage) {
+                        sendHeadMessage(player, targetItem, session.getRecipeDepth());
+                        sendHeadMessage = true;
+                    }
                     SlimefunItem sf2 = SlimefunItem.getByItem(e.getKey());
                     if (sf2 == null) {
                         // 暂不支持非粘液物品配方补全
                         RecipeCompletionUtils.sendMissingMaterial(player, e.getKey(), e.getValue());
                     } else {
+                        session.setRecipeDepth(session.getRecipeDepth() + 1);
                         completeRecipeWithGuide(session, e.getKey(), sf2, e.getValue(), interactor);
+                        session.setRecipeDepth(session.getRecipeDepth() - 1);
                     }
                 }
             } else {
+                sendHeadMessage(player, targetItem, session.getRecipeDepth());
                 for (var e : missingMap.entrySet()) {
                     RecipeCompletionUtils.sendMissingMaterial(player, e.getKey(), e.getValue());
                 }
@@ -201,4 +199,7 @@ public interface ItemSource {
         return true;
     }
 
+    private static void sendHeadMessage(Player player, ItemStack targetItem, int depth) {
+        player.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("===尝试补全 ")).append(RecipeCompletionUtils.getClickableItemName(targetItem)).append(Component.text(" 的材料===")).hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("配方深度:" + depth)))));
+    }
 }

@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.utils;
 
+import com.balugaq.jeg.api.recipe_complete.CompletionBehaviour;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.Material;
@@ -112,7 +113,8 @@ public class Models {
             RECIPE_COMPLETE_BOOK_MECHANISM_3,
             "&9===补全界面点击机制===",
             RECIPE_COMPLETE_GUI_MECHANISM_1,
-            RECIPE_COMPLETE_GUI_MECHANISM_2
+            RECIPE_COMPLETE_GUI_MECHANISM_2,
+            "&e可在设置中更改左右键补全的次数"
         )
     );
     public static final SlimefunItemStack SUPPORTED_ADDONS_INFO = new SlimefunItemStack(
@@ -157,7 +159,12 @@ public class Models {
         "JEG_RECIPE_COMPLETE_BUTTON",
         Material.KNOWLEDGE_BOOK,
         "&6配方补全",
-        "&7点击打开配方补全界面"
+        "&7点击打开配方补全界面",
+        "&9===配方书点击机制===",
+        RECIPE_COMPLETE_BOOK_MECHANISM_1,
+        RECIPE_COMPLETE_BOOK_MECHANISM_2,
+        RECIPE_COMPLETE_BOOK_MECHANISM_3,
+        "&e可在设置中更改左右键补全的次数"
     );
 
     public static final ItemStack ITEM_MARK_BACKGROUND = Converter.getItem(
@@ -177,7 +184,7 @@ public class Models {
     public static final SlimefunItemStack CUSTOM_LAG_BLOCK = new SlimefunItemStack(
         "JEG_CUSTOM_LAG_BLOCK",
         Converter.getItem(
-            Material.COMMAND_BLOCK,
+            Material.BEDROCK,
             "&a自定义延时器",
             "&a放置后打开界面，可设定该机器粘液刻耗时",
             "&c仅 OP 可使用"

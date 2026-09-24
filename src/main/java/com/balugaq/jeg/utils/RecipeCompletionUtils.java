@@ -25,6 +25,7 @@ import com.balugaq.jeg.api.recipe_complete.source.ContainerConsumer;
 import com.balugaq.jeg.api.recipe_complete.source.ContainerInteractor;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
+import com.balugaq.jeg.implementation.groups.VanillaItemsGroup;
 import com.balugaq.jeg.implementation.option.NoticeMissingMaterialGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
@@ -156,7 +157,7 @@ public class RecipeCompletionUtils {
         missingMaterials.computeIfAbsent(player.getUniqueId(), k -> new ConcurrentHashMap<>());
 
         var mp = missingMaterials.get(player.getUniqueId());
-        mp.put(StackUtils.getAsQuantity(itemStack, 1), amt);
+        mp.put(StackUtils.asKey(itemStack), amt);
     }
 
     public static List<ItemStack> toItemStacks(@Nullable RecipeChoice choice) {
@@ -183,7 +184,7 @@ public class RecipeCompletionUtils {
         Map<ItemStack, Long> perCraft = new HashMap<>();
         for (ItemStack stack : stacks) {
             if (stack == null || stack.getType() == Material.AIR) continue;
-            ItemStack key = StackUtils.getAsQuantity(stack, 1);
+            ItemStack key = StackUtils.asKey(stack);
             perCraft.merge(key, (long) stack.getAmount(), Long::sum);
         }
 
@@ -244,18 +245,20 @@ public class RecipeCompletionUtils {
                 } else {
                     if (stack.getAmount() >= stack.getMaxStackSize()) continue;
                     var amt = stack.getMaxStackSize() - stack.getAmount();
-                    var key = StackUtils.getAsQuantity(stack, 1);
+                    var key = StackUtils.asKey(stack);
                     leftCapacity.compute(key, (k, v) -> v == null ? amt : v + amt);
                     leftCapacitySlots.putIfAbsent(key, new IntOpenHashSet());
                     leftCapacitySlots.get(key).add(slot);
                 }
             }
+
             Map<ItemStack, Integer> batchMap = new HashMap<>();
             for (var choice : choices) {
                 if (choice == null) continue;
-                var stack = toItemStacks(choice).getFirst();
-                batchMap.compute(StackUtils.getAsQuantity(stack, 1), (k, v) -> v == null ? stack.getAmount() : v + stack.getAmount());
+                var stack = RecipeCompletionUtils.toItemStacks(choice).getFirst();
+                batchMap.compute(StackUtils.asKey(stack), (k, v) -> v == null ? stack.getAmount() : v + stack.getAmount());
             }
+
             List<ItemStack> batch = batchMap.entrySet().stream().map(e -> StackUtils.getAsQuantity(e.getKey(), e.getValue())).toList();
             maxTimes = Math.min(maxTimes, maxCraftableUnordered(batch, leftCapacity, freeSlots, maxTimes));
             return IntObjectPair.of(maxTimes, leftCapacitySlots);
@@ -264,15 +267,16 @@ public class RecipeCompletionUtils {
             for (var slot : ingredientSlots) {
                 ItemStack stack = interactor.getExistingStack(slot);
                 for (var choice : choices) {
+                    if (choice == null) continue;
                     var template = toItemStacks(choice).getFirst();
                     if (stack != null && stack.getType() != Material.AIR) {
-                        if (!StackUtils.itemsMatch(stack, template) || stack.getAmount() >= template.getMaxStackSize()) {
+                        if (stack.getAmount() >= template.getMaxStackSize() || !StackUtils.itemsMatch(stack, template)) {
                             // 无法放置
                             return IntObjectPair.of(0, null);
                         }
 
-                        // stack maybe overstacked
-                        maxTimes = Math.min(maxTimes, Math.max(0, template.getMaxStackSize() - stack.getAmount()) / template.getAmount());
+                        // already checked overstacked above
+                        maxTimes = Math.min(maxTimes, (template.getMaxStackSize() - stack.getAmount()) / template.getAmount());
                     }
                 }
             }
@@ -285,7 +289,7 @@ public class RecipeCompletionUtils {
         long left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
         String amountString = "" + amount;
         if (amount > itemStack.getMaxStackSize()) {
-            amountString += " ( " + stacks + " 组";
+            amountString += " (" + stacks + " 组";
             if (left > 0) {
                 amountString += " + " + left + " 个";
             }
@@ -321,18 +325,28 @@ public class RecipeCompletionUtils {
         for (var entry : v.entrySet()) {
             ItemStack itemStack = entry.getKey();
             String amountString = getAmountString(itemStack, entry.getValue());
-            var builder = Component.text().color(NamedTextColor.RED).append(Component.text("缺少 "));
-            var itemBuilder = Component.text(ItemStackHelper.getDisplayName(itemStack));
-            SlimefunItem sf = SlimefunItem.getByItem(itemStack);
-            if (sf != null) {
-                itemBuilder = itemBuilder
-                    .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击查看"))))
-                    .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
-            }
-            builder.color(NamedTextColor.GRAY).append(itemBuilder);
+            var builder = Component.text().color(NamedTextColor.RED).append(Component.text("[配方补全] 缺少 ").hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("配方深度:" + session.getRecipeDepth())))));
+
+            builder.append(getClickableItemName(itemStack));
             builder.append(Component.text().color(NamedTextColor.GREEN).append(Component.text(" x")).append(Component.text(amountString)));
             p.sendMessage(builder);
         }
+    }
+
+    public static Component getClickableItemName(ItemStack itemStack) {
+        var itemBuilder = Component.text(ItemStackHelper.getDisplayName(itemStack));
+        SlimefunItem sf = SlimefunItem.getByItem(itemStack);
+        if (sf == null) {
+            if (Slimefun.getConfigManager().isShowVanillaRecipes() && StackUtils.itemsMatch(itemStack, new ItemStack(itemStack.getType()))) {
+                sf = VanillaItemsGroup.VanillaItem.get(itemStack.getType());
+            }
+        }
+        if (sf != null) {
+            itemBuilder = itemBuilder
+                .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击打开物品配方"))))
+                .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
+        }
+        return itemBuilder;
     }
 
     public static boolean depthInRange(Player player, int depth) {

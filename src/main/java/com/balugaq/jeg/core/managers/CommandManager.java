@@ -25,6 +25,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import java.util.List;
 public class CommandManager extends AbstractManager {
 
     private final JavaPlugin plugin;
-    private PaperCommandManager acf;
+    private @UnknownNullability PaperCommandManager acf;
 
     public CommandManager(JavaPlugin plugin) {
         this.plugin = plugin;

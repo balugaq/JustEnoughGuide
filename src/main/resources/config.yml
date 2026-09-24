@@ -107,6 +107,9 @@ shared-chars:
 # 是否注册配方补全书
 recipe-complete: true
 
+# 最大单次补全次数
+max-recipe-completion-times: 3456
+
 custom-format:
   # 粘液书主界面
   # B = 背景板
@@ -641,6 +644,6 @@ debug: false
 
 data:
   # Do not change this value unless you know what you are doing.
-  config-version: 20260729
+  config-version: 20260925
 
 click-print-warning: true

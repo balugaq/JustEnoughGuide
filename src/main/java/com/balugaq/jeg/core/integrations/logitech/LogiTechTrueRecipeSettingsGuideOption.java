@@ -59,10 +59,10 @@ public class LogiTechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
         var sf = SlimefunItem.getById("LOGITECH_TRUE_");
         ItemStack item = sf != null ? Converter.getItem(
             sf.getItem(),
-            "&a单击打开" + getTitle()
+            "&a单击打开 " + getTitle()
         ) : Converter.getItem(
             Material.MUSIC_DISC_5,
-            "&a单击打开" + getTitle()
+            "&a单击打开 " + getTitle()
         );
         return Optional.of(item);
     }

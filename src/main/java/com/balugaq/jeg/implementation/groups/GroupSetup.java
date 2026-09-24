@@ -23,6 +23,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This class is responsible for registering all the JEG groups.
@@ -52,9 +53,11 @@ public class GroupSetup {
         hiddenItemsGroup.setTier(Integer.MAX_VALUE);
         hiddenItemsGroup.register(JustEnoughGuide.getInstance());
 
-        vanillaItemsGroup = new VanillaItemsGroup(KeyUtil.newKey("vanilla_items_group"), Models.VANILLA_ITEMS_GROUP);
-        vanillaItemsGroup.setTier(Integer.MAX_VALUE);
-        vanillaItemsGroup.register(JustEnoughGuide.getInstance());
+        if (Slimefun.getConfigManager().isShowVanillaRecipes()) {
+            vanillaItemsGroup = new VanillaItemsGroup(KeyUtil.newKey("vanilla_items_group"), Models.VANILLA_ITEMS_GROUP);
+            vanillaItemsGroup.setTier(Integer.MAX_VALUE);
+            vanillaItemsGroup.register(JustEnoughGuide.getInstance());
+        }
 
         replacementCardsGroup = new ReplacementCardsGroup(KeyUtil.newKey("replacement_cards_group"), Models.REPLACEMENT_CARDS_GROUP);
         replacementCardsGroup.setTier(Integer.MAX_VALUE);

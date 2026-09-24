@@ -75,11 +75,19 @@ public class StackUtils {
         MinecraftVersion.current().isAtLeast(MinecraftVersion.V1_21);
 
     public static ItemStack getAsQuantity(@Nullable ItemStack itemStack, int amount) {
-        if (itemStack == null) {
-            return new ItemStack(Material.AIR);
-        }
+        if (itemStack == null) return ItemStackUtil.air();
+
         ItemStack clone = itemStack.clone();
         clone.setAmount(amount);
+        return clone;
+    }
+
+    public static ItemStack asKey(@Nullable ItemStack itemStack) {
+        if (itemStack == null) return ItemStackUtil.air();
+        if (itemStack.getAmount() == 1) return itemStack;
+
+        ItemStack clone = itemStack.clone();
+        clone.setAmount(1);
         return clone;
     }
 

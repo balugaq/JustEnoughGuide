@@ -106,7 +106,7 @@ public class ValueTable {
     }
 
     public static double getValue(ItemStack itemStack) {
-        return getValue(StackUtils.getAsQuantity(itemStack, 1), itemStack.getAmount());
+        return getValue(StackUtils.asKey(itemStack), itemStack.getAmount());
     }
 
     public static double getValue(@Nullable ItemStack[] itemStacks) {

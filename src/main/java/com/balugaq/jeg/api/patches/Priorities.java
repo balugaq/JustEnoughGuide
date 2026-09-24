@@ -47,6 +47,7 @@ public class Priorities {
     RecipeFillingWithNearbyContainerGuideOption   = 410,
     NoticeMissingMaterialGuideOption              = 420,
     RecursiveRecipeFillingGuideOption             = 430,
+    RecipeCompletionGuideOption                   = 440,
     // 1. Momotech
     MomotechNoneRecipeSettingsGuideOption         = 500,
     MomotechCreativeItemRecipeSettingsGuideOption = 510,

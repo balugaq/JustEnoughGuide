@@ -41,6 +41,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,19 +150,28 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
     public static class VanillaItem extends SlimefunItem implements VanillaItemShade {
         private final ItemStack customIcon;
 
-        public VanillaItem(SlimefunItemStack item, ItemStack customIcon) {
+        private VanillaItem(SlimefunItemStack item, ItemStack customIcon) {
             super(GroupSetup.vanillaItemsGroup, item, RecipeType.NULL, new ItemStack[0], customIcon);
-            this.customIcon = customIcon.clone();
+            this.customIcon = customIcon;
         }
 
-        public static VanillaItem create(Material material) {
+        static VanillaItem create(Material material) {
             ItemStack icon = new ItemStack(material);
             try {
-                // against ID machine
-                return new VanillaItem(new SlimefunItemStack("αJEG_VANILLA_" + material.name(), icon.clone()), icon);
+                // against ID machine in MomoTech
+                return new VanillaItem(new SlimefunItemStack("αJEG_VANILLA_" + material.name(), icon), icon);
             } catch (Exception ignored) {
-                return new VanillaItem(new SlimefunItemStack("JEG_VANILLA_" + material.name(), icon.clone()), icon);
+                return new VanillaItem(new SlimefunItemStack("JEG_VANILLA_" + material.name(), icon), icon);
             }
+        }
+
+        @Nullable
+        public static SlimefunItem get(Material material) {
+            var sf = SlimefunItem.getById("αJEG_VANILLA_" + material.name());
+            if (sf != null) return sf;
+
+            sf = SlimefunItem.getById("JEG_VANILLA_" + material.name());
+            return sf;
         }
     }
 }

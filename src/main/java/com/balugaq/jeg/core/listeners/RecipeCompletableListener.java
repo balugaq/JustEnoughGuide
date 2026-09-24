@@ -18,23 +18,27 @@
 package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.objects.collection.Pair;
+import com.balugaq.jeg.api.objects.enums.ClickSide;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.enums.RecipeCompleteOpenMode;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.patches.JEGGuideHistory;
+import com.balugaq.jeg.api.recipe_complete.CompletionBehaviour;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemSeeker;
+import com.balugaq.jeg.core.integrations.networks.QuantumStoragePlayerInventoryItemSeeker;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.Models;
+import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
@@ -524,8 +528,8 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
         // Patch hint start
         lore.add("");
-        lore.add(ChatColors.color(Models.RECIPE_COMPLETE_GUI_MECHANISM_1));
-        lore.add(ChatColors.color(Models.RECIPE_COMPLETE_GUI_MECHANISM_2));
+        lore.add(ChatColors.color("&a左键&e点击物品补全 " + CompletionBehaviour.timesString0(event.getPlayer(), ClickSide.LEFT)));
+        lore.add(ChatColors.color("&a右键&e点击物品补全 " + CompletionBehaviour.timesString0(event.getPlayer(), ClickSide.RIGHT)));
         // Patch hint end
 
         meta.setLore(lore);
@@ -652,7 +656,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
     /**
      * @author balugaq
      * @see ShulkerBoxPlayerInventoryItemSeeker
-     * @see ItemSource#getItemStackFromPlayerInventory(RecipeCompleteSession, ItemStack, int)
+     * @see QuantumStoragePlayerInventoryItemSeeker
      * @since 2.1
      */
     @NullMarked

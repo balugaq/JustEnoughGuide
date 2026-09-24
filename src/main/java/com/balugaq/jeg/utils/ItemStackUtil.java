@@ -23,6 +23,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
+import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedEnchantment;
 import lombok.experimental.UtilityClass;
 import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.guizhanss.slimefuntranslation.api.SlimefunTranslationAPI;
@@ -60,14 +61,13 @@ public final class ItemStackUtil {
     @Unmodifiable
     private static final ItemStack BARRIER = new ItemStack(Material.BARRIER);
 
-    /**
-     * @author lijinhong11
-     */
     private static final Map<String, String> materialMappings = Map.of(
         "GRASS", "SHORT_GRASS",
         "SHORT_GRASS", "GRASS",
         "SCUTE", "TURTLE_SCUTE",
-        "TURTLE_SCUTE", "SCUTE"
+        "TURTLE_SCUTE", "SCUTE",
+        "CHAIN", "IRON_CHAIN",
+        "IRON_CHAIN", "CHAIN"
     );
 
     public static ItemStack air() {
@@ -314,7 +314,7 @@ public final class ItemStackUtil {
      * @author lijinhong11
      */
     public static ItemStack doGlow(ItemStack item) {
-        item.addUnsafeEnchantment(Enchantment.INFINITY, 1);
+        item.addUnsafeEnchantment(VersionedEnchantment.LUCK_OF_THE_SEA, 1);
         item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         return item;

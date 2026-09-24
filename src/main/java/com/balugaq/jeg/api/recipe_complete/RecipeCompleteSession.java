@@ -20,6 +20,7 @@ package com.balugaq.jeg.api.recipe_complete;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.RecipeCompletionUtils;
@@ -225,8 +226,8 @@ public class RecipeCompleteSession {
             cancel();
             return;
         }
-        if (times > 64) {
-            times = 64;
+        if (times > JustEnoughGuide.getConfigManager().getMaxRecipeCompletionTimes()) {
+            times = JustEnoughGuide.getConfigManager().getMaxRecipeCompletionTimes();
         }
         this.times = times;
     }

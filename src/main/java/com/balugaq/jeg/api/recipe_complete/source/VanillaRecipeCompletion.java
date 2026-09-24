@@ -17,9 +17,11 @@
 
 package com.balugaq.jeg.api.recipe_complete.source;
 
+import com.balugaq.jeg.api.objects.enums.ClickSide;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.implementation.option.RecipeCompletionGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.RecipeCompletionUtils;
@@ -66,10 +68,7 @@ public interface VanillaRecipeCompletion extends ItemSource {
 
     static void handleSession(RecipeCompleteSession session, GuideEvents.ItemButtonClickEvent event, ClickAction clickAction, boolean reopenInventory, @Nullable Runnable callback) {
         session.setEvent(event);
-        int times = 1;
-        if (reopenInventory ? clickAction.isRightClicked() : clickAction.isShiftClicked()) {
-            times = 64;
-        }
+        int times = RecipeCompletionGuideOption.get(session.getPlayer(), event.getClickedItem(), ClickSide.from(clickAction, reopenInventory));
 
         session.setTarget(session.getBlock().getLocation());
         session.setTimes(times);

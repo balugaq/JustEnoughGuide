@@ -92,6 +92,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean AUTO_ADD_RECIPE_COMPLETE_BUTTON;
     private final boolean CLICK_PRINT_WARNING;
     private final int CONFIG_VERSION;
+    private final int MAX_RECIPE_COMPLETION_TIMES;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -344,6 +345,7 @@ public class ConfigManager extends AbstractManager {
         this.NO_AUTO_ADD_RECIPE_COMPLETE_ADDONS = cfg.getStringList("no-replacement-card-companion-addons");
         this.CLICK_PRINT_WARNING = cfg.getBoolean("click-print-warning", true);
         this.CONFIG_VERSION = cfg.getInt("data.config-version", 0);
+        this.MAX_RECIPE_COMPLETION_TIMES = cfg.getInt("max-recipe-completion-times", 3456);
 
         configUpdate();
     }
@@ -610,5 +612,9 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isClickPrintWarning() {
         return CLICK_PRINT_WARNING;
+    }
+
+    public int getMaxRecipeCompletionTimes() {
+        return MAX_RECIPE_COMPLETION_TIMES;
     }
 }
