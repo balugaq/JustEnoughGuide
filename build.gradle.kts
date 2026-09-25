@@ -19,7 +19,7 @@
 plugins {
     java
     alias(libs.plugins.shadow.jar)
-    id("xyz.jpenilla.run-paper") version "3.0.2"
+    id("xyz.jpenilla.run-paper") version "3.1.0"
     id("maven-publish")
     id("signing")
     id("io.github.sgtsilvio.gradle.maven-central-publishing") version "0.5.0"
