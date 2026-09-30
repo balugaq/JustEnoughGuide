@@ -30,7 +30,7 @@ guguSlimefunLib = "3f1830a50b"
 emcTech = "d6e4b43d23"
 slimeHUD = "ad7a52fead"
 slimeFunRecipe = "ef222864d0"
-rykenSlimeCustomizer = "3.0.5"
+rykenSlimeCustomizer = "3.1.5"
 logiTech = "0648f9f439"
 # 命令框架 ACF（仅 Aikar 仓库提供，社区只用 SNAPSHOT）
 acfPaper = "0.5.1-SNAPSHOT"
