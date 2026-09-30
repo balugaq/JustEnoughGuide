@@ -39,7 +39,7 @@ interface ContainerInteractor {
 
     boolean fits(ItemStack stack, int ingredientIndex);
 
-    void pushItem(ItemStack stack, int ingredientIndex, IntSet capacitySlots);
+    void pushItem(ItemStack stack, int ingredientIndex, IntSet preferredSlots);
 
     static ContainerInteractor slimefun(BlockMenu blockMenu, boolean unordered, int[] ingredientSlots) {
         return new ContainerInteractor() {
@@ -59,9 +59,9 @@ interface ContainerInteractor {
             }
 
             @Override
-            public void pushItem(ItemStack received, int ingredientIndex, IntSet capacitySlots) {
+            public void pushItem(ItemStack received, int ingredientIndex, IntSet preferredSlots) {
                 if (unordered) {
-                    BlockMenuUtil.pushItem(blockMenu, received, RecipeCompletionUtils.mergeSlots(capacitySlots, ingredientSlots));
+                    BlockMenuUtil.pushItem(blockMenu, received, RecipeCompletionUtils.mergeSlots(preferredSlots, ingredientSlots));
                 } else {
                     BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[ingredientIndex]);
                 }
@@ -85,9 +85,9 @@ interface ContainerInteractor {
             }
 
             @Override
-            public void pushItem(ItemStack received, int ingredientIndex, IntSet capacitySlots) {
+            public void pushItem(ItemStack received, int ingredientIndex, IntSet preferredSlots) {
                 if (unordered) {
-                    InventoryUtil.pushItem(inventory, received, RecipeCompletionUtils.mergeSlots(capacitySlots, ingredientSlots));
+                    InventoryUtil.pushItem(inventory, received, RecipeCompletionUtils.mergeSlots(preferredSlots, ingredientSlots));
                 } else {
                     InventoryUtil.pushItem(inventory, received, ingredientSlots[ingredientIndex]);
                 }

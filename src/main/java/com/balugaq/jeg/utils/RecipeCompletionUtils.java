@@ -280,7 +280,7 @@ public class RecipeCompletionUtils {
                     }
                 }
             }
-            return IntObjectPair.of(maxTimes, null);
+            return IntObjectPair.of(maxTimes, Map.of());
         }
     }
 
