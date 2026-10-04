@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.libby.bukkit)
     implementation(libs.jetbrains.annotations)
     implementation(libs.jspecify)
+    // hover 绘表：flip-tables 已源码级 vendor 到 com.balugaq.jeg.libraries.fliptables，无需外部依赖
     // 命令框架 ACF（注解驱动命令系统，shade 进 fat jar）
     implementation(libs.acf.paper)
 

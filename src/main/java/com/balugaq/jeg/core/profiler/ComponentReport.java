@@ -19,6 +19,7 @@ package com.balugaq.jeg.core.profiler;
 
 import com.balugaq.jeg.core.profiler.TimingsAggregator.Aggregates;
 import com.balugaq.jeg.core.profiler.TimingsAggregator.ClassifiedGroup;
+import com.balugaq.jeg.libraries.fliptables.FlipTable;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.PerformanceRating;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import net.kyori.adventure.text.Component;
@@ -37,6 +38,8 @@ import org.jspecify.annotations.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -70,17 +73,8 @@ import static net.kyori.adventure.text.Component.text;
 @SuppressWarnings("deprecation")
 @NullMarked
 public final class ComponentReport {
-    public static final String[] BLOCK_LABELS = new String[]{"机器 ID", "方块数", "机器耗时 (ms)"};
     private static final String TITLE = "===== JEG - Slimefun 性能分析器 =====";
     private static final int BAR_WIDTH = 20;
-
-    /**
-     * 表格数字列宽（Minecraft 默认字体下英文与数字近似等宽，中文占两格）。
-     * 首列（ID / 位置 / 插件名）宽度自适应，见 {@link #idWidthOf}。
-     */
-    private static final int W_COUNT = 6;
-    private static final int W_TOTAL = 9;
-    private static final int W_STAT = 8;
 
     private final List<Component> components;
 
@@ -153,7 +147,7 @@ public final class ComponentReport {
         lines.add(freezeLine(snapshot.frozen()));
         lines.add(ratingLine(snapshot.roundTotalNanos()));
         if (!snapshot.topBlock().isEmpty()) {
-            lines.add(blocksLine(snapshot.topBlock(), verbose));
+            lines.add(blocksLine(snapshot.topBlock()));
         }
         lines.add(machinesLine(agg.byItem(), verbose, snapshot.totalBlocks()));
 
@@ -214,7 +208,17 @@ public final class ComponentReport {
             .build();
     }
 
-    private static Component blocksLine(PriorityQueue<TimedSample> topBlocks, boolean verbose) {
+    /**
+     * 「方块」行：单方块耗时榜，点击可传送到最耗时方块。
+     * <p>
+     * {@code topBlocks} 是小顶堆——只保证「留下最大的 N 个」（淘汰最小），
+     * 但 {@code peek()} 拿到的是堆里<b>最小</b>的那个；展示前必须自己排成降序，
+     * 排第一的才是真正的「最耗时方块」。
+     *
+     * @param topBlocks 耗时最高的若干个样本（容量上限 MAX_TOP_ITEMS）
+     * @return 组件
+     */
+    private static Component blocksLine(PriorityQueue<TimedSample> topBlocks) {
         if (topBlocks.isEmpty()) {
             return text()
                 .append(text("方块 | ", NamedTextColor.YELLOW))
@@ -222,14 +226,19 @@ public final class ComponentReport {
                 .build();
         }
 
-        int idWidth = idWidthOf("机器 ID", topBlocks.stream().map(t -> t.item().getItemName()).toList());
-        List<Component> hover = new ArrayList<>();
-        hover.add(blockTableHeader(idWidth));
-        TimedSample topBlock = topBlocks.peek();
-        while (!topBlocks.isEmpty()) {
-            hover.add(row(topBlocks.poll(), idWidth));
+        List<TimedSample> sorted = new ArrayList<>(topBlocks);
+        sorted.sort(Comparator.comparingLong(TimedSample::nanos).reversed());
+        TimedSample topBlock = sorted.getFirst();
+
+        String[][] data = new String[sorted.size()][];
+        for (int i = 0; i < sorted.size(); i++) {
+            data[i] = new String[]{sorted.get(i).item().getId(), ms(sorted.get(i).nanos())};
         }
 
+        List<Component> hover = renderTable(
+                new String[]{"机器 ID", "机器耗时 (ms)"},
+                data,
+                new NamedTextColor[]{NamedTextColor.YELLOW, NamedTextColor.GREEN});
         hover.add(teleportNote("最耗时方块", topBlock.worldName() + " " + topBlock.positionName()));
 
         return text()
@@ -257,35 +266,43 @@ public final class ComponentReport {
         boolean verbose
     ) {
         List<ClassifiedGroup> visible = visibleGroups(groups);
-        int idWidth = idWidthOf(idHeader, visible.stream().map(ClassifiedGroup::key).toList());
 
-        List<Component> hover = new ArrayList<>();
-        hover.add(tableHeader(idHeader, totalLabel, verbose, idWidth));
-        for (ClassifiedGroup group : visible) {
-            hover.add(row(group, verbose, idWidth));
+        String[] headers;
+        NamedTextColor[] colors;
+        if (verbose) {
+            headers = new String[]{idHeader, "方块数", totalLabel + "(ms)", "avg", "min", "med", "95%ile", "max"};
+            colors = new NamedTextColor[]{
+                NamedTextColor.YELLOW, NamedTextColor.GOLD, NamedTextColor.GREEN, NamedTextColor.GRAY,
+                NamedTextColor.GRAY, NamedTextColor.GRAY, NamedTextColor.YELLOW, NamedTextColor.RED};
+        } else {
+            headers = new String[]{idHeader, "方块数", totalLabel + "(ms)", "avg"};
+            colors = new NamedTextColor[]{
+                NamedTextColor.YELLOW, NamedTextColor.GOLD, NamedTextColor.GREEN, NamedTextColor.GRAY};
         }
 
+        String[][] data = new String[visible.size()][headers.length];
+        for (int i = 0; i < visible.size(); i++) {
+            ClassifiedGroup group = visible.get(i);
+            String[] row = new String[headers.length];
+            row[0] = group.key();
+            row[1] = String.valueOf(group.count());
+            row[2] = ms(group.totalNanos());
+            row[3] = ms(group.avgNanos());
+            if (verbose) {
+                row[4] = ms(group.minNanos());
+                row[5] = ms(group.displayMedian());
+                row[6] = ms(group.p95Nanos());
+                row[7] = ms(group.maxNanos());
+            }
+            data[i] = row;
+        }
+
+        List<Component> hover = renderTable(headers, data, colors);
         Component note = hiddenNote(groups.size(), JEGProfiler.MAX_ITEMS);
         if (note != null) {
             hover.add(note);
         }
         return hover;
-    }
-
-    /**
-     * 首列宽度自适应：机器 ID / 区块位置 / 插件名长度都不固定，
-     * 取表头与所有可见行里最宽的显示宽度，再留两格余量。
-     *
-     * @param header 首列表头
-     * @param ids      显示名
-     * @return 首列显示宽度
-     */
-    private static int idWidthOf(String header, List<String> ids) {
-        int width = displayWidth(header);
-        for (var displayName : ids) {
-            width = Math.max(width, displayWidth(displayName));
-        }
-        return width + 2;
     }
 
     private static @Nullable Component hiddenNote(int total, int max) {
@@ -299,73 +316,126 @@ public final class ComponentReport {
                 .build();
     }
 
-    private static Component blockTableHeader(int idWidth) {
-        String[] labels = BLOCK_LABELS;
-        int[] widths = {idWidth, W_COUNT, W_TOTAL, W_STAT, W_STAT, W_STAT, W_STAT, W_STAT};
+    /**
+     * 用本地魔改版 {@link FlipTable}（无边框、无分隔线的纯对齐文本）渲染 hover 表格，
+     * 再按列重新着色。
+     * <p>
+     * FlipTable 只输出纯文本，而 Adventure 组件需要逐列颜色，
+     * 所以布局交给库算，这里按列界把每行拆回单元格重新上色：
+     * 列分隔符统一暗灰、表头水色、数据行按列着色（列色由调用方传入）。
+     * <p>
+     * 宽度适配：FlipTable 按 {@link String#length()} 计宽，而 Minecraft 里
+     * 中文/全角字符渲染占两格，见 {@link #mcFit(String)}。
+     *
+     * @param headers    表头（列数需与每行数据一致）
+     * @param data       数据行
+     * @param dataColors 数据行各列颜色（长度等于列数）
+     * @return 逐行的组件
+     */
+    private static List<Component> renderTable(String[] headers, String[][] data, NamedTextColor[] dataColors) {
+        String[] fittedHeaders = new String[headers.length];
+        for (int c = 0; c < headers.length; c++) {
+            fittedHeaders[c] = mcFit(headers[c]);
+        }
 
-        Component result = text("", NamedTextColor.WHITE);
-        for (int i = 0; i < labels.length; i++) {
-            result = result.append(text(pad(labels[i], widths[i]), NamedTextColor.AQUA));
-            if (i < labels.length - 1) {
-                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
+        String[][] fittedData = new String[data.length][];
+        for (int r = 0; r < data.length; r++) {
+            if (data[r].length != headers.length) {
+                throw new IllegalArgumentException(
+                        "table row " + r + " has " + data[r].length + " columns, expected " + headers.length);
             }
+            fittedData[r] = new String[headers.length];
+            for (int c = 0; c < headers.length; c++) {
+                fittedData[r][c] = mcFit(data[r][c]);
+            }
+        }
+
+        // 输出结构：lines[0]=表头，lines[1..]=数据行（无边框、无分隔线）
+        String[] lines = FlipTable.of(fittedHeaders, fittedData).split("\n");
+        int[] columns = columnDividers(lines[0]);
+
+        List<Component> out = new ArrayList<>(lines.length);
+        for (int i = 0; i < lines.length; i++) {
+            if (i == 0) {
+                out.add(colorizeRow(lines[i], columns, headerColors(headers.length)));
+            } else if (data.length == 0) {
+                // "(empty)" 占位行与列边界不对齐，直接灰显兜底
+                out.add(text(lines[i], NamedTextColor.GRAY));
+            } else {
+                out.add(colorizeRow(lines[i], columns, dataColors));
+            }
+        }
+        return out;
+    }
+
+    /**
+     * 从表头行解析各列边界的字符下标：
+     * 表头里每个 {@code │} 就是列界，与数据行 {@code │} 的下标一致；
+     * 第 0 列无前置边框，从下标 0 开始。
+     * <p>
+     * 前提：表头单元格自身不含 {@code │}（当前所有表头均为固定文案，满足）。
+     *
+     * @param headerLine 表头行
+     * @return 列界下标（长度 = 列数），第 0 位固定为 0
+     */
+    private static int[] columnDividers(String headerLine) {
+        List<Integer> marks = new ArrayList<>();
+        marks.add(0);
+        for (int i = 0; i < headerLine.length(); i++) {
+            if (headerLine.charAt(i) == '│') {
+                marks.add(i);
+            }
+        }
+
+        int[] result = new int[marks.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = marks.get(i);
         }
         return result;
     }
 
-    private static Component tableHeader(String idLabel, String totalLabel, boolean verbose, int idWidth) {
-        String[] labels = verbose
-                ? new String[]{idLabel, "方块数", totalLabel + "(ms)", "avg", "min", "med", "95%ile", "max"}
-                : new String[]{idLabel, "方块数", totalLabel + "(ms)", "avg"};
-        int[] widths = {idWidth, W_COUNT, W_TOTAL, W_STAT, W_STAT, W_STAT, W_STAT, W_STAT};
-
+    /**
+     * 把一行按列区间拆开重新上色：列分隔符统一暗灰，单元格用传入的列色。
+     * <p>
+     * 无边框版式下，第 0 列从行首直接开始；其余列以 {@code │} 起始（暗灰），
+     * 最后一列延伸到行尾（含尾随补白）。
+     *
+     * @param line    表格行
+     * @param columns 列界下标（长度 = 列数）
+     * @param colors  各列颜色（长度 = 列数）
+     * @return 行组件
+     */
+    private static Component colorizeRow(String line, int[] columns, NamedTextColor[] colors) {
         Component result = text("", NamedTextColor.WHITE);
-        for (int i = 0; i < labels.length; i++) {
-            result = result.append(text(pad(labels[i], widths[i]), NamedTextColor.AQUA));
-            if (i < labels.length - 1) {
-                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
+        for (int c = 0; c < colors.length; c++) {
+            int start = columns[c];
+            if (c != 0) {
+                result = result.append(text(line.substring(start, start + 1), NamedTextColor.DARK_GRAY));
+                start++;
             }
+            int end = c + 1 < colors.length ? columns[c + 1] : line.length();
+            result = result.append(text(line.substring(start, end), colors[c]));
         }
         return result;
     }
 
-    private static Component row(TimedSample sample, int idWidth) {
-        List<Component> cells = new ArrayList<>();
-        cells.add(text(pad(sample.item().getId(), idWidth), NamedTextColor.YELLOW));
-        cells.add(text(pad(ms(sample.nanos()), W_TOTAL), NamedTextColor.GREEN));
-
-        Component result = text("", NamedTextColor.WHITE);
-        for (int i = 0; i < cells.size(); i++) {
-            result = result.append(cells.get(i));
-            if (i < cells.size() - 1) {
-                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
-            }
-        }
-        return result;
+    private static NamedTextColor[] headerColors(int columns) {
+        NamedTextColor[] colors = new NamedTextColor[columns];
+        Arrays.fill(colors, NamedTextColor.AQUA);
+        return colors;
     }
 
-    private static Component row(ClassifiedGroup group, boolean verbose, int idWidth) {
-        List<Component> cells = new ArrayList<>();
-        cells.add(text(pad(group.key(), idWidth), NamedTextColor.YELLOW));
-        cells.add(text(pad(String.valueOf(group.count()), W_COUNT), NamedTextColor.GOLD));
-        cells.add(text(pad(ms(group.totalNanos()), W_TOTAL), NamedTextColor.GREEN));
-
-        cells.add(text(pad(ms(group.avgNanos()), W_STAT), NamedTextColor.GRAY));
-        if (verbose) {
-            cells.add(text(pad(ms(group.minNanos()), W_STAT), NamedTextColor.GRAY));
-            cells.add(text(pad(ms(group.displayMedian()), W_STAT), NamedTextColor.GRAY));
-            cells.add(text(pad(ms(group.p95Nanos()), W_STAT), NamedTextColor.YELLOW));
-            cells.add(text(pad(ms(group.maxNanos()), W_STAT), NamedTextColor.RED));
-        }
-
-        Component result = text("", NamedTextColor.WHITE);
-        for (int i = 0; i < cells.size(); i++) {
-            result = result.append(cells.get(i));
-            if (i < cells.size() - 1) {
-                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
-            }
-        }
-        return result;
+    /**
+     * FlipTable 按 {@link String#length()} 计宽，而 Minecraft 字体里
+     * 中文/全角字符渲染占两格；给含宽字符的文本补足尾随空格，
+     * 让库算出的列宽与游戏内的显示宽度一致。
+     *
+     * @param text 单元格文本
+     * @return 宽度对齐后的文本
+     */
+    private static String mcFit(String text) {
+        int extra = displayWidth(text) - text.length();
+        return extra <= 0 ? text : text + " ".repeat(extra);
     }
 
     private static Component hint(List<Component> hover) {
@@ -381,16 +451,19 @@ public final class ComponentReport {
      * @return 提示组件
      */
     private static Component hint(List<Component> hover, @Nullable Location target, String tip) {
-        Component hint = text(" (悬停查看详情", NamedTextColor.GRAY);
+        Component hint = text(" (悬停查看详情)", NamedTextColor.GRAY);
         hover.add(text(tip));
-        hint = hint.append(text(")", NamedTextColor.GRAY));
         hint = hint.hoverEvent(HoverEvent.showText(Component.join(JoinConfiguration.newlines(), hover)));
 
         if (target != null && !tip.isEmpty()) {
             hint = hint.clickEvent(ClickEvent.callback(audience -> {
                 Player viewer = audience instanceof Player p ? p : null;
                 if (viewer != null) {
-                    viewer.teleport(target);
+                    if (viewer.isOp()) {
+                        viewer.teleport(target);
+                    } else {
+                        viewer.sendMessage(text("你没有权限使用此指令!", NamedTextColor.RED));
+                    }
                 }
             }));
         }
@@ -429,18 +502,10 @@ public final class ComponentReport {
     }
 
     /**
-     * 按显示宽度右侧补空格（表格左对齐）。
-     *
-     * @param text  文本
-     * @param width 目标显示宽度
-     * @return 补齐后的文本
-     */
-    private static String pad(String text, int width) {
-        return text + " ".repeat(Math.max(0, width - displayWidth(text)));
-    }
-
-    /**
      * 计算文本在 Minecraft 字体下的显示宽度：中文/全角字符占两格。
+     * <p>
+     * 目前只被 {@link #mcFit(String)} 使用：FlipTable 内部按
+     * {@link String#length()} 计宽，这里负责把差值补齐。
      *
      * @param text 文本
      * @return 显示宽度
