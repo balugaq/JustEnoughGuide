@@ -19,7 +19,7 @@
 plugins {
     java
     alias(libs.plugins.shadow.jar)
-    id("xyz.jpenilla.run-paper") version "3.0.2"
+    id("xyz.jpenilla.run-paper") version "3.1.0"
     id("maven-publish")
     id("signing")
     id("io.github.sgtsilvio.gradle.maven-central-publishing") version "0.5.0"
@@ -191,7 +191,7 @@ tasks {
             "-Dnet.kyori.adventure.text.warn_when_legacy_formatting_detected=false"
         )
         maxHeapSize = "4G"
-        minecraftVersion("1.20.1")
+        minecraftVersion("1.21.11")
     }
 }
 

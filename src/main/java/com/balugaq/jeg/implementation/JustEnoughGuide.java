@@ -26,7 +26,6 @@ import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayGuideOption;
-import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
 import com.balugaq.jeg.core.managers.BookmarkManager;
 import com.balugaq.jeg.core.managers.CommandManager;
@@ -383,7 +382,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         metrics = new JEGMetrics();
 
         // 物品注册（PostSetup）早于本插件 onEnable，这里再延后一拍，确保所有附属的机器都已注册完
-        JustEnoughGuide.runLaterAsync(JEGProfilerManager::install, 1L);
+        JustEnoughGuide.runLaterAsync(JEGProfilerManager::install, 5L);
 
         getLogger().info("成功启用此附属");
     }

@@ -17,49 +17,70 @@
 
 package com.balugaq.jeg.core.profiler;
 
-import com.balugaq.jeg.core.profiler.JEGProfiler.TimingsSnapshot;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import com.balugaq.jeg.core.profiler.TimingsAggregator.Aggregates;
+import com.balugaq.jeg.core.profiler.TimingsAggregator.ClassifiedGroup;
+import io.github.thebusybiscuit.slimefun4.core.services.profiler.PerformanceRating;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.PriorityQueue;
+
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * 把 {@link TimingsSnapshot} 渲染成 Paper Adventure 的消息组件。
- * <p>
- * 整体版式对齐 Slimefun 的 {@code /sf timings}：
+ *
+ * <h2>版式</h2>
  * <pre>
  * ===== JEG 性能监视器 =====
- * Tick 总用时：1.4ms
+ * Tick 总用时：12.4ms
  * Ticker 运行周期：0.5s (10 ticks)
- * Tick Freeze: √
- * 性能评分：■■■□□□□□□□□□□□□□□□□ - 良好 (12%)
- * 方块 | top 20 blocks (将鼠标放置到此处以查看详情)
- * 机器 | 295 blocks (将鼠标放置到此处以查看详情)
- * 区块 | 23 chunks (将鼠标放置到此处以查看详情)
- * 插件 | 8 plugins (将鼠标放置到此处以查看详情)
+ * Tick Freeze: ❌
+ * 性能评分: ::::::::::::------- - Good (12.4%)
+ * 方块 | top 20 blocks (悬停查看详情)
+ * 机器 | 128 blocks (悬停查看详情)
+ * 区块 | 23 chunks (悬停查看详情)
+ * 插件 | 8 plugins (悬停查看详情)
  * </pre>
- * 注意：这里全程使用 Adventure 的 {@link Component}，没有用 {@code §} 颜色码——
- * Adventure 的组件不会解析旧的 Bukkit 颜色码，直接拼字符串会全部退化成默认色。
+ *
+ * <h2>两种 hover 版式</h2>
+ * <p>
+ * 默认只给总量视图（{@code ID | 方块数 | 总耗时 | avg}）；
+ * {@code --verbose} 下追加 {@code min | med | 95%ile | max} 分位列。
+ * 所有 hover 都用等宽表格呈现，便于横向对比。
  *
  * @author balugaq
  * @since 2.2
  */
+@SuppressWarnings("deprecation")
 @NullMarked
 public final class ComponentReport {
 
-    private static final String TITLE = "===== JEG 性能监视器 =====";
-    private static final String HOVER_HINT = " (将鼠标放置到此处以查看详情)";
+    private static final String TITLE = "===== JEG - Slimefun 性能分析器 =====";
     private static final int BAR_WIDTH = 20;
+
+    /**
+     * 表格数字列宽（Minecraft 默认字体下英文与数字近似等宽，中文占两格）。
+     * 首列（ID / 位置 / 插件名）宽度自适应，见 {@link #idWidthOf}。
+     */
+    private static final int W_COUNT = 6;
+    private static final int W_TOTAL = 9;
+    private static final int W_STAT = 8;
 
     private final List<Component> components;
 
@@ -67,11 +88,6 @@ public final class ComponentReport {
         this.components = components;
     }
 
-    /**
-     * 取出渲染好的消息组件列表。
-     *
-     * @return 组件列表
-     */
     public List<Component> components() {
         return components;
     }
@@ -80,181 +96,388 @@ public final class ComponentReport {
      * 依据快照构建报告。
      *
      * @param snapshot 采样快照
+     * @param verbose  是否输出详细分位统计
      * @return 渲染好的报告
      */
-    public static ComponentReport of(TimingsSnapshot snapshot) {
-        Aggregates agg = Aggregates.of(snapshot);
+    public static ComponentReport of(TimingsSnapshot snapshot, boolean verbose) {
+        Aggregates agg = TimingsAggregator.aggregate(snapshot);
 
         List<Component> lines = new ArrayList<>();
-        lines.add(Component.text(TITLE, NamedTextColor.GREEN));
-        lines.add(label("Tick 总用时：", JEGProfiler.asMillis(snapshot.totalNanos())));
+        lines.add(text(TITLE, NamedTextColor.GREEN));
+        lines.add(label("Tick 总用时：", JEGProfiler.asMillis(snapshot.roundTotalNanos())));
         lines.add(label("Ticker 运行周期：", periodText(snapshot.period())));
         lines.add(freezeLine(snapshot.frozen()));
-        lines.add(ratingLine(snapshot.totalNanos()));
-        lines.add(blocksLine(agg));
-        lines.add(aggregateLine("机器", "blocks", agg.byItem, agg.itemCounts));
-        lines.add(aggregateLine("区块", "chunks", agg.byChunk, agg.chunkCounts));
-        lines.add(aggregateLine("插件", "plugins", agg.byPlugin, agg.pluginCounts));
+        lines.add(ratingLine(snapshot.roundTotalNanos()));
+        if (!snapshot.topBlock().isEmpty()) {
+            lines.add(blockLine(snapshot.topBlock(), verbose));
+        }
+        lines.add(machinesLine(agg.byItem(), verbose, snapshot.totalBlocks()));
+
+        ChunkKey hotChunk = agg.byChunk().isEmpty() ? null : agg.byChunk().getFirst().chunk();
+        lines.add(chunksLine(agg.byChunk(), verbose, hotChunk));
+        lines.add(pluginsLine(agg.byPlugin(), verbose));
         return new ComponentReport(List.copyOf(lines));
     }
 
     private static Component label(String key, String value) {
-        return Component.text()
-                .append(Component.text(key, NamedTextColor.GOLD))
-                .append(Component.text(value, NamedTextColor.YELLOW))
+        return text()
+                .append(text(key, NamedTextColor.GOLD))
+                .append(text(value, NamedTextColor.YELLOW))
                 .build();
     }
 
     private static String periodText(int period) {
-        if (period <= 0) {
-            return "未知";
-        }
         return round(period / 20.0) + "s (" + period + " ticks)";
     }
 
     private static Component freezeLine(boolean frozen) {
-        return Component.text()
-                .append(Component.text("Tick Freeze: ", NamedTextColor.GOLD))
-                .append(Component.text(frozen ? "√" : "❌", frozen ? NamedTextColor.RED : NamedTextColor.GREEN))
+        return text()
+                .append(text("Tick Freeze: ", NamedTextColor.GOLD))
+                .append(text(frozen ? "√" : "❌", frozen ? NamedTextColor.RED : NamedTextColor.GREEN))
                 .build();
     }
 
+    /**
+     * 性能评分行
+     */
     private static Component ratingLine(long totalNanos) {
         float percentage = JEGProfiler.percentageOfTick(totalNanos);
         float clamped = Math.min(percentage, 100.0F);
-        NamedTextColor color = scoreColor(100.0F - clamped);
+        PerformanceRating rating = JEGProfiler.performanceOf(totalNanos);
 
-        int filled = (int) clamped;
-        Component result = Component.text("性能评分：", NamedTextColor.GOLD);
-        result = result.append(Component.text("■".repeat(Math.max(0, filled)), color));
-        result = result.append(Component.text("■".repeat(Math.max(0, BAR_WIDTH - filled)), NamedTextColor.DARK_GRAY));
-        result = result.append(Component.text(" - ", NamedTextColor.GRAY));
-        result = result.append(Component.text(ratingName(percentage), color));
-        result = result.append(Component.text(" (" + round(percentage) + "%)", NamedTextColor.GRAY));
+        int rest = BAR_WIDTH;
+        StringBuilder bar = new StringBuilder();
+        for (int i = (int) clamped; i >= 5; i -= 5) {
+            bar.append(':');
+            rest--;
+        }
+
+        Component result = text("性能评分: ", NamedTextColor.GOLD);
+        result = result.append(text(bar.toString(),
+                colorOf(NumberUtils.getColorFromPercentage(100.0F - clamped))));
+        result = result.append(text(":".repeat(Math.max(0, rest)), NamedTextColor.DARK_GRAY));
+        result = result.append(text(" - ", NamedTextColor.DARK_GRAY));
+        result = result.append(text(JEGProfiler.ratingName(rating), colorOf(rating.getColor())));
+        result = result.append(text(" (" + NumberUtils.roundDecimalNumber(percentage) + "%)",
+                NamedTextColor.GRAY));
         return result;
     }
 
-    private static Component blocksLine(Aggregates agg) {
-        int count = agg.totalBlocks;
-        if (count <= 0) {
-            return Component.text()
-                    .append(Component.text("方块 | ", NamedTextColor.YELLOW))
-                    .append(Component.text("0 blocks", NamedTextColor.GRAY))
-                    .build();
-        }
-
-        List<Component> hover = new ArrayList<>();
-        int shown = 0;
-        int hidden = 0;
-
-        for (ProfiledSample sample : agg.blockOrder) {
-            long nanos = agg.samples.getOrDefault(sample, 0L);
-            if (shown < JEGProfiler.maxItems()
-                    && (shown < JEGProfiler.minItems() || nanos > JEGProfiler.visibilityThreshold())) {
-                hover.add(Component.text(
-                        sample.itemId() + " @ " + sample.positionName() + " (" + sample.worldName() + ") - "
-                                + JEGProfiler.asMillis(nanos),
-                        NamedTextColor.YELLOW));
-                shown++;
-            } else {
-                hidden++;
-            }
-        }
-        appendHidden(hover, hidden);
-
-        return Component.text()
-                .append(Component.text("方块 | ", NamedTextColor.YELLOW))
-                .append(Component.text("top " + JEGProfiler.maxItems() + " blocks", NamedTextColor.YELLOW))
-                .append(hint(hover))
+    private static Component blockLine(PriorityQueue<TimedSample> topBlocks, boolean verbose) {
+        if (topBlocks.isEmpty()) {
+            return text()
+                .append(text("方块 | ", NamedTextColor.YELLOW))
+                .append(text("0 blocks", NamedTextColor.GRAY))
                 .build();
+        }
+
+        int idWidth = idWidthOf("机器 ID", topBlocks.stream().map(t -> t.item().getItemName()).toList());
+        List<Component> hover = new ArrayList<>();
+        hover.add(tableHeader("机器 ID", "机器耗时", verbose, idWidth));
+        TimedSample topBlock = topBlocks.peek();
+        while (!topBlocks.isEmpty()) {
+            hover.add(row(topBlocks.poll(), idWidth));
+        }
+
+        hover.add(teleportNote("最耗时方块", topBlock.worldName() + " " + topBlock.positionName()));
+
+        return text()
+            .append(text("方块 | ", NamedTextColor.YELLOW))
+            .append(text("top " + JEGProfiler.MAX_TOP_ITEMS + " blocks", NamedTextColor.YELLOW))
+            .append(hint(hover, locationOf(topBlock), "点击传送到最耗时机器"))
+            .build();
+    }
+    
+    private static Component machinesLine(List<ClassifiedGroup> groups, boolean verbose, int totalBlocks) {
+        if (groups.isEmpty()) {
+            return text()
+                .append(text("机器 | ", NamedTextColor.YELLOW))
+                .append(text("0 blocks", NamedTextColor.GRAY))
+                .build();
+        }
+
+        List<Component> hover = buildHover("机器 ID", "机器总耗时", groups, verbose);
+        return text()
+            .append(text("机器 | ", NamedTextColor.YELLOW))
+            .append(text(plural(totalBlocks, "block"), NamedTextColor.YELLOW))
+            .append(hint(hover))
+            .build();
     }
 
-    private static Component aggregateLine(String category, String unit, Map<String, Long> byKey,
-            Map<String, Integer> counts) {
-        if (byKey.isEmpty()) {
-            return Component.text()
-                    .append(Component.text(category + " | ", NamedTextColor.YELLOW))
-                    .append(Component.text("0 " + unit, NamedTextColor.GRAY))
-                    .build();
-        }
-
-        List<Map.Entry<String, Long>> order = new ArrayList<>(byKey.entrySet());
-        order.sort(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()));
-
-        List<Component> hover = new ArrayList<>();
-        int shown = 0;
-        int hidden = 0;
-
-        for (Map.Entry<String, Long> entry : order) {
-            long nanos = entry.getValue();
-            if (shown < JEGProfiler.maxItems()
-                    && (shown < JEGProfiler.minItems() || nanos > JEGProfiler.visibilityThreshold())) {
-                int count = counts.getOrDefault(entry.getKey(), 0);
-                hover.add(Component.text(
-                        entry.getKey() + " - " + count + " " + unit + " (" + JEGProfiler.asMillis(nanos) + ")",
-                        NamedTextColor.YELLOW));
-                shown++;
-            } else {
-                hidden++;
-            }
-        }
-        appendHidden(hover, hidden);
-
-        return Component.text()
-                .append(Component.text(category + " | ", NamedTextColor.YELLOW))
-                .append(Component.text(byKey.size() + " " + unit, NamedTextColor.YELLOW))
-                .append(hint(hover))
+    private static Component chunksLine(List<ClassifiedGroup> groups, boolean verbose, @Nullable ChunkKey topChunk) {
+        if (topChunk == null) {
+            return text()
+                .append(text("区块 | ", NamedTextColor.YELLOW))
+                .append(text("0 chunks", NamedTextColor.GRAY))
                 .build();
+        }
+        
+        List<Component> hover = buildHover("区块位置", "区块总耗时", groups, verbose);
+        hover.add(teleportNote("最耗时区块", topChunk.displayName() + " 中心"));
+
+        return text()
+            .append(text("区块 | ", NamedTextColor.YELLOW))
+            .append(text(plural(groups.size(), "chunk"), NamedTextColor.YELLOW))
+            .append(hint(hover, chunkCenterOf(topChunk), "点击传送到最耗时区块"))
+            .build();
     }
 
-    private static void appendHidden(List<Component> hover, int hidden) {
+    private static Component pluginsLine(List<ClassifiedGroup> groups, boolean verbose) {
+        if (groups.isEmpty()) {
+            return text()
+                .append(text("插件 | ", NamedTextColor.YELLOW))
+                .append(text("0 plugins", NamedTextColor.GRAY))
+                .build();
+        }
+
+        List<Component> hover = buildHover("plugin", "插件 ID", groups, verbose);
+
+        return text()
+            .append(text("插件 | ", NamedTextColor.YELLOW))
+            .append(text(plural(groups.size(), "plugin"), NamedTextColor.YELLOW))
+            .append(hint(hover))
+            .build();
+    }
+
+    /**
+     * 组装 hover 表格：表头 + 可见行 + 「+N more」。
+     *
+     * @param idHeader   首列表头
+     * @param totalLabel 总耗时列表头
+     * @param groups     聚合结果（已按总耗时降序）
+     * @param verbose    是否详细
+     * @return hover 内容
+     */
+    private static List<Component> buildHover(String idHeader, String totalLabel,
+                                              List<ClassifiedGroup> groups, boolean verbose) {
+        List<ClassifiedGroup> visible = visibleGroups(groups);
+        int idWidth = idWidthOf(idHeader, visible.stream().map(ClassifiedGroup::key).toList());
+
+        List<Component> hover = new ArrayList<>();
+        hover.add(tableHeader(idHeader, totalLabel, verbose, idWidth));
+        for (ClassifiedGroup group : visible) {
+            hover.add(row(group, verbose, idWidth));
+        }
+
+        Component note = hiddenNote(groups.size(), JEGProfiler.MAX_ITEMS);
+        if (note != null) {
+            hover.add(note);
+        }
+        return hover;
+    }
+
+    /**
+     * hover 里实际展示的行（最多 maxItems 条）。
+     *
+     * @param groups 聚合结果
+     * @return 可见行
+     */
+    private static List<ClassifiedGroup> visibleGroups(List<ClassifiedGroup> groups) {
+        int max = JEGProfiler.MAX_ITEMS;
+        return groups.size() <= max ? groups : groups.subList(0, max);
+    }
+
+    /**
+     * 首列宽度自适应：机器 ID / 区块位置 / 插件名长度都不固定，
+     * 取表头与所有可见行里最宽的显示宽度，再留两格余量。
+     *
+     * @param idHeader 首列表头
+     * @param names    显示名
+     * @return 首列显示宽度
+     */
+    private static int idWidthOf(String idHeader, List<String> names) {
+        int width = displayWidth(idHeader);
+        for (var displayName : names) {
+            width = Math.max(width, displayWidth(displayName));
+        }
+        return width + 2;
+    }
+
+    private static @Nullable Component hiddenNote(int total, int max) {
+        int hidden = total - max;
         if (hidden <= 0) {
-            return;
+            return null;
         }
 
-        hover.add(Component.empty());
-        hover.add(Component.text()
-                .append(Component.text("+ ", NamedTextColor.RED))
-                .append(Component.text(String.valueOf(hidden), NamedTextColor.GOLD))
-                .append(Component.text(" more", NamedTextColor.GOLD))
-                .build());
+        return text()
+                .append(text("+ ", NamedTextColor.RED))
+                .append(text(String.valueOf(hidden), NamedTextColor.GOLD))
+                .append(text(" more", NamedTextColor.GOLD))
+                .build();
+    }
+
+    /**
+     * 构造表头。
+     *
+     * @param idLabel    首列名
+     * @param totalLabel 总耗时列名
+     * @param verbose    是否详细（决定列数）
+     * @param idWidth    首列宽度（自适应，见 {@link #idWidthOf}）
+     * @return 表头组件
+     */
+    private static Component tableHeader(String idLabel, String totalLabel, boolean verbose, int idWidth) {
+        String[] labels = verbose
+                ? new String[]{idLabel, "方块数", totalLabel + "(ms)", "avg", "min", "med", "95%ile", "max"}
+                : new String[]{idLabel, "方块数", totalLabel + "(ms)", "avg"};
+        int[] widths = {idWidth, W_COUNT, W_TOTAL, W_STAT, W_STAT, W_STAT, W_STAT, W_STAT};
+
+        Component result = text("", NamedTextColor.WHITE);
+        for (int i = 0; i < labels.length; i++) {
+            result = result.append(text(pad(labels[i], widths[i]), NamedTextColor.AQUA));
+            if (i < labels.length - 1) {
+                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
+            }
+        }
+        return result;
+    }
+
+    private static Component row(TimedSample sample, int idWidth) {
+        List<Component> cells = new ArrayList<>();
+        cells.add(text(pad(sample.item().getId(), idWidth), NamedTextColor.YELLOW));
+        cells.add(text(pad(ms(sample.nanos()), W_TOTAL), NamedTextColor.GREEN));
+
+        Component result = text("", NamedTextColor.WHITE);
+        for (int i = 0; i < cells.size(); i++) {
+            result = result.append(cells.get(i));
+            if (i < cells.size() - 1) {
+                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
+            }
+        }
+        return result;
+    }
+
+    private static Component row(ClassifiedGroup group, boolean verbose, int idWidth) {
+        List<Component> cells = new ArrayList<>();
+        cells.add(text(pad(group.key(), idWidth), NamedTextColor.YELLOW));
+        cells.add(text(pad(String.valueOf(group.count()), W_COUNT), NamedTextColor.GOLD));
+        cells.add(text(pad(ms(group.totalNanos()), W_TOTAL), NamedTextColor.GREEN));
+
+        cells.add(text(pad(ms(group.avgNanos()), W_STAT), NamedTextColor.GRAY));
+        if (verbose) {
+            cells.add(text(pad(ms(group.minNanos()), W_STAT), NamedTextColor.GRAY));
+            cells.add(text(pad(ms(group.displayMedian()), W_STAT), NamedTextColor.GRAY));
+            cells.add(text(pad(ms(group.p95Nanos()), W_STAT), NamedTextColor.YELLOW));
+            cells.add(text(pad(ms(group.maxNanos()), W_STAT), NamedTextColor.RED));
+        }
+
+        Component result = text("", NamedTextColor.WHITE);
+        for (int i = 0; i < cells.size(); i++) {
+            result = result.append(cells.get(i));
+            if (i < cells.size() - 1) {
+                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
+            }
+        }
+        return result;
     }
 
     private static Component hint(List<Component> hover) {
-        return Component.text(HOVER_HINT, NamedTextColor.GRAY)
-                .hoverEvent(HoverEvent.showText(Component.join(JoinConfiguration.newlines(), hover)));
+        return hint(hover, null, "");
     }
 
-    private static NamedTextColor scoreColor(float percentage) {
-        if (percentage < 16.0F) {
-            return NamedTextColor.DARK_RED;
-        } else if (percentage < 32.0F) {
-            return NamedTextColor.RED;
-        } else if (percentage < 48.0F) {
-            return NamedTextColor.GOLD;
-        } else if (percentage < 64.0F) {
-            return NamedTextColor.YELLOW;
-        } else if (percentage < 80.0F) {
-            return NamedTextColor.DARK_GREEN;
+    /**
+     * 构造「查看详情」提示，带 hover 与可选的点击传送。
+     *
+     * @param hover  hover 内容
+     * @param target 传送目标；为 null 时不带点击事件
+     * @param tip    点击提示文本，可为空串
+     * @return 提示组件
+     */
+    private static Component hint(List<Component> hover, @Nullable Location target, String tip) {
+        Component hint = text(" (悬停查看详情", NamedTextColor.GRAY);
+        hover.add(text(tip));
+        hint = hint.append(text(")", NamedTextColor.GRAY));
+        hint = hint.hoverEvent(HoverEvent.showText(Component.join(JoinConfiguration.newlines(), hover)));
+
+        if (target != null && !tip.isEmpty()) {
+            hint = hint.clickEvent(ClickEvent.callback(audience -> {
+                Player viewer = audience instanceof Player p ? p : null;
+                if (viewer != null) {
+                    viewer.teleport(target);
+                }
+            }));
         }
-        return NamedTextColor.GREEN;
+        return hint;
+    }
+    
+    private static @Nullable Location locationOf(@Nullable TimedSample peak) {
+        if (peak == null) return null;
+
+        World world = Bukkit.getWorld(peak.worldName());
+        return world == null ? null : new Location(world, peak.x(), peak.y(), peak.z());
+    }
+    
+    private static Location chunkCenterOf(ChunkKey key) {
+        World world = Bukkit.getWorld(key.worldName());
+        return new Location(world, key.chunkX() * 16 + 8, 128, key.chunkZ() * 16 + 8);
     }
 
-    private static String ratingName(float percentage) {
-        if (percentage <= 10.0F) {
-            return "优秀";
-        } else if (percentage <= 20.0F) {
-            return "良好";
-        } else if (percentage <= 30.0F) {
-            return "尚可";
-        } else if (percentage <= 55.0F) {
-            return "一般";
-        } else if (percentage <= 85.0F) {
-            return "严重";
-        } else if (percentage <= 500.0F) {
-            return "有害";
+    private static Component teleportNote(String label, String value) {
+        return text()
+                .append(text("点击传送: ", NamedTextColor.DARK_GRAY))
+                .append(text(label + " ", NamedTextColor.GRAY))
+                .append(text(value, NamedTextColor.AQUA))
+                .build();
+    }
+
+    /**
+     * 处理单复数：{@code 1 block} / {@code 2 blocks}。
+     */
+    private static String plural(int count, String unit) {
+        return count + " " + unit + (count == 1 ? "" : "s");
+    }
+
+    private static String ms(long nanos) {
+        return NumberUtils.roundDecimalNumber(nanos / 1000000.0D);
+    }
+
+    /**
+     * 按显示宽度右侧补空格（表格左对齐）。
+     *
+     * @param text  文本
+     * @param width 目标显示宽度
+     * @return 补齐后的文本
+     */
+    private static String pad(String text, int width) {
+        return text + " ".repeat(Math.max(0, width - displayWidth(text)));
+    }
+
+    /**
+     * 计算文本在 Minecraft 字体下的显示宽度：中文/全角字符占两格。
+     *
+     * @param text 文本
+     * @return 显示宽度
+     */
+    private static int displayWidth(String text) {
+        int width = 0;
+        for (int i = 0; i < text.length(); i++) {
+            width += isWide(text.charAt(i)) ? 2 : 1;
         }
-        return "糟糕";
+        return width;
+    }
+
+    private static boolean isWide(char c) {
+        return c >= 0x1100 && (c <= 0x115F
+                || c == 0x2329 || c == 0x232A
+                || (c >= 0x2E80 && c <= 0xA4CF && c != 0x303F)
+                || (c >= 0xAC00 && c <= 0xD7A3)
+                || (c >= 0xF900 && c <= 0xFAFF)
+                || (c >= 0xFE30 && c <= 0xFE6F)
+                || (c >= 0xFF00 && c <= 0xFF60)
+                || (c >= 0xFFE0 && c <= 0xFFE6));
+    }
+
+    /**
+     * 把 Bukkit 的 {@link ChatColor} 转成 Adventure 的 {@link NamedTextColor}。
+     * <p>
+     * 两边枚举的常量名（{@code DARK_RED}、{@code GOLD} …）完全一致，因此按名字映射即可。
+     * 不走 {@code ChatColor#getColorValue()}——该方法在当前编译 classpath 上并不存在。
+     *
+     * @param color Bukkit 颜色
+     * @return Adventure 颜色
+     */
+    private static NamedTextColor colorOf(ChatColor color) {
+        NamedTextColor mapped = NamedTextColor.NAMES.value(color.name());
+        return mapped == null ? NamedTextColor.WHITE : mapped;
     }
 
     private static String round(double value) {
@@ -262,80 +485,5 @@ public final class ComponentReport {
                 .setScale(2, RoundingMode.HALF_UP)
                 .stripTrailingZeros()
                 .toPlainString();
-    }
-
-    /**
-     * 一次性算好所有聚合视图，避免同一个快照被反复遍历。
-     */
-    private static final class Aggregates {
-
-        private final Map<ProfiledSample, Long> samples;
-        private final int totalBlocks;
-        private final List<ProfiledSample> blockOrder;
-        private final Map<String, Long> byItem;
-        private final Map<String, Integer> itemCounts;
-        private final Map<String, Long> byChunk;
-        private final Map<String, Integer> chunkCounts;
-        private final Map<String, Long> byPlugin;
-        private final Map<String, Integer> pluginCounts;
-
-        private Aggregates(Map<ProfiledSample, Long> samples, List<ProfiledSample> blockOrder, Map<String, Long> byItem,
-                Map<String, Integer> itemCounts, Map<String, Long> byChunk, Map<String, Integer> chunkCounts,
-                Map<String, Long> byPlugin, Map<String, Integer> pluginCounts) {
-            this.samples = samples;
-            this.totalBlocks = samples.size();
-            this.blockOrder = blockOrder;
-            this.byItem = byItem;
-            this.itemCounts = itemCounts;
-            this.byChunk = byChunk;
-            this.chunkCounts = chunkCounts;
-            this.byPlugin = byPlugin;
-            this.pluginCounts = pluginCounts;
-        }
-
-        static Aggregates of(TimingsSnapshot snapshot) {
-            Map<ProfiledSample, Long> samples = snapshot.samples();
-            List<ProfiledSample> blockOrder = new ArrayList<>(samples.keySet());
-            blockOrder.sort(Comparator.comparingLong((ProfiledSample s) -> samples.getOrDefault(s, 0L)).reversed());
-
-            Map<String, Long> byItem = new HashMap<>();
-            Map<String, Integer> itemCounts = new HashMap<>();
-            Map<String, Long> byChunk = new HashMap<>();
-            Map<String, Integer> chunkCounts = new HashMap<>();
-            Map<String, Long> byPlugin = new HashMap<>();
-            Map<String, Integer> pluginCounts = new HashMap<>();
-
-            for (Map.Entry<ProfiledSample, Long> entry : samples.entrySet()) {
-                ProfiledSample sample = entry.getKey();
-                long nanos = entry.getValue();
-
-                byItem.merge(sample.itemId(), nanos, Long::sum);
-                itemCounts.merge(sample.itemId(), 1, Integer::sum);
-
-                byChunk.merge(sample.chunkName(), nanos, Long::sum);
-                chunkCounts.merge(sample.chunkName(), 1, Integer::sum);
-
-                String plugin = pluginOf(sample);
-                byPlugin.merge(plugin, nanos, Long::sum);
-                pluginCounts.merge(plugin, 1, Integer::sum);
-            }
-
-            return new Aggregates(samples, blockOrder, byItem, itemCounts, byChunk, chunkCounts, byPlugin,
-                    pluginCounts);
-        }
-
-        private static String pluginOf(ProfiledSample sample) {
-            SlimefunItem item = SlimefunItem.getById(sample.itemId());
-            if (item == null) {
-                return "Unknown";
-            }
-
-            try {
-                return item.getAddon().getName();
-            } catch (Exception | LinkageError x) {
-                // 物品尚未注册 / 附属已卸载
-                return "Unknown";
-            }
-        }
     }
 }

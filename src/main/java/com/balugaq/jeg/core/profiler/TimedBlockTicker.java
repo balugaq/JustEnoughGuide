@@ -45,12 +45,12 @@ import java.util.Optional;
 @NullMarked
 public class TimedBlockTicker extends BlockTicker {
 
-    private final BlockTicker ticker;
+    private final BlockTicker delegate;
 
-    private TimedBlockTicker(BlockTicker ticker) {
+    private TimedBlockTicker(BlockTicker delegate) {
         // universal 标记是 final 的，必须透传，否则 TickerTask 会走错 tick 分支
-        super(ticker.isUniversal());
-        this.ticker = ticker;
+        super(delegate.isUniversal());
+        this.delegate = delegate;
     }
 
     /**
@@ -72,41 +72,41 @@ public class TimedBlockTicker extends BlockTicker {
      * @return 原始 ticker
      */
     public BlockTicker originTicker() {
-        return ticker;
+        return delegate;
     }
 
     @Override
     public void update() {
-        ticker.update();
+        delegate.update();
     }
 
     @Override
     public Optional<IncompatibleItemHandlerException> validate(SlimefunItem item) {
-        return ticker.validate(item);
+        return delegate.validate(item);
     }
 
     @Override
     public boolean isSynchronized() {
-        return ticker.isSynchronized();
+        return delegate.isSynchronized();
     }
 
     @Override
     public void uniqueTick() {
-        ticker.uniqueTick();
+        delegate.uniqueTick();
     }
 
     @Override
     public void startNewTick() {
         // update() 已被完全覆盖，本代理自身的 unique 字段永远不会被读到，
         // 因此只需把标志转回被包裹的 ticker，否则它的 uniqueTick() 再也不会触发
-        ticker.startNewTick();
+        delegate.startNewTick();
     }
 
     @Override
     public void tick(Block b, SlimefunItem item, SlimefunBlockData data) {
         long start = System.nanoTime();
         try {
-            ticker.tick(b, item, data);
+            delegate.tick(b, item, data);
         } finally {
             JEGProfiler profiler = JEGProfiler.getInstance();
             if (profiler != null) {
@@ -119,7 +119,7 @@ public class TimedBlockTicker extends BlockTicker {
     public void tick(Block b, SlimefunItem item, SlimefunUniversalData data) {
         long start = System.nanoTime();
         try {
-            ticker.tick(b, item, data);
+            delegate.tick(b, item, data);
         } finally {
             JEGProfiler profiler = JEGProfiler.getInstance();
             if (profiler != null) {
@@ -128,12 +128,12 @@ public class TimedBlockTicker extends BlockTicker {
         }
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "removal"})
     @Override
     public void tick(Block b, SlimefunItem item, Config data) {
         long start = System.nanoTime();
         try {
-            ticker.tick(b, item, data);
+            delegate.tick(b, item, data);
         } finally {
             JEGProfiler profiler = JEGProfiler.getInstance();
             if (profiler != null) {
@@ -144,6 +144,6 @@ public class TimedBlockTicker extends BlockTicker {
 
     @Override
     public Class<? extends ItemHandler> getIdentifier() {
-        return ticker.getIdentifier();
+        return delegate.getIdentifier();
     }
 }

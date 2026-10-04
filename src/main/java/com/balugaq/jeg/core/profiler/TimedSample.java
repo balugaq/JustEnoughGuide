@@ -17,43 +17,39 @@
 
 package com.balugaq.jeg.core.profiler;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.Location;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * 一次采样所对应的方块坐标与物品标识。
+ * 一次机器执行的原始样本：耗时 + 发生位置。
+ * <p>
+ * 之所以把坐标直接放进样本里，是因为「耗时最高的那台机器在哪」这类问题
+ * 直接对样本列表取 max 就能同时拿到耗时和坐标，不需要再维护一套并行的热点表。
  * <p>
  * 这里刻意<b>不持有</b> {@link org.bukkit.World} 引用，只保留世界名，
  * 避免 profiler 的采样表把世界对象钉在内存里。
  *
+ * @param nanos     本次执行的纳秒数
  * @param worldName 世界名称
  * @param x         方块 X 坐标
  * @param y         方块 Y 坐标
  * @param z         方块 Z 坐标
- * @param itemId    该位置上运行的 SlimefunItem ID
  * @author balugaq
  * @since 2.2
  */
 @NullMarked
-public record ProfiledSample(String worldName, int x, int y, int z, String itemId) {
+public record TimedSample(long nanos, SlimefunItem item, String worldName, int x, int y, int z) implements Comparable<TimedSample> {
 
     /**
-     * 由 {@link Location} 与物品 ID 构造一个采样键。
+     * 由 {@link Location} 与耗时构造一个样本。
      *
      * @param location 方块位置
-     * @param itemId   物品 ID
+     * @param nanos    本次执行的纳秒数
      */
-    public ProfiledSample(Location location, String itemId) {
-        this(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), itemId);
-    }
-
-    /**
-     * 取出该方块所属区块的展示名，形如 {@code world (12,-3)}。
-     *
-     * @return 区块展示名
-     */
-    public String chunkName() {
-        return worldName + " (" + (x >> 4) + ',' + (z >> 4) + ')';
+    public TimedSample(Location location, SlimefunItem item, long nanos) {
+        this(nanos, item, location.getWorld().getName(),
+                location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     /**
@@ -63,5 +59,10 @@ public record ProfiledSample(String worldName, int x, int y, int z, String itemI
      */
     public String positionName() {
         return x + ", " + y + ", " + z;
+    }
+
+    @Override
+    public int compareTo(TimedSample o) {
+        return Long.compare(nanos, o.nanos);
     }
 }

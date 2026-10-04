@@ -62,17 +62,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * JEG 命令系统的 ACF 根类（合并单 root 类）。
- * <p>
- * 路由 / 权限 / help / tab 补全 全部交给 ACF：
- * <ul>
- *   <li>路由：{@code @Subcommand("xxx")}，不再手写 canCommand 抢活</li>
- *   <li>权限：{@code @CommandPermission("jeg.xxx")}，节点在 plugin.yml 声明（默认 op / 玩家 true）</li>
- *   <li>help ：{@code @Default} + {@code @CatchUnknown} 兜底，ACF 同时自动生成 /jeg help 列表</li>
- *   <li>补全：{@code @Completion("sfitems")}/{@code @Completion("cachekey")} 引用 CommandManager 注册的补全器</li>
- *   <li>玩家命令：方法首参声明 Player，ACF 自动拒绝 console 并提示</li>
- * </ul>
- *
  * @author balugaq
  * @since 1.1
  */
@@ -251,19 +240,21 @@ public class JEGCommands extends BaseCommand {
     @Subcommand("timings")
     @CommandPermission("jeg.timings")
     @Description("View Slimefun machine performance of the last tick")
-    public void onTimings(Player player) {
+    @Syntax("[--verbose]")
+    public void onTimings(CommandSender sender, @Optional @Single String flag) {
         JEGProfiler profiler = JEGProfilerManager.profiler();
         if (profiler == null) {
-            player.sendMessage(ChatColors.color("&c性能监视器不可用，请稍后再试"));
+            sender.sendMessage(ChatColors.color("&c性能监视器不可用，请稍后再试"));
             return;
         }
 
-        player.sendMessage(ChatColors.color("&7正在采集下一轮 Tick 的性能数据..."));
-        profiler.requestReport(player);
+        boolean verbose = "--verbose".equalsIgnoreCase(flag);
+
+        sender.sendMessage(ChatColors.color("&e[JustEnoughGuide] 正在采集性能数据..." + (verbose ? "（详细模式）" : "") + "..."));
+        profiler.requestReport(sender, verbose);
     }
 
     // ---- Categories 命令的 GUI 辅助（原 CategoriesCommand 静态逻辑平移）----
-
     @SuppressWarnings("deprecation")
     private static void populateCategoryMenu(
         ChestMenu menu, List<ItemGroup> groups, @Range(from = 1, to = Integer.MAX_VALUE) int page, Player p) {
