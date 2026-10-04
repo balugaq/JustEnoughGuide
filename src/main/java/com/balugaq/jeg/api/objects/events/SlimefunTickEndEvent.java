@@ -12,6 +12,10 @@ import org.jspecify.annotations.NullMarked;
 public class SlimefunTickEndEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
 
+    public SlimefunTickEndEvent() {
+        super(true);
+    }
+
     @Override
     public HandlerList getHandlers() {
         return HANDLERS;

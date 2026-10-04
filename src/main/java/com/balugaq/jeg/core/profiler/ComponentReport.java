@@ -70,7 +70,7 @@ import static net.kyori.adventure.text.Component.text;
 @SuppressWarnings("deprecation")
 @NullMarked
 public final class ComponentReport {
-
+    public static final String[] BLOCK_LABELS = new String[]{"机器 ID", "方块数", "机器耗时 (ms)"};
     private static final String TITLE = "===== JEG - Slimefun 性能分析器 =====";
     private static final int BAR_WIDTH = 20;
 
@@ -90,33 +90,6 @@ public final class ComponentReport {
 
     public List<Component> components() {
         return components;
-    }
-
-    /**
-     * 依据快照构建报告。
-     *
-     * @param snapshot 采样快照
-     * @param verbose  是否输出详细分位统计
-     * @return 渲染好的报告
-     */
-    public static ComponentReport of(TimingsSnapshot snapshot, boolean verbose) {
-        Aggregates agg = TimingsAggregator.aggregate(snapshot);
-
-        List<Component> lines = new ArrayList<>();
-        lines.add(text(TITLE, NamedTextColor.GREEN));
-        lines.add(label("Tick 总用时：", JEGProfiler.asMillis(snapshot.roundTotalNanos())));
-        lines.add(label("Ticker 运行周期：", periodText(snapshot.period())));
-        lines.add(freezeLine(snapshot.frozen()));
-        lines.add(ratingLine(snapshot.roundTotalNanos()));
-        if (!snapshot.topBlock().isEmpty()) {
-            lines.add(blockLine(snapshot.topBlock(), verbose));
-        }
-        lines.add(machinesLine(agg.byItem(), verbose, snapshot.totalBlocks()));
-
-        ChunkKey hotChunk = agg.byChunk().isEmpty() ? null : agg.byChunk().getFirst().chunk();
-        lines.add(chunksLine(agg.byChunk(), verbose, hotChunk));
-        lines.add(pluginsLine(agg.byPlugin(), verbose));
-        return new ComponentReport(List.copyOf(lines));
     }
 
     private static Component label(String key, String value) {
@@ -163,29 +136,31 @@ public final class ComponentReport {
         return result;
     }
 
-    private static Component blockLine(PriorityQueue<TimedSample> topBlocks, boolean verbose) {
-        if (topBlocks.isEmpty()) {
-            return text()
-                .append(text("方块 | ", NamedTextColor.YELLOW))
-                .append(text("0 blocks", NamedTextColor.GRAY))
-                .build();
+    /**
+     * 依据快照构建报告。
+     *
+     * @param snapshot 采样快照
+     * @param verbose  是否输出详细分位统计
+     * @return 渲染好的报告
+     */
+    public static ComponentReport of(TimingsSnapshot snapshot, boolean verbose) {
+        Aggregates agg = TimingsAggregator.aggregate(snapshot);
+
+        List<Component> lines = new ArrayList<>();
+        lines.add(text(TITLE, NamedTextColor.GREEN));
+        lines.add(label("Tick 总用时：", JEGProfiler.asMillis(snapshot.roundTotalNanos())));
+        lines.add(label("Ticker 运行周期：", periodText(snapshot.period())));
+        lines.add(freezeLine(snapshot.frozen()));
+        lines.add(ratingLine(snapshot.roundTotalNanos()));
+        if (!snapshot.topBlock().isEmpty()) {
+            lines.add(blocksLine(snapshot.topBlock(), verbose));
         }
+        lines.add(machinesLine(agg.byItem(), verbose, snapshot.totalBlocks()));
 
-        int idWidth = idWidthOf("机器 ID", topBlocks.stream().map(t -> t.item().getItemName()).toList());
-        List<Component> hover = new ArrayList<>();
-        hover.add(tableHeader("机器 ID", "机器耗时", verbose, idWidth));
-        TimedSample topBlock = topBlocks.peek();
-        while (!topBlocks.isEmpty()) {
-            hover.add(row(topBlocks.poll(), idWidth));
-        }
-
-        hover.add(teleportNote("最耗时方块", topBlock.worldName() + " " + topBlock.positionName()));
-
-        return text()
-            .append(text("方块 | ", NamedTextColor.YELLOW))
-            .append(text("top " + JEGProfiler.MAX_TOP_ITEMS + " blocks", NamedTextColor.YELLOW))
-            .append(hint(hover, locationOf(topBlock), "点击传送到最耗时机器"))
-            .build();
+        ChunkKey hotChunk = agg.byChunk().isEmpty() ? null : agg.byChunk().getFirst().chunk();
+        lines.add(chunksLine(agg.byChunk(), verbose, hotChunk));
+        lines.add(pluginsLine(agg.byPlugin(), verbose));
+        return new ComponentReport(List.copyOf(lines));
     }
     
     private static Component machinesLine(List<ClassifiedGroup> groups, boolean verbose, int totalBlocks) {
@@ -230,7 +205,7 @@ public final class ComponentReport {
                 .build();
         }
 
-        List<Component> hover = buildHover("plugin", "插件 ID", groups, verbose);
+        List<Component> hover = buildHover("插件 ID", "插件总耗时", groups, verbose);
 
         return text()
             .append(text("插件 | ", NamedTextColor.YELLOW))
@@ -239,17 +214,48 @@ public final class ComponentReport {
             .build();
     }
 
+    private static Component blocksLine(PriorityQueue<TimedSample> topBlocks, boolean verbose) {
+        if (topBlocks.isEmpty()) {
+            return text()
+                .append(text("方块 | ", NamedTextColor.YELLOW))
+                .append(text("0 blocks", NamedTextColor.GRAY))
+                .build();
+        }
+
+        int idWidth = idWidthOf("机器 ID", topBlocks.stream().map(t -> t.item().getItemName()).toList());
+        List<Component> hover = new ArrayList<>();
+        hover.add(blockTableHeader(idWidth));
+        TimedSample topBlock = topBlocks.peek();
+        while (!topBlocks.isEmpty()) {
+            hover.add(row(topBlocks.poll(), idWidth));
+        }
+
+        hover.add(teleportNote("最耗时方块", topBlock.worldName() + " " + topBlock.positionName()));
+
+        return text()
+            .append(text("方块 | ", NamedTextColor.YELLOW))
+            .append(text("top " + JEGProfiler.MAX_TOP_ITEMS + " blocks", NamedTextColor.YELLOW))
+            .append(hint(hover, locationOf(topBlock), "点击传送到最耗时机器"))
+            .build();
+    }
+
     /**
-     * 组装 hover 表格：表头 + 可见行 + 「+N more」。
+     * hover 里实际展示的行（最多 maxItems 条）。
      *
-     * @param idHeader   首列表头
-     * @param totalLabel 总耗时列表头
-     * @param groups     聚合结果（已按总耗时降序）
-     * @param verbose    是否详细
-     * @return hover 内容
+     * @param groups 聚合结果
+     * @return 可见行
      */
-    private static List<Component> buildHover(String idHeader, String totalLabel,
-                                              List<ClassifiedGroup> groups, boolean verbose) {
+    private static List<ClassifiedGroup> visibleGroups(List<ClassifiedGroup> groups) {
+        int max = JEGProfiler.MAX_ITEMS;
+        return groups.size() <= max ? groups : groups.subList(0, max);
+    }
+
+    private static List<Component> buildHover(
+        String idHeader,
+        String totalLabel,
+        List<ClassifiedGroup> groups,
+        boolean verbose
+    ) {
         List<ClassifiedGroup> visible = visibleGroups(groups);
         int idWidth = idWidthOf(idHeader, visible.stream().map(ClassifiedGroup::key).toList());
 
@@ -267,27 +273,16 @@ public final class ComponentReport {
     }
 
     /**
-     * hover 里实际展示的行（最多 maxItems 条）。
-     *
-     * @param groups 聚合结果
-     * @return 可见行
-     */
-    private static List<ClassifiedGroup> visibleGroups(List<ClassifiedGroup> groups) {
-        int max = JEGProfiler.MAX_ITEMS;
-        return groups.size() <= max ? groups : groups.subList(0, max);
-    }
-
-    /**
      * 首列宽度自适应：机器 ID / 区块位置 / 插件名长度都不固定，
      * 取表头与所有可见行里最宽的显示宽度，再留两格余量。
      *
-     * @param idHeader 首列表头
-     * @param names    显示名
+     * @param header 首列表头
+     * @param ids      显示名
      * @return 首列显示宽度
      */
-    private static int idWidthOf(String idHeader, List<String> names) {
-        int width = displayWidth(idHeader);
-        for (var displayName : names) {
+    private static int idWidthOf(String header, List<String> ids) {
+        int width = displayWidth(header);
+        for (var displayName : ids) {
             width = Math.max(width, displayWidth(displayName));
         }
         return width + 2;
@@ -295,9 +290,7 @@ public final class ComponentReport {
 
     private static @Nullable Component hiddenNote(int total, int max) {
         int hidden = total - max;
-        if (hidden <= 0) {
-            return null;
-        }
+        if (hidden <= 0) return null;
 
         return text()
                 .append(text("+ ", NamedTextColor.RED))
@@ -306,15 +299,20 @@ public final class ComponentReport {
                 .build();
     }
 
-    /**
-     * 构造表头。
-     *
-     * @param idLabel    首列名
-     * @param totalLabel 总耗时列名
-     * @param verbose    是否详细（决定列数）
-     * @param idWidth    首列宽度（自适应，见 {@link #idWidthOf}）
-     * @return 表头组件
-     */
+    private static Component blockTableHeader(int idWidth) {
+        String[] labels = BLOCK_LABELS;
+        int[] widths = {idWidth, W_COUNT, W_TOTAL, W_STAT, W_STAT, W_STAT, W_STAT, W_STAT};
+
+        Component result = text("", NamedTextColor.WHITE);
+        for (int i = 0; i < labels.length; i++) {
+            result = result.append(text(pad(labels[i], widths[i]), NamedTextColor.AQUA));
+            if (i < labels.length - 1) {
+                result = result.append(text(" ", NamedTextColor.DARK_GRAY));
+            }
+        }
+        return result;
+    }
+
     private static Component tableHeader(String idLabel, String totalLabel, boolean verbose, int idWidth) {
         String[] labels = verbose
                 ? new String[]{idLabel, "方块数", totalLabel + "(ms)", "avg", "min", "med", "95%ile", "max"}
