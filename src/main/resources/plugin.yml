@@ -43,3 +43,6 @@ permissions:
   jeg.share:
     description: Share the item in hand
     default: true
+  jeg.timings:
+    description: View Slimefun machine performance
+    default: true

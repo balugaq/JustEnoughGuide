@@ -29,6 +29,8 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.Values;
 import com.balugaq.jeg.api.groups.SearchGroup;
+import com.balugaq.jeg.core.profiler.JEGProfiler;
+import com.balugaq.jeg.core.profiler.JEGProfilerManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.items.GroupTierEditorGuide;
 import com.balugaq.jeg.utils.Debug;
@@ -94,6 +96,7 @@ public class JEGCommands extends BaseCommand {
         sender.sendMessage(ChatColor.GREEN + "/jeg share - Share the item on your hand");
         sender.sendMessage(ChatColor.GREEN + "/jeg viewitem <Slimefun Item> - View Slimefun item");
         sender.sendMessage(ChatColor.GREEN + "/jeg search [item name] - Search item on hand or search your input");
+        sender.sendMessage(ChatColor.GREEN + "/jeg timings - View Slimefun machine performance");
     }
 
     // ---- op 专用后台命令 ----
@@ -243,6 +246,20 @@ public class JEGCommands extends BaseCommand {
             return;
         }
         GuideUtil.getLastGuide(player).displayItem(profile, slimefunItem, true);
+    }
+
+    @Subcommand("timings")
+    @CommandPermission("jeg.timings")
+    @Description("View Slimefun machine performance of the last tick")
+    public void onTimings(Player player) {
+        JEGProfiler profiler = JEGProfilerManager.profiler();
+        if (profiler == null) {
+            player.sendMessage(ChatColors.color("&c性能监视器不可用，请稍后再试"));
+            return;
+        }
+
+        player.sendMessage(ChatColors.color("&7正在采集下一轮 Tick 的性能数据..."));
+        profiler.requestReport(player);
     }
 
     // ---- Categories 命令的 GUI 辅助（原 CategoriesCommand 静态逻辑平移）----

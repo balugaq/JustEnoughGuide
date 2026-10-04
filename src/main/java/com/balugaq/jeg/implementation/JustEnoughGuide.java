@@ -34,6 +34,7 @@ import com.balugaq.jeg.core.managers.ConfigManager;
 import com.balugaq.jeg.core.managers.IntegrationManager;
 import com.balugaq.jeg.core.managers.ListenerManager;
 import com.balugaq.jeg.core.managers.RTSBackpackManager;
+import com.balugaq.jeg.core.profiler.JEGProfilerManager;
 import com.balugaq.jeg.implementation.groups.GroupSetup;
 import com.balugaq.jeg.implementation.groups.VanillaItemsGroup;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
@@ -381,10 +382,16 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         getLogger().info("正在加载 Metrics...");
         metrics = new JEGMetrics();
 
+        // 物品注册（PostSetup）早于本插件 onEnable，这里再延后一拍，确保所有附属的机器都已注册完
+        JustEnoughGuide.runLaterAsync(JEGProfilerManager::install, 1L);
+
         getLogger().info("成功启用此附属");
     }
 
     public void unloadInternal() {
+        // 必须在 unregisterItems 之前还原，否则包装器会连同 JEG 自己的物品一起被丢弃
+        JEGProfilerManager.uninstall();
+
         CustomGroupConfigurations.unload();
         GroupResorter.rollback();
 
