@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.profiler;
 
+import com.balugaq.jeg.api.objects.events.JEGProfileEvent;
 import com.balugaq.jeg.api.objects.events.SlimefunTickEndEvent;
 import com.balugaq.jeg.api.objects.events.SlimefunTickStartEvent;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -41,9 +42,11 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -60,14 +63,11 @@ public class JEGProfiler extends SlimefunProfiler {
 
     private static @Nullable JEGProfiler instance;
 
-    private final Map<SlimefunItem, LongList> itemStats = new ConcurrentHashMap<>();
-    private final Map<SlimefunAddon, LongList> addonStats = new ConcurrentHashMap<>();
-    private final Map<ChunkKey, LongList> chunkStats = new ConcurrentHashMap<>();
+    private volatile Object2BooleanOpenHashMap<CommandSender> waiting = new Object2BooleanOpenHashMap<>();
 
-    private final AtomicLong totalNanos = new AtomicLong();
+    private volatile ConcurrentLinkedQueue<TimedSample> queue = new ConcurrentLinkedQueue<>();
 
-    private final Object2BooleanOpenHashMap<CommandSender> waiting = new Object2BooleanOpenHashMap<>();
-    private final PriorityQueue<TimedSample> topBlocks = new PriorityQueue<>();
+    private volatile boolean tickStarted = false;
 
     private JEGProfiler() {
         super();
@@ -102,35 +102,13 @@ public class JEGProfiler extends SlimefunProfiler {
     }
 
     /**
-     * 任意机器每次 tick 都会调用
+     * 任意机器每次 tick 后都会调用
      */
     public void record(Location location, SlimefunItem item, long nanos) {
-        // todo，由于粘液加速器存在，record可能是被异步执行的，需要考虑并发。
-        // todo，只加到queue里以最快速度结束 record，避免影响 /sf timings 的计时
-        World world = location.getWorld();
-
-        TimedSample sample = new TimedSample(location, item, nanos);
-        pushSample(itemStats, item, sample.nanos());
-        pushSample(addonStats, item.getAddon(), sample.nanos());
-
-        ChunkKey chunkKey = new ChunkKey(world.getName(),
-                location.getBlockX() >> 4, location.getBlockZ() >> 4);
-        pushSample(chunkStats, chunkKey, sample.nanos());
-        topBlocks.add(sample);
-        if (topBlocks.size() > MAX_TOP_ITEMS) {
-            topBlocks.poll();
-        }
-
-        totalNanos.addAndGet(nanos);
+        // todo: 由于粘液加速器存在，不同item可能来自不同的线程组，未来划分多个queue以线程组为key划分。
+        if (tickStarted || waiting.isEmpty()) return; // 没人看时不进行统计
+        queue.add(new TimedSample(location, item, nanos));
     }
-
-    private static <K> void pushSample(Map<K, LongList> table, K key, long value) {
-        var bucket = table.computeIfAbsent(key, k -> new LongArrayList(64));
-        synchronized (bucket) {
-            bucket.add(value);
-        }
-    }
-
 
     /**
      * @param verbose 是否输出详细统计（分位数等）
@@ -142,26 +120,26 @@ public class JEGProfiler extends SlimefunProfiler {
     @Override
     public void start() {
         super.start();
-        resetTimings();
         new SlimefunTickStartEvent().callEvent();
+        tickStarted = true;
     }
 
     @Override
     public void stop() {
         super.stop();
         new SlimefunTickEndEvent().callEvent();
+        tickStarted = false;
 
         if (waiting.isEmpty()) return;
-        TimingsSnapshot snapshot = snapshot();
-        JustEnoughGuide.runLaterAsync(() -> dispatch(snapshot, waiting), 1L);
-    }
-
-    public void resetTimings() {
-        itemStats.clear();
-        chunkStats.clear();
-        addonStats.clear();
-        topBlocks.clear();
-        totalNanos.set(0L);
+        var clone = queue;
+        queue = new ConcurrentLinkedQueue<>();
+        var cloneWaiting = waiting;
+        waiting = new Object2BooleanOpenHashMap<>();
+        new JEGProfileEvent(clone, cloneWaiting).callEvent();
+        JustEnoughGuide.runLaterAsync(() -> {
+            var consumer = new ProfilerConsumer(clone);
+            consumer.send(cloneWaiting);
+        }, 1L);
     }
 
     public static boolean isTickFreeze() {
@@ -176,48 +154,6 @@ public class JEGProfiler extends SlimefunProfiler {
 
     public static int getTickerRate() {
         return Slimefun.getTickerTask().getTickRate();
-    }
-
-    private void dispatch(TimingsSnapshot snapshot, Object2BooleanOpenHashMap<CommandSender> requesters) {
-        if (requesters.isEmpty()) return;
-
-        for (var request : requesters.object2BooleanEntrySet()) {
-            var sender = request.getKey();
-            var verbose = request.getBooleanValue();
-            if (!sender.isOp() && verbose) {
-                sender.sendMessage(Component.text("[JustEnoughGuide] 你没有权限使用 --verbose 参数！", NamedTextColor.RED));
-                continue;
-            }
-
-            // 不耗时，先就这样吧
-            ComponentReport report = ComponentReport.of(snapshot, verbose);
-            for (Component component : report.components()) {
-                sender.sendMessage(component);
-            }
-        }
-        requesters.clear();
-    }
-
-    public TimingsSnapshot snapshot() {
-        return new TimingsSnapshot(
-            viewOf(itemStats),
-            viewOf(addonStats),
-            viewOf(chunkStats),
-            topBlocks,
-            totalNanos.get(),
-            getTickerRate(),
-            isTickFreeze());
-    }
-
-    public static <K> Map<K, LongList> viewOf(Map<K, LongList> table) {
-        Map<K, LongList> copy = new LinkedHashMap<>(table.size());
-        for (var entry : table.entrySet()) {
-            var bucket = entry.getValue();
-            synchronized (bucket) {
-                copy.put(entry.getKey(), new LongArrayList(bucket));
-            }
-        }
-        return copy;
     }
 
     /**
@@ -251,5 +187,4 @@ public class JEGProfiler extends SlimefunProfiler {
     public static String asMillis(long nanos) {
         return NumberUtils.getAsMillis(nanos);
     }
-
 }
