@@ -1,186 +1,115 @@
 
 
-# JustEnoughGuide - Better Slimefun Guide
+# JustEnoughGuide - 更好的粘液书（Better Slimefun Guide）
 
-<img src="https://builds.guizhanss.com/api/badge/balugaq/JustEnoughGuide/master/latest"> [Download](https://builds.guizhanss.com/balugaq/JustEnoughGuide/master/builds)
+<img src="https://builds.guizhanss.com/api/badge/balugaq/JustEnoughGuide/master/latest"> 
 
-JustEnoughGuide (JEG for short) is a Slimefun addon for Minecraft that significantly enhances the functionality and user experience of the original Slimefun guide book. This plugin aims to provide a more intuitive and efficient way to access Slimefun item recipes and information for Minecraft servers.
+[下载插件](https://resources.guizhanss.com/plugin/JustEnoughGuide/versions)
 
-## Key Enhanced Features
+![](images/附属图标.png)
 
-### 1. Enhanced User Interface
-- **Custom Layout System**: Fully customize the guide book interface layout through configuration files
-- **Improved Visual Design**: Clearer item display and navigation system
-- **Multi-page Support**: Support for more complex interface designs with more functional areas
+JustEnoughGuide（简称 JEG）是一个**粘液科技（Slimefun）附属插件**，它显著改进了原版粘液指南书的功能和体验，让玩家能更直观、更高效地查阅粘液物品配方与信息。
 
-### 2. Powerful Search Functionality
-- **Pinyin Search**: Search Chinese item names using pinyin
-- **Real-Time Search (RTS)**: Search items in real-time within an anvil interface without typing complete names
-- **Smart Filtering**: Support for blacklist and ban list to control which items can be searched
-- **Character Mapping**: Allow searching across similar characters (e.g. "粘黏" and "荧萤")
+- **运行环境**：Minecraft 1.16+（推荐 1.21.10+），Paper 及其下游服务端
+- **必需前置**：Slimefun4、GuizhanLibPlugin
+- **可选适配**：SlimefunTranslation、EMCTech、FinalTech / FinalTECH、Logitech 等
 
-### 3. Bookmark System
-- **Personal Collections**: Players can bookmark frequently used items for quick access
-- **Persistent Storage**: Bookmark data is saved in each player's personal backpack
+![](images/主界面.png)
 
-### 4. Multiple Guide Options
-- **Beginner's Guide**: Provide more friendly guidance for new players
-- **EMC Display**: Display EMC values of items (for related addons)
-- **Recipe Sharing**: Allow players to share item recipes
-- **Recursive Recipe Filling**: Automatically fill sub-recipes in recipes
+## 配方补全
 
-### 5. Custom Item Groups
-- **Flexible Grouping System**: Support for creating custom item groups
-- **Group Reordering**: Rearrange the display order of item groups
-- **Hidden Groups**: Hide specific item groups from appearing in the guide
+在配方页面直接把材料补全进机器，不用再一趟趟搬运：
 
-### 6. Advanced Recipe Display
-- **Recipe Completion**: Provide recipe completion functionality to help players understand the complete crafting process
-- **Large Recipe Support**: Support for displaying complex multi-block structure recipes
-- **Recipe Type Display**: Clearly identify the crafting type of each recipe
+- **一键补全**：点击配方页的补全按钮，自动向目标机器填入材料并开始工作
+- **递归补全**：中间材料缺失时，自动向下补齐子配方（可在指南设置中开关）
+- **从附近容器取材**：补全时优先从身边箱子里抽材料（指南设置中可开关）
+- **缺少材料提示**：材料不足时明确告诉你缺什么
+- **自动添加补全按钮**：适配机器的配方页自动出现补全入口，可在配置中按方块 / 附属排除
 
-## Configuration Options
+![](images/配方补全.png)
 
-The plugin provides extensive configuration options that allow server administrators to fully customize the guide book's behavior:
+## 拼音搜索
 
-```yaml
-guide:
-  survival-guide-title: "..."     # Survival mode guide title
-  cheat-guide-title: "..."        # Cheat mode guide title
+- 支持用**全拼或首字母**搜索中文物品名，比如输入 `nj` 或 `ningjiao` 找到「凝胶」
+- **相似字互通**：把容易打错的字放进同一组（如「粘黏」「荧萤」），错别字也能搜到
+- **黑名单 / 禁用词**：控制哪些关键词不再出现在搜索结果里
 
-improvements:
-  pinyin-search: true             # Enable pinyin search
-  bookmark: true                  # Enable bookmark functionality
-  rts-search: true                # Enable real-time search
-  beginner-option: true           # Enable beginner option
-```
+![](images/拼音搜索.png)
 
-## Interface Customization
+## 实时搜索（RTS）
 
-Through the `custom-format` section in the configuration file, you can fully customize various interface layouts:
+- 在**铁砧界面**中边输入边搜索，无需输入完整名称
+- 搜索结果实时刷新，点击直达物品页
+- 可在指南界面中直接发起，配合书签系统快速定位常用物品
 
-- Main interface layout
-- Nested group interface
-- Sub-group interface
-- Recipe display interface
-- Settings interface, etc.
+![img.png](images/实时搜索.png)
 
-Each interface can be defined with character mapping to position different elements, such as Background(B), Back button(b), Search(S), Item Groups(G), etc.
+## 界面优化
 
-## Localization Support
+- **全界面自定义布局**：主界面、分类页、配方页、设置页等十余个界面均可通过配置文件调整
+- **字符映射排布**：每个格子的功能用字符表示（背景板 B、搜索 S、物品组 G……），改字符位置就能挪动按钮
+- **更清晰的导航**：返回、翻页、搜索、收藏等按钮位置一目了然
 
-The plugin includes Chinese translations for a large number of Slimefun addons, ensuring that all items and groups have appropriate Chinese names displayed.
+![](images/界面优化.png)
 
-## Technical Features
+## 书签系统
 
-- **High Performance**: Uses asynchronous processing and caching mechanisms to ensure smooth experience
-- **Easy Configuration**: All features can be adjusted through configuration files
-- **Modular Design**: Independent functional modules that can be enabled/disabled as needed
+- **收藏常用物品**：在物品页一键收藏，随时从收藏列表快速访问
+- **持久化存储**：书签数据保存在玩家个人数据中，重进服务器不丢失
 
-## Usage
+![](images/书签系统.png)
 
-1. Place the plugin in the server's plugins folder
-2. Start the server to generate configuration files
-3. Modify the configuration files as needed
-4. Restart the server to apply the configuration
-5. All improvements will automatically apply when players use the Slimefun guide book
+## EMC 适配显示
 
-## Contributing
+- 支持 **EMC 科技（EMCTech）**、**乱序技艺（FinalTech / FinalTECH）** 等附属的物品 EMC 值在指南中显示
+- 各附属的 EMC 显示可在配置中独立开关
 
-Feel free to submit issues and pull requests to help improve this plugin. Please also review our [Code of Conduct](./CODE_OF_CONDUCT.md).
+## 指南按键绑定
 
-## License
+- 玩家可在**指南设置**中自定义各功能按键（如返回、搜索等）的映射
+- 自定义后点击原按键位置会**自动重定向**到映射后的功能
+- 服务端可一键关闭重定向，强制所有人使用默认按键
 
-This project is open-sourced under the GPLv3 License.
+![](images/指南按键绑定.png)
 
+## 超大配方显示
 
+- 支持**超大配方**（6x6）的完整展示，不再被 3x3 格子憋死
+- 配方页预留超大配方入口位（布局字符 `E`），可自由调整位置
 
-# JustEnoughGuide - 更好的粘液书
+## 自定义物品组排序支持
 
-JustEnoughGuide（简称JEG）是一个针对 Slimefun 的插件附属，它显著改进了原版Slimefun指南书的功能和用户体验。该插件旨在为 Minecraft 服务器提供更直观、更高效的 Slimefun 物品制作指南。
+- 支持创建**自定义物品组**，把散落的物品归拢到一起
+- 支持**物品组排序**与**组内层级（tier）排序**，附属组乱七八糟的顺序随你整理
+- 可隐藏不想展示的物品组
 
-## 主要改进功能
+## 附属翻译
 
-### 1. 增强的用户界面
-- **自定义布局系统**：通过配置文件完全自定义指南书的界面布局
-- **改进的视觉设计**：更清晰的物品展示和导航系统
-- **多页面支持**：支持更复杂的界面设计，提供更多功能区域
+- 内置**数百个粘液附属**的中文显示名映射，搜索中附属名不再中英混杂
+- 缺的翻译可在配置中自行补一行
 
-### 2. 强大的搜索功能
-- **拼音搜索**：支持使用拼音搜索中文物品名称
-- **实时搜索（RTS）**：在铁砧界面中实时搜索物品，无需输入完整名称
-- **智能过滤**：支持黑名单和禁用列表，控制哪些物品可以被搜索到
-- **字符映射**：允许相似字符间互通搜索（如"粘黏"和"荧萤"）
+## 常用指令
 
-### 3. 书签系统
-- **个人收藏**：玩家可以收藏常用物品，方便快速访问
-- **持久化存储**：书签数据保存在每个玩家的个人背包中
+| 指令 | 说明 |
+|------|------|
+| `/jeg help` | 查看帮助 |
+| `/jeg timings` | 查看粘液机器性能分析（上一 tick 耗时、评分、最耗时机器 / 区块 / 插件榜） |
 
-### 4. 多种指南选项
-- **新手指引**：为新手玩家提供更友好的指引功能
-- **EMC 显示**：显示物品的 EMC 值（适用于相关附属）
-- **配方分享**：允许玩家分享物品配方
-- **递归配方填充**：自动填充配方中的子配方
+## 配置
 
-### 5. 自定义物品组
-- **灵活的分组系统**：支持创建自定义物品组
-- **物品组重排序**：可以重新排列物品组的显示顺序
-- **隐藏物品组**：可以隐藏特定物品组不显示在指南中
-
-### 6. 高级配方显示
-- **配方补全**：提供配方补全功能，帮助玩家了解完整制作流程
-- **超大配方支持**：支持显示复杂的多方块结构配方
-- **配方类型显示**：清晰标识每种配方的制作类型
-
-## 配置选项
-
-插件提供丰富的配置选项，允许服务器管理员完全自定义指南书的行为：
-
-```yaml
-guide:
-  survival-guide-title: "..."     # 生存模式指南标题
-  cheat-guide-title: "..."        # 作弊模式指南标题
-
-improvements:
-  pinyin-search: true             # 启用拼音搜索
-  bookmark: true                  # 启用书签功能
-  rts-search: true                # 启用实时搜索
-  beginner-option: true           # 启用新手选项
-```
-
-## 界面自定义
-
-通过配置文件中的`custom-format`部分，可以完全自定义各种界面布局：
-
-- 主界面布局
-- 嵌套组界面
-- 子组界面
-- 配方显示界面
-- 设置界面等
-
-每个界面都可以通过字符映射来定义不同元素的位置，如背景板(B)、搜索(S)、返回(b)、物品组(G)等。
-
-## 本地化支持
-
-插件内置大量Slimefun附属的中文翻译，确保所有物品和组都有恰当的中文名称显示。
-
-## 技术特性
-
-- **高性能**：使用异步处理和缓存机制确保流畅体验
-- **易于配置**：所有功能都可通过配置文件调整
-- **模块化设计**：各功能模块独立，可根据需要启用/禁用
+插件行为基本都可以在 `config.yml` 里调整，**每个配置项都附有一句话说明**：告诉你它是干什么的、想实现什么效果应该怎么改。首次启动服务器后会在 `plugins/JustEnoughGuide/config.yml` 生成配置文件，改完重启（或 `/jeg reload`）生效。
 
 ## 使用方法
 
 1. 将插件放入服务器 `plugins` 文件夹
 2. 启动服务器以生成配置文件
-3. 根据需要修改配置文件
+3. 根据需要修改配置文件（每项都有注释说明）
 4. 重启服务器使配置生效
 5. 玩家使用 Slimefun 指南书时将自动应用所有改进
 
 ## 贡献
 
-欢迎提交 Issue 和 Pull Request 来帮助改进这个插件。
+欢迎提交 Issue 和 Pull Request 来帮助改进这个插件，也请先阅读[行为准则](./CODE_OF_CONDUCT.md)。
 
 ## 许可证
 
@@ -188,5 +117,3 @@ improvements:
 
 如果你觉得这个附属还不错，可以请作者喝一杯奶茶喵~
 <img width="657" height="657" alt="cd7ab045e33de6267ee2c167f1e63e9c" src="https://github.com/user-attachments/assets/0df9c658-d34d-4674-a2c7-958f34209782" />
-
-

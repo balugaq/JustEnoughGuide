@@ -1,54 +1,93 @@
 #file: noinspection GrazieInspection
-# Auto update from Guizhan Build is enabled by default.
+
+# 是否开启自动更新：插件启动时从 Guizhan Build 检查并下载最新版。
+# 想手动管理插件版本（自己换 jar）就改成 false。
 auto-update: true
 
+# 指南界面标题，支持 & 色码。
+# 想改指南书顶部显示的文字（比如去掉署名、换个标题）就改这两行。
 guide:
   survival-guide-title: "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide"
   cheat-guide-title: "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide"
 
+# 各项功能改进的总开关：不想用某个功能，就把对应一行改成 false。
 improvements:
+  # 是否启用拼音搜索（用全拼或首字母搜索中文物品名，如 nj 搜到"凝胶"）。
+  # 服务器玩家都用中文名搜索，可以改成 false。
   pinyin-search: true
+  # 是否启用书签系统（在指南里收藏常用物品、快速访问）。
+  # 不想要收藏功能就改成 false，相关按钮会一并隐藏。
   bookmark: true
+  # 是否启用实时搜索（RTS：在铁砧界面里边输入边出结果）。
+  # 不想让铁砧被搜索占用就改成 false。
   rts-search: true
+  # Deprecated - 该功能已废弃
+  # 是否在指南设置里提供"新手引导"选项（给新手展示功能帮助页）。
+  # 老玩家为主的服务器可以改成 false 隐藏该选项。
   beginner-option: true
+  # 是否启用 EMC科技（EMCTech）附属的物品 EMC 值显示。
+  # 服务器装了 EMCTech 并想在指南里看 EMC 值就保持 true，没装则无需改动。
   emc-display-option: true
+  # 是否启用乱序技艺 FinalTech（v1 旧版）附属的 EMC 值显示。
+  # 服务器装的是 FinalTech 旧版本时才有意义，其余情况无需改动。
   finaltech-emc-display-option: true
+  # 是否启用乱序技艺 FinalTECH（v2 及改版 v3）附属的 EMC 值显示。
+  # 服务器装的是 FinalTECH 新版本或改版时才有意义，其余情况无需改动。
   finalTECH-emc-display-option: true
+  # 是否允许玩家在指南中分享物品（预留开关，当前版本暂未实际启用）。
   item-shareable: true
+  # 是否为适配的机器在配方页添加 CER 机器数据分析按钮（查看产能/耗电统计）。
+  # 该功能统计开销较大：服务器卡顿或用不到就保持/改成 false，需要时改 true。
   cer-patch: false
+  # 是否允许玩家自定义的指南按键绑定生效（点击原按键位置时自动重定向到映射后的功能）。
+  # 想强制所有玩家使用默认按键布局就改成 false。
   allow-action-redirect: true
+  # 是否在指南中启用 Logitech 附属"可堆叠机器"的堆叠信息显示。
+  # 没装 Logitech 或不需要堆叠显示就改成 false。
   logitech-machine-stackable-display: true
+  # 是否在指南设置里提供"显示 Slimefun 物品 ID"选项（玩家可在游戏内自行开关）。
+  # 不希望玩家查看物品 ID 就改成 false。
   slimefun-id-display: true
 
-# 是否禁止在粘液容器中交互收纳袋
+# 是否禁止在粘液容器（箱子、机器等 Slimefun 界面）中交互收纳袋（Bundle）。
+# 出现过收纳袋导致的物品异常/刷物品就保持 true；确认无此类问题想方便搬运可改 false。
 disable-bundle-interaction: true
 
-# 是否对来自不同附属的物品替换卡进行互通处理
+# 是否对来自不同附属的物品替换卡在配方补全进行互通处理（不同附属的替换卡可互相替代使用）。
+# 不希望配方补全使用物品替换卡进行补全时，可改为 false。
 adapt-replacement-cards: true
 
-# 禁止产生伴生物品的物品 ID
+# 禁止产生伴生物品（配方补全时配套生成的替换卡物品）的物品 ID 列表，填 Slimefun 物品 ID。
+# 某个物品的替换卡出问题（比如被当真材料用掉）就把它加进来。
 no-replacement-card-companion-item-ids: [ ]
 
-# 禁止产生伴生物品的附属
+# 禁止产生伴生物品的附属列表，填附属插件名。
+# 某个附属的所有物品都不想生成替换卡就把附属名加进来。
 no-replacement-card-companion-addons: [ ]
 
-# 是否在配方补全适配的机器中自动添加配方补全按钮
+# 是否在配方补全适配的机器界面中自动添加配方补全按钮。
+# 不想机器界面被自动改动、只想从指南发起补全就改成 false。
 auto-add-recipe-complete-button: true
 
-# 禁止自动添加配方补全按钮的粘液方块
+# 禁止自动添加配方补全按钮的粘液方块列表，填 Slimefun 物品 ID。
+# 某台机器加按钮后有冲突/显示异常就把它的 ID 加进来。
 no-auto-add-recipe-complete-blocks: [ ]
 
-# 禁止自动添加配方补全按钮的粘液附属
+# 禁止自动添加配方补全按钮的粘液附属列表，填附属插件名。
+# 某个附属的所有机器都不想自动加按钮就把附属名加进来。
 no-auto-add-recipe-complete-addons: [ ]
 
-# 禁止搜索非限定词时出现名字包含以下任意词的物品
+# 搜索黑名单：普通搜索（非限定词）时，名字包含以下任意词的物品不会出现在结果里。
+# 觉得搜索结果太杂（比如一堆"快捷"系列机器）就往里加词；一个词一行。
 blacklist:
   - "快捷"
 
-# 禁止任何形式搜出名字包含以下任意词的物品
-banlist: [ ]
+# 搜索禁用表：无论什么搜索方式，名字包含以下任意词的物品一律搜不到。
+# 想彻底隐藏某些物品的搜索入口就往里加词。
+banlist: []
 
-# 搜索时每组词间相通
+# 相似字互通表：同一组内的字符在搜索时视为等同（如输入"荧"也能搜到"萤"）。
+# 玩家常用错别字/别称搜不到东西时，把错字和正确字放进同一组即可。
 shared-chars:
   - "粘黏"
   - "荧萤"
@@ -104,12 +143,16 @@ shared-chars:
   - "pρ"
   - "兀π"
 
-# 是否注册配方补全书
+# 是否开启配方补全.
+# 不想要这个功能就改成 false。
 recipe-complete: true
 
-# 最大单次补全次数
+# 单次配方补全的最大数量（防止一次补全太多导致卡顿或物品溢出）。
+# 觉得单次补全太少就调大，想限制玩家行为就调小。
 max-recipe-completion-times: 3456
 
+# 指南各界面布局：每一行 9 个字符对应一排箱子格，字符含义见各布局上方注释。
+# 想挪动某个按钮/内容的位置，直接调整字符在字符串中的位置即可（保持 9 列不变）。
 custom-format:
   # 粘液书主界面
   # B = 背景板
@@ -224,8 +267,6 @@ custom-format:
   # R = 实时搜索（功能未开启则为背景板显示）
   # C = 收藏物列表（功能未开启则为背景板显示）
   # S = 搜索
-  # R = 实时搜索
-  # S = 搜索
   # A = 作者信息
   # h = 功能展示
   # P = 上一页
@@ -304,7 +345,8 @@ custom-format:
     - "iiiiiiiii"
     - "BPBBBBBNB"
 
-# 支持颜色符号: &a粘液科技
+# 附属中文显示名映射表：这里配置的"附属英文 ID: 中文名"会显示在指南的附属名等处。
+# 想给某个附属加/改中文显示名就加一行或改一行；支持 & 色码。
 # 翻译参考:
 # https://slimefun-wiki.guizhanss.cn/Addons/
 # https://github.com/orgs/SlimefunGuguProject/repositories
@@ -639,11 +681,17 @@ local-translate:
   xingmian: "星眠科技"
   SlimeEasy: "简易粘液"
 
+# 调试模式：输出大量调试日志，普通服务器保持 false。
+# 排查问题时在插件作者指导下开启，平时别开。
 # Do not change this value unless you know what you are doing.
 debug: false
 
 data:
+  # 配置文件版本号，由插件自动维护用于迁移配置。
+  # 手动改动无效且可能导致配置迁移异常，请勿修改。
   # Do not change this value unless you know what you are doing.
   config-version: 20260925
 
+# 接口误用警告：当其他附属错误调用 JEG 的点击接口时，是否在后台打印警告堆栈。
+# 后台被该警告刷屏且确认不影响使用时可改成 false 关闭警告。
 click-print-warning: true
