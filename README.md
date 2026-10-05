@@ -42,7 +42,7 @@ JustEnoughGuide（简称 JEG）是一个**粘液科技（Slimefun）附属插件
 - 搜索结果实时刷新，点击直达物品页
 - 可在指南界面中直接发起，配合书签系统快速定位常用物品
 
-![img.png](images/实时搜索.png)
+![](images/实时搜索.png)
 
 ## 界面优化
 
