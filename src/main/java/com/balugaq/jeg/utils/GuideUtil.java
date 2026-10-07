@@ -20,6 +20,7 @@ package com.balugaq.jeg.utils;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.BaseGroup;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.groups.MixedGroup;
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
@@ -219,12 +220,13 @@ public class GuideUtil {
                 } else {
                     maxVersion = MinecraftVersion.UNKNOWN;
                 }
-                pl.sendMessage(ChatColors.color("&c实时搜索在当前服务器版本 " + MinecraftVersion.current().humanize() + " 无法使用，实时搜索支持库最高支持版本为 " + maxVersion.humanize()));
+                Lang.sendMessage(pl, "guide.rts-unavailable-version",
+                    MinecraftVersion.current().humanize(), maxVersion.humanize());
                 return false;
             }
         } catch (Exception e) {
             Debug.trace(e);
-            pl.sendMessage(ChatColors.color("&c无法检查实时搜索，相关功能已禁用"));
+            Lang.sendMessage(pl, "guide.rts-check-failed");
             return false;
         }
 
@@ -334,7 +336,7 @@ public class GuideUtil {
                 null
             );
         } catch (Exception ignored) {
-            pl.sendMessage(ChatColor.RED + "不兼容的版本! 无法使用实时搜索");
+            Lang.sendMessage(pl, "guide.rts-incompatible");
         }
     }
 
@@ -1013,7 +1015,7 @@ public class GuideUtil {
             menu.addItem(s, PatchScope.Settings.patch(profile, ChestMenuUtils.getMenuButton(player)));
             menu.addMenuClickHandler(s, (pl, slot, item, action) -> EventUtil.callEvent(new GuideEvents.SettingsButtonClickEvent(pl, item, slot, action, menu, getLastGuide(pl))).ifSuccess(() -> {
                 if (GroupResorter.isSelecting(pl)) {
-                    pl.sendMessage(ChatColors.color("&c当前模式下不能打开设置界面!"));
+                    Lang.sendMessage(pl, "guide.settings-disabled-in-mode");
                     return false;
                 }
 

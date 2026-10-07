@@ -1,5 +1,6 @@
 package com.balugaq.jeg.core.profiler;
 
+import com.balugaq.jeg.core.lang.Lang;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -74,7 +75,7 @@ public class ProfilerConsumer {
             if (sender instanceof Player player && !player.isOnline()) continue;
             var verbose = request.getBooleanValue();
             if (!sender.isOp() && verbose) {
-                sender.sendMessage(Component.text("[JustEnoughGuide] 你没有权限使用 --verbose 参数！", NamedTextColor.RED));
+                sender.sendMessage(Component.text(Lang.t("profiler.no-verbose-permission"), NamedTextColor.RED));
                 continue;
             }
 

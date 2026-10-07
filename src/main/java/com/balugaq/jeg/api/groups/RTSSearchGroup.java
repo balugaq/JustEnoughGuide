@@ -21,6 +21,7 @@ import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.NotDisplayInSurvivalMode;
 import com.balugaq.jeg.api.objects.events.RTSEvents;
 import com.balugaq.jeg.core.listeners.RTSListener;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -208,7 +209,7 @@ public class RTSSearchGroup extends FlexItemGroup {
         int @Nullable [] slots,
         @Nullable String presetSearchTerm) {
         if (!rtsAvailable) {
-            player.sendMessage(ChatColors.color("&c实时搜索在此版本不可用，请联系服主以寻求帮助。"));
+            Lang.sendMessage(player, "guide.rts-unavailable");
             return null;
         }
         try {
@@ -218,7 +219,7 @@ public class RTSSearchGroup extends FlexItemGroup {
                 .itemRight(Models.INPUT_TEXT_ICON)
                 .itemOutput(ItemStackUtil.air())
                 .text("")
-                .title("在下方输入搜索内容")
+                .title(Lang.t("guide.rts-search-title"))
                 .onClose((stateSnapshot) -> {
                     RTSEvents.CloseRTSEvent event = new RTSEvents.CloseRTSEvent(player, stateSnapshot);
                     Bukkit.getPluginManager().callEvent(event);
@@ -262,7 +263,7 @@ public class RTSSearchGroup extends FlexItemGroup {
         } catch (Exception | NoClassDefFoundError e) {
             rtsAvailable = false;
             Debug.trace(e);
-            player.sendMessage(ChatColors.color("&c实时搜索在此版本不可用，请联系服主以寻求帮助。"));
+            Lang.sendMessage(player, "guide.rts-unavailable");
             return null;
         }
     }

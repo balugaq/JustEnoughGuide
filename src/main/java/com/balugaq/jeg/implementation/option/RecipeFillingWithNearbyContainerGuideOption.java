@@ -20,6 +20,7 @@ package com.balugaq.jeg.implementation.option;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Calculator;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -91,20 +92,20 @@ public class RecipeFillingWithNearbyContainerGuideOption implements PrioritySlim
     @Override
     public void onClick(Player p, ItemStack guide) {
         p.closeInventory();
-        p.sendMessage(ChatColors.color("&a请输入配方补全自动抓取范围"));
+        p.sendMessage(Lang.t("option.nearby-container.input-reach"));
         ChatInput.waitForPlayer(
             JustEnoughGuide.getInstance(), p, s -> {
                 try {
                     int value = Calculator.calculate(s).intValue();
                     if (value < 0 || value > MAX_REACH_LENGTH) {
-                        p.sendMessage("请输入 0 ~ " + MAX_REACH_LENGTH + " 之间的正整数");
+                        p.sendMessage(Lang.t("option.nearby-container.input-range", MAX_REACH_LENGTH));
                         return;
                     }
 
                     setSelectedOption(p, guide, value);
                     JEGGuideSettings.openSettings(p, guide);
                 } catch (NumberFormatException ignored) {
-                    p.sendMessage("请输入 0 ~ " + MAX_REACH_LENGTH + " 之间的正整数");
+                    p.sendMessage(Lang.t("option.nearby-container.input-range", MAX_REACH_LENGTH));
                 }
             }
         );

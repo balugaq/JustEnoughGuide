@@ -16,6 +16,9 @@
 #           lore: |-         # 支持 |- 多行字符串，也支持 - 列表写法
 #             第一行
 #             第二行
+#   - 命名约定：
+#       * 带 *-prefix / *-suffix 后缀的键用于 Adventure 组件拼装（纯文本，不带颜色码，
+#         颜色由代码里的 NamedTextColor 指定）；同名无后缀的键是 legacy 通道（含颜色码）的整句版本。
 # ============================================================================
 
 commands:
@@ -35,6 +38,161 @@ commands:
     # {0}: 详细模式后缀（详细模式为“（详细模式）”，否则为空）
     collecting: "&e[JustEnoughGuide] 正在采集性能数据{0}..."
     unavailable: "&c性能监视器不可用，请稍后再试"
+    verbose-suffix: "（详细模式）"
+  # {0}: 物品 ID
+  cannot-view-item: "&c无法查看 ID 为 {0} 的物品"
+  put-item-on-hand: "&c请将物品放在手上"
+  must-hold-item: "&c你必须手持一个物品在手上"
+
+guide:
+  no-bookmark: "&c你还没有收藏任何物品!"
+  # {0}: 物品组显示名
+  group-selected: "&a已选择物品组: &e{0}"
+  group-selected-for-swap: "&a已选择待交换的物品组: &e{0}"
+  group-bookmarked: "&a已收藏物品组: &e{0}"
+  # {0} {1}: 交换前后的物品组显示名
+  group-swapped: "&a已交换物品组排序: &e{0} &7<-> &e{1}"
+  internal-error: "&4服务器发生了一个内部错误. 请联系管理员处理."
+  settings-disabled-in-mode: "&c当前模式下不能打开设置界面!"
+  too-frequent: "&c你的使用频率过高，请稍后使用!"
+  cooldown: "&c这个功能正在冷却中..."
+  # {0}: 按键名
+  key-not-found: "&c未找到按键: {0}"
+  added-to-bookmark: "&a已添加到收藏列表!"
+  no-permission-guide: "&c你没有权限打开粘液科技指南书"
+  jeg-module-disabled: "&cJEG 模块未启用。你不能打开 JEG 使用指南。"
+  rts-unavailable: "&c实时搜索在此版本不可用，请联系服主以寻求帮助。"
+  # {0}: 当前服务器版本, {1}: 支持库最高版本
+  rts-unavailable-version: "&c实时搜索在当前服务器版本 {0} 无法使用，实时搜索支持库最高支持版本为 {1}"
+  rts-check-failed: "&c无法检查实时搜索，相关功能已禁用"
+  rts-incompatible: "&c不兼容的版本! 无法使用实时搜索"
+  rts-search-title: "在下方输入搜索内容"
+  share:
+    # {0}: 玩家名, {1}: 物品名
+    message: "&a{0} &e分享了 &7[{1}&r&7]&e <点击搜索>"
+    click-to-search: "&e点击搜索"
+
+recipe-complete:
+  plugin-disabled: "&cJustEnoughGuide 附属已被禁用，配方补全功能无法使用"
+  # {0}: 取消原因
+  cancelled: "&c[配方补全] 此次配方补全被取消，原因：{0}"
+  cancelled-reason-unknown: "未知"
+  no-space: "&c[配方补全] 没有足够的位置放置材料！"
+  # {0}: 可放置份数, {1}: 目标份数, {2}: 百分比
+  insufficient-space: "&e[配方补全] 可供放置材料的位置不足！至多放置 {0} / {1} 份材料！({2}%)"
+  # {0}: 物品与数量描述
+  cannot-place: "&c[配方补全] 无法放置物品: {0}"
+  trying-prefix: "===尝试补全 "
+  trying-suffix: " 的材料==="
+  # {0}: 配方深度
+  hover-recipe-depth: "配方深度:{0}"
+  missing-prefix: "[配方补全] 缺少 "
+
+# /sf recipe-complete 等替换卡适配指令的反馈
+rc:
+  # {0}: 指令名
+  taken-over: "&e[JustEnoughGuide] JustEnoughGuide 已接管 {0} 指令的执行。如出现 bug，请反馈至 https://github.com/balugaq/JustEnoughGuide"
+  companion-unbanned: "&a[JustEnoughGuide] 已解禁配方补全伴生物品 {0}."
+  companion-unbanned-prefix: "[JustEnoughGuide] 已解禁配方补全伴生物品 "
+  # {0}: 数量
+  companion-unbanned-all: "&a[JustEnoughGuide] 已解禁 {0} 个配方补全伴生物品."
+  companion-already-unbanned-all: "&c[JustEnoughGuide] {0} 个配方补全伴生物品均已是解禁状态."
+  item-already-unbanned: "&c[JustEnoughGuide] 物品 {0} 已是解禁状态."
+  item-already-unbanned-prefix: "[JustEnoughGuide] 物品 "
+  item-already-unbanned-suffix: " 已是解禁状态."
+  item-unbanned: "&a[JustEnoughGuide] 已解禁物品 {0}."
+  item-unbanned-prefix: "[JustEnoughGuide] 已解禁物品 "
+  companion-banned: "&a[JustEnoughGuide] 已禁用配方补全伴生物品 {0}."
+  companion-banned-prefix: "[JustEnoughGuide] 已禁用配方补全伴生物品 "
+  companion-banned-all: "&a[JustEnoughGuide] 已禁用 {0} 个配方补全伴生物品."
+  companion-already-banned-all: "&c[JustEnoughGuide] {0} 个配方补全伴生物品均已是禁用状态."
+  item-already-banned: "&c[JustEnoughGuide] 物品 {0} 已经是禁用状态."
+  item-already-banned-prefix: "[JustEnoughGuide] 物品 "
+  item-already-banned-suffix: " 已经是禁用状态."
+  item-banned: "&a[JustEnoughGuide] 已禁用物品 {0}."
+  item-banned-prefix: "[JustEnoughGuide] 已禁用物品 "
+
+# 新手指南书（JEG 使用指南）中的运行时提示
+guidebook:
+  no-slimefun: "&c无法执行操作，请检查 Slimefun 是否正确安装。"
+  no-slimefun-instance: "&c无法获取 Slimefun 实例，无法使用此功能。"
+  feature-disabled: "&c功能未启用，无法使用此功能。"
+  no-profile: "&c无法获取玩家资料，请检查是否正确安装 Slimefun。"
+  no-example-item: "&c无法获取示例物品，请检查是否正确安装 Slimefun。"
+  item-disabled: "&c该物品已被禁用，无法展示示例"
+  need-beginner: "&c此功能需要您在设置中启用新手指引。"
+
+keybind:
+  # {0}: 按键名, {1}: 动作名
+  set: "&a已设置 {0} -> {1}"
+
+multiblock:
+  # {0}: 多方块名称
+  build-success: "&a多方块 {0} 搭建成功！"
+  build-failed: "&c多方块 {0} 搭建失败！"
+
+hud:
+  input-reach: "&a请输入粘液HUD显示距离"
+  # {0}: 最大值
+  input-range-invalid: "请输入 1 ~ {0} 之间的正整数"
+
+option:
+  recipe-completion:
+    input-times: "请输入单次要补全的次数"
+    # {0}: 上限
+    input-range: "请输入 1 ~ {0} 之间的正整数"
+    # {0}: 次数描述
+    set: "&a已设置补全次数为 {0}"
+  nearby-container:
+    input-reach: "&a请输入配方补全自动抓取范围"
+    # {0}: 上限
+    input-range: "请输入 0 ~ {0} 之间的正整数"
+  recursive:
+    input-depth: "&a请输入配方补全深度"
+    # {0}: 上限
+    input-range: "请输入 1 ~ {0} 之间的正整数"
+
+# 配方补全次数行为（CompletionBehaviour）的显示名
+behaviour:
+  single:
+    display: "1 个物品"
+  stack:
+    display: "1 组物品"
+  stack-64:
+    display: "64 个物品"
+  custom:
+    display: "自定义个物品"
+  times:
+    once: "1 组"
+    suffix: " 次"
+
+# /jeg timings 性能报告（发给接收者的组件文本）
+profiler:
+  title: "===== JEG - Slimefun 性能分析器 ====="
+  tick-total: "Tick 总用时："
+  ticker-period: "Ticker 运行周期："
+  rating-label: "性能评分: "
+  machine-label: "机器 | "
+  chunk-label: "区块 | "
+  plugin-label: "插件 | "
+  block-label: "方块 | "
+  machine-id: "机器 ID"
+  machine-total: "机器总耗时"
+  chunk-id: "区块位置"
+  chunk-total: "区块总耗时"
+  plugin-id: "插件 ID"
+  plugin-total: "插件总耗时"
+  block-time: "机器耗时 (ms)"
+  block-count: "方块数"
+  top-chunk: "最耗时区块"
+  top-block: "最耗时方块"
+  tp-top-chunk: "点击传送到最耗时区块"
+  tp-top-machine: "点击传送到最耗时机器"
+  tp-prefix: "点击传送: "
+  tp-center-suffix: " 中心"
+  hover-detail: " (悬停查看详情)"
+  no-permission: "你没有权限使用此指令!"
+  no-verbose-permission: "&c[JustEnoughGuide] 你没有权限使用 --verbose 参数！"
 
 # icons:
 #   example:

@@ -18,6 +18,7 @@
 package com.balugaq.jeg.api.recipe_complete.source;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.RecipeCompletionUtils;
@@ -115,13 +116,14 @@ public interface ItemSource {
         var craftResult = RecipeCompletionUtils.maxCraftable(maxTimes, unordered, ingredientSlots, interactor, choices);
         if (craftResult.leftInt() <= 0) {
             // 无法放置
-            player.sendMessage(ChatColors.color("&c[配方补全] 没有足够的位置放置材料！"));
+            Lang.sendMessage(player, "recipe-complete.no-space");
             return false;
         }
 
         if (craftResult.leftInt() < times) {
             // 可供放置的位置不足，这部分另外提醒
-            player.sendMessage(ChatColors.color("&e[配方补全] 可供放置材料的位置不足！至多放置 " + craftResult.leftInt() + " / " + times + " 份材料！(" + (craftResult.leftInt() * 100 / times) + "%)"));
+            Lang.sendMessage(player, "recipe-complete.insufficient-space",
+                craftResult.leftInt(), times, craftResult.leftInt() * 100 / times);
         }
 
         maxTimes = craftResult.leftInt();
@@ -191,7 +193,8 @@ public interface ItemSource {
 
         if (!pushFailed.isEmpty()) {
             for (var e : pushFailed.entrySet()) {
-                player.sendMessage(ChatColors.color("&c[配方补全] 无法放置物品: " + RecipeCompletionUtils.getAmountString(e.getKey(), e.getValue())));
+                player.sendMessage(Lang.t("recipe-complete.cannot-place",
+                    RecipeCompletionUtils.getAmountString(e.getKey(), e.getValue())));
                 player.getWorld().dropItemNaturally(player.getLocation(), StackUtils.getAsQuantity(e.getKey(), e.getValue()));
             }
         }
@@ -200,6 +203,11 @@ public interface ItemSource {
     }
 
     private static void sendHeadMessage(Player player, ItemStack targetItem, int depth) {
-        player.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("===尝试补全 ")).append(RecipeCompletionUtils.getClickableItemName(targetItem)).append(Component.text(" 的材料===")).hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("配方深度:" + depth)))));
+        player.sendMessage(Component.text().color(NamedTextColor.GREEN)
+            .append(Component.text(Lang.t("recipe-complete.trying-prefix")))
+            .append(RecipeCompletionUtils.getClickableItemName(targetItem))
+            .append(Component.text(Lang.t("recipe-complete.trying-suffix")))
+            .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW)
+                .append(Component.text(Lang.t("recipe-complete.hover-recipe-depth", depth))))));
     }
 }

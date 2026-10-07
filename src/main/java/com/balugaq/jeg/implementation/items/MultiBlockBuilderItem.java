@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.items;
 
 import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
+import com.balugaq.jeg.core.lang.Lang;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -54,9 +55,9 @@ public class MultiBlockBuilderItem extends JEGSlimefunItem implements NotPlaceab
                 if (!player.isOp() && player.getGameMode() != GameMode.CREATIVE) {
                     e.getItem().setAmount(e.getItem().getAmount() - 1);
                 }
-                player.sendMessage(ChatColors.color("&a多方块 " + multiBlock.getSlimefunItem().getItemName() + " 搭建成功！"));
+                player.sendMessage(Lang.t("multiblock.build-success", multiBlock.getSlimefunItem().getItemName()));
             } else {
-                player.sendMessage(ChatColors.color("&c多方块 " + multiBlock.getSlimefunItem().getItemName() + " 搭建失败！"));
+                player.sendMessage(Lang.t("multiblock.build-failed", multiBlock.getSlimefunItem().getItemName()));
             }
         }));
     }

@@ -20,6 +20,7 @@ package com.balugaq.jeg.api.recipe_complete;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -102,7 +103,8 @@ public class RecipeCompleteSession {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             String reason = event.getCancelReason();
-            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
+            session.player.sendMessage(Lang.t("recipe-complete.cancelled",
+                reason == null ? Lang.t("recipe-complete.cancelled-reason-unknown") : reason));
             return null;
         }
         SESSIONS.put(session.getPlayer(), session);
@@ -161,7 +163,8 @@ public class RecipeCompleteSession {
             String reason = event.getCancelReason();
             Debug.debug(session + " cannot start for the reason: " + reason);
             cancel(session);
-            session.player.sendMessage(ChatColors.color("&c[配方补全] 此次配方补全被取消，原因：" + (reason == null ? "未知" : reason)));
+            session.player.sendMessage(Lang.t("recipe-complete.cancelled",
+                reason == null ? Lang.t("recipe-complete.cancelled-reason-unknown") : reason));
         }
         return !event.isCancelled() && !session.isExpired();
     }

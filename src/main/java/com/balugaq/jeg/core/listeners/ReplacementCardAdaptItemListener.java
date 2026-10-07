@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.listeners;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -70,7 +71,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
     }
 
     private void sendNotice(CommandSender sender, String command) {
-        sender.sendMessage(ChatColors.color("&e[JustEnoughGuide] JustEnoughGuide 已接管 " + command + " 指令的执行。如出现 bug，请反馈至 https://github.com/balugaq/JustEnoughGuide"));
+        Lang.sendMessage(sender, "rc.taken-over", command);
     }
 
     public void unbanitem(CommandSender sender, String command) {
@@ -194,7 +195,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
                     unbanitem(sf2);
                     if (PaperLib.isPaper()) {
                         sender.sendMessage(Component.text().color(NamedTextColor.GREEN)
-                            .append(Component.text("[JustEnoughGuide] 已解禁配方补全伴生物品 "))
+                            .append(Component.text(Lang.t("rc.companion-unbanned-prefix")))
                             .append(ClipboardUtil.makeComponentPaper(
                                 Component.text(sf2.getId()),
                                 sf2.getId()
@@ -202,7 +203,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
                             .append(Component.text(".")
                             ));
                     } else {
-                        sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已解禁配方补全伴生物品 " + sf2.getId() + "."));
+                        Lang.sendMessage(sender, "rc.companion-unbanned", sf2.getId());
                     }
                     count++;
                 }
@@ -210,16 +211,16 @@ public class ReplacementCardAdaptItemListener implements Listener {
         }
 
         if (count != 0) {
-            sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已解禁 " + count + " 个配方补全伴生物品."));
+            Lang.sendMessage(sender, "rc.companion-unbanned-all", count);
         } else {
             if (items != null) {
-                sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] " + items.size() + " 个配方补全伴生物品均已是解禁状态."));
+                Lang.sendMessage(sender, "rc.companion-already-unbanned-all", items.size());
             }
         }
 
         if (!item.isDisabled()) {
             if (PaperLib.isPaper()) {
-                sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("[JustEnoughGuide] 物品 "))
+                sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text(Lang.t("rc.item-already-unbanned-prefix")))
                     .append(ClipboardUtil.makeComponentPaper(
                         Component.text(item.getItemName()),
                         ChatColor.stripColor(item.getItemName())
@@ -228,15 +229,15 @@ public class ReplacementCardAdaptItemListener implements Listener {
                         Component.text(" (" + item.getId() + ") "),
                         item.getId()
                     ))
-                    .append(Component.text(" 已是解禁状态."))
+                    .append(Component.text(Lang.t("rc.item-already-unbanned-suffix")))
                 );
             } else {
-                sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] 物品 " + formattedName + " 已是解禁状态."));
+                Lang.sendMessage(sender, "rc.item-already-unbanned", formattedName);
             }
         } else {
             unbanitem(item);
             if (PaperLib.isPaper()) {
-                sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("[JustEnoughGuide] 已解禁物品 "))
+                sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text(Lang.t("rc.item-unbanned-prefix")))
                     .append(ClipboardUtil.makeComponentPaper(
                         Component.text(item.getItemName()),
                         ChatColor.stripColor(item.getItemName())
@@ -248,7 +249,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
                     .append(Component.text("."))
                 );
             } else {
-                sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已解禁物品 " + formattedName + "."));
+                Lang.sendMessage(sender, "rc.item-unbanned", formattedName);
             }
         }
     }
@@ -264,7 +265,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
                     banitem(sf2);
                     if (PaperLib.isPaper()) {
                         sender.sendMessage(Component.text().color(NamedTextColor.GREEN)
-                            .append(Component.text("[JustEnoughGuide] 已禁用配方补全伴生物品 "))
+                            .append(Component.text(Lang.t("rc.companion-banned-prefix")))
                             .append(ClipboardUtil.makeComponentPaper(
                                 Component.text(sf2.getId()),
                                 sf2.getId()
@@ -272,7 +273,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
                             .append(Component.text("."))
                         );
                     } else {
-                        sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已禁用配方补全伴生物品 " + sf2.getId() + "."));
+                        Lang.sendMessage(sender, "rc.companion-banned", sf2.getId());
                     }
                     count++;
                 }
@@ -280,16 +281,16 @@ public class ReplacementCardAdaptItemListener implements Listener {
         }
 
         if (count != 0) {
-            sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已禁用 " + count + " 个配方补全伴生物品."));
+            Lang.sendMessage(sender, "rc.companion-banned-all", count);
         } else {
             if (items != null) {
-                sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] " + items.size() + " 个配方补全伴生物品均已是禁用状态."));
+                Lang.sendMessage(sender, "rc.companion-already-banned-all", items.size());
             }
         }
 
         if (item.isDisabled()) {
             if (PaperLib.isPaper()) {
-                sender.sendMessage(Component.text().color(NamedTextColor.RED).append(Component.text("[JustEnoughGuide] 物品 "))
+                sender.sendMessage(Component.text().color(NamedTextColor.RED).append(Component.text(Lang.t("rc.item-already-banned-prefix")))
                     .append(ClipboardUtil.makeComponentPaper(
                         Component.text(item.getItemName()),
                         ChatColor.stripColor(item.getItemName())
@@ -298,15 +299,15 @@ public class ReplacementCardAdaptItemListener implements Listener {
                         Component.text(" (" + item.getId() + ") "),
                         item.getId()
                     ))
-                    .append(Component.text(" 已经是禁用状态."))
+                    .append(Component.text(Lang.t("rc.item-already-banned-suffix")))
                 );
             } else {
-                sender.sendMessage(ChatColors.color("&c[JustEnoughGuide] 物品 " + formattedName + " 已经是禁用状态."));
+                Lang.sendMessage(sender, "rc.item-already-banned", formattedName);
             }
         } else {
             banitem(item);
             if (PaperLib.isPaper()) {
-                sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text("[JustEnoughGuide] 已禁用物品 "))
+                sender.sendMessage(Component.text().color(NamedTextColor.GREEN).append(Component.text(Lang.t("rc.item-banned-prefix")))
                     .append(ClipboardUtil.makeComponentPaper(
                         Component.text(item.getItemName()),
                         ChatColor.stripColor(item.getItemName())
@@ -318,7 +319,7 @@ public class ReplacementCardAdaptItemListener implements Listener {
                     .append(Component.text("."))
                 );
             } else {
-                sender.sendMessage(ChatColors.color("&a[JustEnoughGuide] 已禁用物品 " + formattedName + "."));
+                Lang.sendMessage(sender, "rc.item-banned", formattedName);
             }
         }
     }

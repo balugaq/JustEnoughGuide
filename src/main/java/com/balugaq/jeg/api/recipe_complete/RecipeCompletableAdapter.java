@@ -19,6 +19,7 @@ package com.balugaq.jeg.api.recipe_complete;
 
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.Models;
 import com.balugaq.jeg.utils.StackUtils;
@@ -67,12 +68,12 @@ public interface RecipeCompletableAdapter {
         blockMenu.replaceExistingItem(slot, Converter.getItem(Models.JEG_RECIPE_COMPLETE_BUTTON));
         blockMenu.addMenuClickHandler(slot, (player, slot1, item, action) -> {
             if (!Bukkit.getPluginManager().isPluginEnabled("JustEnoughGuide")) {
-                player.sendMessage(ChatColors.color("&cJustEnoughGuide 附属已被禁用，配方补全功能无法使用"));
+                Lang.sendMessage(player, "recipe-complete.plugin-disabled");
                 return false;
             }
 
             if (!player.isOp() && !Slimefun.getWorldSettingsService().isWorldEnabled(player.getWorld())) {
-                player.sendMessage(ChatColors.color("&c你没有权限打开粘液科技指南书"));
+                Lang.sendMessage(player, "guide.no-permission-guide");
                 return false;
             }
 

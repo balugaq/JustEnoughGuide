@@ -20,6 +20,7 @@ package com.balugaq.jeg.implementation.option;
 import com.balugaq.jeg.api.objects.enums.ClickSide;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.recipe_complete.CompletionBehaviour;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Calculator;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -103,29 +104,31 @@ public class RecipeCompletionGuideOption extends AbstractCustomActionGuideOption
             case STACK -> PersistentDataAPI.setString(player, side.key(), "stack");
             case STACK_64 -> PersistentDataAPI.setString(player, side.key(), "stack_64");
             case CUSTOM -> {
-                player.sendMessage("请输入单次要补全的次数");
+                player.sendMessage(Lang.t("option.recipe-completion.input-times"));
                 player.closeInventory();
                 ChatInput.waitForPlayer(JustEnoughGuide.getInstance(), player, s -> {
                     try {
                         int value = Calculator.calculate(s).intValue();
                         if (value < 1 || value > JustEnoughGuide.getConfigManager().getMaxRecipeCompletionTimes()) {
-                            player.sendMessage("请输入 1 ~ " + JustEnoughGuide.getConfigManager().getMaxRecipeCompletionTimes() + " 之间的正整数");
+                            player.sendMessage(Lang.t("option.recipe-completion.input-range",
+                                JustEnoughGuide.getConfigManager().getMaxRecipeCompletionTimes()));
                             return;
                         }
 
                         PersistentDataAPI.setString(player, side.key(), "custom;" + value);
 
-                        player.sendMessage(ChatColors.color("&a已设置补全次数为 " + behaviour.timesString(player, side)));
+                        player.sendMessage(Lang.t("option.recipe-completion.set", behaviour.timesString(player, side)));
                         GuideUtil.openRecipeCompletionGui(player);
                     } catch (NumberFormatException ignored) {
-                        player.sendMessage("请输入 1 ~ " + JustEnoughGuide.getConfigManager().getMaxRecipeCompletionTimes() + " 之间的正整数");
+                        player.sendMessage(Lang.t("option.recipe-completion.input-range",
+                            JustEnoughGuide.getConfigManager().getMaxRecipeCompletionTimes()));
                     }
                 });
                 return;
             }
         }
 
-        player.sendMessage(ChatColors.color("&a已设置补全次数为 " + behaviour.timesString(player, side)));
+        player.sendMessage(Lang.t("option.recipe-completion.set", behaviour.timesString(player, side)));
         GuideUtil.openRecipeCompletionGui(player);
     }
 

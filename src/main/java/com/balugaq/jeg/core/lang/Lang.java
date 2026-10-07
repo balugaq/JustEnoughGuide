@@ -75,13 +75,13 @@ public final class Lang {
         String language = plugin.getConfig().getString("language", DEFAULT_LANGUAGE);
         File folder = new File(plugin.getDataFolder(), "lang");
         if (!folder.exists() && !folder.mkdirs()) {
-            Debug.warn("无法创建语言目录 " + folder.getPath() + "，将直接使用内置语言文件");
+            Debug.warn("Failed to create language folder " + folder.getPath() + ", falling back to the built-in language file");
         }
 
         // 优先用用户文件；配置的语言不存在时回退到默认语言
         File file = new File(folder, language + ".yml");
         if (!file.exists() && plugin.getResource("lang/" + language + ".yml") == null) {
-            Debug.warn("语言文件 lang/" + language + ".yml 不存在（内置资源里也没有），已回退到 " + DEFAULT_LANGUAGE);
+            Debug.warn("Language file lang/" + language + ".yml does not exist (not in built-in resources either), falling back to " + DEFAULT_LANGUAGE);
             language = DEFAULT_LANGUAGE;
             file = new File(folder, language + ".yml");
         }
@@ -92,13 +92,13 @@ public final class Lang {
             if (plugin.getResource(path) != null) {
                 plugin.saveResource(path, false);
             } else {
-                Debug.severe("内置语言文件缺失: " + path + "，所有语言键将无法解析");
+                Debug.severe("Built-in language file missing: " + path + ", all language keys will fail to resolve");
             }
         }
 
         registry = new LangRegistry(readUser(plugin, file), readDefaults(plugin, language));
         registry.onWarn(message -> Debug.warn(message));
-        plugin.getLogger().info("已加载语言文件: lang/" + language + ".yml");
+        plugin.getLogger().info("Loaded language file: lang/" + language + ".yml");
     }
 
     /**
@@ -136,7 +136,7 @@ public final class Lang {
     public static void sendMessage(CommandSender sender, String key, @Nullable Object... args) {
         LangRegistry current = registry;
         if (current == null) {
-            Debug.warn("Lang 未加载，语言键 " + key + " 无法解析");
+            Debug.warn("Lang is not loaded, cannot resolve language key " + key + "");
             sender.sendMessage(key);
             return;
         }
@@ -156,7 +156,7 @@ public final class Lang {
     public static String t(String key, @Nullable Object... args) {
         LangRegistry current = registry;
         if (current == null) {
-            Debug.warn("Lang 未加载，语言键 " + key + " 无法解析");
+            Debug.warn("Lang is not loaded, cannot resolve language key " + key + "");
             return key;
         }
         return ChatColors.color(current.text(key, args));
@@ -171,7 +171,7 @@ public final class Lang {
     public static ItemStack getIcon(String key) {
         LangRegistry current = registry;
         if (current == null) {
-            Debug.warn("Lang 未加载，图标 " + key + " 无法解析");
+            Debug.warn("Lang is not loaded, cannot resolve icon " + key + "");
             return fallbackIcon(key);
         }
         return current.icon(key);

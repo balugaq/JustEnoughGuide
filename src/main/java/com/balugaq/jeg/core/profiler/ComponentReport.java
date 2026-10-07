@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.profiler;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.core.profiler.TimingsAggregator.Aggregates;
 import com.balugaq.jeg.core.profiler.TimingsAggregator.ClassifiedGroup;
 import com.balugaq.jeg.libraries.fliptables.FlipTable;
@@ -73,7 +74,6 @@ import static net.kyori.adventure.text.Component.text;
 @SuppressWarnings("deprecation")
 @NullMarked
 public final class ComponentReport {
-    private static final String TITLE = "===== JEG - Slimefun 性能分析器 =====";
     private static final int BAR_WIDTH = 20;
 
     private final List<Component> components;
@@ -119,7 +119,7 @@ public final class ComponentReport {
             rest--;
         }
 
-        Component result = text("性能评分: ", NamedTextColor.GOLD);
+        Component result = text(Lang.t("profiler.rating-label"), NamedTextColor.GOLD);
         result = result.append(text(bar.toString(),
                 colorOf(NumberUtils.getColorFromPercentage(100.0F - clamped))));
         result = result.append(text(":".repeat(Math.max(0, rest)), NamedTextColor.DARK_GRAY));
@@ -141,9 +141,9 @@ public final class ComponentReport {
         Aggregates agg = TimingsAggregator.aggregate(snapshot);
 
         List<Component> lines = new ArrayList<>();
-        lines.add(text(TITLE, NamedTextColor.GREEN));
-        lines.add(label("Tick 总用时：", JEGProfiler.asMillis(snapshot.roundTotalNanos())));
-        lines.add(label("Ticker 运行周期：", periodText(snapshot.period())));
+        lines.add(text(Lang.t("profiler.title"), NamedTextColor.GREEN));
+        lines.add(label(Lang.t("profiler.tick-total"), JEGProfiler.asMillis(snapshot.roundTotalNanos())));
+        lines.add(label(Lang.t("profiler.ticker-period"), periodText(snapshot.period())));
         lines.add(freezeLine(snapshot.frozen()));
         lines.add(ratingLine(snapshot.roundTotalNanos()));
         if (!snapshot.topBlock().isEmpty()) {
@@ -160,14 +160,14 @@ public final class ComponentReport {
     private static Component machinesLine(List<ClassifiedGroup> groups, boolean verbose, int totalBlocks) {
         if (groups.isEmpty()) {
             return text()
-                .append(text("机器 | ", NamedTextColor.YELLOW))
+                .append(text(Lang.t("profiler.machine-label"), NamedTextColor.YELLOW))
                 .append(text("0 blocks", NamedTextColor.GRAY))
                 .build();
         }
 
-        List<Component> hover = buildHover("机器 ID", "机器总耗时", groups, verbose);
+        List<Component> hover = buildHover(Lang.t("profiler.machine-id"), Lang.t("profiler.machine-total"), groups, verbose);
         return text()
-            .append(text("机器 | ", NamedTextColor.YELLOW))
+            .append(text(Lang.t("profiler.machine-label"), NamedTextColor.YELLOW))
             .append(text(plural(totalBlocks, "block"), NamedTextColor.YELLOW))
             .append(hint(hover))
             .build();
@@ -176,33 +176,33 @@ public final class ComponentReport {
     private static Component chunksLine(List<ClassifiedGroup> groups, boolean verbose, @Nullable ChunkKey topChunk) {
         if (topChunk == null) {
             return text()
-                .append(text("区块 | ", NamedTextColor.YELLOW))
+                .append(text(Lang.t("profiler.chunk-label"), NamedTextColor.YELLOW))
                 .append(text("0 chunks", NamedTextColor.GRAY))
                 .build();
         }
-        
-        List<Component> hover = buildHover("区块位置", "区块总耗时", groups, verbose);
-        hover.add(teleportNote("最耗时区块", topChunk.displayName() + " 中心"));
+
+        List<Component> hover = buildHover(Lang.t("profiler.chunk-id"), Lang.t("profiler.chunk-total"), groups, verbose);
+        hover.add(teleportNote(Lang.t("profiler.top-chunk"), topChunk.displayName() + Lang.t("profiler.tp-center-suffix")));
 
         return text()
-            .append(text("区块 | ", NamedTextColor.YELLOW))
+            .append(text(Lang.t("profiler.chunk-label"), NamedTextColor.YELLOW))
             .append(text(plural(groups.size(), "chunk"), NamedTextColor.YELLOW))
-            .append(hint(hover, chunkCenterOf(topChunk), "点击传送到最耗时区块"))
+            .append(hint(hover, chunkCenterOf(topChunk), Lang.t("profiler.tp-top-chunk")))
             .build();
     }
 
     private static Component pluginsLine(List<ClassifiedGroup> groups, boolean verbose) {
         if (groups.isEmpty()) {
             return text()
-                .append(text("插件 | ", NamedTextColor.YELLOW))
+                .append(text(Lang.t("profiler.plugin-label"), NamedTextColor.YELLOW))
                 .append(text("0 plugins", NamedTextColor.GRAY))
                 .build();
         }
 
-        List<Component> hover = buildHover("插件 ID", "插件总耗时", groups, verbose);
+        List<Component> hover = buildHover(Lang.t("profiler.plugin-id"), Lang.t("profiler.plugin-total"), groups, verbose);
 
         return text()
-            .append(text("插件 | ", NamedTextColor.YELLOW))
+            .append(text(Lang.t("profiler.plugin-label"), NamedTextColor.YELLOW))
             .append(text(plural(groups.size(), "plugin"), NamedTextColor.YELLOW))
             .append(hint(hover))
             .build();
@@ -221,7 +221,7 @@ public final class ComponentReport {
     private static Component blocksLine(PriorityQueue<TimedSample> topBlocks) {
         if (topBlocks.isEmpty()) {
             return text()
-                .append(text("方块 | ", NamedTextColor.YELLOW))
+                .append(text(Lang.t("profiler.block-label"), NamedTextColor.YELLOW))
                 .append(text("0 blocks", NamedTextColor.GRAY))
                 .build();
         }
@@ -236,15 +236,15 @@ public final class ComponentReport {
         }
 
         List<Component> hover = renderTable(
-                new String[]{"机器 ID", "机器耗时 (ms)"},
+                new String[]{Lang.t("profiler.machine-id"), Lang.t("profiler.block-time")},
                 data,
                 new NamedTextColor[]{NamedTextColor.YELLOW, NamedTextColor.GREEN});
-        hover.add(teleportNote("最耗时方块", topBlock.worldName() + " " + topBlock.positionName()));
+        hover.add(teleportNote(Lang.t("profiler.top-block"), topBlock.worldName() + " " + topBlock.positionName()));
 
         return text()
-            .append(text("方块 | ", NamedTextColor.YELLOW))
+            .append(text(Lang.t("profiler.block-label"), NamedTextColor.YELLOW))
             .append(text("top " + JEGProfiler.MAX_TOP_ITEMS + " blocks", NamedTextColor.YELLOW))
-            .append(hint(hover, locationOf(topBlock), "点击传送到最耗时机器"))
+            .append(hint(hover, locationOf(topBlock), Lang.t("profiler.tp-top-machine")))
             .build();
     }
 
@@ -270,12 +270,12 @@ public final class ComponentReport {
         String[] headers;
         NamedTextColor[] colors;
         if (verbose) {
-            headers = new String[]{idHeader, "方块数", totalLabel + "(ms)", "avg", "min", "med", "95%ile", "max"};
+            headers = new String[]{idHeader, Lang.t("profiler.block-count"), totalLabel + "(ms)", "avg", "min", "med", "95%ile", "max"};
             colors = new NamedTextColor[]{
                 NamedTextColor.YELLOW, NamedTextColor.GOLD, NamedTextColor.GREEN, NamedTextColor.GRAY,
                 NamedTextColor.GRAY, NamedTextColor.GRAY, NamedTextColor.YELLOW, NamedTextColor.RED};
         } else {
-            headers = new String[]{idHeader, "方块数", totalLabel + "(ms)", "avg"};
+            headers = new String[]{idHeader, Lang.t("profiler.block-count"), totalLabel + "(ms)", "avg"};
             colors = new NamedTextColor[]{
                 NamedTextColor.YELLOW, NamedTextColor.GOLD, NamedTextColor.GREEN, NamedTextColor.GRAY};
         }
@@ -451,7 +451,7 @@ public final class ComponentReport {
      * @return 提示组件
      */
     private static Component hint(List<Component> hover, @Nullable Location target, String tip) {
-        Component hint = text(" (悬停查看详情)", NamedTextColor.GRAY);
+        Component hint = text(Lang.t("profiler.hover-detail"), NamedTextColor.GRAY);
         hover.add(text(tip));
         hint = hint.hoverEvent(HoverEvent.showText(Component.join(JoinConfiguration.newlines(), hover)));
 
@@ -462,7 +462,7 @@ public final class ComponentReport {
                     if (viewer.isOp()) {
                         viewer.teleport(target);
                     } else {
-                        viewer.sendMessage(text("你没有权限使用此指令!", NamedTextColor.RED));
+                        viewer.sendMessage(text(Lang.t("profiler.no-permission"), NamedTextColor.RED));
                     }
                 }
             }));
@@ -484,7 +484,7 @@ public final class ComponentReport {
 
     private static Component teleportNote(String label, String value) {
         return text()
-                .append(text("点击传送: ", NamedTextColor.DARK_GRAY))
+                .append(text(Lang.t("profiler.tp-prefix"), NamedTextColor.DARK_GRAY))
                 .append(text(label + " ", NamedTextColor.GRAY))
                 .append(text(value, NamedTextColor.AQUA))
                 .build();

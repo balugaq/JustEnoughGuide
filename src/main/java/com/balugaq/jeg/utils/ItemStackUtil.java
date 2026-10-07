@@ -120,7 +120,7 @@ public final class ItemStackUtil {
 
         String type = section.getString("material_type", "mc");
         if (!type.equalsIgnoreCase("none") && !section.contains("material")) {
-            Debug.severe("Icon 定义 " + c + " 缺少 material 字段");
+            Debug.severe("Icon definition " + c + " is missing the material field");
             return null;
         }
 
@@ -156,7 +156,7 @@ public final class ItemStackUtil {
                 }
             }
 
-            Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+            Debug.severe("Icon definition " + c + " cannot be read, converted to stone");
             return null;
         } else {
             return readItem(
@@ -232,7 +232,7 @@ public final class ItemStackUtil {
                     if (isBranch) {
                         return null;
                     }
-                    Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+                    Debug.severe("Icon definition " + c + " cannot be read, converted to stone");
                     itemStack = Converter.getItem(Material.STONE, name, lore);
                 }
             }
@@ -248,23 +248,23 @@ public final class ItemStackUtil {
                         materialOptional = Optional.ofNullable(Material.matchMaterial(materialMappings.get(material)));
                         if (materialOptional.isPresent()) {
                             mat = materialOptional.get();
-                            Debug.warn("Icon 定义 " + c + " 的 material 字段 " + material + " 已自动修复为 " + mat);
+                            Debug.warn("Icon definition " + c + " has an invalid material field " + material + ", auto-fixed to " + mat);
                         } else {
                             if (isBranch) {
                                 return null;
                             }
-                            Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+                            Debug.severe("Icon definition " + c + " cannot be read, converted to stone");
                         }
                     } else {
                         if (isBranch) {
                             return null;
                         }
-                        Debug.severe("Icon 定义 " + c + " 无法读取，已转为石头");
+                        Debug.severe("Icon definition " + c + " cannot be read, converted to stone");
                     }
                 }
 
                 if (!mat.isItem() || mat.isLegacy()) {
-                    Debug.warn("Icon 定义存在无效的 material: " + mat + ", 已转为石头");
+                    Debug.warn("Icon definition has an invalid material: " + mat + ", converted to stone");
                     mat = Material.STONE;
                 }
 
@@ -278,7 +278,7 @@ public final class ItemStackUtil {
         }
 
         if (amount > 100 || amount < -1) {
-            Debug.severe("Icon 定义 " + c + " 无法读取，字段 amount 的值不在范围内: -1 < amount <= 100");
+            Debug.severe("Icon definition " + c + " cannot be read, field amount is out of range: -1 < amount <= 100");
             return null;
         }
         itemStack.setAmount(amount);
@@ -290,7 +290,7 @@ public final class ItemStackUtil {
             for (String enchant : enchants) {
                 String[] s2 = enchant.split(" ");
                 if (s2.length != 2) {
-                    Debug.severe("Icon 定义 " + c + " 无法读取附属 " + enchant + ", 跳过添加此附魔");
+                    Debug.severe("Icon definition " + c + " cannot read enchantment " + enchant + ", skipping this enchantment");
                     continue;
                 }
 
@@ -299,7 +299,7 @@ public final class ItemStackUtil {
 
                 Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName.toLowerCase(Locale.ROOT)));
                 if (enchantment == null) {
-                    Debug.severe("Icon 定义 " + c + " 无法读取附属 " + enchant + ", 跳过添加此附魔");
+                    Debug.severe("Icon definition " + c + " cannot read enchantment " + enchant + ", skipping this enchantment");
                     continue;
                 }
 

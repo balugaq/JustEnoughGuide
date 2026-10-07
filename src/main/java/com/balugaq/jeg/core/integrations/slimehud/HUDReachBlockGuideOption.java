@@ -20,6 +20,7 @@ package com.balugaq.jeg.core.integrations.slimehud;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Calculator;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -93,20 +94,20 @@ public class HUDReachBlockGuideOption implements PrioritySlimefunGuideOption<Int
     @Override
     public void onClick(Player p, ItemStack guide) {
         p.closeInventory();
-        p.sendMessage(ChatColors.color("&a请输入粘液HUD显示距离"));
+        p.sendMessage(Lang.t("hud.input-reach"));
         ChatInput.waitForPlayer(
             JustEnoughGuide.getInstance(), p, s -> {
                 try {
                     int value = Calculator.calculate(s).intValue();
                     if (value < 1 || value > MAX_REACH_BLOCK) {
-                        p.sendMessage("请输入 1 ~ " + MAX_REACH_BLOCK + " 之间的正整数");
+                        p.sendMessage(Lang.t("hud.input-range-invalid", MAX_REACH_BLOCK));
                         return;
                     }
 
                     setSelectedOption(p, guide, value);
                     JEGGuideSettings.openSettings(p, guide);
                 } catch (NumberFormatException ignored) {
-                    p.sendMessage("请输入 1 ~ " + MAX_REACH_BLOCK + " 之间的正整数");
+                    p.sendMessage(Lang.t("hud.input-range-invalid", MAX_REACH_BLOCK));
                 }
             }
         );

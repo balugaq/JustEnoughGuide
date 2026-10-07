@@ -296,10 +296,10 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         if (!Boolean.TRUE.equals(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.value())) {
             Debug.warn("=======================================================================");
-            Debug.warn("检测到 net.kyori.adventure.text.warnWhenLegacyFormattingDetected = false");
-            Debug.warn("为了避免大量无效日志刷屏，我们强烈建议您添加以下 JVM 参数以禁止警告:               ");
+            Debug.warn("Detected net.kyori.adventure.text.warnWhenLegacyFormattingDetected = false");
+            Debug.warn("To avoid log spam, we strongly recommend adding the following JVM argument to suppress the warning:               ");
             Debug.warn("-Dnet.kyori.adventure.text.warn_when_legacy_formatting_detected=false  ");
-            Debug.warn("参见 https://docs.papermc.io/paper/reference/system-properties/#netkyoriadventuretextwarnwhenlegacyformattingdetected");
+            Debug.warn("See https://docs.papermc.io/paper/reference/system-properties/#netkyoriadventuretextwarnwhenlegacyformattingdetected");
             Debug.warn("=======================================================================");
         }
 
@@ -307,7 +307,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         boolean isCompatible = environmentCheck();
 
         if (!isCompatible) {
-            getLogger().warning("环境不兼容！插件已禁用！");
+            getLogger().warning("Incompatible environment! Plugin is disabled!");
             onDisable();
             return;
         }
@@ -316,25 +316,25 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         PlatformUtil.initialize();
         this.scheduler = TaskScheduler.create();
 
-        getLogger().info("正在加载前置...");
+        getLogger().info("Loading dependencies...");
         loadLibraries();
 
-        getLogger().info("正在加载配置文件...");
+        getLogger().info("Loading config...");
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.load();
         Lang.load(this);
         Formats.load();
 
-        getLogger().info("正在注册监听器...");
+        getLogger().info("Registering listeners...");
         this.listenerManager = new ListenerManager(this);
         this.listenerManager.load();
 
-        getLogger().info("正在注册指令");
+        getLogger().info("Registering commands");
         this.commandManager = new CommandManager(this);
         this.commandManager.load();
 
-        getLogger().info("正在替换指南...");
+        getLogger().info("Replacing guide...");
         Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
         newGuides.put(SlimefunGuideMode.SURVIVAL_MODE, new SurvivalGuideImplementation());
         newGuides.put(SlimefunGuideMode.CHEAT_MODE, new CheatGuideImplementation());
@@ -345,16 +345,16 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             Debug.trace(e);
         }
 
-        getLogger().info("正在加载书签...");
+        getLogger().info("Loading bookmarks...");
         this.bookmarkManager = new BookmarkManager(this);
         this.bookmarkManager.load();
 
-        getLogger().info("正在加载物品组...");
+        getLogger().info("Loading item groups...");
         GroupSetup.setup();
         JustEnoughGuide.runLaterAsync(CustomGroupConfigurations::load, 1L);
 
         if (getConfigManager().isCerPatch()) {
-            getLogger().info("已启用性价比系统");
+            getLogger().info("Cost-performance system enabled");
             CERCalculator.load();
             ValueTable.load();
         }
@@ -373,20 +373,20 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         ThirdPartyWarnings.check();
         IntegrationManager.scheduleRun(JEGGuideSettings::sortOptions);
 
-        getLogger().info("正在适配其他插件...");
+        getLogger().info("Adapting other plugins...");
         this.integrationManager = new IntegrationManager(this);
         this.integrationManager.load();
 
-        getLogger().info("尝试自动更新...");
+        getLogger().info("Trying auto-update...");
         tryUpdate();
 
-        getLogger().info("正在加载 Metrics...");
+        getLogger().info("Loading Metrics...");
         metrics = new JEGMetrics();
 
         // 物品注册（PostSetup）早于本插件 onEnable，这里再延后一拍，确保所有附属的机器都已注册完
         JustEnoughGuide.runLaterAsync(JEGProfilerManager::install, 5L);
 
-        getLogger().info("成功启用此附属");
+        getLogger().info("JustEnoughGuide enabled");
     }
 
     public void unloadInternal() {
@@ -486,7 +486,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         // Clear instance
         instance = null;
-        getLogger().info("成功禁用此附属");
+        getLogger().info("JustEnoughGuide disabled");
     }
 
     /**
@@ -507,26 +507,26 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.minecraftVersion = MinecraftVersion.current();
         this.javaVersion = NumberUtils.getJavaVersion();
         if (minecraftVersion == null) {
-            getLogger().warning("无法获取到 Minecraft 版本!");
+            getLogger().warning("Failed to get the Minecraft version!");
             return false;
         }
 
         if (minecraftVersion == MinecraftVersion.UNKNOWN) {
-            getLogger().warning("无法识别当前的 Minecraft 版本! (" + javaVersion + ")");
+            getLogger().warning("Cannot recognize the current Minecraft version! (" + javaVersion + ")");
         } else if (!minecraftVersion.isAtLeast(LEAST_MC_VERSION)) {
             getLogger()
                 .warning("当前 Minecraft 版本过低(" + minecraftVersion.humanize() + "), 请使用 Minecraft "
-                    + RECOMMENDED_MC_VERSION.humanize() + " 或以上版本!");
+                    + RECOMMENDED_MC_VERSION.humanize() + " or above!");
         }
 
         if (javaVersion < LEAST_JAVA_VERSION) {
-            getLogger().warning("Java 版本过低，请使用 Java " + RECOMMENDED_JAVA_VERSION + " 或以上版本!");
+            getLogger().warning("Java version too low, please use Java " + RECOMMENDED_JAVA_VERSION + " or above!");
         }
 
         if (!Bukkit.getServer().getPluginManager().isPluginEnabled("GuizhanLibPlugin")) {
-            getLogger().log(Level.SEVERE, "本插件需要 鬼斩前置库插件 (GuizhanLibPlugin) 才能运行!");
-            getLogger().log(Level.SEVERE, "从此处下载: https://50l.cc/gzlib");
-            getLogger().log(Level.SEVERE, "当出现该报错时, 作者对一切后续的报错不负责");
+            getLogger().log(Level.SEVERE, "This plugin requires GuizhanLibPlugin to run!");
+            getLogger().log(Level.SEVERE, "Download it from: https://50l.cc/gzlib");
+            getLogger().log(Level.SEVERE, "When this error occurs, the author is not responsible for any subsequent errors");
             return false;
         }
 
@@ -542,7 +542,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
                 GuizhanUpdater.start(this, getFile(), author, repo, branch);
             }
         } catch (NoClassDefFoundError | NullPointerException | UnsupportedClassVersionError e) {
-            getLogger().info("自动更新失败: " + e.getMessage());
+            getLogger().info("Auto-update failed: " + e.getMessage());
             Debug.trace(e);
         }
     }
@@ -572,7 +572,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         LibraryManager libraryManager = new BukkitLibraryManager(this);
         libraryManager.addMavenCentral();
 
-        getLogger().info("正在加载 Pinyin");
+        getLogger().info("Loading Pinyin");
         Library pinyin = Library.builder()
             .groupId("com{}github{}houbb")
             .artifactId("pinyin")
@@ -580,7 +580,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             .build();
         libraryManager.loadLibrary(pinyin);
 
-        getLogger().info("正在加载 opencc4j");
+        getLogger().info("Loading opencc4j");
         Library opencc4j = Library.builder()
             .groupId("com{}github{}houbb")
             .artifactId("opencc4j")
@@ -588,7 +588,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             .build();
         libraryManager.loadLibrary(opencc4j);
 
-        getLogger().info("正在加载 heaven");
+        getLogger().info("Loading heaven");
         Library heaven = Library.builder()
             .groupId("com{}github{}houbb")
             .artifactId("heaven")
@@ -596,7 +596,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             .build();
         libraryManager.loadLibrary(heaven);
 
-        getLogger().info("正在加载 nlp-common");
+        getLogger().info("Loading nlp-common");
         Library nlp = Library.builder()
             .groupId("com{}github{}houbb")
             .artifactId("nlp-common")

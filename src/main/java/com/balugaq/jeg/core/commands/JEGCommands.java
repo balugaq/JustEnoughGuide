@@ -47,6 +47,8 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
 
 import static com.balugaq.jeg.core.lang.Lang.sendMessage;
+
+import com.balugaq.jeg.core.lang.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -185,7 +187,7 @@ public class JEGCommands extends BaseCommand {
                 stack = player.getInventory().getItemInOffHand();
             }
             if (stack == null || stack.getType().isAir()) {
-                player.sendMessage(ChatColor.RED + "你必须手持一个物品在手上");
+                sendMessage(player, "commands.must-hold-item");
                 return;
             }
 
@@ -207,7 +209,7 @@ public class JEGCommands extends BaseCommand {
             item = player.getInventory().getItemInOffHand();
         }
         if (item == null || item.getType().isAir()) {
-            player.sendMessage(ChatColors.color("&c请将物品放在手上"));
+            sendMessage(player, "commands.put-item-on-hand");
             return;
         }
         OnClick.share(player, ItemStackHelper.getDisplayName(item).trim());
@@ -219,7 +221,7 @@ public class JEGCommands extends BaseCommand {
     public void onViewItem(Player player, @Single String id) {
         SlimefunItem slimefunItem = SlimefunItem.getById(id.toUpperCase(Locale.ROOT));
         if (slimefunItem == null || (!player.isOp() && slimefunItem.isDisabledIn(player.getWorld()))) {
-            player.sendMessage(ChatColors.color("&c无法查看 ID 为 " + id + "物品"));
+            sendMessage(player, "commands.cannot-view-item", id);
             return;
         }
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -242,7 +244,7 @@ public class JEGCommands extends BaseCommand {
 
         boolean verbose = "--verbose".equalsIgnoreCase(flag);
 
-        sendMessage(sender, "commands.timings.collecting", verbose ? "（详细模式）" : "");
+        sendMessage(sender, "commands.timings.collecting", verbose ? Lang.t("commands.timings.verbose-suffix") : "");
         profiler.requestReport(sender, verbose);
     }
 

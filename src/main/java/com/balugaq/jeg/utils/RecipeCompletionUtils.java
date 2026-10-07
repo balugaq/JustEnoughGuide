@@ -20,6 +20,7 @@ package com.balugaq.jeg.utils;
 import com.balugaq.jeg.api.objects.menu.VanillaInventoryWrapper;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.recipe_complete.source.ConsumeResult;
 import com.balugaq.jeg.api.recipe_complete.source.ContainerConsumer;
 import com.balugaq.jeg.api.recipe_complete.source.ContainerInteractor;
@@ -325,7 +326,7 @@ public class RecipeCompletionUtils {
         for (var entry : v.entrySet()) {
             ItemStack itemStack = entry.getKey();
             String amountString = getAmountString(itemStack, entry.getValue());
-            var builder = Component.text().color(NamedTextColor.RED).append(Component.text("[配方补全] 缺少 ").hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("配方深度:" + session.getRecipeDepth())))));
+            var builder = Component.text().color(NamedTextColor.RED).append(Component.text(Lang.t("recipe-complete.missing-prefix"))).hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text(Lang.t("recipe-complete.hover-recipe-depth", session.getRecipeDepth())))));
 
             builder.append(getClickableItemName(itemStack));
             builder.append(Component.text().color(NamedTextColor.GREEN).append(Component.text(" x")).append(Component.text(amountString)));

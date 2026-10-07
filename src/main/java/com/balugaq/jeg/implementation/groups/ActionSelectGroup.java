@@ -20,6 +20,7 @@ package com.balugaq.jeg.implementation.groups;
 import com.balugaq.jeg.api.groups.BaseGroup;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.clickhandler.BaseAction;
@@ -90,7 +91,7 @@ public class ActionSelectGroup extends BaseGroup<ActionSelectGroup> {
                 )).ifSuccess(() -> {
                     BaseAction.redirect(pl, act.parent(), keybind, act);
                     pl.closeInventory();
-                    pl.sendMessage(ChatColors.color("&a已设置 " + keybind.name() + " -> " + act.name()));
+                    pl.sendMessage(Lang.t("keybind.set", keybind.name(), act.name()));
                     GuideUtil.removeLastEntry(profile);
                     GuideUtil.getProfile(profile).getGuideHistory().openLastEntry(GuideUtil.getGuide(pl, slimefunGuideMode));
                     return false;

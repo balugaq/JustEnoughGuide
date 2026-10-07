@@ -28,6 +28,7 @@ import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.EventUtil;
@@ -84,8 +85,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @NullMarked
 public interface OnClick {
     // @formatter:off
-    MessageFormat SHARED_ITEM_MESSAGE = new MessageFormat(ChatColors.color("&a{0} &e分享了 &7[{1}&r&7]&e <点击搜索>"));
-    String CLICK_TO_SEARCH = ChatColors.color("&e点击搜索");
     FrequencyWatcher<UUID> SHARING_WATCHER = new FrequencyWatcher<>(1, TimeUnit.MINUTES, 10, 5000);
     ObjectImmutableList<? extends OnClick> keybindSets = ObjectImmutableList.of(
         Holder.Item, Holder.ItemGroup, Holder.RecipeType
@@ -114,10 +113,10 @@ public interface OnClick {
 
         String playerName = player.getName();
 
-        String sharedMessage = SHARED_ITEM_MESSAGE.format(new Object[] {playerName, ChatColors.color(itemName)});
+        String sharedMessage = Lang.t("guide.share.message", playerName, ChatColors.color(itemName));
 
         Component base = LegacyComponentSerializer.legacySection().deserialize(sharedMessage)
-                .hoverEvent(HoverEvent.showText(Component.text(CLICK_TO_SEARCH)));
+                .hoverEvent(HoverEvent.showText(Component.text(Lang.t("guide.share.click-to-search"))));
         Component clickToSearch =
                 base.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/sf search " + ChatColor.stripColor(itemName)));
         Component clickToCopy =
@@ -136,12 +135,12 @@ public interface OnClick {
     static boolean checkShareCooldown(Player player) {
         FrequencyWatcher.Result result = SHARING_WATCHER.checkCooldown(player.getUniqueId());
         if (result == FrequencyWatcher.Result.TOO_FREQUENT) {
-            player.sendMessage(ChatColor.RED + "你的使用频率过高，请稍后使用!");
+            Lang.sendMessage(player, "guide.too-frequent");
             return false;
         }
 
         if (result == FrequencyWatcher.Result.CANCEL) {
-            player.sendMessage(ChatColor.RED + "这个功能正在冷却中...");
+            Lang.sendMessage(player, "guide.cooldown");
             return false;
         }
 
@@ -267,7 +266,7 @@ public interface OnClick {
 
                 @Override
                 public boolean click(JEGSlimefunGuideImplementation guide, InventoryClickEvent event, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup, ClickAction clickAction, ChestMenu menu, int page) {
-                    player.sendMessage(ChatColors.color("&c未找到按键: " + key));
+                    Lang.sendMessage(player, "guide.key-not-found", key);
                     return false;
                 }
 
@@ -455,12 +454,12 @@ public interface OnClick {
                             io.github.thebusybiscuit.slimefun4.api.items.ItemGroup selected =
                                     GroupResorter.getSelectedGroup(player);
                             if (selected == null) {
-                                player.sendMessage(ChatColors.color("&a已选择待交换的物品组: &e" + itemGroup.getDisplayName(player)));
+                                Lang.sendMessage(player, "guide.group-selected-for-swap", itemGroup.getDisplayName(player));
                                 GroupResorter.setSelectedGroup(player, itemGroup);
                             } else {
                                 GroupResorter.swap(selected, itemGroup);
                                 GroupResorter.setSelectedGroup(player, null);
-                                player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
+                                Lang.sendMessage(player, "guide.group-swapped", selected.getDisplayName(player), itemGroup.getDisplayName(player));
                                 GuideUtil.refreshCurrentPage(player);
                             }
                             return;
@@ -468,7 +467,7 @@ public interface OnClick {
                     }
 
                     JustEnoughGuide.getBookmarkManager().addBookmark(player, itemGroup);
-                    player.sendMessage(ChatColors.color("&a已收藏物品组: &e" + itemGroup.getDisplayName(player)));
+                    Lang.sendMessage(player, "guide.group-bookmarked", itemGroup.getDisplayName(player));
                 }),
                 Action.of("default", "默认", Material.COMPASS, (guide, event, player, slot, itemGroup, action, menu, page) -> {
                     PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -479,12 +478,12 @@ public interface OnClick {
                             io.github.thebusybiscuit.slimefun4.api.items.ItemGroup selected =
                                     GroupResorter.getSelectedGroup(player);
                             if (selected == null) {
-                                player.sendMessage(ChatColors.color("&a已选择待交换的物品组: &e" + itemGroup.getDisplayName(player)));
+                                Lang.sendMessage(player, "guide.group-selected-for-swap", itemGroup.getDisplayName(player));
                                 GroupResorter.setSelectedGroup(player, itemGroup);
                             } else {
                                 GroupResorter.swap(selected, itemGroup);
                                 GroupResorter.setSelectedGroup(player, null);
-                                player.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(player) + " &7<-> &e" + itemGroup.getDisplayName(player)));
+                                Lang.sendMessage(player, "guide.group-swapped", selected.getDisplayName(player), itemGroup.getDisplayName(player));
                                 GuideUtil.refreshCurrentPage(player);
                             }
                         }
@@ -636,7 +635,7 @@ public interface OnClick {
 
                 @Override
                 public boolean click(JEGSlimefunGuideImplementation guide, Player player, int slot, io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType recipeType, ClickAction clickAction, ChestMenu menu, int page) {
-                    player.sendMessage(ChatColors.color("&c未找到按键: " + key));
+                    Lang.sendMessage(player, "guide.key-not-found", key);
                     return false;
                 }
 
@@ -1174,7 +1173,7 @@ public interface OnClick {
                                         , guide
                                 )).ifSuccess(() -> {
                                     JustEnoughGuide.getBookmarkManager().addBookmark(player, finalSlimefunItem);
-                                    player.sendMessage(ChatColor.GREEN + "已添加到收藏列表!");
+                                    Lang.sendMessage(player, "guide.added-to-bookmark");
                                     player.playSound(player.getLocation(), Sounds.COLLECTED_ITEM, 1f, 1f);
 
                                     return false;
@@ -1401,7 +1400,7 @@ public interface OnClick {
 
         static void tryPrintWarning() {
             if (JustEnoughGuide.getConfigManager().isClickPrintWarning()) {
-                Debug.warn("方法被误使用，请与相关附属开发者联系，或在配置文件中关闭 click-print-warning 以取消警告");
+                Debug.warn("This method is misused. Please contact the related addon developer, or set click-print-warning to false in the config to suppress this warning");
                 Debug.dumpStack();
             }
         }

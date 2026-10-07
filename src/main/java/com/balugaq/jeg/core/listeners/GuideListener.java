@@ -18,6 +18,7 @@
 package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -67,7 +68,7 @@ public class GuideListener implements Listener {
     @Internal
     public static void openGuide(Player player, SlimefunGuideMode mode) {
         if (!player.isOp() && !Slimefun.getWorldSettingsService().isWorldEnabled(player.getWorld())) {
-            player.sendMessage(ChatColors.color("&c你没有权限打开粘液科技指南书"));
+            Lang.sendMessage(player, "guide.no-permission-guide");
             return;
         }
 

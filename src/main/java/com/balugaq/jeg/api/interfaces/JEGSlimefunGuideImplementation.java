@@ -26,6 +26,7 @@ import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.core.listeners.GroupTierEditorListener;
 import com.balugaq.jeg.core.listeners.GuideListener;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.guide.CheatGuideImplementation;
 import com.balugaq.jeg.implementation.guide.SurvivalGuideImplementation;
@@ -201,7 +202,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
     default void openBookMarkGroup(Player player, PlayerProfile profile) {
         List<Bookmark> items = JustEnoughGuide.getBookmarkManager().getBookmarkedItems(player);
         if (items == null || items.isEmpty()) {
-            player.sendMessage(ChatColor.RED + "你还没有收藏任何物品!");
+            Lang.sendMessage(player, "guide.no-bookmark");
             return;
         }
         new BookmarkGroup(this, items).open(player, profile, getMode());
@@ -264,12 +265,12 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
                                 ItemGroup selected = GroupResorter.getSelectedGroup(pl);
                                 if (selected == null) {
                                     GroupResorter.setSelectedGroup(pl, subGroup);
-                                    pl.sendMessage(ChatColors.color("&a已选择物品组: &e" + subGroup.getDisplayName(pl)));
+                                    Lang.sendMessage(pl, "guide.group-selected", subGroup.getDisplayName(pl));
                                 } else {
                                     GroupResorter.swap(selected, subGroup);
                                     GroupResorter.setSelectedGroup(pl, null);
-                                    pl.sendMessage(ChatColors.color("&a已交换物品组排序: &e" + selected.getDisplayName(pl)
-                                        + " &7<-> &e" + subGroup.getDisplayName(pl)));
+                                    Lang.sendMessage(pl, "guide.group-swapped", selected.getDisplayName(pl),
+                                        subGroup.getDisplayName(pl));
                                     openMainMenu(profile, page);
                                 }
                                 return false;
@@ -579,9 +580,9 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
 
     default void printErrorMessage0(Player p, Throwable x) {
         Debug.trace(x);
-        p.sendMessage(ChatColor.DARK_RED + "服务器发生了一个内部错误. 请联系管理员处理.");
-        Debug.info(Level.SEVERE, "在打开指南书里的 Slimefun 物品时发生了意外!", x);
-        Debug.warn("我们正在尝试恢复玩家 \"" + p.getName() + "\" 的指南...");
+        p.sendMessage(Lang.t("guide.internal-error"));
+        Debug.info(Level.SEVERE, "Unexpected error while opening a Slimefun item in the guide!", x);
+        Debug.warn("Trying to recover the guide for player \"" + p.getName() + "\"...");
         PlayerProfile profile = PlayerProfile.find(p).orElse(null);
         if (profile == null) return;
         GuideUtil.removeLastEntry(profile);

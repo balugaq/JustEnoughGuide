@@ -21,6 +21,7 @@ import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.formatter.Format;
@@ -182,7 +183,7 @@ public abstract class GuideGroup extends BaseGroup<GuideGroup> {
         SlimefunGuideImplementation guide = GuideUtil.getGuide(player, slimefunGuideMode);
         GuideUtil.getProfile(profile).getGuideHistory().add(this, page);
         if (!(guide instanceof JEGSlimefunGuideImplementation jeg)) {
-            player.sendMessage("§cJEG 模块未启用。你不能打开 JEG 使用指南。");
+            Lang.sendMessage(player, "guide.jeg-module-disabled");
             return null;
         }
 
