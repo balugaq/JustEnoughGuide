@@ -26,6 +26,7 @@ import com.balugaq.jeg.api.multiblock.MultiBlockBuilder;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon.FinalTECHValueDisplayGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.core.listeners.SlimefunRegistryFinalizeListener;
 import com.balugaq.jeg.core.managers.BookmarkManager;
 import com.balugaq.jeg.core.managers.CommandManager;
@@ -322,6 +323,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.load();
+        Lang.load(this);
         Formats.load();
 
         getLogger().info("正在注册监听器...");
@@ -390,6 +392,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public void unloadInternal() {
         // 必须在 unregisterItems 之前还原，否则包装器会连同 JEG 自己的物品一起被丢弃
         JEGProfilerManager.uninstall();
+        Lang.unload();
 
         CustomGroupConfigurations.unload();
         GroupResorter.rollback();

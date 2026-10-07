@@ -1,5 +1,9 @@
 #file: noinspection GrazieInspection
 
+# 语言文件选择：对应插件内置 lang/ 目录（或 plugins/JustEnoughGuide/lang/）下的 <language>.yml。
+# 想换语言（或自建一份翻译）就把 zh_CN 改成对应的文件名，如 en_US（前提是该文件存在）。
+language: zh_CN
+
 # 是否开启自动更新：插件启动时从 Guizhan Build 检查并下载最新版。
 # 想手动管理插件版本（自己换 jar）就改成 false。
 auto-update: true

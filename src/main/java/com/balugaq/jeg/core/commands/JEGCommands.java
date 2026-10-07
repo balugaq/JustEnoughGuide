@@ -45,6 +45,8 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
+
+import static com.balugaq.jeg.core.lang.Lang.sendMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -75,17 +77,7 @@ public class JEGCommands extends BaseCommand {
     @CatchUnknown
     @Description("Show JEG command help")
     public void onHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.GREEN + "JEG Commands:");
-        sender.sendMessage(ChatColor.GREEN + "/jeg help - Show this help message");
-        sender.sendMessage(ChatColor.GREEN + "/jeg reload - Reload JEG plugin");
-        sender.sendMessage(ChatColor.GREEN + "/jeg cache <section> <key>");
-        sender.sendMessage(ChatColor.GREEN + "/jeg disable - Disable JEG plugin");
-        sender.sendMessage(ChatColor.GREEN + "/jeg gteg - Get Guide Tier Editor");
-        sender.sendMessage(ChatColor.GREEN + "/jeg categories - View all the groups");
-        sender.sendMessage(ChatColor.GREEN + "/jeg share - Share the item on your hand");
-        sender.sendMessage(ChatColor.GREEN + "/jeg viewitem <Slimefun Item> - View Slimefun item");
-        sender.sendMessage(ChatColor.GREEN + "/jeg search [item name] - Search item on hand or search your input");
-        sender.sendMessage(ChatColor.GREEN + "/jeg timings - View Slimefun machine performance");
+        sendMessage(sender, "commands.help");
     }
 
     // ---- op 专用后台命令 ----
@@ -244,13 +236,13 @@ public class JEGCommands extends BaseCommand {
     public void onTimings(CommandSender sender, @Optional @Single String flag) {
         JEGProfiler profiler = JEGProfilerManager.profiler();
         if (profiler == null) {
-            sender.sendMessage(ChatColors.color("&c性能监视器不可用，请稍后再试"));
+            sendMessage(sender, "commands.timings.unavailable");
             return;
         }
 
         boolean verbose = "--verbose".equalsIgnoreCase(flag);
 
-        sender.sendMessage(ChatColors.color("&e[JustEnoughGuide] 正在采集性能数据..." + (verbose ? "（详细模式）" : "") + "..."));
+        sendMessage(sender, "commands.timings.collecting", verbose ? "（详细模式）" : "");
         profiler.requestReport(sender, verbose);
     }
 

@@ -33,5 +33,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Run tests
+        run: gradle test --console=plain
+
       - name: Build with Gradle
         run: gradle clean build

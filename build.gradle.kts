@@ -93,6 +93,11 @@ dependencies {
 
     // System-scoped local JARs
     compileOnly(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
+
+    // 测试（paper-api 提供纯 Java 的 YamlConfiguration 等，可在无服务器环境跑）
+    testImplementation(libs.paper.api)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 java {
@@ -165,6 +170,12 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    test {
+        useJUnitPlatform()
+        // 测试工作目录固定为项目根目录，方便直接读 src/main/resources 下的语言文件做校验
+        workingDir = projectDir
     }
 
     runServer {

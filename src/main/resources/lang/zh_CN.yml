@@ -1,0 +1,45 @@
+# ============================================================================
+#  JustEnoughGuide 语言文件（zh_CN）
+# ============================================================================
+# 说明：
+#   - config.yml 里的 `language: zh_CN` 决定加载哪个语言文件（对应本目录下的 <language>.yml）。
+#   - 插件首次启动时会把内置语言文件原样复制到 plugins/JustEnoughGuide/lang/ 下；
+#     之后以磁盘上的文件为准，插件内置的版本只作为缺键兜底，不会被改写。
+#   - 颜色代码用 &（如 &a 绿色），占位符用 {0} {1} ...，按 sendMessage/t 传入的参数顺序替换；
+#     参数不足时占位符原样保留。
+#   - 文本里的单引号、双引号等字符可以直接写，不需要转义。
+#   - icons 节点（供 Lang.getIcon 使用）：
+#       icons:
+#         example:
+#           material: BOOK   # 可选，默认 PAPER；须为有效的原版材质名
+#           name: "&b示例图标"
+#           lore: |-         # 支持 |- 多行字符串，也支持 - 列表写法
+#             第一行
+#             第二行
+# ============================================================================
+
+commands:
+  help:
+    - "&aJEG Commands:"
+    - "&a/jeg help - Show this help message"
+    - "&a/jeg reload - Reload JEG plugin"
+    - "&a/jeg cache <section> <key>"
+    - "&a/jeg disable - Disable JEG plugin"
+    - "&a/jeg gteg - Get Guide Tier Editor"
+    - "&a/jeg categories - View all the groups"
+    - "&a/jeg share - Share the item on your hand"
+    - "&a/jeg viewitem <Slimefun Item> - View Slimefun item"
+    - "&a/jeg search [item name] - Search item on hand or search your input"
+    - "&a/jeg timings - View Slimefun machine performance"
+  timings:
+    # {0}: 详细模式后缀（详细模式为“（详细模式）”，否则为空）
+    collecting: "&e[JustEnoughGuide] 正在采集性能数据{0}..."
+    unavailable: "&c性能监视器不可用，请稍后再试"
+
+# icons:
+#   example:
+#     material: BOOK
+#     name: "&b示例图标"
+#     lore: |-
+#       &7这是一段示例 lore
+#       &8第二行

@@ -41,6 +41,10 @@ houbbOpencc4j = "1.14.0"
 houbbHeaven = "0.13.0"
 houbbNlpCommon = "0.0.5"
 
+# 测试
+junitJupiter = "5.13.4"
+junitPlatform = "1.13.4"
+
 [libraries]
 # 编译仅依赖
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paperApi" }
@@ -76,5 +80,8 @@ ryken-slime-customizer = { module = "io.github.balugaq:RykenSlimefunCustomizer",
 logi-tech = { module = "com.github.balugaq:LogiTech", version.ref = "logiTech"}
 # 命令框架 ACF（注解驱动命令系统）
 acf-paper = { module = "co.aikar:acf-paper", version.ref = "acfPaper" }
+# 测试
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatform" }
 [plugins]
 shadow-jar = { id = "com.gradleup.shadow", version.ref = "shadow" }
