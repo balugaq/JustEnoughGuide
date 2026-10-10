@@ -1,5 +1,11 @@
 
 
+<div align="center">
+
+**简体中文** | [English](./README_EN.md)
+
+</div>
+
 # JustEnoughGuide - 更好的粘液书（Better Slimefun Guide）
 
 <img src="https://builds.guizhanss.com/api/badge/balugaq/JustEnoughGuide/master/latest"> 
@@ -115,5 +121,6 @@ JustEnoughGuide（简称 JEG）是一个**粘液科技（Slimefun）附属插件
 
 本项目基于 GPLv3 许可证开源。
 
-如果你觉得这个附属还不错，可以请作者喝一杯奶茶喵~
-<img width="657" height="657" alt="cd7ab045e33de6267ee2c167f1e63e9c" src="https://github.com/user-attachments/assets/0df9c658-d34d-4674-a2c7-958f34209782" />
+## 赞助
+
+如果你觉得这个附属还不错，欢迎[赞助支持](./SPONSOR.md)作者——也可以[请作者喝一杯奶茶](./SPONSOR.md)喵~
