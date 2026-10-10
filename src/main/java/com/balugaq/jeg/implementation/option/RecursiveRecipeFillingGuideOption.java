@@ -80,13 +80,8 @@ public class RecursiveRecipeFillingGuideOption implements PrioritySlimefunGuideO
 
         ItemStack item = Converter.getItem(
             Material.FURNACE,
-            "&a配方补全深度",
-            "&7配方补全深度越大，需要的时间越长",
-            "&7如果遇到一个材料不存在，会尝试补全",
-            "&7这个材料的材料，以此类推，此过程视为一层深度",
-            "",
-            "&7当前深度: " + value + " (限制范围: 1~" + RECIPE_DEPTH_THRESHOLD + ")",
-            "&7\u21E8 &e点击设置深度"
+            Lang.t("option.recursive.name"),
+            Lang.lines("option.recursive.lore", value, RECIPE_DEPTH_THRESHOLD).toArray(String[]::new)
         );
         return Optional.of(item);
     }

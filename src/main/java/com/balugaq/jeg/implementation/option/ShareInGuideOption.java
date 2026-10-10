@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
@@ -54,13 +55,9 @@ public class ShareInGuideOption extends AbstractBooleanGuideOption {
                 Material.WRITTEN_BOOK,
                 meta -> meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP)
             ),
-            "&b接收分享的物品: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择",
-            "&7当他人分享一个物品时",
-            "&7是否接收那个玩家发送的推送消息",
-            "",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 接收分享的物品"
+            Lang.t("option.share-in.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+            Lang.lines("option.share-in.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                .toArray(String[]::new)
         );
     }
 }

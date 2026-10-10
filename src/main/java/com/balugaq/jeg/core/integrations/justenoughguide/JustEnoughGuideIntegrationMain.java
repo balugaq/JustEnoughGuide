@@ -21,6 +21,7 @@
  */
 package com.balugaq.jeg.core.integrations.justenoughguide;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.annotations.CallTimeSensitive;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
@@ -81,8 +82,8 @@ public class JustEnoughGuideIntegrationMain implements Integration {
         try {
             ItemStack easterEgg = new CustomItemStack(
                 Material.GLOWSTONE_DUST,
-                "&6&l彩蛋",
-                "&6&l爱来自 JustEnoughGuide"
+                Lang.t("misc.easter-egg-name"),
+                Lang.t("misc.easter-egg-lore")
             );
             if (SlimefunItems.ELECTRIC_INGOT_FACTORY_2.getItem() instanceof AContainer ac) {
                 ac.registerRecipe(114514, easterEgg, easterEgg);

@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.listeners;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.ClickSide;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
@@ -344,7 +345,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
                 String itemName = ItemStackHelper.getDisplayName(clickedItemStack);
                 lore.add("");
-                lore.add(ChatColors.color("&6上次补全物品: " + itemName));
+                lore.add(ChatColors.color(Lang.t("recipe-complete.last-item", itemName)));
 
                 if (!applied) {
                     meta.getPersistentDataContainer().set(LAST_RECIPE_COMPLETE_KEY, PersistentDataType.BOOLEAN, true);
@@ -528,8 +529,8 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
         // Patch hint start
         lore.add("");
-        lore.add(ChatColors.color("&a左键&e点击物品补全 " + CompletionBehaviour.timesString0(event.getPlayer(), ClickSide.LEFT)));
-        lore.add(ChatColors.color("&a右键&e点击物品补全 " + CompletionBehaviour.timesString0(event.getPlayer(), ClickSide.RIGHT)));
+        lore.add(ChatColors.color(Lang.t("recipe-complete.click-left", CompletionBehaviour.timesString0(event.getPlayer(), ClickSide.LEFT))));
+        lore.add(ChatColors.color(Lang.t("recipe-complete.click-right", CompletionBehaviour.timesString0(event.getPlayer(), ClickSide.RIGHT))));
         // Patch hint end
 
         meta.setLore(lore);
@@ -568,7 +569,7 @@ public class RecipeCompletableListener implements ItemPatchListener {
 
             // Patch start
             old.setType(Material.RED_STAINED_GLASS_PANE);
-            lore.add(ChatColors.color("&a你正在进行配方补全，如果是误触进入，请点击这里"));
+            lore.add(ChatColors.color(Lang.t("recipe-complete.in-progress")));
             meta.getPersistentDataContainer().set(RECIPE_COMPLETE_EXIT_KEY, PersistentDataType.BOOLEAN, true);
             // Patch end
 

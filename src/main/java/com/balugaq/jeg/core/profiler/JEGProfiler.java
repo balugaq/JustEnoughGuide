@@ -81,7 +81,7 @@ public class JEGProfiler extends SlimefunProfiler {
 
         if (!ReflectionUtil.setValue(plugin, "profiler", profiler)) {
             JustEnoughGuide.getInstance().getLogger()
-                .warning("[JEG] 无法替换 Slimefun 的 Profiler");
+                .warning("[JEG] Failed to replace Slimefun Profiler");
             return null;
         }
 
@@ -89,7 +89,7 @@ public class JEGProfiler extends SlimefunProfiler {
         Object actual = ReflectionUtil.getValue(plugin, "profiler");
         if (actual != profiler) {
             JustEnoughGuide.getInstance().getLogger()
-                .warning("[JEG] Profiler 替换未生效");
+                .warning("[JEG] Profiler replacement did not take effect");
             return null;
         }
 

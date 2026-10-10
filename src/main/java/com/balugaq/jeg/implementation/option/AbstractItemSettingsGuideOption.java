@@ -21,6 +21,7 @@ import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.EventUtil;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -53,11 +54,13 @@ import java.util.Optional;
 @SuppressWarnings("deprecation")
 @NullMarked
 public abstract class AbstractItemSettingsGuideOption implements PrioritySlimefunGuideOption<Boolean> {
-    public static final ItemStack DEFAULT_ICON = Converter.getItem(
-        Material.BARRIER,
-        "&c未设置物品",
-        "&c手持物品点击设置"
-    );
+    public static ItemStack defaultIcon() {
+        return Converter.getItem(
+            Material.BARRIER,
+            Lang.t("option.item-settings.not-set-name"),
+            Lang.t("option.item-settings.not-set-lore")
+        );
+    }
 
     private static NamespacedKey getKey(NamespacedKey key, int index) {
         return KeyUtil.append(key, "_item_" + index);
@@ -84,17 +87,17 @@ public abstract class AbstractItemSettingsGuideOption implements PrioritySlimefu
     private static ItemStack getIconOrDefault(Player p, NamespacedKey k, int index) {
         ItemStack ri = getItem(p, k, index);
         if (ri == null) {
-            return DEFAULT_ICON;
+            return defaultIcon();
         }
 
         ItemStack item = ri.clone();
         ItemMeta meta = item.getItemMeta();
-        if (meta == null) return Converter.getItem(item, "&f空气");
+        if (meta == null) return Converter.getItem(item, Lang.t("option.item-settings.air-name"));
 
         List<String> lore = meta.getLore();
         if (lore == null) lore = new ArrayList<>();
         lore.add("");
-        lore.add(ChatColors.color("&c已设置物品"));
+        lore.add(ChatColors.color(Lang.t("option.item-settings.set-lore")));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;

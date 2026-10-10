@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.momotech;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -62,10 +63,10 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
         var sf = SlimefunItem.getById("MOMOTECH_NONE");
         ItemStack item = sf != null ? Converter.getItem(
             sf.getItem(),
-            "&a单击打开" + getTitle()
+            Lang.t("momotech.none-open", getTitle())
         ) : Converter.getItem(
             Material.BLACK_WOOL,
-            "&a单击打开" + getTitle()
+            Lang.t("momotech.none-open", getTitle())
         );
         return Optional.of(item);
     }
@@ -77,7 +78,7 @@ public class MomotechNoneRecipeSettingsGuideOption extends AbstractItemSettingsG
 
     @Override
     public String getTitle() {
-        return "&aNONE配方补全配置";
+        return Lang.t("momotech.none-title");
     }
 
     @Override

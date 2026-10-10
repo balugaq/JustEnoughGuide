@@ -170,7 +170,7 @@ public class JEGCommands extends BaseCommand {
     @CommandPermission("jeg.categories")
     @Description("View all Slimefun item groups")
     public void onCategories(Player player) {
-        ChestMenu menu = new ChestMenu("&6物品组大全");
+        ChestMenu menu = new ChestMenu(Lang.t("categories.menu-title"));
         menu.setSize(54);
         populateCategoryMenu(menu, new ArrayList<>(Slimefun.getRegistry().getAllItemGroups()), 1, player);
         menu.setPlayerInventoryClickable(false);
@@ -276,14 +276,14 @@ public class JEGCommands extends BaseCommand {
                 categoryLore.set(
                     categoryLore.size() - 1, ChatColors.color("&6ID: " + id)); // Replaces the "Click to Open" line
                 categoryLore.add(ChatColors.color("&6class: " + className));
-                categoryLore.add(ChatColors.color("&a点击复制到聊天栏"));
+                categoryLore.add(ChatColors.color(Lang.t("categories.copy-hint")));
                 catMeta.setLore(categoryLore);
                 catItem.setItemMeta(catMeta);
                 menu.replaceExistingItem(i, catItem);
                 menu.addMenuClickHandler(
                     i, (p1, s1, i1, a1) -> {
-                        com.balugaq.jeg.utils.ClipboardUtil.send(p1, "&d点击复制: " + id, "&d点击复制", id);
-                        com.balugaq.jeg.utils.ClipboardUtil.send(p1, "&d点击复制: " + className, "&d点击复制", className);
+                        com.balugaq.jeg.utils.ClipboardUtil.send(p1, Lang.t("categories.copy-hover", id), Lang.t("categories.copy-action"), id);
+                        com.balugaq.jeg.utils.ClipboardUtil.send(p1, Lang.t("categories.copy-hover", className), Lang.t("categories.copy-action"), className);
                         return false;
                     }
                 );
@@ -293,7 +293,7 @@ public class JEGCommands extends BaseCommand {
         }
 
         if (page > 1) {
-            menu.replaceExistingItem(46, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a上一页"));
+            menu.replaceExistingItem(46, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, Lang.t("categories.prev-page")));
             menu.addMenuClickHandler(
                 46, (pl, s, is, action) -> {
                     populateCategoryMenu(menu, groups, page - 1, p);
@@ -303,7 +303,7 @@ public class JEGCommands extends BaseCommand {
         }
 
         if (getItemGroupOrNull(groups, 45 * page + 1) != null) {
-            menu.replaceExistingItem(52, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, "&a下一页"));
+            menu.replaceExistingItem(52, Converter.getItem(Material.LIME_STAINED_GLASS_PANE, Lang.t("categories.next-page")));
             menu.addMenuClickHandler(
                 52, (pl, s, is, action) -> {
                     populateCategoryMenu(menu, groups, page + 1, p);

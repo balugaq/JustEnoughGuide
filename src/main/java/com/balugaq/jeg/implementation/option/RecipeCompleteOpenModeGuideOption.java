@@ -19,6 +19,7 @@ package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.objects.enums.RecipeCompleteOpenMode;
 import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,9 +52,11 @@ public class RecipeCompleteOpenModeGuideOption extends AbstractBooleanGuideOptio
     public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
         return Converter.getItem(
             isEnabled(p) ? Material.ENCHANTED_BOOK : Material.KNOWLEDGE_BOOK,
-            "&b配方补全打开模式: &" + (enabled ? "4继承上一次打开的界面" : "a打开新界面"),
+            Lang.t("option.recipe-complete-open-mode.name",
+                enabled ? Lang.t("option.recipe-complete-open-mode.mode-inherit") : Lang.t("option.recipe-complete-open-mode.mode-new")),
             "",
-            "&7\u21E8 &e点击切换配方补全打开模式为 " + (enabled ? "打开新界面" : "继承上一次打开的界面")
+            Lang.t("option.recipe-complete-open-mode.click",
+                enabled ? Lang.t("option.recipe-complete-open-mode.target-new") : Lang.t("option.recipe-complete-open-mode.target-inherit"))
         );
     }
 

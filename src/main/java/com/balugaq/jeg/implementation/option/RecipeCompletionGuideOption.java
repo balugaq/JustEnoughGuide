@@ -44,10 +44,12 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings({"SameReturnValue"})
 @NullMarked
 public class RecipeCompletionGuideOption extends AbstractCustomActionGuideOption {
-    public static final ItemStack DEFAULT_ICON = Converter.getItem(
-        Material.CLOCK,
-        "&a单击打开配方补全设置界面"
-    );
+    public static ItemStack defaultIcon() {
+        return Converter.getItem(
+            Material.CLOCK,
+            Lang.t("option.recipe-complete-open")
+        );
+    }
 
     public static CompletionBehaviour get(Player player, ClickSide side) {
         String s = PersistentDataAPI.getString(player, side.key());
@@ -145,7 +147,7 @@ public class RecipeCompletionGuideOption extends AbstractCustomActionGuideOption
 
     @Override
     public ItemStack getDisplayItem(Player p, ItemStack guide, boolean unused) {
-        return DEFAULT_ICON;
+        return defaultIcon();
     }
 
     @Override

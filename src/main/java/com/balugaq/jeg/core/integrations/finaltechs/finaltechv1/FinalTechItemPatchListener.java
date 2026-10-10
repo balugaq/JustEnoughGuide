@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.finaltechs.finaltechv1;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
@@ -150,8 +151,8 @@ public class FinalTechItemPatchListener implements ItemPatchListener {
             lore = new ArrayList<>();
         }
 
-        lore.add(ChatColors.color("&7旧乱序输入EMC: &6" + inputEmc));
-        lore.add(ChatColors.color("&7旧乱序输出EMC: &6" + outputEmc));
+        lore.add(ChatColors.color(Lang.t("integration.finaltech-v1-input", inputEmc)));
+        lore.add(ChatColors.color(Lang.t("integration.finaltech-v1-output", outputEmc)));
         meta.setLore(lore);
         tagMeta(meta);
         itemStack.setItemMeta(meta);

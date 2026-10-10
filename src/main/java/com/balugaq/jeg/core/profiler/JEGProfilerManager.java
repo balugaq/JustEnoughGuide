@@ -74,7 +74,7 @@ public final class JEGProfilerManager {
 
         installed = true;
         JustEnoughGuide.getInstance().getLogger()
-                .info("[JEG] 性能监视器已启用，已包装 " + wrapped + " 个机器计时器");
+                .info("[JEG] Profiler enabled, wrapped " + wrapped + " machine tickers");
     }
 
     /**
@@ -94,7 +94,7 @@ public final class JEGProfilerManager {
 
         installed = false;
         JustEnoughGuide.getInstance().getLogger()
-                .info("[JEG] 性能监视器已关闭，已还原 " + restored + " 个机器计时器");
+                .info("[JEG] Profiler disabled, restored " + restored + " machine tickers");
     }
 
     private static boolean wrap(SlimefunItem item) {

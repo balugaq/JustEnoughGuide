@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 多语言静态门面。用法：
@@ -160,6 +161,37 @@ public final class Lang {
             return key;
         }
         return ChatColors.color(current.text(key, args));
+    }
+
+    /**
+     * 取翻译后的多行文本（含占位符格式化与 {@code &} 色码上色），用于 lore 等。
+     *
+     * @param key  语言键（yml 中为字符串列表）
+     * @param args 占位符参数
+     * @return 翻译后的行列表；Lang 未加载或键缺失时返回单元素列表（键本身）
+     */
+    public static List<String> lines(String key, @Nullable Object... args) {
+        LangRegistry current = registry;
+        if (current == null) {
+            Debug.warn("Lang is not loaded, cannot resolve language lines " + key + "");
+            return List.of(key);
+        }
+        return current.lines(key, args).stream().map(ChatColors::color).toList();
+    }
+
+    /**
+     * 读取一个配置节下的全部键值对（见 {@link LangRegistry#section}），用于批量数据表。
+     *
+     * @param path 配置节路径
+     * @return 键值对；Lang 未加载时返回空表
+     */
+    public static Map<String, String> section(String path) {
+        LangRegistry current = registry;
+        if (current == null) {
+            Debug.warn("Lang is not loaded, cannot resolve section " + path);
+            return Map.of();
+        }
+        return current.section(path);
     }
 
     /**

@@ -347,7 +347,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         } else {
             recipeItems = new @Nullable ItemStack[]{
                 null, null, null,
-                null, Converter.getItem(Material.BARRIER, "&4我们不知道如何展示该配方 :/"), null,
+                null, Converter.getItem(Material.BARRIER, Lang.t("misc.unknown-recipe")), null,
                 null, null, null
             };
         }
@@ -470,7 +470,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             menu.addItem(
                 slot,
                 PatchScope.Back.patch(
-                    p, ChestMenuUtils.getBackButton(p, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单"))
+                    p, ChestMenuUtils.getBackButton(p, "", Lang.t("guide-util.back-left"), Lang.t("guide-util.back-shift")))
             );
 
             menu.addMenuClickHandler(

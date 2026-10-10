@@ -56,13 +56,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 @NotDisplayInCheatMode
 @NullMarked
 public class JEGGuideGroup extends ClassicGuideGroup {
-    public static final ItemStack HEADER = Converter.getItem(
-        Material.BEACON, "&bJEG 使用指南", "&b作者: 大香蕉", "&bJEG 优化了粘液科技的指南，使其更人性化。", "&b查看以下指南书以快速上手 JEG 增加的功能。");
     public static final int[] GUIDE_SLOTS =
         Formats.helper.getChars('h').stream().mapToInt(i -> i).toArray();
 
     public static final int[] BORDER_SLOTS =
         Formats.helper.getChars('B').stream().mapToInt(i -> i).toArray();
+
+    /**
+     * 从语言文件构建指南书功能条目图标（{@code guidebook.features.<key>} 节，name + lore）。
+     */
+    private static ItemStack icon(Material material, String key, Object... args) {
+        return Converter.getItem(material, Lang.t("guidebook.features." + key + ".name"),
+            Lang.lines("guidebook.features." + key + ".lore", args).toArray(String[]::new));
+    }
 
     @SuppressWarnings("SameParameterValue")
     protected JEGGuideGroup(NamespacedKey key, ItemStack icon) {
@@ -70,9 +76,10 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         for (int slot : BORDER_SLOTS) {
             addGuide(slot, ChestMenuUtils.getBackground());
         }
+        ItemStack header = icon(Material.BEACON, "header");
         boolean loaded = false;
         for (int s : Formats.helper.getChars('A')) {
-            addGuide(s, HEADER);
+            addGuide(s, header);
             loaded = true;
         }
 
@@ -88,7 +95,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
             JustEnoughGuide.getConfigManager().isPinyinSearch(),
             () -> addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
-                Converter.getItem(Material.CLOCK, "&b功能: 拼音搜索", "&b介绍: 你可以通过拼音搜索指南来快速找到你想要的物品。", "&b点击尝试功能。"),
+                icon(Material.CLOCK, "pinyin"),
                 (p, s, i, a) -> {
                     try {
                         p.performCommand("sf search ding");
@@ -103,7 +110,7 @@ public class JEGGuideGroup extends ClassicGuideGroup {
 
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(Material.NAME_TAG, "&b功能: 搜索翻页", "&b介绍: 你可以在搜索中翻页来浏览更多搜索结果。", "&b点击尝试功能。"),
+            icon(Material.NAME_TAG, "search-page"),
             (p, s, i, a) -> {
                 try {
                     p.performCommand("sf search a");
@@ -119,13 +126,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
             JustEnoughGuide.getConfigManager().isBookmark(),
             () -> addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
-                Converter.getItem(
+                icon(
                     Material.BOOK,
-                    "&b功能: 标记物品",
-                    "&b介绍: 你可以打开一个物品组，对于支持的附属。",
-                    "&b      你可以点击物品组界面下方的“书”图标以进入标记状态。",
-                    "&a      点击返回按钮以退出标记状态。",
-                    "&b点击尝试功能。"
+                    "bookmark"
                 ),
                 (p, s, i, a) -> {
                     try {
@@ -169,13 +172,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
             JustEnoughGuide.getConfigManager().isBookmark(),
             () -> addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
-                Converter.getItem(
+                icon(
                     Material.NETHER_STAR,
-                    "&b功能: 查阅标记物品",
-                    "&b介绍: 你可以查看你标记过的物品。",
-                    "&b      你可以点击物品组界面下方的“下界之星”图标以查看标记过的物品。",
-                    "&a      点击返回按钮以退出查看状态。",
-                    "&b点击尝试功能。"
+                    "bookmark-view"
                 ),
                 (p, s, i, a) -> {
                     try {
@@ -208,12 +207,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
 
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.CRAFTING_TABLE,
-                "&b功能: 跳转物品组",
-                "&b介绍: 当你在查阅一个物品的配方时，你可以快速跳转到所需物品所属的物品组。",
-                "&b      你可以 Shift + 左键 点击所需物品，以快速跳转到该物品所属的物品组。",
-                "&b点击尝试功能。"
+                "jump-group"
             ),
             (p, s, i, a) -> {
                 try {
@@ -256,12 +252,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
 
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.NAME_TAG,
-                "&b功能: 快速搜索",
-                "&b介绍: 当你在查阅一个物品的配方时，你可以快速搜索物品、材料、配方类型的名字",
-                "&b      你可以 Shift + 右键 点击所需物品，你可以快速搜索物品、材料、配方类型的名字",
-                "&b点击尝试功能。"
+                "quick-search"
             ),
             (p, s, i, a) -> {
                 try {
@@ -311,11 +304,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
             Slimefun.getConfigManager().isResearchingEnabled(),
             () -> addGuide(
                 GUIDE_SLOTS[index.getAndIncrement()],
-                Converter.getItem(
+                icon(
                     Material.ENCHANTED_BOOK,
-                    "&b功能: 便携研究",
-                    "&b介绍: 你可以当你在查看物品的配方时，如果有未解锁的物品，可以点击以快速解锁。",
-                    "&b点击尝试功能。"
+                    "portable-research"
                 ),
                 (p, s, i, a) -> {
                     try {
@@ -360,12 +351,9 @@ public class JEGGuideGroup extends ClassicGuideGroup {
 
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.COMPARATOR,
-                "&b功能: 智能搜索",
-                "&b介绍: 当你使用搜索时，会自动搜索相关的机器，并添加到显示列表中",
-                "&c     不支持拼音搜索。",
-                "&b点击尝试功能。"
+                "smart-search"
             ),
             (p, s, i, a) -> {
                 try {
@@ -381,14 +369,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_recipe_item_name = FilterType.BY_RECIPE_ITEM_NAME.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以通过在开头或末尾添加 " + flag_recipe_item_name + "<recipe_item_name> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_RECIPE_ITEM_NAME.apply("电池") + " 附加搜索 配方使用的物品的名字包含 \"电池\" 的物品",
-                "&c      不支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-recipe-item",
+                flag_recipe_item_name,
+                FilterType.BY_RECIPE_ITEM_NAME.apply("电池")
             ),
             (p, s, i, a) -> {
                 try {
@@ -404,14 +389,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_recipe_type_name = FilterType.BY_RECIPE_TYPE_NAME.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以在开头或末尾添加 " + flag_recipe_type_name + "<recipe_type_name> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_RECIPE_TYPE_NAME.apply("工作台") + " 附加搜索 配方类型名称包含 \"工作台\" 的物品",
-                "&c      不支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-recipe-type",
+                flag_recipe_type_name,
+                FilterType.BY_RECIPE_TYPE_NAME.apply("工作台")
             ),
             (p, s, i, a) -> {
                 try {
@@ -427,14 +409,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_display_item_name = FilterType.BY_DISPLAY_ITEM_NAME.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以在开头或末尾添加 " + flag_display_item_name + "<display_item_name> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_DISPLAY_ITEM_NAME.apply("铜粉") + " 附加搜索 配方展示涉及的物品的名字包含 \"铜粉\" 的物品",
-                "&c      不支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-display-item",
+                flag_display_item_name,
+                FilterType.BY_DISPLAY_ITEM_NAME.apply("铜粉")
             ),
             (p, s, i, a) -> {
                 try {
@@ -450,14 +429,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_addon_name = FilterType.BY_ADDON_NAME.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以在开头或末尾添加 " + flag_addon_name + "<addon_name> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_ADDON_NAME.apply("粘液科技") + " 附加搜索 附属名称包含 \"粘液科技\" 的物品",
-                "&c      不支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-addon",
+                flag_addon_name,
+                FilterType.BY_ADDON_NAME.apply("粘液科技")
             ),
             (p, s, i, a) -> {
                 try {
@@ -473,14 +449,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_item_name = FilterType.BY_ITEM_NAME.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以在开头或末尾添加 " + flag_item_name + "<item_name> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_ITEM_NAME.apply("电池") + " 附加搜索 物品名称包含 \"电池\" 的物品",
-                "&b      支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-item-name",
+                flag_item_name,
+                FilterType.BY_ITEM_NAME.apply("电池")
             ),
             (p, s, i, a) -> {
                 try {
@@ -496,14 +469,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_item_lore = FilterType.BY_ITEM_LORE.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以在开头或末尾添加 " + flag_item_lore + "<item_lore> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_ITEM_LORE.apply("胡萝卜") + " 附加搜索 物品描述包含 \"胡萝卜\" 的物品",
-                "&b      支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-item-lore",
+                flag_item_lore,
+                FilterType.BY_ITEM_LORE.apply("胡萝卜")
             ),
             (p, s, i, a) -> {
                 try {
@@ -519,14 +489,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_material_name = FilterType.BY_MATERIAL_NAME.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以在开头或末尾添加 " + flag_material_name + "<material_name> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_MATERIAL_NAME.apply("iron") + " 附加搜索 物品材质名称包含 \"iron\" 的物品",
-                "&c      不支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-material",
+                flag_material_name,
+                FilterType.BY_MATERIAL_NAME.apply("iron")
             ),
             (p, s, i, a) -> {
                 try {
@@ -542,14 +509,11 @@ public class JEGGuideGroup extends ClassicGuideGroup {
         String flag_full_name = FilterType.BY_FULL_NAME.getFirstSymbol();
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
+            icon(
                 Material.LODESTONE,
-                "&b功能: 搜索拓展",
-                "&b介绍: 你可以在开头或末尾添加 " + flag_full_name + "<item_name> 来指定搜索范围",
-                "&b      例如: " + FilterType.BY_MATERIAL_NAME.apply("铝锭") + " 附加搜索 名字完全为 \"铝锭\" 的物品",
-                "&c      不支持拼音搜索。",
-                "&c      附加搜索会组合生效",
-                "&b点击尝试功能。"
+                "filter-full-name",
+                flag_full_name,
+                FilterType.BY_MATERIAL_NAME.apply("铝锭")
             ),
             (p, s, i, a) -> {
                 try {
@@ -564,8 +528,8 @@ public class JEGGuideGroup extends ClassicGuideGroup {
 
         addGuide(
             GUIDE_SLOTS[index.getAndIncrement()],
-            Converter.getItem(
-                Material.STONE_PICKAXE, "&b功能: 名称打印", "&b介绍: 你可以在任意物品上按 Q 键，以将此物品分享给其他玩家", "&b点击尝试功能"),
+            icon(
+                Material.STONE_PICKAXE, "name-print"),
             (p, s, i, a) -> {
                 try {
                     if (Slimefun.instance() == null) {

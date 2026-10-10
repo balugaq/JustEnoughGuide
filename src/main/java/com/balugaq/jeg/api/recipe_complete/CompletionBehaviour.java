@@ -50,8 +50,8 @@ public enum CompletionBehaviour {
         this.name = name;
         this.icon = Converter.getItem(
             material,
-            "&a单次补全 " + display(),
-            "&a点击以设置"
+            Lang.t("behaviour.icon.name", display()),
+            Lang.t("behaviour.icon.lore")
         );
     }
 

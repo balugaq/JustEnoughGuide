@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.logitech;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
@@ -102,9 +103,9 @@ public class LogitechItemPatchListener implements ItemPatchListener {
         if (lore == null) {
             lore = new ArrayList<>();
         }
-        if (isMachineStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-堆叠配方机器堆叠"));
-        if (isGeneratorStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-量子发电机超频装置堆叠"));
-        if (isMaterialGeneratorStackable) lore.add(ChatColors.color("&a可使用逻辑工艺-堆叠生成器堆叠"));
+        if (isMachineStackable) lore.add(ChatColors.color(Lang.t("integration.logitech-stackable")));
+        if (isGeneratorStackable) lore.add(ChatColors.color(Lang.t("integration.logitech-generator")));
+        if (isMaterialGeneratorStackable) lore.add(ChatColors.color(Lang.t("integration.logitech-material-generator")));
 
         meta.setLore(lore);
         tagMeta(meta);

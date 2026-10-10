@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -274,5 +275,42 @@ class LangRegistryTest {
         assertNotNull(language, "config.yml 缺少 language 键");
         assertTrue(Files.isRegularFile(Path.of("src/main/resources/lang", language + ".yml")),
                 "config.yml 的 language=" + language + " 没有对应的内置语言文件");
+    }
+
+    // ---- section：批量数据表 ----
+
+    @Test
+    @DisplayName("section：读取整节键值对，用户文件覆盖内置兜底")
+    void sectionMergesUserOverDefaults() {
+        LangRegistry merged = new LangRegistry(
+                configOf("addon-names:\n  Slimefun: 自定义粘液\n"),
+                configOf("addon-names:\n  Slimefun: 粘液科技\n  Networks: 网络\n"));
+        Map<String, String> result = merged.section("addon-names");
+        assertEquals(2, result.size());
+        assertEquals("自定义粘液", result.get("Slimefun"));
+        assertEquals("网络", result.get("Networks"));
+    }
+
+    @Test
+    @DisplayName("section：节不存在返回空表")
+    void sectionMissingReturnsEmpty() {
+        assertTrue(registry.section("ghost").isEmpty());
+    }
+
+    @Test
+    @DisplayName("内置语言文件必须包含 addon-names 节且含 Slimefun 条目")
+    void bundledLangFilesContainAddonNames() throws IOException {
+        Path langDir = Path.of("src/main/resources/lang");
+        try (Stream<Path> files = Files.list(langDir)) {
+                for (Path file : files.filter(p -> p.getFileName().toString().endsWith(".yml")).toList()) {
+                    YamlConfiguration config = new YamlConfiguration();
+                    assertDoesNotThrow(() -> config.loadFromString(Files.readString(file, StandardCharsets.UTF_8)),
+                            file.getFileName() + " 不是合法的 yml");
+                    assertTrue(config.isConfigurationSection("addon-names"),
+                            file.getFileName() + " 缺少 addon-names 节");
+                    assertTrue(config.contains("addon-names.Slimefun"),
+                            file.getFileName() + " 的 addon-names 缺少 Slimefun 条目");
+                }
+        }
     }
 }

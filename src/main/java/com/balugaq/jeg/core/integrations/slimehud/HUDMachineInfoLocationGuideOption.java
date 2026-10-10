@@ -21,6 +21,7 @@ import com.balugaq.jeg.api.objects.enums.HUDLocation;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -71,15 +72,16 @@ public class HUDMachineInfoLocationGuideOption implements PrioritySlimefunGuideO
         HUDLocation current = getSelectedOption(p, guide).orElse(HUDLocation.DEFAULT);
         boolean bossbar = current == HUDLocation.BOSSBAR;
         boolean actionbar = current == HUDLocation.ACTION_BAR;
+        String currentLoc = bossbar ? Lang.t("hud.machine-info-location.loc-bossbar")
+            : actionbar ? Lang.t("hud.machine-info-location.loc-actionbar")
+            : Lang.t("hud.machine-info-location.loc-default");
+        String targetLoc = bossbar ? Lang.t("hud.machine-info-location.target-bossbar")
+            : actionbar ? Lang.t("hud.machine-info-location.target-actionbar")
+            : Lang.t("hud.machine-info-location.target-default");
         ItemStack item = Converter.getItem(
             bossbar ? Material.GLOW_ITEM_FRAME : actionbar ? Material.ITEM_FRAME : Material.ACACIA_BOAT,
-            "&bHUD显示机器信息位置: &" + (bossbar ? "aBoss栏" : actionbar ? "b动作栏" : "e默认设置"),
-            "",
-            "&7你现在可以自主选择是否",
-            "&7在使用SlimeHUD显示机器信息时",
-            "&7将机器信息显示在Boss栏或动作栏",
-            "",
-            "&7\u21E8 &e点击切换为使用 " + (bossbar ? "动作栏" : actionbar ? "默认设置" : "Boss栏") + " 显示机器信息"
+            Lang.t("hud.machine-info-location.name", currentLoc),
+            Lang.lines("hud.machine-info-location.lore", targetLoc).toArray(String[]::new)
         );
         return Optional.of(item);
     }

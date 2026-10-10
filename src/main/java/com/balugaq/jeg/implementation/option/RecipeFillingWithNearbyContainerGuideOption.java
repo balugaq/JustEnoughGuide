@@ -79,12 +79,8 @@ public class RecipeFillingWithNearbyContainerGuideOption implements PrioritySlim
 
         ItemStack item = Converter.getItem(
             Material.ENDER_CHEST,
-            "&a配方补全自动抓取",
-            "&7配方补全自动抓取，即在配方补全获取材料时",
-            "&7从周围的粘液容器中获取原材料",
-            "&e仅支持粘液容器",
-            "&7当前半径范围: " + value + " (限制范围: 0~" + MAX_REACH_LENGTH + ")",
-            "&7\u21E8 &e点击设置配方补全自动抓取范围"
+            Lang.t("option.nearby-container.name"),
+            Lang.lines("option.nearby-container.lore", value, MAX_REACH_LENGTH).toArray(String[]::new)
         );
         return Optional.of(item);
     }

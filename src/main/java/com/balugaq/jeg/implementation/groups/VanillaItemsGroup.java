@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.implementation.groups;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.groups.BaseGroup;
 import com.balugaq.jeg.api.interfaces.NotDisplayInCheatMode;
 import com.balugaq.jeg.api.interfaces.VanillaItemShade;
@@ -117,7 +118,7 @@ public class VanillaItemsGroup extends BaseGroup<VanillaItemsGroup> {
         final Player player,
         final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("原版物品");
+        ChestMenu chestMenu = new ChestMenu(Lang.t("misc.vanilla-items-title"));
 
         Format format = Formats.sub;
         int maxPage = (slimefunItems.size() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;

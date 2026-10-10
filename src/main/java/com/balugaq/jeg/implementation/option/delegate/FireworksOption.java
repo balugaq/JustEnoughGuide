@@ -25,6 +25,7 @@ package com.balugaq.jeg.implementation.option.delegate;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -72,9 +73,10 @@ public class FireworksOption implements PrioritySlimefunGuideOption<Boolean> {
         if (cfgManager.isResearchingEnabled() && cfgManager.isResearchFireworkEnabled()) {
             boolean enabled = this.getSelectedOption(p, guide).orElse(true);
             ItemStack item = new CustomItemStack(
-                Material.FIREWORK_ROCKET, "&b烟花特效: &" + (enabled ? "a启用" : "4禁用"),
-                "", "&7你现在可以选择是否", "&7在解锁一个新物品的时候", "&7展示烟花特效.", "",
-                "&7⇨ &e点击 " + (enabled ? "禁用" : "启用") + " 烟花特效"
+                Material.FIREWORK_ROCKET,
+                Lang.t("option.fireworks.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+                Lang.lines("option.fireworks.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                    .toArray(String[]::new)
             );
             var meta = item.getItemMeta();
             meta.addItemFlags(JEGVersionedItemFlag.HIDE_ADDITIONAL_TOOLTIP);

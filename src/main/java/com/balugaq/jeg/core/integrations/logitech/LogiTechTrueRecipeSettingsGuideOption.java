@@ -18,6 +18,7 @@
 package com.balugaq.jeg.core.integrations.logitech;
 
 import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -59,10 +60,10 @@ public class LogiTechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
         var sf = SlimefunItem.getById("LOGITECH_TRUE_");
         ItemStack item = sf != null ? Converter.getItem(
             sf.getItem(),
-            "&a单击打开 " + getTitle()
+            Lang.t("integration.logitech-open", getTitle())
         ) : Converter.getItem(
             Material.MUSIC_DISC_5,
-            "&a单击打开 " + getTitle()
+            Lang.t("integration.logitech-open", getTitle())
         );
         return Optional.of(item);
     }
@@ -74,7 +75,7 @@ public class LogiTechTrueRecipeSettingsGuideOption extends AbstractItemSettingsG
 
     @Override
     public String getTitle() {
-        return "&aTRUE 配方补全配置";
+        return Lang.t("integration.logitech-true-title");
     }
 
     @Override

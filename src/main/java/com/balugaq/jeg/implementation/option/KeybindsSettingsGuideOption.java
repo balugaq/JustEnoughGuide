@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
@@ -32,10 +33,12 @@ import org.jspecify.annotations.NullMarked;
 @SuppressWarnings({"SameReturnValue"})
 @NullMarked
 public class KeybindsSettingsGuideOption extends AbstractCustomActionGuideOption {
-    public static final ItemStack DEFAULT_ICON = Converter.getItem(
-        Material.COMPASS,
-        "&a单击打开指南书按键控制界面"
-    );
+    public static ItemStack defaultIcon() {
+        return Converter.getItem(
+            Material.COMPASS,
+            Lang.t("option.keybinds-open")
+        );
+    }
 
     @Override
     public int priority() {
@@ -50,7 +53,7 @@ public class KeybindsSettingsGuideOption extends AbstractCustomActionGuideOption
 
     @Override
     public ItemStack getDisplayItem(Player p, ItemStack guide, boolean unused) {
-        return DEFAULT_ICON;
+        return defaultIcon();
     }
 
     @Override

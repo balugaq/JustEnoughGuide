@@ -290,9 +290,9 @@ public class RecipeCompletionUtils {
         long left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
         String amountString = "" + amount;
         if (amount > itemStack.getMaxStackSize()) {
-            amountString += " (" + stacks + " 组";
+            amountString += Lang.t("recipe-complete.stacks", stacks);
             if (left > 0) {
-                amountString += " + " + left + " 个";
+                amountString += Lang.t("recipe-complete.stacks-plus", left);
             }
             amountString += ")";
         }
@@ -344,7 +344,7 @@ public class RecipeCompletionUtils {
         }
         if (sf != null) {
             itemBuilder = itemBuilder
-                .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击打开物品配方"))))
+                .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text(Lang.t("recipe-complete.open-recipe-hover")))))
                 .clickEvent(ClickEvent.runCommand("/jeg viewitem " + sf.getId()));
         }
         return itemBuilder;

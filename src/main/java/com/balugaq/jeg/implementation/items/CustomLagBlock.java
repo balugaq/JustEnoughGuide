@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.implementation.items;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
@@ -97,8 +98,8 @@ public class CustomLagBlock extends JEGSlimefunItem {
     public static ItemStack getStatusItem(Location location) {
         return Converter.getItem(
             Material.YELLOW_STAINED_GLASS_PANE,
-            "&e当前延时: " + getCurrentStatus(location) + " ms",
-            "&e点击以清除延时"
+            Lang.t("lag-block.current", getCurrentStatus(location)),
+            Lang.t("lag-block.clear")
         );
     }
 
@@ -106,12 +107,12 @@ public class CustomLagBlock extends JEGSlimefunItem {
         if (amt > 0) {
             return Converter.getItem(
                 Material.GREEN_STAINED_GLASS_PANE,
-                "&a点击增加 " + amt + " ms 延时"
+                Lang.t("lag-block.increase", amt)
             );
         } else {
             return Converter.getItem(
                 Material.RED_STAINED_GLASS_PANE,
-                "&c点击减少 " + amt + " ms 延时"
+                Lang.t("lag-block.decrease", amt)
             );
         }
     }

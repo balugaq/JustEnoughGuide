@@ -43,6 +43,7 @@ import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
+import com.balugaq.jeg.utils.LocalHelper;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.SlimefunRegistryUtil;
@@ -324,6 +325,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         this.configManager = new ConfigManager(this);
         this.configManager.load();
         Lang.load(this);
+        LocalHelper.load();
         Formats.load();
 
         getLogger().info("Registering listeners...");
@@ -515,7 +517,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             getLogger().warning("Cannot recognize the current Minecraft version! (" + javaVersion + ")");
         } else if (!minecraftVersion.isAtLeast(LEAST_MC_VERSION)) {
             getLogger()
-                .warning("当前 Minecraft 版本过低(" + minecraftVersion.humanize() + "), 请使用 Minecraft "
+                .warning("Minecraft version too low (" + minecraftVersion.humanize() + "), please use Minecraft "
                     + RECOMMENDED_MC_VERSION.humanize() + " or above!");
         }
 

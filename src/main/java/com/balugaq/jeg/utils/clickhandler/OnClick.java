@@ -232,7 +232,7 @@ public interface OnClick {
 
         @Override
         default String name() {
-            return "物品组";
+            return Lang.t("keybind.category.item-group");
         }
 
         default Action findAction(Player player, String key) {
@@ -424,7 +424,7 @@ public interface OnClick {
         @NullMarked
         class Normal implements ItemGroup {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                OpAction.of("shift-right-click", "作弊模式 - 获取对应的物品组占位符", Material.DECORATED_POT, (guide, event, player, slot, itemGroup, action, menu, page) -> {
+                OpAction.of("shift-right-click", Lang.t("keybind.item-group.cheat-placeholder"), Material.DECORATED_POT, (guide, event, player, slot, itemGroup, action, menu, page) -> {
                     if (!player.isOp()) return;
                     if (!JustEnoughGuide.getIntegrationManager().isEnabledRSCEditor()) return;
 
@@ -435,20 +435,20 @@ public interface OnClick {
 
                     player.getInventory().addItem(Converter.getItem(slimefunItem.getItem()));
                 }),
-                OpAction.of("shift-left-click", "作弊模式 - 复制物品组的key", Material.TRIPWIRE_HOOK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
+                OpAction.of("shift-left-click", Lang.t("keybind.item-group.cheat-copy-key"), Material.TRIPWIRE_HOOK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
                     if (!player.isOp()) return;
 
                     NamespacedKey key = itemGroup.getKey();
                     String s = key.toString();
-                    ClipboardUtil.send(player, "&e点击复制物品组的key", s, s);
+                    ClipboardUtil.send(player, Lang.t("keybind.item-group.copy-key-hover"), s, s);
                 }),
-                OpAction.of("copy-full-class", "作弊模式 - 复制物品组的class", Material.COMMAND_BLOCK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
+                OpAction.of("copy-full-class", Lang.t("keybind.item-group.cheat-copy-class"), Material.COMMAND_BLOCK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
                     if (!player.isOp()) return;
 
                     String s = itemGroup.getClass().getName();
-                    ClipboardUtil.send(player, "&e点击复制物品组的class", s, s);
+                    ClipboardUtil.send(player, Lang.t("keybind.item-group.copy-class-hover"), s, s);
                 }),
-                Action.of("right-click", "收藏物品组/选择待交换的物品组", Material.KNOWLEDGE_BOOK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
+                Action.of("right-click", Lang.t("keybind.item-group.bookmark-or-select"), Material.KNOWLEDGE_BOOK, (guide, event, player, slot, itemGroup, action, menu, page) -> {
                     if (GroupResorter.isSelecting(player)) {
                         if (itemGroup instanceof FlexItemGroup) {
                             io.github.thebusybiscuit.slimefun4.api.items.ItemGroup selected =
@@ -469,7 +469,7 @@ public interface OnClick {
                     JustEnoughGuide.getBookmarkManager().addBookmark(player, itemGroup);
                     Lang.sendMessage(player, "guide.group-bookmarked", itemGroup.getDisplayName(player));
                 }),
-                Action.of("default", "默认", Material.COMPASS, (guide, event, player, slot, itemGroup, action, menu, page) -> {
+                Action.of("default", Lang.t("keybind.common.default"), Material.COMPASS, (guide, event, player, slot, itemGroup, action, menu, page) -> {
                     PlayerProfile profile = PlayerProfile.find(player).orElse(null);
                     if (profile == null) return;
 
@@ -492,7 +492,7 @@ public interface OnClick {
 
                     guide.openItemGroup(profile, itemGroup, page);
                 }),
-                Action.of("none", "无操作", Material.BARRIER, (guide, event, player, slot, group, clickAction, menu, page) -> {
+                Action.of("none", Lang.t("keybind.common.none"), Material.BARRIER, (guide, event, player, slot, group, clickAction, menu, page) -> {
                 })
             );
 
@@ -503,7 +503,7 @@ public interface OnClick {
 
             @Override
             public String name() {
-                return "常规";
+                return Lang.t("keybind.category.common");
             }
 
             @Override
@@ -519,7 +519,7 @@ public interface OnClick {
         @NullMarked
         class Bookmark extends Normal {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                Action.of("right-click", "删除标记的物品组", Material.BARREL, (guide, event, player, slot, itemGroup, action, menu, page) -> EventUtil.callEvent(new GuideEvents.CollectItemGroupEvent(player, itemGroup, slot, action, menu, guide)).ifSuccess(() -> {
+                Action.of("right-click", Lang.t("keybind.item-group.remove-mark"), Material.BARREL, (guide, event, player, slot, itemGroup, action, menu, page) -> EventUtil.callEvent(new GuideEvents.CollectItemGroupEvent(player, itemGroup, slot, action, menu, guide)).ifSuccess(() -> {
                     PlayerProfile profile = GuideUtil.getProfile(player);
                     if (profile == null) return;
                     GuideUtil.removeLastEntry(profile.getGuideHistory());
@@ -541,7 +541,7 @@ public interface OnClick {
 
             @Override
             public String name() {
-                return "书签";
+                return Lang.t("keybind.category.bookmark");
             }
 
             @Override
@@ -601,7 +601,7 @@ public interface OnClick {
 
         @Override
         default String name() {
-            return "配方类型";
+            return Lang.t("keybind.category.recipe-type");
         }
 
         default Action findAction(Player player, String key) {
@@ -793,15 +793,15 @@ public interface OnClick {
         @SuppressWarnings("removal")@NullMarked
         class Normal implements RecipeType {
             final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                Action.of("q", "分享配方类型", Material.CLOCK, (guide, player, slot, recipeType, action, menu, page) -> {
+                Action.of("q", Lang.t("keybind.recipe-type.share"), Material.CLOCK, (guide, player, slot, recipeType, action, menu, page) -> {
                     String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
                     share(player, recipeTypeName);
                 }),
-                Action.of("right-click", "查找使用此配方类型的物品", Material.NAME_TAG, (guide, player, slot, recipeType, action, menu, page) -> {
+                Action.of("right-click", Lang.t("keybind.recipe-type.find-users"), Material.NAME_TAG, (guide, player, slot, recipeType, action, menu, page) -> {
                     String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
                     player.chat("/sf search " + FilterType.BY_RECIPE_TYPE_NAME.apply(ChatColor.stripColor(recipeTypeName)));
                 }),
-                Action.of("shift-left", "打开配方类型所在物品组", Material.CAULDRON, (guide, player, slot, recipeType, action, menu, page) -> {
+                Action.of("shift-left", Lang.t("keybind.recipe-type.open-group"), Material.CAULDRON, (guide, player, slot, recipeType, action, menu, page) -> {
                     SlimefunItem machine = recipeType.getMachine();
                     if (machine != null) {
                         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
@@ -809,19 +809,19 @@ public interface OnClick {
                         guide.openItemGroup(profile, machine.getItemGroup(), 1);
                     }
                 }),
-                Action.of("shift-right", "查找相关物品/机器", Material.ANVIL, (guide, player, slot, recipeType, action, menu, page) -> {
+                Action.of("shift-right", Lang.t("keybind.recipe-type.find-related"), Material.ANVIL, (guide, player, slot, recipeType, action, menu, page) -> {
                     String recipeTypeName = ItemStackHelper.getDisplayName(recipeType.getItem(player));
                     player.chat("/sf search " + ChatColor.stripColor(recipeTypeName));
                 }),
-                OpAction.of("copy-id", "作弊模式 - 复制配方类型ID", Material.MAGENTA_GLAZED_TERRACOTTA, (guide, player, slot, recipeType, action, menu, page) -> {
+                OpAction.of("copy-id", Lang.t("keybind.recipe-type.cheat-copy-id"), Material.MAGENTA_GLAZED_TERRACOTTA, (guide, player, slot, recipeType, action, menu, page) -> {
                     if (!player.isOp()) return;
 
                     String s = recipeType.getKey().asString();
-                    ClipboardUtil.send(player, "&e点击复制配方类型的ID", s, s);
+                    ClipboardUtil.send(player, Lang.t("keybind.recipe-type.copy-id-hover"), s, s);
                 }),
-                Action.of("default", "默认", Material.COMPASS, (guide, player, slot, recipeType, action, menu, page) -> {}
+                Action.of("default", Lang.t("keybind.common.default"), Material.COMPASS, (guide, player, slot, recipeType, action, menu, page) -> {}
                 ),
-                Action.of("none", "无操作", Material.BARRIER, (guide, player, slot, recipeType, clickAction, menu, page) -> {
+                Action.of("none", Lang.t("keybind.common.none"), Material.BARRIER, (guide, player, slot, recipeType, clickAction, menu, page) -> {
                 })
             );
 
@@ -832,7 +832,7 @@ public interface OnClick {
 
             @Override
             public String name() {
-                return "常规";
+                return Lang.t("keybind.category.common");
             }
 
             @Override
@@ -894,7 +894,7 @@ public interface OnClick {
 
         @Override
         default String name() {
-            return "物品";
+            return Lang.t("keybind.category.item");
         }
 
         default Action findAction(Player player, String key) {
@@ -1100,7 +1100,7 @@ public interface OnClick {
         @NullMarked
         class Bookmark extends Normal {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                Action.of("right-click", "删除标记的物品", Material.BARREL, (guide, player, slot, slimefunItem, item, action, menu, page) -> {
+                Action.of("right-click", Lang.t("keybind.item.remove-mark"), Material.BARREL, (guide, player, slot, slimefunItem, item, action, menu, page) -> {
                     PlayerProfile profile = GuideUtil.getProfile(player);
                     if (profile == null) return;
                     if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
@@ -1126,7 +1126,7 @@ public interface OnClick {
 
             @Override
             public String name() {
-                return "书签";
+                return Lang.t("keybind.category.bookmark");
             }
 
             @Override
@@ -1163,7 +1163,7 @@ public interface OnClick {
         class ItemMark extends Normal {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
                     Action.of(
-                            "left-click", "物品标记", Material.WRITABLE_BOOK, (guide, player, slot, slimefunItem, item,
+                            "left-click", Lang.t("keybind.item.mark"), Material.WRITABLE_BOOK, (guide, player, slot, slimefunItem, item,
                                                                                action, menu, page) -> {
                                 if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
                                 if (slimefunItem == null) return;
@@ -1189,7 +1189,7 @@ public interface OnClick {
 
             @Override
             public String name() {
-                return "标记物品";
+                return Lang.t("keybind.category.item-mark");
             }
 
             @Override
@@ -1222,7 +1222,7 @@ public interface OnClick {
         @NullMarked
         class Research implements Item {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                Action.of("default", "研究物品", Material.ENCHANTED_BOOK, (guide, player, slot, sf, item, action, menu, page) -> {
+                Action.of("default", Lang.t("keybind.research.research-item"), Material.ENCHANTED_BOOK, (guide, player, slot, sf, item, action, menu, page) -> {
                     String id = item.getItemMeta().getPersistentDataContainer().get(JEGSlimefunGuideImplementation.UNLOCK_ITEM_KEY, PersistentDataType.STRING);
                     if (id == null) return;
                     SlimefunItem slimefunItem = SlimefunItem.getById(id);
@@ -1263,7 +1263,7 @@ public interface OnClick {
 
             @Override
             public String name() {
-                return "研究";
+                return Lang.t("keybind.category.research");
             }
 
             @Override
@@ -1290,18 +1290,18 @@ public interface OnClick {
         @SuppressWarnings("CodeBlock2Expr")
         class Normal implements Item {
             public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
-                Action.of("f", "搜索配方展示物品的名字涉及此物品的名字的物品", Material.FURNACE, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                Action.of("f", Lang.t("keybind.item.search-display-name"), Material.FURNACE, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     String itemName = ItemStackHelper.getDisplayName(item).trim();
                     player.chat("/sf search " + FilterType.BY_DISPLAY_ITEM_NAME.apply(ChatColor.stripColor(itemName)));
                 }),
-                Action.of("q", "分享物品", Material.CLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                Action.of("q", Lang.t("keybind.item.share"), Material.CLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     share(player, ItemStackHelper.getDisplayName(item).trim());
                 }),
-                Action.of("right-click", "搜索物品作用", Material.LIGHT, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                Action.of("right-click", Lang.t("keybind.item.search-usage"), Material.LIGHT, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     String itemName = ItemStackHelper.getDisplayName(item).trim();
                     player.chat("/sf search " + FilterType.BY_RECIPE_ITEM_NAME.apply(ChatColor.stripColor(itemName)));
                 }),
-                Action.of("shift-left-click", "打开物品所在物品组/OP: 取下物品", Material.CAULDRON, (guide, player, slot, slimefunItem, item, clickAction, menu, p2) -> {
+                Action.of("shift-left-click", Lang.t("keybind.item.open-group-or-take"), Material.CAULDRON, (guide, player, slot, slimefunItem, item, clickAction, menu, p2) -> {
                     if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
 
                     if (player.isOp() || player.hasPermission("slimefun.cheat.items")) {
@@ -1326,11 +1326,11 @@ public interface OnClick {
                         return false;
                     });
                 }),
-                Action.of("shift-right-click", "查找相关物品", Material.NAME_TAG, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                Action.of("shift-right-click", Lang.t("keybind.item.find-related"), Material.NAME_TAG, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     String itemName = ItemStackHelper.getDisplayName(item).trim();
                     player.chat("/sf search " + ChatColor.stripColor(itemName));
                 }),
-                OpAction.of("clone-item", "作弊模式 - 复制物品", Material.COMMAND_BLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                OpAction.of("clone-item", Lang.t("keybind.item.cheat-clone"), Material.COMMAND_BLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     ItemStack cursor = player.getItemOnCursor();
                     if (cursor == null || cursor.getType() == Material.AIR) {
                         ItemStack itemStack = MultiBlockBuilder.getItem(item);
@@ -1338,20 +1338,20 @@ public interface OnClick {
                         player.setItemOnCursor(StackUtils.getAsQuantity(itemStack, itemStack.getMaxStackSize()));
                     }
                 }),
-                OpAction.of("take-item", "作弊模式 - 取出物品", Material.STRUCTURE_BLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                OpAction.of("take-item", Lang.t("keybind.item.cheat-take"), Material.STRUCTURE_BLOCK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     int amount = 1;
                     if (clickAction.isShiftClicked()) amount = item.getMaxStackSize();
 
                     ItemStack itemStack = MultiBlockBuilder.getItem(item);
                     player.getInventory().addItem(StackUtils.getAsQuantity(itemStack, amount));
                 }),
-                OpAction.of("copy-sf-id", "作弊模式 - 复制粘液物品ID", Material.MAGENTA_GLAZED_TERRACOTTA, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                OpAction.of("copy-sf-id", Lang.t("keybind.item.cheat-copy-id"), Material.MAGENTA_GLAZED_TERRACOTTA, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     if (slimefunItem == null) return;
 
                     String s = slimefunItem.getId();
-                    ClipboardUtil.send(player, "&e点击复制粘液物品的ID", s, s);
+                    ClipboardUtil.send(player, Lang.t("keybind.item.copy-id-hover"), s, s);
                 }),
-                Action.of("default", "默认", Material.COMPASS, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                Action.of("default", Lang.t("keybind.common.default"), Material.COMPASS, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                     PlayerProfile profile = PlayerProfile.find(player).orElse(null);
                     if (profile == null) return;
                     if (slimefunItem != null) {
@@ -1360,7 +1360,7 @@ public interface OnClick {
                         guide.displayItem0(profile, item, 1, true);
                     }
                 }),
-                Action.of("none", "无操作", Material.BARRIER, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                Action.of("none", Lang.t("keybind.common.none"), Material.BARRIER, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
                 })
             );
 
@@ -1371,7 +1371,7 @@ public interface OnClick {
 
             @Override
             public String name() {
-                return "常规";
+                return Lang.t("keybind.category.common");
             }
 
             @Override

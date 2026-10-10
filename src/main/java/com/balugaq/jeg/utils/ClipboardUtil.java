@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.utils;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.platform.PlatformUtil;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import lombok.experimental.UtilityClass;
@@ -56,7 +57,7 @@ public class ClipboardUtil {
     public static Component makeComponentPaper(Component display, String text) {
         return makeComponentPaper(
             display,
-            Component.text().color(NamedTextColor.YELLOW).append(Component.text("点击复制")).build(),
+            Component.text().color(NamedTextColor.YELLOW).append(Component.text(Lang.t("misc.click-copy"))).build(),
             text);
     }
 

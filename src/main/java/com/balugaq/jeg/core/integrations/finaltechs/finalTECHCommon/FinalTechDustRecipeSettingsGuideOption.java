@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -61,7 +62,7 @@ public class FinalTechDustRecipeSettingsGuideOption extends AbstractItemSettings
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
             Material.SLIME_BALL,
-            "&a单击打开无序/有序尘埃配方补全配置界面"
+            Lang.t("integration.finaltech-dust-open")
         );
         return Optional.of(item);
     }
@@ -73,7 +74,7 @@ public class FinalTechDustRecipeSettingsGuideOption extends AbstractItemSettings
 
     @Override
     public String getTitle() {
-        return "&a无序/有序尘埃配方补全配置";
+        return Lang.t("integration.finaltech-dust-title");
     }
 
     @Override

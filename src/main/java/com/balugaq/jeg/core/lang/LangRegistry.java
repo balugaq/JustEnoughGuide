@@ -25,7 +25,9 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -151,6 +153,36 @@ public final class LangRegistry {
         }
         warnOnce(key);
         return List.of(key);
+    }
+
+    /**
+     * 读取一个配置节下的全部键值对（字符串值），用于批量数据表（如 {@code addon-names}）。
+     * <p>
+     * 用户文件优先：同名键以用户文件的值为准，内置兜底补齐缺失键。
+     * 非字符串值的键会被跳过。
+     *
+     * @param path 配置节路径（如 {@code addon-names}）
+     * @return 键值对（保持 yml 顺序）；节不存在时返回空表
+     */
+    public Map<String, String> section(String path) {
+        Map<String, String> result = new LinkedHashMap<>();
+        collectSection(defaults, path, result);
+        collectSection(user, path, result);
+        return result;
+    }
+
+    private static void collectSection(FileConfiguration config, String path, Map<String, String> out) {
+        ConfigurationSection section = config.getConfigurationSection(path);
+        if (section == null) {
+            return;
+        }
+
+        for (String key : section.getKeys(false)) {
+            String value = section.getString(key);
+            if (value != null) {
+                out.put(key, value);
+            }
+        }
     }
 
     /**

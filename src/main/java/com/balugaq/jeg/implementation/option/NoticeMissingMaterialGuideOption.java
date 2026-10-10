@@ -20,6 +20,7 @@ package com.balugaq.jeg.implementation.option;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.KeyUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
@@ -73,14 +74,9 @@ public class NoticeMissingMaterialGuideOption implements PrioritySlimefunGuideOp
         boolean enabled = getSelectedOption(p, guide).orElse(false);
         ItemStack item = Converter.getItem(
             isEnabled(p) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK,
-            "&b告知缺失的材料: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择",
-            "&7当你使用配方补全时",
-            "&7如果材料不足",
-            "&7是否告知缺失的材料",
-            "",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 告知缺失的材料"
+            Lang.t("option.notice-missing-material.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+            Lang.lines("option.notice-missing-material.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                .toArray(String[]::new)
         );
         return Optional.of(item);
     }

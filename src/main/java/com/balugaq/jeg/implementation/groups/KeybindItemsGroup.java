@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.implementation.groups;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.groups.BaseGroup;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
@@ -69,7 +70,7 @@ public class KeybindItemsGroup extends BaseGroup<KeybindItemsGroup> {
         final Player player,
         final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu menu = new ChestMenu("&6选择你要编辑的按键控制");
+        ChestMenu menu = new ChestMenu(Lang.t("misc.keybind-select-single"));
 
         Format format = Formats.keybind;
         int max = Math.min(

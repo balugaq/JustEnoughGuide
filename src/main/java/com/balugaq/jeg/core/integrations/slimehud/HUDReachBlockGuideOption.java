@@ -83,10 +83,8 @@ public class HUDReachBlockGuideOption implements PrioritySlimefunGuideOption<Int
 
         ItemStack item = Converter.getItem(
             Material.REDSTONE_LAMP,
-            "&a粘液HUD显示距离",
-            "",
-            "&7当前距离: " + value + " (限制范围: 1~" + MAX_REACH_BLOCK + ")",
-            "&7\u21E8 &e点击设置距离"
+            Lang.t("hud.reach.name"),
+            Lang.lines("hud.reach.lore", value, MAX_REACH_BLOCK).toArray(String[]::new)
         );
         return Optional.of(item);
     }

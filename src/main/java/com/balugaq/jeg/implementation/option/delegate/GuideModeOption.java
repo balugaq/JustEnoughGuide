@@ -25,6 +25,7 @@ package com.balugaq.jeg.implementation.option.delegate;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -74,14 +75,14 @@ public class GuideModeOption implements PrioritySlimefunGuideOption<SlimefunGuid
 
                 ItemMeta meta = item.getItemMeta();
                 ChatColor color = ChatColor.GRAY;
-                meta.setDisplayName(color + "Slimefun 指南样式: " + ChatColor.YELLOW + selectedMode.getDisplayName());
+                meta.setDisplayName(color + Lang.t("option.guide-mode.name", ChatColor.YELLOW + selectedMode.getDisplayName()));
                 List<String> lore = new ArrayList<>();
                 lore.add("");
                 color = selectedMode == SlimefunGuideMode.SURVIVAL_MODE ? ChatColor.GREEN : ChatColor.GRAY;
-                lore.add(color + "普通模式");
-                lore.add((selectedMode == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + "作弊模式");
+                lore.add(color + Lang.t("option.guide-mode.normal"));
+                lore.add((selectedMode == SlimefunGuideMode.CHEAT_MODE ? ChatColor.GREEN : ChatColor.GRAY) + Lang.t("option.guide-mode.cheat"));
                 lore.add("");
-                lore.add(ChatColor.GRAY + "⇨ " + ChatColor.YELLOW + "单击修改指南样式");
+                lore.add(ChatColor.GRAY + "⇨ " + ChatColor.YELLOW + Lang.t("option.guide-mode.click"));
                 meta.setLore(lore);
                 item.setItemMeta(meta);
                 return Optional.of(item);

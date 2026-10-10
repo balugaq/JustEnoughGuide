@@ -20,6 +20,7 @@ package com.balugaq.jeg.core.integrations.logitech;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -67,13 +68,9 @@ public class MachineStackableDisplayGuideOption implements PrioritySlimefunGuide
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
             isEnabled(p) ? Material.BLAST_FURNACE : Material.FURNACE,
-            "&b逻辑工艺-堆叠显示: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择是否",
-            "&7在查阅一个物品的时候",
-            "&7显示它是否能被逻辑工艺的堆叠机器堆叠",
-            "",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 逻辑工艺-堆叠显示"
+            Lang.t("option.machine-stackable-display.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+            Lang.lines("option.machine-stackable-display.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                .toArray(String[]::new)
         );
         return Optional.of(item);
     }

@@ -215,7 +215,7 @@ public class RTSSearchGroup extends FlexItemGroup {
         try {
             AnvilGUI.Builder builder = new AnvilGUI.Builder()
                 .plugin(JustEnoughGuide.getInstance())
-                .itemLeft(ChestMenuUtils.getBackButton(player, "", "&f左键: &7返回上一页", "&fShift + 左键: &7返回主菜单"))
+                .itemLeft(ChestMenuUtils.getBackButton(player, "", Lang.t("guide-util.back-left"), Lang.t("guide-util.back-shift")))
                 .itemRight(Models.INPUT_TEXT_ICON)
                 .itemOutput(ItemStackUtil.air())
                 .text("")

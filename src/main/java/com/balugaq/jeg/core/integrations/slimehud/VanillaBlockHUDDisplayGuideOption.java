@@ -18,6 +18,7 @@
 package com.balugaq.jeg.core.integrations.slimehud;
 
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -72,13 +73,9 @@ public class VanillaBlockHUDDisplayGuideOption implements PrioritySlimefunGuideO
         boolean enabled = getSelectedOption(p, guide).orElse(false);
         ItemStack item = Converter.getItem(
             isEnabled(p) ? Material.GRASS_BLOCK : Material.DIRT,
-            "&b原版方块HUD显示: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择是否",
-            "&7在使用SlimeHUD显示方块信息时",
-            "&7允许显示原版方块的信息",
-            "",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 原版方块HUD显示"
+            Lang.t("hud.vanilla-block.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+            Lang.lines("hud.vanilla-block.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                .toArray(String[]::new)
         );
         return Optional.of(item);
     }

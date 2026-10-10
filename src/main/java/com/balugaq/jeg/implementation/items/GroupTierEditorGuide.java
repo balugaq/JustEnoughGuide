@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.implementation.items;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
@@ -38,7 +39,7 @@ public class GroupTierEditorGuide extends SlimefunGuideItem {
     public static final GroupTierEditorGuide instance = new GroupTierEditorGuide();
 
     public GroupTierEditorGuide() {
-        super(GuideUtil.getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE), "&a物品组调位书");
+        super(GuideUtil.getSlimefunGuide(SlimefunGuideMode.CHEAT_MODE), Lang.t("misc.group-tier-book"));
 
         ItemMeta meta = getItemMeta();
         meta.getPersistentDataContainer().set(KEY, PersistentDataType.BOOLEAN, true);

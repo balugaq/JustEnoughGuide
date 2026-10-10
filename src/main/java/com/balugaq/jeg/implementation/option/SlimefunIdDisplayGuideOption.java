@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,13 +47,9 @@ public class SlimefunIdDisplayGuideOption extends AbstractBooleanGuideOption {
     public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
         return Converter.getItem(
             isEnabled(p) ? Material.GLOWSTONE : Material.REDSTONE_LAMP,
-            "&b粘液物品ID显示: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择是否",
-            "&7在查阅一个物品的时候",
-            "&7显示它的粘液ID",
-            "",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 粘液物品ID显示"
+            Lang.t("option.slimefun-id-display.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+            Lang.lines("option.slimefun-id-display.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                .toArray(String[]::new)
         );
     }
 

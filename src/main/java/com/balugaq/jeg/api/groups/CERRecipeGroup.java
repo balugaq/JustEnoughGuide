@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.api.groups;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.ValueTable;
 import com.balugaq.jeg.api.objects.collection.Pair;
@@ -82,10 +83,11 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
                     PatchScope.CerRecipe.patch(
                         p, Converter.getItem(
                             Material.GREEN_STAINED_GLASS_PANE,
-                            "&a配方#" + (i + 1),
-                            "&a机器制作难度: " + ValueTable.getValue(machine),
-                            "&a耗时: " + recipe.getTicks(),
-                            "&a" + (e == 0 ? "耗电: 无" : e > 0 ? "耗电: " + e : "产电: " + (-e))
+                            Lang.t("cer.recipe.name", i + 1),
+                            Lang.lines("cer.recipe.lore", ValueTable.getValue(machine), recipe.getTicks(),
+                                e == 0 ? Lang.t("cer.energy-none")
+                                    : e > 0 ? Lang.t("cer.energy-consume", e)
+                                    : Lang.t("cer.energy-produce", -e)).toArray(String[]::new)
                         )
                     ),
                     ChestMenuUtils.getEmptyClickHandler()
@@ -96,7 +98,7 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
                         PatchScope.CerRecipeBorderInput.patch(
                             p, Converter.getItem(
                                 Material.BLUE_STAINED_GLASS_PANE,
-                                "&a输入 →"
+                                Lang.t("cer.input-arrow")
                             )
                         ),
                         ChestMenuUtils.getEmptyClickHandler()
@@ -119,8 +121,8 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
                             PatchScope.CerRecipeBorderInputOutput.patch(
                                 p, Converter.getItem(
                                     Material.ORANGE_STAINED_GLASS_PANE,
-                                    "&a← 输入",
-                                    "&6输出 →"
+                                    Lang.t("cer.input-arrow-rev"),
+                                    Lang.t("cer.output-arrow")
                                 )
                             ),
                             ChestMenuUtils.getEmptyClickHandler()
@@ -132,7 +134,7 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
                             PatchScope.CerRecipeBorderOutput.patch(
                                 p, Converter.getItem(
                                     Material.ORANGE_STAINED_GLASS_PANE,
-                                    "&6输出 →"
+                                    Lang.t("cer.output-arrow")
                                 )
                             ),
                             ChestMenuUtils.getEmptyClickHandler()
@@ -152,7 +154,7 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
 
                             double cer = CERCalculator.getCER(machine, ItemStackHelper.getDisplayName(output));
                             lore.add(" ");
-                            lore.add(ChatColors.color("&a性价比: " + FORMAT.format(cer)));
+                            lore.add(ChatColors.color(Lang.t("cer.cer-line", FORMAT.format(cer))));
                             meta.setLore(lore);
                             display.setItemMeta(meta);
                             list.add(new Pair<>(
@@ -182,7 +184,7 @@ public class CERRecipeGroup extends BaseGroup<CERRecipeGroup> {
         final Player player,
         final PlayerProfile profile,
         final SlimefunGuideMode slimefunGuideMode) {
-        ChestMenu chestMenu = new ChestMenu("&a性价比预览（仅供参考）");
+        ChestMenu chestMenu = new ChestMenu(Lang.t("cer.menu-title"));
 
         Format format = Formats.sub;
         int maxPage = (iconsLength() - 1) / format.getChars(Formats.Char.CONTENT).size() + 1;

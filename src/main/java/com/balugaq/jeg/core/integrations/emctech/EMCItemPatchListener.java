@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.emctech;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
@@ -108,7 +109,7 @@ public class EMCItemPatchListener implements ItemPatchListener {
             lore.add(ChatColors.color("&7输入EMC: &6" + EMCFormat.format(inputEmc)));
         }
         if (outputEmc > 0.0D) {
-            lore.add(ChatColors.color("&7输出EMC: &6" + EMCFormat.format(outputEmc)));
+            lore.add(ChatColors.color(Lang.t("integration.emc-output", EMCFormat.format(outputEmc))));
         }
         meta.setLore(lore);
         tagMeta(meta);

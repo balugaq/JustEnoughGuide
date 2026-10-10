@@ -114,21 +114,27 @@ import java.util.stream.Collectors;
 @NullMarked
 public class GuideUtil {
     private static final List<ItemGroup> forceHiddens = new ArrayList<>();
-    private static final ItemStack BOOK_MARK_MENU_BUTTON =
-        Converter.getItem(new SlimefunItemStack(
+
+    private static ItemStack bookMarkMenuButton() {
+        return Converter.getItem(new SlimefunItemStack(
             "JEG_BOOK_MARK_BUTTON",
-            Material.NETHER_STAR, "&e&l收藏物列表"
+            Material.NETHER_STAR, Lang.t("guide-util.bookmark-list-button")
         ));
-    private static final ItemStack ITEM_MARK_MENU_BUTTON =
-        Converter.getItem(new SlimefunItemStack(
+    }
+
+    private static ItemStack itemMarkMenuButton() {
+        return Converter.getItem(new SlimefunItemStack(
             "JEG_ITEM_MARK_BUTTON",
-            Material.WRITABLE_BOOK, "&e&l收藏物品"
+            Material.WRITABLE_BOOK, Lang.t("guide-util.bookmark-item-button")
         ));
-    private static final ItemStack CER_MENU_BUTTON =
-        Converter.getItem(new SlimefunItemStack(
+    }
+
+    private static ItemStack cerMenuButton() {
+        return Converter.getItem(new SlimefunItemStack(
             "JEG_CER_BUTTON", Material.EMERALD,
-            "&e&l性价比界面（仅供参考）"
+            Lang.t("guide-util.cer-button")
         ));
+    }
     private static boolean rtsLoad = false;
 
     @Getter
@@ -461,7 +467,7 @@ public class GuideUtil {
     }
 
     public static ItemStack getBookMarkMenuButton() {
-        return BOOK_MARK_MENU_BUTTON;
+        return bookMarkMenuButton();
     }
 
     /**
@@ -523,7 +529,7 @@ public class GuideUtil {
     }
 
     public static ItemStack getItemMarkMenuButton() {
-        return ITEM_MARK_MENU_BUTTON;
+        return itemMarkMenuButton();
     }
 
     @SuppressWarnings({"deprecation"})
@@ -555,7 +561,7 @@ public class GuideUtil {
     }
 
     public static ItemStack getCerMenuButton() {
-        return CER_MENU_BUTTON;
+        return cerMenuButton();
     }
 
     public static void setForceHiddens(ItemGroup itemGroup, boolean forceHidden) {
@@ -613,7 +619,7 @@ public class GuideUtil {
     public static ItemStack getLeftActionIcon(BaseAction action) {
         return Converter.getItem(
             action.material(),
-            ChatColors.color("&7按下 " + action.getKey().getKey() + " 时 (" + action.name() + ")")
+            ChatColors.color(Lang.t("guide-util.keybind-action", action.getKey().getKey(), action.name()))
         );
     }
 
@@ -924,8 +930,8 @@ public class GuideUtil {
             backIcon = ChestMenuUtils.getBackButton(
                 player,
                 "",
-                "&f左键: &7返回上一页",
-                "&fShift + 左键: &7返回主菜单"
+                Lang.t("guide-util.back-left"),
+                Lang.t("guide-util.back-shift")
             );
         }
         for (int ss : slots) {
@@ -1177,7 +1183,7 @@ public class GuideUtil {
     }
 
     public static void openRecipeCompletionGui(Player player) {
-        ChestMenu menu = new ChestMenu(ChatColors.color("&e配方补全数量设置"));
+        ChestMenu menu = new ChestMenu(ChatColors.color(Lang.t("guide-util.rc-gui-title")));
         menu.addItem(0, getBackButton(player), (p, s, i, a) -> {
             JEGGuideSettings.openSettings(p);
             return false;
@@ -1189,15 +1195,15 @@ public class GuideUtil {
         var currLeft = RecipeCompletionGuideOption.get(player, ClickSide.LEFT);
         menu.addItem(2, Converter.getItem(
             Material.GOLDEN_APPLE,
-            "&a点击下方按钮以编辑左键配方补全的次数",
-            "&e当前次数: " + currLeft.timesString(player, ClickSide.LEFT)
+            Lang.t("guide-util.rc-edit-left"),
+            Lang.t("guide-util.rc-current", currLeft.timesString(player, ClickSide.LEFT))
         ), ChestMenuUtils.getEmptyClickHandler());
 
         var currRight = RecipeCompletionGuideOption.get(player, ClickSide.RIGHT);
         menu.addItem(6, Converter.getItem(
             Material.GOLDEN_APPLE,
-            "&a点击下方按钮以编辑右键配方补全的次数",
-            "&e当前次数: " + currLeft.timesString(player, ClickSide.RIGHT)
+            Lang.t("guide-util.rc-edit-right"),
+            Lang.t("guide-util.rc-current", currLeft.timesString(player, ClickSide.RIGHT))
         ), ChestMenuUtils.getEmptyClickHandler());
 
         int i = 0;

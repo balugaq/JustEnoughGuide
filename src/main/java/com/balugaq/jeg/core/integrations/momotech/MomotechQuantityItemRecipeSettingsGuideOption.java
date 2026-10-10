@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.momotech;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.implementation.option.AbstractItemSettingsGuideOption;
 import com.balugaq.jeg.utils.KeyUtil;
@@ -57,7 +58,7 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends AbstractItemS
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         ItemStack item = Converter.getItem(
             Material.PURPLE_DYE,
-            "&a单击打开量化插件配方补全配置界面"
+            Lang.t("momotech.quantity-open")
         );
         return Optional.of(item);
     }
@@ -69,7 +70,7 @@ public class MomotechQuantityItemRecipeSettingsGuideOption extends AbstractItemS
 
     @Override
     public String getTitle() {
-        return "&a量化插件配方补全配置";
+        return Lang.t("momotech.quantity-title");
     }
 
     @Override

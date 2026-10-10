@@ -18,6 +18,7 @@
 package com.balugaq.jeg.implementation.option;
 
 import com.balugaq.jeg.api.patches.Priorities;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,14 +47,9 @@ public class CerPatchGuideOption extends AbstractBooleanGuideOption {
     public ItemStack getDisplayItem(Player p, ItemStack guide, boolean enabled) {
         return Converter.getItem(
             isEnabled(p) ? Material.EMERALD : Material.REDSTONE,
-            "&b性价比显示: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择是否",
-            "&7在搜索一个物品的全名的时候",
-            "&7在搜出的相关机器上显示",
-            "&7使用这个机器制作这个物品的性价比",
-            "",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " 性价比显示"
+            Lang.t("option.cer-patch.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+            Lang.lines("option.cer-patch.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                .toArray(String[]::new)
         );
     }
 

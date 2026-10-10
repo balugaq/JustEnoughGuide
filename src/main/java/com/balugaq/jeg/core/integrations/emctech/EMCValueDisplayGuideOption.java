@@ -20,6 +20,7 @@ package com.balugaq.jeg.core.integrations.emctech;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.patches.Priorities;
 import com.balugaq.jeg.api.patches.PrioritySlimefunGuideOption;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -72,15 +73,9 @@ public class EMCValueDisplayGuideOption implements PrioritySlimefunGuideOption<B
         boolean enabled = getSelectedOption(p, guide).orElse(true);
         ItemStack item = Converter.getItem(
             isEnabled(p) ? Material.CARTOGRAPHY_TABLE : Material.CRAFTING_TABLE,
-            "&bEMC值显示: &" + (enabled ? "a启用" : "4禁用"),
-            "",
-            "&7你现在可以选择是否",
-            "&7在查阅一个新物品的时候",
-            "&7显示它的EMC数值",
-            "",
-            "&7注: 此EMC数值为EMCTech中的数值",
-            "&7不等同于乱序等附属的数值",
-            "&7\u21E8 &e点击 " + (enabled ? "禁用" : "启用") + " EMC值显示"
+            Lang.t("option.emc-display.name", enabled ? Lang.t("common.state-on") : Lang.t("common.state-off")),
+            Lang.lines("option.emc-display.lore", enabled ? Lang.t("common.disable") : Lang.t("common.enable"))
+                .toArray(String[]::new)
         );
         return Optional.of(item);
     }

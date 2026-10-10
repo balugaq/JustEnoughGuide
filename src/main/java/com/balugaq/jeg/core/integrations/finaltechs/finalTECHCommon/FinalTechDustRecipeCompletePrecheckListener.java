@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon;
 
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -61,7 +62,7 @@ public class FinalTechDustRecipeCompletePrecheckListener implements Listener {
             var existing = menu.getItemInSlot(slot);
             if (existing != null && existing.getType() != Material.AIR) {
                 event.setCancelled(true);
-                event.setCancelReason("&c输入槽中有物品");
+                event.setCancelReason(Lang.t("integration.finaltech-dust-cancel"));
                 return;
             }
         }
