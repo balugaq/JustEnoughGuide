@@ -1599,7 +1599,7 @@ public enum CMICustomColors {
 
     private final String hex;
     //    private String[] extra;
-    private long rgb;
+    private final long rgb;
 
     CMICustomColors(String hex) {
         this.hex = hex.toLowerCase();

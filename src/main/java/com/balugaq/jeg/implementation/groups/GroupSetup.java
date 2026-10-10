@@ -45,37 +45,37 @@ public class GroupSetup {
      * Registers all the JEG groups.
      */
     public static void setup() {
-        guideGroup = new JEGGuideGroup(KeyUtil.newKey("jeg_guide_group"), Models.JEG_GUIDE_GROUP);
+        guideGroup = new JEGGuideGroup(KeyUtil.newKey("jeg_guide_group"), Models.jegGuideGroup());
         guideGroup.setTier(Integer.MAX_VALUE);
         guideGroup.register(JustEnoughGuide.getInstance());
 
-        hiddenItemsGroup = new HiddenItemsGroup(KeyUtil.newKey("hidden_items_group"), Models.HIDDEN_ITEMS_GROUP);
+        hiddenItemsGroup = new HiddenItemsGroup(KeyUtil.newKey("hidden_items_group"), Models.hiddenItemsGroup());
         hiddenItemsGroup.setTier(Integer.MAX_VALUE);
         hiddenItemsGroup.register(JustEnoughGuide.getInstance());
 
         if (Slimefun.getConfigManager().isShowVanillaRecipes()) {
-            vanillaItemsGroup = new VanillaItemsGroup(KeyUtil.newKey("vanilla_items_group"), Models.VANILLA_ITEMS_GROUP);
+            vanillaItemsGroup = new VanillaItemsGroup(KeyUtil.newKey("vanilla_items_group"), Models.vanillaItemsGroup());
             vanillaItemsGroup.setTier(Integer.MAX_VALUE);
             vanillaItemsGroup.register(JustEnoughGuide.getInstance());
         }
 
-        replacementCardsGroup = new ReplacementCardsGroup(KeyUtil.newKey("replacement_cards_group"), Models.REPLACEMENT_CARDS_GROUP);
+        replacementCardsGroup = new ReplacementCardsGroup(KeyUtil.newKey("replacement_cards_group"), Models.replacementCardsGroup());
         replacementCardsGroup.setTier(Integer.MAX_VALUE);
         replacementCardsGroup.register(JustEnoughGuide.getInstance());
 
-        recipeCompletableGroup = new RecipeCompletableGroup(KeyUtil.newKey("recipe_completable_group"), Models.RECIPE_COMPLETABLE_GROUP);
+        recipeCompletableGroup = new RecipeCompletableGroup(KeyUtil.newKey("recipe_completable_group"), Models.recipeCompletableGroup());
         recipeCompletableGroup.setTier(Integer.MAX_VALUE);
         recipeCompletableGroup.register(JustEnoughGuide.getInstance());
 
-        bannedItemGroup = new BannedItemsGroup(KeyUtil.newKey("banned_items_group"), Models.BANNED_ITEMS_GROUP);
+        bannedItemGroup = new BannedItemsGroup(KeyUtil.newKey("banned_items_group"), Models.bannedItemsGroup());
         bannedItemGroup.setTier(Integer.MAX_VALUE);
         bannedItemGroup.register(JustEnoughGuide.getInstance());
 
-        jegItemsGroup = new JEGItemsGroup(KeyUtil.newKey("jeg_items_group"), Models.JEG_ITEMS_GROUP);
+        jegItemsGroup = new JEGItemsGroup(KeyUtil.newKey("jeg_items_group"), Models.jegItemsGroup());
         jegItemsGroup.setTier(Integer.MAX_VALUE);
         jegItemsGroup.register(JustEnoughGuide.getInstance());
 
-        multiBlockBuilderItemsGroup = new MultiBlockBuilderItemsGroup(KeyUtil.newKey("multi_block_builder_items_group"), Models.MULTI_BLOCK_BUILDER_ITEMS_GROUP);
+        multiBlockBuilderItemsGroup = new MultiBlockBuilderItemsGroup(KeyUtil.newKey("multi_block_builder_items_group"), Models.multiBlockBuilderItemsGroup());
         multiBlockBuilderItemsGroup.setTier(Integer.MAX_VALUE);
         multiBlockBuilderItemsGroup.register(JustEnoughGuide.getInstance());
 

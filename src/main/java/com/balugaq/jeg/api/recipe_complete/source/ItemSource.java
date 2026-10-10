@@ -203,10 +203,11 @@ public interface ItemSource {
     }
 
     private static void sendHeadMessage(Player player, ItemStack targetItem, int depth) {
+        String[] parts = RecipeCompletionUtils.splitAround(Lang.t("recipe-complete.trying", RecipeCompletionUtils.COMPONENT_PLACEHOLDER));
         player.sendMessage(Component.text().color(NamedTextColor.GREEN)
-            .append(Component.text(Lang.t("recipe-complete.trying-prefix")))
+            .append(Component.text(parts[0]))
             .append(RecipeCompletionUtils.getClickableItemName(targetItem))
-            .append(Component.text(Lang.t("recipe-complete.trying-suffix")))
+            .append(Component.text(parts[1]))
             .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW)
                 .append(Component.text(Lang.t("recipe-complete.hover-recipe-depth", depth))))));
     }

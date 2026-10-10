@@ -216,7 +216,7 @@ public class RTSSearchGroup extends FlexItemGroup {
             AnvilGUI.Builder builder = new AnvilGUI.Builder()
                 .plugin(JustEnoughGuide.getInstance())
                 .itemLeft(ChestMenuUtils.getBackButton(player, "", Lang.t("guide-util.back-left"), Lang.t("guide-util.back-shift")))
-                .itemRight(Models.INPUT_TEXT_ICON)
+                .itemRight(Models.inputTextIcon())
                 .itemOutput(ItemStackUtil.air())
                 .text("")
                 .title(Lang.t("guide.rts-search-title"))

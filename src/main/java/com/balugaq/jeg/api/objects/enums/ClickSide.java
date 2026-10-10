@@ -28,6 +28,7 @@ import java.util.Locale;
  * @author balugaq
  * @since 2.1
  */
+@SuppressWarnings("deprecation")
 public enum ClickSide {
     LEFT,
     RIGHT;

@@ -313,4 +313,58 @@ class LangRegistryTest {
                 }
         }
     }
+
+    // ---- models：静态图标文案 ----
+
+    @Test
+    @DisplayName("内置语言文件必须包含 models 节，且 {models.xxx} 行内引用指向存在的键")
+    void bundledLangModelsSectionIsConsistent() throws IOException {
+        Path langDir = Path.of("src/main/resources/lang");
+        try (Stream<Path> files = Files.list(langDir)) {
+            for (Path file : files.filter(p -> p.getFileName().toString().endsWith(".yml")).toList()) {
+                YamlConfiguration config = new YamlConfiguration();
+                assertDoesNotThrow(() -> config.loadFromString(Files.readString(file, StandardCharsets.UTF_8)),
+                        file.getFileName() + " 不是合法的 yml");
+                if (!config.isConfigurationSection("models")) {
+                    continue;
+                }
+
+                // Models.java 引用的键，缺一不可
+                List<String> required = List.of(
+                        "models.book-mechanism-1", "models.book-mechanism-2", "models.book-mechanism-3",
+                        "models.gui-mechanism-1", "models.gui-mechanism-2",
+                        "models.rts-item.name", "models.special-menu-item.name",
+                        "models.input-text-icon.name", "models.item-mark-background.name",
+                        "models.slimefun-recipe-edit.name",
+                        "models.jeg-guide-group.name", "models.hidden-items-group.name",
+                        "models.nexcavate-items-group.name", "models.vanilla-items-group.name",
+                        "models.recipe-completable-group.name", "models.jeg-items-group.name",
+                        "models.replacement-cards-group.name", "models.banned-items-group.name",
+                        "models.multi-block-builder-items-group.name",
+                        "models.recipe-complete-guide.name", "models.recipe-complete-guide.lore",
+                        "models.usage-info.name", "models.usage-info.lore",
+                        "models.mechanism.name", "models.mechanism.lore",
+                        "models.supported-addons-info.name", "models.supported-addons-info.lore",
+                        "models.jeg-recipe-complete-button.name", "models.jeg-recipe-complete-button.lore",
+                        "models.custom-lag-block.name", "models.custom-lag-block.lore");
+                for (String key : required) {
+                    assertTrue(config.contains(key),
+                            file.getFileName() + " 缺少 models 键: " + key);
+                }
+
+                // {models.xxx} 行内引用指向的键必须存在
+                for (String key : config.getConfigurationSection("models").getKeys(true)) {
+                    if (config.isConfigurationSection("models." + key)) {
+                        continue;
+                    }
+                    Object value = config.get("models." + key);
+                    if (!(value instanceof String text) || !text.matches("\\{[a-z0-9.\\-]+}")) {
+                        continue;
+                    }
+                    assertTrue(config.contains(text.substring(1, text.length() - 1)),
+                            file.getFileName() + " 的 " + key + " 引用了不存在的键: " + text);
+                }
+            }
+        }
+    }
 }

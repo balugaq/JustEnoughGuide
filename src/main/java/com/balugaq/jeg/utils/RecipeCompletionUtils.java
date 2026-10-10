@@ -285,18 +285,39 @@ public class RecipeCompletionUtils {
         }
     }
 
+    /**
+     * 组件哨兵占位符：作为 {@link Lang#t(String, Object...)} 的参数传入，
+     * 标记「可点击组件」（如物品名）在消息中的插入位置；
+     * 配合 {@link #splitAround(String)} 把单个语言键拆成组件前后两段，
+     * 避免语言文件里出现不成对括号/装饰的 prefix/suffix 键。
+     */
+    public static final String COMPONENT_PLACEHOLDER = "\u0000";
+
+    /**
+     * 把经 {@link #COMPONENT_PLACEHOLDER} 标记的已渲染文本拆成前后两段（均不含哨兵）。
+     * 哨兵不存在时，整段作为前半部分返回。
+     *
+     * @param rendered 已渲染（含色码）的消息文本
+     * @return 长度恒为 2 的数组：{哨兵前文本, 哨兵后文本}
+     */
+    public static String[] splitAround(String rendered) {
+        int index = rendered.indexOf(COMPONENT_PLACEHOLDER);
+        if (index < 0) {
+            return new String[] { rendered, "" };
+        }
+        return new String[] { rendered.substring(0, index), rendered.substring(index + COMPONENT_PLACEHOLDER.length()) };
+    }
+
     public static String getAmountString(ItemStack itemStack, long amount) {
         long stacks = amount / Math.max(1, itemStack.getMaxStackSize());
         long left = amount - stacks * Math.max(1, itemStack.getMaxStackSize());
-        String amountString = "" + amount;
         if (amount > itemStack.getMaxStackSize()) {
-            amountString += Lang.t("recipe-complete.stacks", stacks);
             if (left > 0) {
-                amountString += Lang.t("recipe-complete.stacks-plus", left);
+                return Lang.t("recipe-complete.amount-with-stacks", amount, stacks, left);
             }
-            amountString += ")";
+            return Lang.t("recipe-complete.amount-stacks", amount, stacks);
         }
-        return amountString;
+        return "" + amount;
     }
 
     public static Iterable<Integer> mergeSlots(IntSet slots1, int[] slots2) {
@@ -326,10 +347,12 @@ public class RecipeCompletionUtils {
         for (var entry : v.entrySet()) {
             ItemStack itemStack = entry.getKey();
             String amountString = getAmountString(itemStack, entry.getValue());
-            var builder = Component.text().color(NamedTextColor.RED).append(Component.text(Lang.t("recipe-complete.missing-prefix"))).hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text(Lang.t("recipe-complete.hover-recipe-depth", session.getRecipeDepth())))));
-
-            builder.append(getClickableItemName(itemStack));
-            builder.append(Component.text().color(NamedTextColor.GREEN).append(Component.text(" x")).append(Component.text(amountString)));
+            String[] parts = splitAround(Lang.t("recipe-complete.missing", COMPONENT_PLACEHOLDER, amountString));
+            var builder = Component.text().color(NamedTextColor.RED)
+                .append(Component.text(parts[0]))
+                .append(getClickableItemName(itemStack))
+                .append(Component.text().color(NamedTextColor.GREEN).append(Component.text(parts[1])))
+                .hoverEvent(HoverEvent.showText(Component.text().color(NamedTextColor.YELLOW).append(Component.text(Lang.t("recipe-complete.hover-recipe-depth", session.getRecipeDepth())))));
             p.sendMessage(builder);
         }
     }

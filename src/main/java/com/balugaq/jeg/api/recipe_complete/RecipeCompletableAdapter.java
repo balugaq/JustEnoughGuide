@@ -65,7 +65,7 @@ public interface RecipeCompletableAdapter {
     }
 
     static void addJEGButton(@NotNull SlimefunItem slimefunItem, @NotNull BlockMenu blockMenu, @Range(from = 0, to = 53) int slot) {
-        blockMenu.replaceExistingItem(slot, Converter.getItem(Models.JEG_RECIPE_COMPLETE_BUTTON));
+        blockMenu.replaceExistingItem(slot, Converter.getItem(Models.jegRecipeCompleteButton()));
         blockMenu.addMenuClickHandler(slot, (player, slot1, item, action) -> {
             if (!Bukkit.getPluginManager().isPluginEnabled("JustEnoughGuide")) {
                 Lang.sendMessage(player, "recipe-complete.plugin-disabled");

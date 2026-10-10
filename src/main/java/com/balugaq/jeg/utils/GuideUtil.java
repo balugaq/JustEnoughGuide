@@ -253,7 +253,7 @@ public class GuideUtil {
         for (int ss : format.getChars(Formats.Char.RTS)) {
             menu.addItem(
                 ss,
-                PatchScope.RealTimeSearch.patch(p, Models.RTS_ITEM),
+                PatchScope.RealTimeSearch.patch(p, Models.rtsItem()),
                 (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.RTSButtonClickEvent(
                         pl, itemstack, slot, action, menu, getLastGuide(pl)))
                     .ifSuccess(() -> {
@@ -552,7 +552,7 @@ public class GuideUtil {
     public static void addSlimefunRecipeEditButton(ChestMenu menu, Player p, PlayerProfile profile, SlimefunItem item, Format format) {
         if (JustEnoughGuide.getIntegrationManager().isEnabledSlimeFunRecipe() && p.isOp()) {
             for (int s : format.getChars(Formats.Char.RECIPE_EDIT)) {
-                menu.addItem(s, PatchScope.SlimefunRecipeEdit.patch(profile, Models.SLIMEFUN_RECIPE_EDIT), (player, slot, itemStack, action) -> {
+                menu.addItem(s, PatchScope.SlimefunRecipeEdit.patch(profile, Models.slimefunRecipeEdit()), (player, slot, itemStack, action) -> {
                     SlimeFunRecipeIntegrationMain.openGui(player, item);
                     return false;
                 });
@@ -635,7 +635,6 @@ public class GuideUtil {
         return tryPatchPlayerProfile(profile);
     }
 
-    @Nullable
     public static PlayerProfile getProfile(OfflinePlayer player) {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) return null;
@@ -1124,7 +1123,7 @@ public class GuideUtil {
             return;
         }
         for (int s : format.getChars(Formats.Char.BIG_RECIPE)) {
-            menu.addItem(s, PatchScope.BigRecipe.patch(p, Models.SPECIAL_MENU_ITEM), (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.BigRecipeButtonClickEvent(pl, itemstack, slot, action, menu, getLastGuide(pl))).ifSuccess(() -> {
+            menu.addItem(s, PatchScope.BigRecipe.patch(p, Models.specialMenuItem()), (pl, slot, itemstack, action) -> EventUtil.callEvent(new GuideEvents.BigRecipeButtonClickEvent(pl, itemstack, slot, action, menu, getLastGuide(pl))).ifSuccess(() -> {
                 try {
                     SpecialMenuProvider.open(pl, profile, getLastGuideMode(pl), item);
                 } catch (InstantiationException

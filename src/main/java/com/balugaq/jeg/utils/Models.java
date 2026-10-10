@@ -17,176 +17,278 @@
 
 package com.balugaq.jeg.utils;
 
-import com.balugaq.jeg.api.recipe_complete.CompletionBehaviour;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
+ * 静态图标 / 注册物品的文案模型。
+ * <p>
+ * 所有带文案的图标均为<b>懒加载</b>（首次调用对应方法时才构建），
+ * 因为类的静态初始化可能早于 {@link Lang#load}，静态 final 常量会在语言文件加载前
+ * 构建出「键名物品」。文案统一来自语言文件 {@code models.*} 节。
+ * <p>
+ * 语言文件 lore 行若<b>整行</b>形如 {@code {models.xxx}}，会在构建时替换为对应语言键的翻译，
+ * 用于复用公共说明行（如配方补全的点击机制），避免多处维护同一句文案。
+ *
  * @author balugaq
  * @since 1.3
  */
+@NullMarked
 public class Models {
-    public static final String RECIPE_COMPLETE_BOOK_MECHANISM_1 = "&a左键&e点击打开配方书";
-    public static final String RECIPE_COMPLETE_BOOK_MECHANISM_2 = "&a右键&e点击可再次补全";
-    public static final String RECIPE_COMPLETE_BOOK_MECHANISM_3 = "&e补全后再次&aShift+右键&e点击配方书补全64次";
-    public static final String RECIPE_COMPLETE_GUI_MECHANISM_1 = "&a左键&e点击物品补全1次";
-    public static final String RECIPE_COMPLETE_GUI_MECHANISM_2 = "&a右键&e点击物品补全64次";
-    public static final ItemStack RTS_ITEM =
-        Converter.getItem(new SlimefunItemStack("_UI_RTS_ICON", Converter.getItem(Material.ANVIL, "&b实时搜索", "")));
-    public static final ItemStack SPECIAL_MENU_ITEM = Converter.getItem(new SlimefunItemStack(
-        "_UI_SPECIAL_MENU_ICON", Converter.getItem(Material.COMPASS, "&b超大配方", "", "&a点击打开超大配方(若有)")));
-    public static final ItemStack INPUT_TEXT_ICON = Converter.getItem(new SlimefunItemStack(
-        "_UI_RTS_INPUT_TEXT_ICON",
-        Converter.getItem(
-            Material.PAPER,
-            "&f搜索: &7在上方输入搜索词",
-            "&fTips:",
-            "&7 - &e左侧物品为返回键",
-            "&7 - &e中间物品为按键上一页",
-            "&7 - &e右侧物品为按键下一页"
-        )
-    ));
-    public static final ItemStack JEG_GUIDE_GROUP = Converter.getItem(
-        new SlimefunItemStack("JEG_JEG_GUIDE_GROUP", Converter.getItem(Material.KNOWLEDGE_BOOK, "&bJEG 高阶指南书使用指南")));
-    public static final ItemStack HIDDEN_ITEMS_GROUP = Converter.getItem(
-        new SlimefunItemStack("JEG_HIDDEN_ITEMS_GROUP", Converter.getItem(Material.BARRIER, "&c隐藏物品")));
-    public static final ItemStack NEXCAVATE_ITEMS_GROUP = Converter.getItem(new SlimefunItemStack(
-        "JEG_NEXCAVATE_ITEMS_GROUP_ICON", Converter.getItem(Material.BLACKSTONE, "&b文明复兴物品")));
-    public static final ItemStack VANILLA_ITEMS_GROUP = Converter.getItem(
-        new SlimefunItemStack("JEG_VANILLA_ITEMS_GROUP", Converter.getItem(Material.CRAFTING_TABLE, "&7原版物品")));
-    public static final ItemStack RECIPE_COMPLETABLE_GROUP = Converter.getItem(
-        new SlimefunItemStack("JEG_RECIPE_COMPLETABLE_GROUP", Converter.getItem(Material.CRAFTING_TABLE, "&b支持配方补全的机器")));
-    public static final ItemStack JEG_ITEMS_GROUP = Converter.getItem(
-        new SlimefunItemStack("JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, "&b配方补全书")));
-    public static final ItemStack REPLACEMENT_CARDS_GROUP = Converter.getItem(
-        new SlimefunItemStack("JEG_REPLACEMENT_CARDS_GROUP", Converter.getItem(Material.PAPER, "&b替换卡 - 伴生物品")));
-    public static final ItemStack BANNED_ITEMS_GROUP = Converter.getItem(
-        new SlimefunItemStack("JEG_BANNED_ITEMS_GROUP", Converter.getItem(Material.COMMAND_BLOCK, "&c已禁用的物品")));
-    public static final ItemStack MULTI_BLOCK_BUILDER_ITEMS_GROUP = Converter.getItem(
-        new SlimefunItemStack("MULTI_BLOCK_BUILDER_ITEMS_GROUP", Converter.getItem(Material.BRICKS, "&b多方块建筑物品")));
+    private static final String KEY = "models.";
+    private static final Pattern INCLUDE_LINE = Pattern.compile("^\\{([a-z0-9.\\-]+)}$");
+
+    /** 纯装饰边框，无文案，不涉及翻译，保持常量。 */
     public static final ItemStack KEYBIND_ACTION_BORDER = Converter.getItem(
         Material.YELLOW_STAINED_GLASS_PANE, " ",
         " "
     );
-    public static final SlimefunItemStack RECIPE_COMPLETE_GUIDE = new SlimefunItemStack(
-        "JEG_RECIPE_COMPLETE_BOOK",
-        Converter.getItem(
-            Material.SLIME_BALL,
-            "&b配方补全书",
-            "",
-            "&f点击进行配方补全（使用方法见说明）",
-            RECIPE_COMPLETE_BOOK_MECHANISM_1,
-            RECIPE_COMPLETE_BOOK_MECHANISM_2,
-            RECIPE_COMPLETE_BOOK_MECHANISM_3
-        )
-    );
-    public static final SlimefunItemStack USAGE_INFO = new SlimefunItemStack(
-        "JEG_RECIPE_COMPLETE_USAGE_INFO",
-        Converter.getItem(
-            Material.PAPER,
-            "&a使用方法",
-            "",
-            "&f1. &e将配方补全书放到你的物品栏里",
-            "&f2. &e右键打开任意一个适配配方补全的机器界面（如快捷机器）",
-            "&f3. &e然后左键点击配方补全书",
-            "&f4. &e选择你要补全的物品"
-        )
-    );
-    public static final SlimefunItemStack MECHANISM = new SlimefunItemStack(
-        "JEG_RECIPE_COMPLETE_MECHANISM",
-        Converter.getItem(
-            Material.PAPER,
-            "&a机制",
-            "",
-            "&7优先使用玩家背包中的物品进行补全配方",
-            "&7如果连接了网络，会尝试在网络中获取配方材料（仅网络拓展有效）",
-            "&7如果连接了AE网络，会尝试在AE网络中获取配方材料",
-            "&7连接解释: ",
-            "&7被进行配方补全的机器界面所对应的机器的东西南北上下任一方向紧贴的方块连接了网络/AE网络",
-            "&7即视为被进行配方补全的机器界面所对应的机器连接了网络/AE网络（不占用网络/AE网络节点）",
-            "",
-            "&9===配方书点击机制===",
-            RECIPE_COMPLETE_BOOK_MECHANISM_1,
-            RECIPE_COMPLETE_BOOK_MECHANISM_2,
-            RECIPE_COMPLETE_BOOK_MECHANISM_3,
-            "&9===补全界面点击机制===",
-            RECIPE_COMPLETE_GUI_MECHANISM_1,
-            RECIPE_COMPLETE_GUI_MECHANISM_2,
-            "&e可在设置中更改左右键补全的次数"
-        )
-    );
-    public static final SlimefunItemStack SUPPORTED_ADDONS_INFO = new SlimefunItemStack(
-        "JEG_RECIPE_COMPLETE_SUPPORTED_ADDONS_INFO",
-        Converter.getItem(
-            Material.PAPER,
-            "&a对以下附属的部分机器适配了配方补全",
-            "&7如需适配更多可在 JustEnoughGuide GitHub 提交 issue",
-            "",
-            "&7- &a多方块结构",
-            "&7- &a快捷机器",
-            "&7- &a乱序技艺 2.0-Preview",
-            "&7- &a乱序技艺 2.0",
-            "&7- &a乱序技艺 2.0 改版",
-            "&7- &a无尽贪婪",
-            "&7- &a无尽贪婪2",
-            "&7- &a逻辑工艺",
-            "&7- &a网络",
-            "&7- &a网络拓展",
-            "&7- &a黑曜石科技",
-            "&7- &a粘液AE",
-            "&7- &a蓬松机器",
-            "&7- &a粘液匠魂",
-            "&7- &a星系",
-            "&7- &a美食家",
-            "&7- &aRyken自定义附属",
-            "&7- &a基岩科技",
-            "&7- &a炼金术自传",
-            "&7- &a粘土科技",
-            "&7- &a无底存储",
-            "&7- &a简易工具",
-            "&7- &a农耕工艺",
-            "&7- &a化学工程",
-            "&7- &a无尽压缩",
-            "&7- &a魔法",
-            "&7- &a青山科技",
-            "&7- &a迷狱生机"
-        )
-    );
 
-    public static final SlimefunItemStack JEG_RECIPE_COMPLETE_BUTTON = new SlimefunItemStack(
-        "JEG_RECIPE_COMPLETE_BUTTON",
-        Material.KNOWLEDGE_BOOK,
-        "&6配方补全",
-        "&7点击打开配方补全界面",
-        "&9===配方书点击机制===",
-        RECIPE_COMPLETE_BOOK_MECHANISM_1,
-        RECIPE_COMPLETE_BOOK_MECHANISM_2,
-        RECIPE_COMPLETE_BOOK_MECHANISM_3,
-        "&e可在设置中更改左右键补全的次数"
-    );
+    private static @Nullable ItemStack rtsItem;
+    private static @Nullable ItemStack specialMenuItem;
+    private static @Nullable ItemStack inputTextIcon;
+    private static @Nullable ItemStack itemMarkBackground;
+    private static @Nullable ItemStack slimefunRecipeEdit;
+    private static @Nullable ItemStack jegGuideGroup;
+    private static @Nullable ItemStack hiddenItemsGroup;
+    private static @Nullable ItemStack nexcavateItemsGroup;
+    private static @Nullable ItemStack vanillaItemsGroup;
+    private static @Nullable ItemStack recipeCompletableGroup;
+    private static @Nullable ItemStack jegItemsGroup;
+    private static @Nullable ItemStack replacementCardsGroup;
+    private static @Nullable ItemStack bannedItemsGroup;
+    private static @Nullable ItemStack multiBlockBuilderItemsGroup;
+    private static @Nullable SlimefunItemStack recipeCompleteGuide;
+    private static @Nullable SlimefunItemStack usageInfo;
+    private static @Nullable SlimefunItemStack mechanism;
+    private static @Nullable SlimefunItemStack supportedAddonsInfo;
+    private static @Nullable SlimefunItemStack jegRecipeCompleteButton;
+    private static @Nullable SlimefunItemStack customLagBlock;
 
-    public static final ItemStack ITEM_MARK_BACKGROUND = Converter.getItem(
-        Material.GREEN_STAINED_GLASS_PANE,
-        "&a&l添加收藏物",
-        "",
-        "&7左键物品添加到收藏中"
-    );
+    public static ItemStack rtsItem() {
+        ItemStack item = rtsItem;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "_UI_RTS_ICON", Converter.getItem(Material.ANVIL, Lang.t(KEY + "rts-item.name"), "")));
+            rtsItem = item;
+        }
+        return item;
+    }
 
-    public static final ItemStack SLIMEFUN_RECIPE_EDIT = Converter.getItem(
-        Material.DIAMOND,
-        "&a&lSlimeFunRecipe 配方编辑器",
-        "",
-        "&e点击打开配方编辑器"
-    );
+    public static ItemStack specialMenuItem() {
+        ItemStack item = specialMenuItem;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "_UI_SPECIAL_MENU_ICON", icon(Material.COMPASS, "special-menu-item")));
+            specialMenuItem = item;
+        }
+        return item;
+    }
 
-    public static final SlimefunItemStack CUSTOM_LAG_BLOCK = new SlimefunItemStack(
-        "JEG_CUSTOM_LAG_BLOCK",
-        Converter.getItem(
-            Material.BEDROCK,
-            "&a自定义延时器",
-            "&a放置后打开界面，可设定该机器粘液刻耗时",
-            "&c仅 OP 可使用"
-    ));
+    public static ItemStack inputTextIcon() {
+        ItemStack item = inputTextIcon;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "_UI_RTS_INPUT_TEXT_ICON", icon(Material.PAPER, "input-text-icon")));
+            inputTextIcon = item;
+        }
+        return item;
+    }
+
+    public static ItemStack itemMarkBackground() {
+        ItemStack item = itemMarkBackground;
+        if (item == null) {
+            item = icon(Material.GREEN_STAINED_GLASS_PANE, "item-mark-background");
+            itemMarkBackground = item;
+        }
+        return item;
+    }
+
+    public static ItemStack slimefunRecipeEdit() {
+        ItemStack item = slimefunRecipeEdit;
+        if (item == null) {
+            item = icon(Material.DIAMOND, "slimefun-recipe-edit");
+            slimefunRecipeEdit = item;
+        }
+        return item;
+    }
+
+    public static ItemStack jegGuideGroup() {
+        ItemStack item = jegGuideGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_JEG_GUIDE_GROUP", Converter.getItem(Material.KNOWLEDGE_BOOK, Lang.t(KEY + "jeg-guide-group.name"))));
+            jegGuideGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack hiddenItemsGroup() {
+        ItemStack item = hiddenItemsGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_HIDDEN_ITEMS_GROUP", Converter.getItem(Material.BARRIER, Lang.t(KEY + "hidden-items-group.name"))));
+            hiddenItemsGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack nexcavateItemsGroup() {
+        ItemStack item = nexcavateItemsGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_NEXCAVATE_ITEMS_GROUP_ICON", Converter.getItem(Material.BLACKSTONE, Lang.t(KEY + "nexcavate-items-group.name"))));
+            nexcavateItemsGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack vanillaItemsGroup() {
+        ItemStack item = vanillaItemsGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_VANILLA_ITEMS_GROUP", Converter.getItem(Material.CRAFTING_TABLE, Lang.t(KEY + "vanilla-items-group.name"))));
+            vanillaItemsGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack recipeCompletableGroup() {
+        ItemStack item = recipeCompletableGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_RECIPE_COMPLETABLE_GROUP", Converter.getItem(Material.CRAFTING_TABLE, Lang.t(KEY + "recipe-completable-group.name"))));
+            recipeCompletableGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack jegItemsGroup() {
+        ItemStack item = jegItemsGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_JEG_ITEMS_GROUP", Converter.getItem(Material.BOOK, Lang.t(KEY + "jeg-items-group.name"))));
+            jegItemsGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack replacementCardsGroup() {
+        ItemStack item = replacementCardsGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_REPLACEMENT_CARDS_GROUP", Converter.getItem(Material.PAPER, Lang.t(KEY + "replacement-cards-group.name"))));
+            replacementCardsGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack bannedItemsGroup() {
+        ItemStack item = bannedItemsGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "JEG_BANNED_ITEMS_GROUP", Converter.getItem(Material.COMMAND_BLOCK, Lang.t(KEY + "banned-items-group.name"))));
+            bannedItemsGroup = item;
+        }
+        return item;
+    }
+
+    public static ItemStack multiBlockBuilderItemsGroup() {
+        ItemStack item = multiBlockBuilderItemsGroup;
+        if (item == null) {
+            item = Converter.getItem(new SlimefunItemStack(
+                "MULTI_BLOCK_BUILDER_ITEMS_GROUP", Converter.getItem(Material.BRICKS, Lang.t(KEY + "multi-block-builder-items-group.name"))));
+            multiBlockBuilderItemsGroup = item;
+        }
+        return item;
+    }
+
+    public static SlimefunItemStack recipeCompleteGuide() {
+        SlimefunItemStack item = recipeCompleteGuide;
+        if (item == null) {
+            item = sfIcon("JEG_RECIPE_COMPLETE_BOOK", Material.SLIME_BALL, "recipe-complete-guide");
+            recipeCompleteGuide = item;
+        }
+        return item;
+    }
+
+    public static SlimefunItemStack usageInfo() {
+        SlimefunItemStack item = usageInfo;
+        if (item == null) {
+            item = sfIcon("JEG_RECIPE_COMPLETE_USAGE_INFO", Material.PAPER, "usage-info");
+            usageInfo = item;
+        }
+        return item;
+    }
+
+    public static SlimefunItemStack mechanism() {
+        SlimefunItemStack item = mechanism;
+        if (item == null) {
+            item = sfIcon("JEG_RECIPE_COMPLETE_MECHANISM", Material.PAPER, "mechanism");
+            mechanism = item;
+        }
+        return item;
+    }
+
+    public static SlimefunItemStack supportedAddonsInfo() {
+        SlimefunItemStack item = supportedAddonsInfo;
+        if (item == null) {
+            item = sfIcon("JEG_RECIPE_COMPLETE_SUPPORTED_ADDONS_INFO", Material.PAPER, "supported-addons-info");
+            supportedAddonsInfo = item;
+        }
+        return item;
+    }
+
+    public static SlimefunItemStack jegRecipeCompleteButton() {
+        SlimefunItemStack item = jegRecipeCompleteButton;
+        if (item == null) {
+            item = sfIcon("JEG_RECIPE_COMPLETE_BUTTON", Material.KNOWLEDGE_BOOK, "jeg-recipe-complete-button");
+            jegRecipeCompleteButton = item;
+        }
+        return item;
+    }
+
+    public static SlimefunItemStack customLagBlock() {
+        SlimefunItemStack item = customLagBlock;
+        if (item == null) {
+            item = sfIcon("JEG_CUSTOM_LAG_BLOCK", Material.BEDROCK, "custom-lag-block");
+            customLagBlock = item;
+        }
+        return item;
+    }
+
+    /**
+     * 构建 {@code models.<key>} 定义的图标：name 取 {@code <key>.name}，lore 取 {@code <key>.lore}
+     * （含 {@code {models.xxx}} 行内引用展开）。
+     */
+    private static ItemStack icon(Material material, String key) {
+        return Converter.getItem(material, Lang.t(KEY + key + ".name"), lore(KEY + key + ".lore"));
+    }
+
+    /** 构建注册用 {@link SlimefunItemStack}（物品 ID 保持与历史版本一致）。 */
+    private static SlimefunItemStack sfIcon(String id, Material material, String key) {
+        return new SlimefunItemStack(id, icon(material, key));
+    }
+
+    /**
+     * 取 lore 列表并展开行内引用：整行形如 {@code {models.xxx}} 的行会被替换为对应语言键的翻译。
+     */
+    private static List<String> lore(String key) {
+        List<String> out = new ArrayList<>();
+        for (String line : Lang.lines(key)) {
+            Matcher matcher = INCLUDE_LINE.matcher(line);
+            out.add(matcher.matches() ? Lang.t(matcher.group(1)) : line);
+        }
+        return out;
+    }
 }

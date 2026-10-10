@@ -77,19 +77,19 @@ public interface NetworksSource extends ItemSource {
                     got += gotten.getAmount();
                 }
                 if (!subscribedBefore) FeedbackSendable.unsubscribe(player, loc); // 恢复
-                if (got >= need) return got;
             } else {
                 var gotten = root.getItemStack(request);
                 if (gotten != null && gotten.getType() != Material.AIR) {
                     got += gotten.getAmount();
                 }
-                if (got >= need) return got;
             }
+            if (got >= need) return got;
         }
 
         return got;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     default long countAmount(RecipeCompleteSession session, ItemStack template) {
         Set<NetworkRoot> roots = (Set<NetworkRoot>) session.getCache(this, Set.class);

@@ -35,6 +35,7 @@ import org.jspecify.annotations.NullMarked;
  * @author balugaq
  * @since 2.1
  */
+@SuppressWarnings("deprecation")
 @NullMarked
 @Getter
 public enum CompletionBehaviour {

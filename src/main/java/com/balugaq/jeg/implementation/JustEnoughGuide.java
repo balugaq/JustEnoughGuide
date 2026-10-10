@@ -291,6 +291,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     /**
      * Initializes the plugin and sets up all necessary components.
      */
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void onEnable() {
         instance = this;

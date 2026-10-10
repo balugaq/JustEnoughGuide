@@ -82,11 +82,12 @@ recipe-complete:
   insufficient-space: "&e[配方补全] 可供放置材料的位置不足！至多放置 {0} / {1} 份材料！({2}%)"
   # {0}: 物品与数量描述
   cannot-place: "&c[配方补全] 无法放置物品: {0}"
-  trying-prefix: "===尝试补全 "
-  trying-suffix: " 的材料==="
+  # {0}: 物品名（可点击，运行时以哨兵占位并拆分嵌入组件）
+  trying: "===尝试补全 {0} 的材料==="
   # {0}: 配方深度
   hover-recipe-depth: "配方深度:{0}"
-  missing-prefix: "[配方补全] 缺少 "
+  # {0}: 物品名（可点击，运行时以哨兵占位并拆分嵌入组件）, {1}: 数量描述
+  missing: "[配方补全] 缺少 {0} x{1}"
   # {0}: 物品名
   last-item: "&6上次补全物品: {0}"
   # {0}: 次数描述
@@ -94,14 +95,13 @@ recipe-complete:
   # {0}: 次数描述
   click-right: "&a右键&e点击物品补全 {0}"
   in-progress: "&a你正在进行配方补全，如果是误触进入，请点击这里"
-  # {0}: 数量描述
-  stacks: " ({0} 组"
-  # {0}: 零头个数
-  stacks-plus: " + {0} 个"
+  # {0}: 总数量, {1}: 组数
+  amount-stacks: "{0} ({1} 组)"
+  # {0}: 总数量, {1}: 组数, {2}: 零头个数
+  amount-with-stacks: "{0} ({1} 组 + {2} 个)"
   open-recipe-hover: "点击打开物品配方"
 
-
-# /sf recipe-complete 等替换卡适配指令的反馈
+# /sf banitem/unbanitem 等替换卡适配指令的反馈
 rc:
   # {0}: 指令名
   taken-over: "&e[JustEnoughGuide] JustEnoughGuide 已接管 {0} 指令的执行。如出现 bug，请反馈至 https://github.com/balugaq/JustEnoughGuide"
@@ -124,6 +124,138 @@ rc:
   item-already-banned-suffix: " 已经是禁用状态."
   item-banned: "&a[JustEnoughGuide] 已禁用物品 {0}."
   item-banned-prefix: "[JustEnoughGuide] 已禁用物品 "
+
+# Models 静态图标 / 注册物品的文案。lore 中整行形如 {models.xxx} 的行会被替换为对应键的翻译（用于复用公共说明行）。
+models:
+  book-mechanism-1: "&a左键&e点击打开配方书"
+  book-mechanism-2: "&a右键&e点击可再次补全"
+  book-mechanism-3: "&e补全后再次&aShift+右键&e点击配方书补全64次"
+  gui-mechanism-1: "&a左键&e点击物品补全1次"
+  gui-mechanism-2: "&a右键&e点击物品补全64次"
+  rts-item:
+    name: "&b实时搜索"
+  special-menu-item:
+    name: "&b超大配方"
+    lore:
+      - ""
+      - "&a点击打开超大配方(若有)"
+  input-text-icon:
+    name: "&f搜索: &7在上方输入搜索词"
+    lore:
+      - "&fTips:"
+      - "&7 - &e左侧物品为返回键"
+      - "&7 - &e中间物品为按键上一页"
+      - "&7 - &e右侧物品为按键下一页"
+  jeg-guide-group:
+    name: "&bJEG 高阶指南书使用指南"
+  hidden-items-group:
+    name: "&c隐藏物品"
+  nexcavate-items-group:
+    name: "&b文明复兴物品"
+  vanilla-items-group:
+    name: "&7原版物品"
+  recipe-completable-group:
+    name: "&b支持配方补全的机器"
+  jeg-items-group:
+    name: "&b配方补全书"
+  replacement-cards-group:
+    name: "&b替换卡 - 伴生物品"
+  banned-items-group:
+    name: "&c已禁用的物品"
+  multi-block-builder-items-group:
+    name: "&b多方块建筑物品"
+  recipe-complete-guide:
+    name: "&b配方补全书"
+    lore:
+      - ""
+      - "&f点击进行配方补全（使用方法见说明）"
+      - "{models.book-mechanism-1}"
+      - "{models.book-mechanism-2}"
+      - "{models.book-mechanism-3}"
+  usage-info:
+    name: "&a使用方法"
+    lore:
+      - ""
+      - "&f1. &e将配方补全书放到你的物品栏里"
+      - "&f2. &e右键打开任意一个适配配方补全的机器界面（如快捷机器）"
+      - "&f3. &e然后左键点击配方补全书"
+      - "&f4. &e选择你要补全的物品"
+  mechanism:
+    name: "&a机制"
+    lore:
+      - ""
+      - "&7优先使用玩家背包中的物品进行补全配方"
+      - "&7如果连接了网络，会尝试在网络中获取配方材料（仅网络拓展有效）"
+      - "&7如果连接了AE网络，会尝试在AE网络中获取配方材料"
+      - "&7连接解释: "
+      - "&7被进行配方补全的机器界面所对应的机器的东西南北上下任一方向紧贴的方块连接了网络/AE网络"
+      - "&7即视为被进行配方补全的机器界面所对应的机器连接了网络/AE网络（不占用网络/AE网络节点）"
+      - ""
+      - "&9===配方书点击机制==="
+      - "{models.book-mechanism-1}"
+      - "{models.book-mechanism-2}"
+      - "{models.book-mechanism-3}"
+      - "&9===补全界面点击机制==="
+      - "{models.gui-mechanism-1}"
+      - "{models.gui-mechanism-2}"
+      - "&e可在设置中更改左右键补全的次数"
+  supported-addons-info:
+    name: "&a对以下附属的部分机器适配了配方补全"
+    lore:
+      - "&7如需适配更多可在 JustEnoughGuide GitHub 提交 issue"
+      - ""
+      - "&7- &a多方块结构"
+      - "&7- &a快捷机器"
+      - "&7- &a乱序技艺 2.0-Preview"
+      - "&7- &a乱序技艺 2.0"
+      - "&7- &a乱序技艺 2.0 改版"
+      - "&7- &a无尽贪婪"
+      - "&7- &a无尽贪婪2"
+      - "&7- &a逻辑工艺"
+      - "&7- &a网络"
+      - "&7- &a网络拓展"
+      - "&7- &a黑曜石科技"
+      - "&7- &a粘液AE"
+      - "&7- &a蓬松机器"
+      - "&7- &a粘液匠魂"
+      - "&7- &a星系"
+      - "&7- &a美食家"
+      - "&7- &aRyken自定义附属"
+      - "&7- &a基岩科技"
+      - "&7- &a炼金术自传"
+      - "&7- &a粘土科技"
+      - "&7- &a无底存储"
+      - "&7- &a简易工具"
+      - "&7- &a农耕工艺"
+      - "&7- &a化学工程"
+      - "&7- &a无尽压缩"
+      - "&7- &a魔法"
+      - "&7- &a青山科技"
+      - "&7- &a迷狱生机"
+  jeg-recipe-complete-button:
+    name: "&6配方补全"
+    lore:
+      - "&7点击打开配方补全界面"
+      - "&9===配方书点击机制==="
+      - "{models.book-mechanism-1}"
+      - "{models.book-mechanism-2}"
+      - "{models.book-mechanism-3}"
+      - "&e可在设置中更改左右键补全的次数"
+  item-mark-background:
+    name: "&a&l添加收藏物"
+    lore:
+      - ""
+      - "&7左键物品添加到收藏中"
+  slimefun-recipe-edit:
+    name: "&a&lSlimeFunRecipe 配方编辑器"
+    lore:
+      - ""
+      - "&e点击打开配方编辑器"
+  custom-lag-block:
+    name: "&a自定义延时器"
+    lore:
+      - "&a放置后打开界面，可设定该机器粘液刻耗时"
+      - "&c仅 OP 可使用"
 
 # 新手指南书（JEG 使用指南）中的运行时提示
 guidebook:

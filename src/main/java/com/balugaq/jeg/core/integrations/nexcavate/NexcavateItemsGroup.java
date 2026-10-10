@@ -67,7 +67,7 @@ public class NexcavateItemsGroup extends BaseGroup<NexcavateItemsGroup> {
     }
 
     protected NexcavateItemsGroup(NexcavateItemsGroup nexcavateItemsGroup, int page) {
-        super(nexcavateItemsGroup.key, Models.NEXCAVATE_ITEMS_GROUP);
+        super(nexcavateItemsGroup.key, Models.nexcavateItemsGroup());
         this.page = page;
         this.slimefunItemList = nexcavateItemsGroup.slimefunItemList;
         this.pageMap.put(page, this);

@@ -137,7 +137,7 @@ public class ItemMarkGroup extends BaseGroup<ItemMarkGroup> {
                 ? relocation.getBorder(implementation, player)
                 : format.getChars(Formats.Char.BACKGROUND),
             profile,
-            Models.ITEM_MARK_BACKGROUND
+            Models.itemMarkBackground()
         );
 
         List<Integer> contentSlots = itemGroup instanceof BookmarkRelocation relocation

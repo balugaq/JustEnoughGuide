@@ -55,7 +55,7 @@ public class ItemsSetup {
 
         RECIPE_COMPLETE_GUIDE = new RecipeCompleteGuide(
             GroupSetup.jegItemsGroup,
-            Models.RECIPE_COMPLETE_GUIDE,
+            Models.recipeCompleteGuide(),
             RecipeType.ENHANCED_CRAFTING_TABLE,
             new ItemStack[] {
                 craftingTable, craftingTable, craftingTable,
@@ -64,15 +64,15 @@ public class ItemsSetup {
             }
         );
 
-        USAGE_INFO = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.USAGE_INFO, RecipeType.NULL, NO_RECIPE);
+        USAGE_INFO = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.usageInfo(), RecipeType.NULL, NO_RECIPE);
 
-        MECHANISM = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.MECHANISM, RecipeType.NULL, NO_RECIPE);
+        MECHANISM = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.mechanism(), RecipeType.NULL, NO_RECIPE);
 
-        SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.SUPPORTED_ADDONS_INFO, RecipeType.NULL, NO_RECIPE);
+        SUPPORTED_ADDONS_INFO = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.supportedAddonsInfo(), RecipeType.NULL, NO_RECIPE);
 
-        JEG_BUTTON = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.JEG_RECIPE_COMPLETE_BUTTON, RecipeType.NULL, NO_RECIPE);
+        JEG_BUTTON = new JEGSlimefunItem(GroupSetup.jegItemsGroup, Models.jegRecipeCompleteButton(), RecipeType.NULL, NO_RECIPE);
 
-        CUSTOM_LAG_BLOCK = new CustomLagBlock(GroupSetup.jegItemsGroup, Models.CUSTOM_LAG_BLOCK, RecipeType.NULL, NO_RECIPE);
+        CUSTOM_LAG_BLOCK = new CustomLagBlock(GroupSetup.jegItemsGroup, Models.customLagBlock(), RecipeType.NULL, NO_RECIPE);
     }
 
     public static void setup(SlimefunAddon addon) {

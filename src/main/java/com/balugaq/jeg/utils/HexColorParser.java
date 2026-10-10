@@ -51,7 +51,7 @@ public class HexColorParser {
             return input;
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Matcher matcher = ALL_PATTERNS.matcher(input);
 
         while (matcher.find()) {
