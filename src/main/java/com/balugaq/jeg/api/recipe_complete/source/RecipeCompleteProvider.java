@@ -175,7 +175,7 @@ public class RecipeCompleteProvider {
                 }
             }
         }
-        return 0;
+        return total;
     }
 
     public static void openSlimefun(RecipeCompleteSession session) {
