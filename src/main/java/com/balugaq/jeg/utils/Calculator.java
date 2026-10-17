@@ -80,10 +80,7 @@ public class Calculator {
             char c = expr.charAt(i);
 
             if (Character.isDigit(c) || c == '.') {
-                int j = i;
-                while (j < n && (Character.isDigit(expr.charAt(j)) || expr.charAt(j) == '.')) {
-                    j++;
-                }
+                int j = scanNumberEnd(expr, i);
 
                 boolean isPercentage = false;
                 if (j < n && expr.charAt(j) == '%') {
@@ -104,17 +101,21 @@ public class Calculator {
                 opStack.push(String.valueOf(c));
                 i++;
             } else if (c == ')') {
+                // 依次弹出运算符求值，直到遇到对应的 "("；
+                // 注意 peek 必须在循环内重新取，否则永远停不下来（历史 bug）
+                while (!opStack.isEmpty() && !opStack.peek().equals("(")) {
+                    calculateTop(numStack, opStack);
+                }
+
                 String pk = opStack.peek();
                 if (pk == null) {
                     throw new NumberFormatException("Brackets doesn't match: " + expression);
                 }
 
-                while (!pk.equals("(")) {
-                    calculateTop(numStack, opStack);
-                }
                 opStack.pop();
                 i++;
-            } else if ((c == '<' || c == '>') && i + 1 < n && expr.charAt(i + 1) == c) {
+            } else if (i + 1 < n && expr.charAt(i + 1) == c && (c == '<' || c == '>' || c == '*')) {
+                // 双字符运算符：<<、>>、**
                 String op = expr.substring(i, i + 2);
                 while (!opStack.isEmpty() && getPriority(opStack.peek()) >= getPriority(op)) {
                     calculateTop(numStack, opStack);
@@ -131,10 +132,7 @@ public class Calculator {
                         throw new NumberFormatException("Invalid positive signature: " + expression);
                     }
 
-                    int j = i + 1;
-                    while (j < n && (Character.isDigit(expr.charAt(j)) || expr.charAt(j) == '.')) {
-                        j++;
-                    }
+                    int j = scanNumberEnd(expr, i + 1);
 
                     boolean isPercentage = false;
                     if (j < n && expr.charAt(j) == '%') {
@@ -156,10 +154,7 @@ public class Calculator {
                         throw new NumberFormatException("Invalid negative signature: " + expression);
                     }
 
-                    int j = i + 1;
-                    while (j < n && (Character.isDigit(expr.charAt(j)) || expr.charAt(j) == '.')) {
-                        j++;
-                    }
+                    int j = scanNumberEnd(expr, i + 1);
 
                     boolean isPercentage = false;
                     if (j < n && expr.charAt(j) == '%') {
@@ -239,6 +234,36 @@ public class Calculator {
         }
 
         return expr;
+    }
+
+    /**
+     * 扫描从 {@code start} 开始的数字字面量的结束位置（不含）。
+     * 除普通小数外，支持科学计数法：{@code e}/{@code E} 后跟可选正负号和至少一位数字
+     * （如 {@code 1e3}、{@code 1.5E-2}）；不满足该格式时 {@code e} 不被吞入，
+     * 由后续字符处理逻辑按非法字符报错。
+     */
+    private static int scanNumberEnd(String expr, int start) {
+        int n = expr.length();
+        int j = start;
+        while (j < n && (Character.isDigit(expr.charAt(j)) || expr.charAt(j) == '.')) {
+            j++;
+        }
+
+        if (j < n && (expr.charAt(j) == 'e' || expr.charAt(j) == 'E')) {
+            int k = j + 1;
+            if (k < n && (expr.charAt(k) == '+' || expr.charAt(k) == '-')) {
+                k++;
+            }
+
+            if (k < n && Character.isDigit(expr.charAt(k))) {
+                while (k < n && Character.isDigit(expr.charAt(k))) {
+                    k++;
+                }
+                j = k;
+            }
+        }
+
+        return j;
     }
 
     private static BigDecimal parseNumber(String numStr) throws NumberFormatException {
