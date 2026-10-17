@@ -75,7 +75,6 @@ public interface ItemSource {
         Debug.debug("handling " + session + " :completeRecipeWithGuide");
         var event = session.getEvent();
         var ingredientSlots = session.getIngredientSlots();
-        var unordered = session.isUnordered();
         var recipeDepth = session.getRecipeDepth();
 
         Player player = GuideUtil.updatePlayer(event.getPlayer());
@@ -97,7 +96,6 @@ public interface ItemSource {
         Debug.debug("handling " + session + " :completeRecipeWithGuide#sub");
         var event = session.getEvent();
         var ingredientSlots = session.getIngredientSlots();
-        var unordered = session.isUnordered();
         var recipeDepth = session.getRecipeDepth();
 
         Player player = GuideUtil.updatePlayer(event.getPlayer());
@@ -113,7 +111,7 @@ public interface ItemSource {
 
         int maxTimes = times;
 
-        var craftResult = RecipeCompletionUtils.maxCraftable(maxTimes, unordered, ingredientSlots, interactor, choices);
+        var craftResult = RecipeCompletionUtils.maxCraftable(maxTimes, interactor, choices);
         if (craftResult.leftInt() <= 0) {
             // 无法放置
             Lang.sendMessage(player, "recipe-complete.no-space");
@@ -138,9 +136,11 @@ public interface ItemSource {
             if (choice == null) continue;
 
             ItemStack itemStack = RecipeCompletionUtils.toItemStacks(choice).getFirst();
+            var key = StackUtils.asKey(itemStack);
+            var preferred = craftResult.right().getOrDefault(key, IntSet.of());
             // Issue #64
             // 防止出现目标容器在计算期间容量变化导致无法推送物品
-            if (!interactor.fits(itemStack, i)) continue;
+            if (!interactor.fits(itemStack, i, preferred)) continue;
 
             int amt = itemStack.getAmount() * maxTimes;
             int receivedAmount = (int) RecipeCompleteProvider.getItemStack(session, itemStack, amt);
@@ -149,14 +149,13 @@ public interface ItemSource {
                     RecipeCompletionUtils.sendMissingMaterial(player, itemStack, amt - receivedAmount);
                 } else {
                     // schedule -> 补全材料的材料配方
-                    missingMap.compute(StackUtils.asKey(itemStack), (k, v) -> v == null ? amt - receivedAmount : v + amt - receivedAmount);
+                    missingMap.compute(key, (k, v) -> v == null ? amt - receivedAmount : v + amt - receivedAmount);
                 }
             }
 
             if (receivedAmount > 0) {
                 var stk = StackUtils.getAsQuantity(itemStack, receivedAmount);
-                var key = StackUtils.asKey(itemStack);
-                interactor.pushItem(stk, i, craftResult.right().getOrDefault(key, IntSet.of()));
+                interactor.pushItem(stk, i, preferred);
                 // 防止出现目标容器在计算期间容量变化导致无法推送物品
                 session.setPushed(session.getPushed() + receivedAmount - stk.getAmount());
                 if (stk.getAmount() > 0) {

@@ -233,13 +233,16 @@ public class RecipeCompletionUtils {
         return true;
     }
 
-    public static IntObjectPair<Map<ItemStack, IntSet>> maxCraftable(int maxTimes, boolean unordered, int[] ingredientSlots, ContainerInteractor interactor, List<@Nullable RecipeChoice> choices) {
-        if (unordered) {
+    /**
+     * 计算目标容器最多还能再存入多少份配方材料。
+     */
+    public static IntObjectPair<Map<ItemStack, IntSet>> maxCraftable(int maxTimes, ContainerInteractor interactor, List<@Nullable RecipeChoice> choices) {
+        if (interactor.unordered()) {
             int freeSlots = 0;
             // 这里存入每个物品可以在原有位置上再放多少
             Map<ItemStack, Long> leftCapacity = new HashMap<>();
             Map<ItemStack, IntSet> leftCapacitySlots = new HashMap<>();
-            for (var slot : ingredientSlots) {
+            for (var slot : interactor.ingredientSlots()) {
                 ItemStack stack = interactor.getExistingStack(slot);
                 if (stack == null || stack.getType() == Material.AIR) {
                     freeSlots++;
@@ -263,28 +266,35 @@ public class RecipeCompletionUtils {
             List<ItemStack> batch = batchMap.entrySet().stream().map(e -> StackUtils.getAsQuantity(e.getKey(), e.getValue())).toList();
             maxTimes = Math.min(maxTimes, maxCraftableUnordered(batch, leftCapacity, freeSlots, maxTimes));
             return IntObjectPair.of(maxTimes, leftCapacitySlots);
-        } else {
-            // ordered recipe
-            for (var slot : ingredientSlots) {
-                ItemStack stack = interactor.getExistingStack(slot);
-                for (var choice : choices) {
-                    if (choice == null) continue;
-                    var template = toItemStacks(choice).getFirst();
-                    if (stack != null && stack.getType() != Material.AIR) {
-                        if (stack.getAmount() >= template.getMaxStackSize() || !StackUtils.itemsMatch(stack, template)) {
-                            // 无法放置
-                            return IntObjectPair.of(0, null);
-                        }
-
-                        // already checked overstacked above
-                        maxTimes = Math.min(maxTimes, (template.getMaxStackSize() - stack.getAmount()) / template.getAmount());
-                    }
-                }
-            }
-            return IntObjectPair.of(maxTimes, Map.of());
         }
+
+        // ordered
+        int[] slots = interactor.ingredientSlots();
+        for (int i = 0; i < choices.size() && i < slots.length; i++) {
+            RecipeChoice choice = choices.get(i);
+            if (choice == null) continue;
+
+            ItemStack template = toItemStacks(choice).getFirst();
+            if (template.getType().isAir() || template.getAmount() <= 0) continue;
+
+            ItemStack existing = interactor.getExistingStack(slots[i]);
+            if (existing == null || existing.getType() == Material.AIR) {
+                maxTimes = Math.min(maxTimes, template.getMaxStackSize() / template.getAmount());
+            } else if (existing.getAmount() >= template.getMaxStackSize()) {
+                // 已满
+                return IntObjectPair.of(0, Map.of());
+            } else if (StackUtils.itemsMatch(existing, template)) {
+                // already checked overstacked items
+                maxTimes = Math.min(maxTimes, (template.getMaxStackSize() - existing.getAmount()) / template.getAmount());
+            } else {
+                // 其他物品占用了
+                return IntObjectPair.of(0, Map.of());
+            }
+        }
+        return IntObjectPair.of(maxTimes, Map.of());
     }
 
+    // todo: 这未免是一坨史，改回原来的 prefix 和 suffix 吧
     /**
      * 组件哨兵占位符：作为 {@link Lang#t(String, Object...)} 的参数传入，
      * 标记「可点击组件」（如物品名）在消息中的插入位置；
@@ -320,8 +330,11 @@ public class RecipeCompletionUtils {
         return "" + amount;
     }
 
-    public static Iterable<Integer> mergeSlots(IntSet slots1, int[] slots2) {
-        IntLinkedOpenHashSet set = new IntLinkedOpenHashSet(slots1);
+    /**
+     * 保序合并: slots1 在前，slots2 在后
+     */
+    public static IntLinkedOpenHashSet mergeSlots(@Nullable IntSet slots1, int[] slots2) {
+        IntLinkedOpenHashSet set = slots1 == null ? new IntLinkedOpenHashSet() : new IntLinkedOpenHashSet(slots1);
         for (int i : slots2) set.add(i);
         return set;
     }

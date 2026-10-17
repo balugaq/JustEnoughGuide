@@ -21,12 +21,12 @@ import com.balugaq.jeg.utils.BlockMenuUtil;
 import com.balugaq.jeg.utils.InventoryUtil;
 import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
-
 
 /**
  * @author balugaq
@@ -35,14 +35,44 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public
 interface ContainerInteractor {
+    boolean unordered();
+
+    int[] ingredientSlots();
+
     @Nullable ItemStack getExistingStack(int slot);
 
-    boolean fits(ItemStack stack, int ingredientIndex);
+    default IntSet makePreferredSlots(@Nullable IntSet preferredSlots, int ingredientIndex) {
+        if (unordered()) {
+            return RecipeCompletionUtils.mergeSlots(preferredSlots, ingredientSlots());
+        }
+        return IntSets.singleton(ingredientSlots()[ingredientIndex]);
+    }
 
-    void pushItem(ItemStack stack, int ingredientIndex, IntSet preferredSlots);
+    default boolean fits(ItemStack stack, int ingredientIndex, @Nullable IntSet preferredSlots) {
+        return fits(stack, makePreferredSlots(preferredSlots, ingredientIndex).toIntArray());
+    }
+
+
+    default void pushItem(ItemStack stack, int ingredientIndex, @Nullable IntSet preferredSlots) {
+        pushItem(stack, makePreferredSlots(preferredSlots, ingredientIndex).toIntArray());
+    }
+
+    boolean fits(ItemStack stack, int... slots);
+
+    void pushItem(ItemStack stack, int... slots);
 
     static ContainerInteractor slimefun(BlockMenu blockMenu, boolean unordered, int[] ingredientSlots) {
         return new ContainerInteractor() {
+
+            @Override
+            public boolean unordered() {
+                return unordered;
+            }
+
+            @Override
+            public int[] ingredientSlots() {
+                return ingredientSlots;
+            }
 
             @Override
             @Nullable
@@ -54,23 +84,29 @@ interface ContainerInteractor {
             }
 
             @Override
-            public boolean fits(ItemStack template, int ingredientIndex) {
-                return BlockMenuUtil.fits(blockMenu, template, unordered ? ingredientSlots : new int[]{ingredientSlots[ingredientIndex]});
+            public boolean fits(ItemStack stack, int... slots) {
+                return BlockMenuUtil.fits(blockMenu, stack, slots);
             }
 
             @Override
-            public void pushItem(ItemStack received, int ingredientIndex, IntSet preferredSlots) {
-                if (unordered) {
-                    BlockMenuUtil.pushItem(blockMenu, received, RecipeCompletionUtils.mergeSlots(preferredSlots, ingredientSlots));
-                } else {
-                    BlockMenuUtil.pushItem(blockMenu, received, ingredientSlots[ingredientIndex]);
-                }
+            public void pushItem(ItemStack stack, int... slots) {
+                BlockMenuUtil.pushItem(blockMenu, stack, slots);
             }
         };
     }
 
     static ContainerInteractor vanilla(Inventory inventory, boolean unordered, int[] ingredientSlots) {
         return new ContainerInteractor() {
+            @Override
+            public boolean unordered() {
+                return unordered;
+            }
+
+            @Override
+            public int[] ingredientSlots() {
+                return ingredientSlots;
+            }
+
             @Override
             public @Nullable ItemStack getExistingStack(int slot) {
                 if (slot < inventory.getSize()) {
@@ -80,17 +116,13 @@ interface ContainerInteractor {
             }
 
             @Override
-            public boolean fits(ItemStack received, int ingredientIndex) {
-                return InventoryUtil.fits(inventory, received, unordered ? ingredientSlots : new int[]{ingredientSlots[ingredientIndex]});
+            public boolean fits(ItemStack stack, int... slots) {
+                return InventoryUtil.fits(inventory, stack, slots);
             }
 
             @Override
-            public void pushItem(ItemStack received, int ingredientIndex, IntSet preferredSlots) {
-                if (unordered) {
-                    InventoryUtil.pushItem(inventory, received, RecipeCompletionUtils.mergeSlots(preferredSlots, ingredientSlots));
-                } else {
-                    InventoryUtil.pushItem(inventory, received, ingredientSlots[ingredientIndex]);
-                }
+            public void pushItem(ItemStack stack, int... slots) {
+                InventoryUtil.pushItem(inventory, stack, slots);
             }
         };
     }

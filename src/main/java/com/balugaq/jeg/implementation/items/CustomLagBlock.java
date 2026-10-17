@@ -25,7 +25,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -71,15 +70,15 @@ public class CustomLagBlock extends JEGSlimefunItem {
 
             @Override
             public void newInstance(BlockMenu menu, Block b) {
-                menu.addItem(0, getOperationItem(-1000), operate(b.getLocation(), -1000));
-                menu.addItem(1, getOperationItem(-100), operate(b.getLocation(), -100));
-                menu.addItem(2, getOperationItem(-10), operate(b.getLocation(), -10));
-                menu.addItem(3, getOperationItem(-1), operate(b.getLocation(), -1));
-                menu.addItem(4, getStatusItem(b.getLocation()), operate(b.getLocation(), -((int)1e9)));
-                menu.addItem(5, getOperationItem(1), operate(b.getLocation(), 1));
-                menu.addItem(6, getOperationItem(10), operate(b.getLocation(), 10));
-                menu.addItem(7, getOperationItem(100), operate(b.getLocation(), 100));
-                menu.addItem(8, getOperationItem(1000), operate(b.getLocation(), 1000));
+                menu.addItem(0, getOperationItem(-1000), operate(menu, -1000));
+                menu.addItem(1, getOperationItem(-100), operate(menu, -100));
+                menu.addItem(2, getOperationItem(-10), operate(menu, -10));
+                menu.addItem(3, getOperationItem(-1), operate(menu, -1));
+                menu.addItem(4, getStatusItem(b.getLocation()), operate(menu, -((int)1e9)));
+                menu.addItem(5, getOperationItem(1), operate(menu, 1));
+                menu.addItem(6, getOperationItem(10), operate(menu, 10));
+                menu.addItem(7, getOperationItem(100), operate(menu, 100));
+                menu.addItem(8, getOperationItem(1000), operate(menu, 1000));
             }
 
             @Override
@@ -123,9 +122,10 @@ public class CustomLagBlock extends JEGSlimefunItem {
         return Integer.parseInt(mss);
     }
 
-    public static ChestMenu.MenuClickHandler operate(Location location, int amt) {
+    public static ChestMenu.MenuClickHandler operate(BlockMenu menu, int amt) {
         return (p, s, i, a) -> {
-            StorageCacheUtils.setData(location, BS_MS, "" + Math.max(0, getCurrentStatus(location) + amt));
+            StorageCacheUtils.setData(menu.getLocation(), BS_MS, "" + Math.max(0, getCurrentStatus(menu.getLocation()) + amt));
+            menu.addItem(4, getStatusItem(menu.getLocation()), operate(menu, -((int)1e9)));
             return false;
         };
     }
