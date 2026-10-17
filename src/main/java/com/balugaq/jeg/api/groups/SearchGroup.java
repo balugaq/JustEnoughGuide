@@ -19,7 +19,10 @@ package com.balugaq.jeg.api.groups;
 
 import com.balugaq.jeg.api.SearchGroupLoader;
 import com.balugaq.jeg.api.objects.enums.FilterType;
+import com.balugaq.jeg.api.objects.enums.SearchMode;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
+import com.balugaq.jeg.implementation.option.SearchModeGuideOption;
+import com.balugaq.jeg.utils.DamerauLevenshtein;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.ItemStackUtil;
@@ -102,7 +105,14 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
     public final Player player;
     public final String searchTerm;
     public final boolean pinyin;
+    public final SearchMode searchMode;
     public final List<SlimefunItem> slimefunItemList;
+
+    /**
+     * 拉丁语种搜索的相关度门槛（0-100）：
+     * Damerau-Levenshtein 相关度达到该值的物品才会进入结果（整串 contains 命中恒为 100）。
+     */
+    public static final int LATIN_SIMILARITY_THRESHOLD = 50;
 
     public SearchGroup(
         SlimefunGuideImplementation implementation,
@@ -120,10 +130,14 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         load();
         this.page = 1;
         this.searchTerm = searchTerm;
-        this.pinyin = pinyin;
+        this.searchMode = SearchModeGuideOption.getSearchMode(player);
+        // 拼音只在 CJK 模式下可用，且要求配置语言支持（含 zh）与 pinyin-search 开关同时满足
+        this.pinyin = pinyin
+            && this.searchMode == SearchMode.CJK
+            && JustEnoughGuide.getConfigManager().languageSupportsPinyin();
         this.player = player;
         this.implementation = implementation;
-        this.slimefunItemList = filterItems(player, searchTerm, pinyin);
+        this.slimefunItemList = filterItems(player, searchTerm, this.pinyin);
         this.pageMap.put(1, this);
     }
 
@@ -443,8 +457,14 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             .toList());
 
         if (!searchTerm.isBlank()) {
-            result.addAll(matchItems(searchTerm, KEYWORD_CACHE));
-            result.addAll(matchItems(searchTerm, DISPLAY_RECIPES_CACHE));
+            switch (searchMode) {
+                case CJK -> {
+                    result.addAll(matchItems(searchTerm, KEYWORD_CACHE));
+                    result.addAll(matchItems(searchTerm, DISPLAY_RECIPES_CACHE));
+                }
+                case LATIN -> result.addAll(matchByLatinFit(player, items, searchTerm));
+                case NAIVE -> result.addAll(matchByContains(player, items, searchTerm));
+            }
         }
 
         // Filter items
@@ -456,11 +476,79 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
             result.addAll(items);
         }
 
-        if (pinyin && onlyAscii(searchTerm)) {
-            return sortByPinyinContinuity(result, searchTerm);
-        } else {
-            return sortByNameFit(result, searchTerm);
+        return switch (searchMode) {
+            case CJK -> pinyin && onlyAscii(searchTerm)
+                ? sortByPinyinContinuity(result, searchTerm)
+                : sortByNameFit(result, searchTerm);
+            case LATIN -> sortByLatinFit(player, result, searchTerm);
+            case NAIVE -> sortNaive(player, result);
+        };
+    }
+
+    private static String searchableName(Player player, SlimefunItem item) {
+        return ChatColor.stripColor(ItemStackUtil.getItemName(player, item)).toLowerCase(Locale.ROOT);
+    }
+
+    /** 黑名单/禁用表过滤（缓存索引在构建时已过滤，LATIN/NAIVE 模式绕过缓存需在此补上）。 */
+    private static boolean searchable(Player player, SlimefunItem item) {
+        String rawName = ItemStackUtil.getItemName(player, item);
+        return !rawName.isEmpty() && !inBlacklist(rawName) && !inBanlist(rawName);
+    }
+
+    /**
+     * 拉丁语种匹配：整串（含空格）与物品名做 Damerau-Levenshtein 相关度计算，
+     * 整串 contains 命中恒为满分；低于 {@link #LATIN_SIMILARITY_THRESHOLD} 的不进结果。
+     */
+    private static Set<SlimefunItem> matchByLatinFit(Player player, Set<SlimefunItem> items, String searchTerm) {
+        String lowerTerm = searchTerm.toLowerCase(Locale.ROOT);
+        Set<SlimefunItem> matched = new HashSet<>();
+        for (SlimefunItem item : items) {
+            if (!searchable(player, item)) continue;
+
+            String name = searchableName(player, item);
+            if (latinNameFit(name, lowerTerm) >= LATIN_SIMILARITY_THRESHOLD) {
+                matched.add(item);
+            }
         }
+        return matched;
+    }
+
+    public static int latinNameFit(String name, String searchTerm) {
+        if (name.contains(searchTerm)) return 100;
+        return DamerauLevenshtein.fit(name, searchTerm);
+    }
+
+    /** 朴素匹配：仅做 contains。 */
+    private static Set<SlimefunItem> matchByContains(Player player, Set<SlimefunItem> items, String searchTerm) {
+        String lowerTerm = searchTerm.toLowerCase(Locale.ROOT);
+        Set<SlimefunItem> matched = new HashSet<>();
+        for (SlimefunItem item : items) {
+            if (!searchable(player, item)) continue;
+
+            if (searchableName(player, item).contains(lowerTerm)) {
+                matched.add(item);
+            }
+        }
+        return matched;
+    }
+
+    public static List<SlimefunItem> sortByLatinFit(
+        Player player, Set<SlimefunItem> origin, String searchTerm) {
+        String lowerTerm = searchTerm.toLowerCase(Locale.ROOT);
+        record NamedFit(SlimefunItem item, int fit) {
+        }
+        return origin.stream()
+            .map(item -> new NamedFit(item, latinNameFit(searchableName(player, item), lowerTerm)))
+            .sorted(Comparator.comparingInt(NamedFit::fit).reversed())
+            .map(NamedFit::item)
+            .toList();
+    }
+
+    /** 朴素模式不排序，按物品名字典序保证结果稳定。 */
+    private static List<SlimefunItem> sortNaive(Player player, Set<SlimefunItem> origin) {
+        return origin.stream()
+            .sorted(Comparator.comparing(item -> searchableName(player, item)))
+            .toList();
     }
 
     private Set<SlimefunItem> matchItems(String searchTerm, Map<Character, Set<SlimefunItem>> cache) {

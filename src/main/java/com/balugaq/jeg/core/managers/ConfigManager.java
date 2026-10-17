@@ -19,6 +19,7 @@ package com.balugaq.jeg.core.managers;
 
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.api.objects.collection.Pair;
+import com.balugaq.jeg.api.objects.enums.SearchMode;
 import com.balugaq.jeg.utils.Debug;
 import com.github.houbb.opencc4j.support.data.impl.OpenccDatas;
 import org.bukkit.configuration.ConfigurationSection;
@@ -93,6 +94,7 @@ public class ConfigManager extends AbstractManager {
     private final boolean CLICK_PRINT_WARNING;
     private final int CONFIG_VERSION;
     private final int MAX_RECIPE_COMPLETION_TIMES;
+    private final String LANGUAGE;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -103,6 +105,7 @@ public class ConfigManager extends AbstractManager {
         this.DEBUG = cfg.getBoolean("debug", false);
         this.RECIPE_COMPLETE = cfg.getBoolean("guide.recipe-complete", true);
         this.PINYIN_SEARCH = cfg.getBoolean("improvements.pinyin-search", true);
+        this.LANGUAGE = cfg.getString("language", "zh_CN");
         this.BOOKMARK = cfg.getBoolean("improvements.bookmark", true);
         this.SURVIVAL_GUIDE_TITLE = cfg
             .getString("guide.survival-guide-title", "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide");
@@ -436,6 +439,23 @@ public class ConfigManager extends AbstractManager {
 
     public boolean isPinyinSearch() {
         return PINYIN_SEARCH;
+    }
+
+    public String getLanguage() {
+        return LANGUAGE;
+    }
+
+    /**
+     * 按配置语言推导的默认搜索模式（Issue #125）：
+     * 语言含 zh/jp/ko 时为 CJK，否则为拉丁语种搜索。
+     */
+    public SearchMode getDefaultSearchMode() {
+        return SearchMode.fromLanguage(LANGUAGE);
+    }
+
+    /** 配置语言是否支持拼音搜索（仅中文）。 */
+    public boolean languageSupportsPinyin() {
+        return SearchMode.languageSupportsPinyin(LANGUAGE);
     }
 
     public boolean isBookmark() {

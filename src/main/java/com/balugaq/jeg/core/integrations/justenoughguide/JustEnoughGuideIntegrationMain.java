@@ -38,6 +38,7 @@ import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeCompletionGuideOption;
 import com.balugaq.jeg.implementation.option.RecipeFillingWithNearbyContainerGuideOption;
 import com.balugaq.jeg.implementation.option.RecursiveRecipeFillingGuideOption;
+import com.balugaq.jeg.implementation.option.SearchModeGuideOption;
 import com.balugaq.jeg.implementation.option.ShareInGuideOption;
 import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.implementation.option.SlimefunIdDisplayGuideOption;
@@ -103,6 +104,7 @@ public class JustEnoughGuideIntegrationMain implements Integration {
             JEGGuideSettings.addOption(SlimefunIdDisplayGuideOption.instance());
         }
         JEGGuideSettings.addOption(KeybindsSettingsGuideOption.instance());
+        JEGGuideSettings.addOption(SearchModeGuideOption.instance());
         if (JustEnoughGuide.getConfigManager().isBeginnerOption()) {
             JEGGuideSettings.addOption(BeginnersGuideOption.instance());
         }

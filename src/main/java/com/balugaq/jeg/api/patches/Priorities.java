@@ -28,6 +28,7 @@ public class Priorities {
     FireworksOption                               = 110,
     LearningAnimationOption                       = 120,
     KeybindsSettingsGuideOption                   = 130,
+    SearchModeGuideOption                         = 140,
 
     // SlimeHUD
     HUDMachineInfoLocationGuideOption             = 200,

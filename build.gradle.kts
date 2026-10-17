@@ -26,7 +26,7 @@ plugins {
 }
 
 group = "io.github.balugaq"
-version = "2.2.1"
+version = "2.2.2"
 
 repositories {
     mavenCentral()
@@ -102,7 +102,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -203,10 +203,11 @@ tasks {
             "-Dnet.kyori.adventure.text.warn_when_legacy_formatting_detected=false"
         )
         maxHeapSize = "4G"
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.2")
     }
 }
 
+// fix jitpack
 tasks.matching { it.name == "publishMavenJavaPublicationToMavenLocal" }.configureEach {
     dependsOn(tasks.named("jar"))
 }
