@@ -341,7 +341,7 @@ public class RecipeCompletionUtils {
         }
 
         var uuid = p.getUniqueId();
-        var v = missingMaterials.get(uuid);
+        var v = missingMaterials.remove(uuid);
         if (v == null || v.isEmpty()) return;
 
         for (var entry : v.entrySet()) {
