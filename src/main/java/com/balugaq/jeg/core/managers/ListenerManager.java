@@ -40,6 +40,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import org.jetbrains.annotations.UnknownNullability;
@@ -100,11 +101,11 @@ public class ListenerManager extends AbstractManager {
     @Override
     public void load() {
         registerListeners();
-        for (RegisteredListener rl : PlayerRightClickEvent.getHandlerList().getRegisteredListeners()) {
+        for (RegisteredListener rl : PlayerJoinEvent.getHandlerList().getRegisteredListeners()) {
             if (rl.getListener().getClass().getName().equals("io.github.thebusybiscuit.slimefun4.implementation.listeners.SlimefunGuideListener")) {
                 slimefunGuideListener = rl;
-                PlayerRightClickEvent.getHandlerList().unregister(rl);
-                PlayerRightClickEvent.getHandlerList().bake();
+                PlayerJoinEvent.getHandlerList().unregister(rl);
+                PlayerJoinEvent.getHandlerList().bake();
                 break;
             }
         }
