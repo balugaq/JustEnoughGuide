@@ -20,6 +20,7 @@ package com.balugaq.jeg.core.managers;
 import com.balugaq.jeg.api.managers.AbstractManager;
 import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.SearchMode;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.Debug;
 import com.github.houbb.opencc4j.support.data.impl.OpenccDatas;
 import org.bukkit.configuration.ConfigurationSection;
@@ -438,7 +439,8 @@ public class ConfigManager extends AbstractManager {
     }
 
     public boolean isPinyinSearch() {
-        return PINYIN_SEARCH;
+        return (JustEnoughGuide.getInstance().getPinyinDownloaded() != null && JustEnoughGuide.getInstance().getPinyinDownloaded())
+            || PINYIN_SEARCH;
     }
 
     public String getLanguage() {
@@ -455,7 +457,8 @@ public class ConfigManager extends AbstractManager {
 
     /** 配置语言是否支持拼音搜索（仅中文）。 */
     public boolean languageSupportsPinyin() {
-        return SearchMode.languageSupportsPinyin(LANGUAGE);
+        return JustEnoughGuide.getInstance().getPinyinDownloaded() != null && JustEnoughGuide.getInstance().getPinyinDownloaded()
+            && SearchMode.languageSupportsPinyin(LANGUAGE);
     }
 
     public boolean isBookmark() {

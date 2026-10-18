@@ -96,7 +96,7 @@ import java.util.logging.Level;
  * @author balugaq
  * @since 1.0
  */
-@SuppressWarnings({"unused", "deprecation", "ResultOfMethodCallIgnored", "removal"})
+@SuppressWarnings({"unused", "deprecation", "ResultOfMethodCallIgnored"})
 @Getter
 @NullMarked
 public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
@@ -104,6 +104,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public static final int LEAST_JAVA_VERSION = 21;
     public static final MinecraftVersion RECOMMENDED_MC_VERSION = MinecraftVersion.V1_21_10;
     public static final MinecraftVersion LEAST_MC_VERSION = MinecraftVersion.V1_16;
+    @Getter
+    private @Nullable Boolean pinyinDownloaded = null;
 
     @Getter
     @UnknownNullability
@@ -575,36 +577,45 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         LibraryManager libraryManager = new BukkitLibraryManager(this);
         libraryManager.addMavenCentral();
 
-        getLogger().info("Loading Pinyin");
-        Library pinyin = Library.builder()
-            .groupId("com{}github{}houbb")
-            .artifactId("pinyin")
-            .version("0.4.0")
-            .build();
-        libraryManager.loadLibrary(pinyin);
+        if (getConfigManager().isPinyinSearch()) {
+            try {
+                getLogger().info("Loading Pinyin");
+                Library pinyin = Library.builder()
+                    .groupId("com{}github{}houbb")
+                    .artifactId("pinyin")
+                    .version("0.4.0")
+                    .build();
+                libraryManager.loadLibrary(pinyin);
 
-        getLogger().info("Loading opencc4j");
-        Library opencc4j = Library.builder()
-            .groupId("com{}github{}houbb")
-            .artifactId("opencc4j")
-            .version("1.14.0")
-            .build();
-        libraryManager.loadLibrary(opencc4j);
+                getLogger().info("Loading opencc4j");
+                Library opencc4j = Library.builder()
+                    .groupId("com{}github{}houbb")
+                    .artifactId("opencc4j")
+                    .version("1.14.0")
+                    .build();
+                libraryManager.loadLibrary(opencc4j);
 
-        getLogger().info("Loading heaven");
-        Library heaven = Library.builder()
-            .groupId("com{}github{}houbb")
-            .artifactId("heaven")
-            .version("0.13.0")
-            .build();
-        libraryManager.loadLibrary(heaven);
+                getLogger().info("Loading heaven");
+                Library heaven = Library.builder()
+                    .groupId("com{}github{}houbb")
+                    .artifactId("heaven")
+                    .version("0.13.0")
+                    .build();
+                libraryManager.loadLibrary(heaven);
 
-        getLogger().info("Loading nlp-common");
-        Library nlp = Library.builder()
-            .groupId("com{}github{}houbb")
-            .artifactId("nlp-common")
-            .version("0.0.5")
-            .build();
-        libraryManager.loadLibrary(nlp);
+                getLogger().info("Loading nlp-common");
+                Library nlp = Library.builder()
+                    .groupId("com{}github{}houbb")
+                    .artifactId("nlp-common")
+                    .version("0.0.5")
+                    .build();
+                libraryManager.loadLibrary(nlp);
+                pinyinDownloaded = true;
+            } catch (RuntimeException e) {
+                Debug.severe("Failed to download dependency libraries! Pinyin search is unavailable!");
+                Debug.severe(e);
+                pinyinDownloaded = false;
+            }
+        }
     }
 }
