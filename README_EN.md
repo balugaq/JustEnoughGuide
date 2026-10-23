@@ -121,4 +121,4 @@ This project is open source under the GPLv3 license.
 
 ## Sponsoring
 
-If you enjoy this addon, please consider [sponsoring the author](./SPONSOR.md) — or simply [buy them a bubble tea](./SPONSOR.md)~
+If you enjoy this addon, please consider [sponsoring the author by Afdian](https://ifdian.net/a/balugaq/plan)]
