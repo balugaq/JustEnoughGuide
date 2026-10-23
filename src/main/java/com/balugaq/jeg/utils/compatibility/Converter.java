@@ -17,6 +17,7 @@
 
 package com.balugaq.jeg.utils.compatibility;
 
+import com.balugaq.jeg.utils.ItemStackUtil;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.Color;
@@ -41,18 +42,16 @@ import java.util.function.Supplier;
 @ApiStatus.Experimental
 @NullMarked
 public class Converter {
-    public static final ItemStack AIR = new ItemStack(Material.AIR);
-
     public static Builder builder() {
         return new Builder();
     }
 
     public static ItemStack getItem() {
-        return getAir();
+        return air();
     }
 
-    public static ItemStack getAir() {
-        return AIR.clone();
+    public static ItemStack air() {
+        return ItemStackUtil.air();
     }
 
     /**
@@ -74,7 +73,7 @@ public class Converter {
     @SuppressWarnings({"RedundantClassCall", "ConstantValue"})
     public static ItemStack asBukkit(@Nullable SlimefunItemStack item) {
         if (item == null) {
-            return AIR.clone();
+            return air();
         }
 
         ItemStack itemStack;
@@ -93,7 +92,7 @@ public class Converter {
                         itemStack = (ItemStack) ReflectionUtil.invokeMethod(item, "item");
                         if (itemStack == null) throw new Exception();
                     } catch (Exception ignored3) {
-                        return AIR.clone();
+                        return air();
                     }
                 }
             }
@@ -128,9 +127,7 @@ public class Converter {
      */
     @SuppressWarnings({"RedundantClassCall", "ConstantValue"})
     public static ItemStack asBukkit(@Nullable io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack item) {
-        if (item == null) {
-            return AIR.clone();
-        }
+        if (item == null) return air();
 
         ItemStack itemStack;
         if (ItemStack.class.isInstance(item)) {
@@ -148,7 +145,7 @@ public class Converter {
                         itemStack = (ItemStack) ReflectionUtil.invokeMethod(item, "item");
                         if (itemStack == null) throw new Exception();
                     } catch (Exception ignored3) {
-                        return AIR.clone();
+                        return air();
                     }
                 }
             }
@@ -170,7 +167,7 @@ public class Converter {
      * @return the converted Bukkit ItemStack
      */
     public static ItemStack getItem(@Nullable ItemStack itemStack) {
-        if (itemStack == null) return AIR.clone();
+        if (itemStack == null) return air();
         return new CustomItemStack(itemStack).asBukkit();
     }
 
@@ -427,19 +424,19 @@ public class Converter {
         }
 
         public ItemStack thenFirst() {
-            return ifValue ? itemStacks.get(index) : AIR.clone();
+            return ifValue ? itemStacks.get(index) : air();
         }
 
         public ItemStack thenSecond() {
-            return ifValue ? itemStacks.get(index) : AIR.clone();
+            return ifValue ? itemStacks.get(index) : air();
         }
 
         public ItemStack then(int index) {
-            return ifValue ? itemStacks.get(index) : AIR.clone();
+            return ifValue ? itemStacks.get(index) : air();
         }
 
         public ItemStack orElse() {
-            return ifValue ? itemStacks.get(index) : AIR.clone();
+            return ifValue ? itemStacks.get(index) : air();
         }
 
         public ItemStack orElse(int index) {
@@ -458,7 +455,7 @@ public class Converter {
             return itemStacks.stream()
                 .filter(itemStack -> itemStack != null && itemStack.getType() != Material.AIR)
                 .findFirst()
-                .orElse(AIR.clone());
+                .orElse(air());
         }
     }
 }

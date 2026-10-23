@@ -71,11 +71,11 @@ public final class ItemStackUtil {
     );
 
     public static ItemStack air() {
-        return AIR;
+        return AIR.clone();
     }
 
     public static ItemStack barrier() {
-        return BARRIER;
+        return BARRIER.clone();
     }
 
     /**
@@ -85,9 +85,7 @@ public final class ItemStackUtil {
      * @return A pure ItemStack.
      */
     public static ItemStack getCleanItem(@Nullable ItemStack item) {
-        if (item == null) {
-            return new ItemStack(Material.AIR);
-        }
+        if (item == null) return air();
 
         ItemStack cleanItem = new ItemStack(item.getType());
         cleanItem.setAmount(item.getAmount());
@@ -99,13 +97,11 @@ public final class ItemStackUtil {
     }
 
     public static ItemStack getAsQuantity(@Nullable ItemStack itemStack, int amount) {
-        if (itemStack == null) {
-            return new ItemStack(Material.AIR);
-        } else {
-            ItemStack clone = itemStack.clone();
-            clone.setAmount(amount);
-            return clone;
-        }
+        if (itemStack == null) return air();
+
+        ItemStack clone = itemStack.clone();
+        clone.setAmount(amount);
+        return clone;
     }
 
     /**
@@ -195,7 +191,7 @@ public final class ItemStackUtil {
 
         switch (type.toLowerCase(Locale.ROOT)) {
             case "none" -> {
-                return new ItemStack(Material.AIR, 1);
+                return air();
             }
             case "skull_hash" -> {
                 PlayerSkin playerSkin = PlayerSkin.fromHashCode(material);

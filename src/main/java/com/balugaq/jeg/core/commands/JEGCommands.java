@@ -288,7 +288,7 @@ public class JEGCommands extends BaseCommand {
                     }
                 );
             } else {
-                menu.replaceExistingItem(i, Converter.getItem());
+                menu.replaceExistingItem(i, Converter.air());
             }
         }
 

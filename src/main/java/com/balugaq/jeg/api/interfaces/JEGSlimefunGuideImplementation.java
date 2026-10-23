@@ -518,7 +518,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
         if (recipes.isEmpty()) return;
         // setSize
         Format format = Formats.recipe_display;
-        menu.addItem(format.getSize() - 1, Converter.getItem());
+        menu.addItem(format.getSize() - 1, Converter.air());
 
         if (page == 1) {
             GuideUtil.addBackgroundItems(menu, format, profile, PatchScope.RecipeDisplay.patch(p,
@@ -573,7 +573,7 @@ public interface JEGSlimefunGuideImplementation extends SlimefunGuideImplementat
             OnDisplay.Item.display(p, displayItem, OnDisplay.Item.Normal, this)
                 .at(menu, slot, page);
         } else {
-            menu.replaceExistingItem(slot, PatchScope.RecipeDisplay.patch(profile, Converter.getItem()));
+            menu.replaceExistingItem(slot, PatchScope.RecipeDisplay.patch(profile, Converter.air()));
             menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
         }
     }

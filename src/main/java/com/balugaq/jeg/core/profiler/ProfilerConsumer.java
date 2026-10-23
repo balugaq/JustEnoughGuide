@@ -65,15 +65,15 @@ public class ProfilerConsumer {
             JEGProfiler.isTickFreeze());
     }
 
-    public void send(Object2BooleanOpenHashMap<CommandSender> waiting) {
+    public void send(Map<CommandSender, Boolean> waiting) {
         while (!samples.isEmpty()) {
             record(samples.poll());
         }
         TimingsSnapshot snapshot = snapshot();
-        for (var request : waiting.object2BooleanEntrySet()) {
+        for (var request : waiting.entrySet()) {
             var sender = request.getKey();
             if (sender instanceof Player player && !player.isOnline()) continue;
-            var verbose = request.getBooleanValue();
+            var verbose = request.getValue();
             if (!sender.isOp() && verbose) {
                 sender.sendMessage(Component.text(Lang.t("profiler.no-verbose-permission"), NamedTextColor.RED));
                 continue;

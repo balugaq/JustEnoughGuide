@@ -320,13 +320,14 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         PlatformUtil.initialize();
         this.scheduler = TaskScheduler.create();
 
-        getLogger().info("Loading dependencies...");
-        loadLibraries();
-
         getLogger().info("Loading config...");
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.load();
+
+        getLogger().info("Loading dependencies...");
+        loadLibraries();
+
         Lang.load(this);
         LocalHelper.load();
         Formats.load();

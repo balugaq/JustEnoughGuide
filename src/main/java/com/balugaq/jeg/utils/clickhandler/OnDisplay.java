@@ -426,7 +426,7 @@ public interface OnDisplay {
 
         static Item display(Player player, @Nullable ItemStack itemStack, DisplayType type, JEGSlimefunGuideImplementation guide) {
             if (itemStack == null) {
-                return Vanilla(player, null, Converter.getItem(), guide);
+                return Vanilla(player, null, Converter.air(), guide);
             }
 
             SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);

@@ -24,6 +24,7 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.services.profiler.PerformanceInspector;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.PerformanceRating;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -41,13 +42,18 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
 
 /**
  * @author balugaq
@@ -67,7 +73,7 @@ public class JEGProfiler extends SlimefunProfiler {
 
     private volatile ConcurrentLinkedQueue<TimedSample> queue = new ConcurrentLinkedQueue<>();
 
-    private volatile boolean tickStarted = false;
+    private boolean isCompleteReport = true;
 
     private JEGProfiler() {
         super();
@@ -106,7 +112,10 @@ public class JEGProfiler extends SlimefunProfiler {
      */
     public void record(Location location, SlimefunItem item, long nanos) {
         // todo: 由于粘液加速器存在，不同item可能来自不同的线程组，未来划分多个queue以线程组为key划分。
-        if (tickStarted || waiting.isEmpty()) return; // 没人看时不进行统计
+        if (waiting.isEmpty()) {
+            isCompleteReport = false;
+            return;
+        }
         queue.add(new TimedSample(location, item, nanos));
     }
 
@@ -121,25 +130,65 @@ public class JEGProfiler extends SlimefunProfiler {
     public void start() {
         super.start();
         new SlimefunTickStartEvent().callEvent();
-        tickStarted = true;
+        isCompleteReport = true;
+    }
+
+    private AtomicInteger getQueued() {
+        return ReflectionUtil.getValue(this, "queued", AtomicInteger.class);
     }
 
     @Override
     public void stop() {
         super.stop();
         new SlimefunTickEndEvent().callEvent();
-        tickStarted = false;
 
         if (waiting.isEmpty()) return;
-        var clone = queue;
-        queue = new ConcurrentLinkedQueue<>();
-        var cloneWaiting = waiting;
-        waiting = new Object2BooleanOpenHashMap<>();
+        // We will only wait for a maximum of this many 1ms sleeps
+        int iterations = 4000;
+
+        // Wait for all timing results to come in
+        while (!isProfiling() && getQueued().get() > 0) {
+            try {
+                /*
+                 * Since we got more than one Thread in our pool,
+                 * blocking this one is (hopefully) completely fine
+                 */
+                Thread.sleep(1);
+                iterations--;
+
+                // If we waited for too long, then we should just abort
+                if (iterations <= 0) {
+                    var iterator = waiting.keySet().iterator();
+
+                    while (iterator.hasNext()) {
+                        iterator.next()
+                            .sendMessage("Your timings report has timed out, we were still waiting for "
+                                + getQueued().get() + " samples to be collected :/");
+                        iterator.remove();
+                    }
+
+                    return;
+                }
+            } catch (InterruptedException e) {
+                Slimefun.logger().log(Level.SEVERE, "A Profiler Thread was interrupted", e);
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        if (isProfiling() && getQueued().get() > 0) {
+            // Looks like the next profiling has already started, abort!
+            return;
+        }
+
+        if (!isCompleteReport) return;
+
+        var clone = new ArrayDeque<>(queue);
+        queue.clear();
+        var cloneWaiting = new HashMap<>(waiting);
+        waiting.clear();
         new JEGProfileEvent(clone, cloneWaiting).callEvent();
-        JustEnoughGuide.runLaterAsync(() -> {
-            var consumer = new ProfilerConsumer(clone);
-            consumer.send(cloneWaiting);
-        }, 1L);
+        var consumer = new ProfilerConsumer(clone);
+        consumer.send(cloneWaiting);
     }
 
     public static boolean isTickFreeze() {
