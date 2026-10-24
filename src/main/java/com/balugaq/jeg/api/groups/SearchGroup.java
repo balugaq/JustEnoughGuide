@@ -397,11 +397,13 @@ public class SearchGroup extends BaseGroup<SearchGroup> {
         GuideUtil.commonRender(chestMenu, format, profile, player, this, this.page, maxPage);
 
         List<Integer> contentSlots = format.getChars(Formats.Char.CONTENT);
+        // 缓存需要: 整页只读一次收藏背包，避免逐物品重复查询数据库
+        Set<String> bookmarkedIds = JustEnoughGuide.getBookmarkManager().getBookmarkIds(player);
         for (int i = 0; i < contentSlots.size(); i++) {
             int index = i + this.page * contentSlots.size() - contentSlots.size();
             if (index < this.slimefunItemList.size()) {
                 SlimefunItem slimefunItem = slimefunItemList.get(index);
-                OnDisplay.Item.display(player, slimefunItem, OnDisplay.Item.Search, implementation)
+                OnDisplay.Item.display(player, slimefunItem, OnDisplay.Item.Search, implementation, bookmarkedIds)
                     .at(chestMenu, contentSlots.get(i), page);
             }
         }

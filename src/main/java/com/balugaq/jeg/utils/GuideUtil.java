@@ -1140,6 +1140,11 @@ public class GuideUtil {
         PlayerProfile profile = PlayerProfile.find(player).orElse(null);
         if (profile == null) return;
         GuideHistory history = profile.getGuideHistory();
+        if (history instanceof JEGGuideHistory jeg) {
+            jeg.openLastEntry(getLastGuide(player));
+            return;
+        }
+
         Deque<?> queue = ReflectionUtil.getValue(history, "queue", Deque.class);
         if (queue == null) return;
         if (queue.isEmpty()) {

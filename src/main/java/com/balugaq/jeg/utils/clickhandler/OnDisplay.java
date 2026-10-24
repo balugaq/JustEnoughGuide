@@ -24,6 +24,7 @@ import com.balugaq.jeg.api.interfaces.JEGSlimefunGuideImplementation;
 import com.balugaq.jeg.api.interfaces.VanillaItemShade;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.core.integrations.slimefuntranslation.SlimefunTranslationIntegrationMain;
+import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.JEGVersionedItemFlag;
 import com.balugaq.jeg.utils.LocalHelper;
@@ -347,7 +348,12 @@ public interface OnDisplay {
         }
 
         static Item Search(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
-            return new Search(player, item, guide);
+            return new Search(player, item, guide, JustEnoughGuide.getBookmarkManager().getBookmarkIds(player));
+        }
+
+        // 缓存需要: 传入整页预取的收藏 ID，避免每个物品各读一次收藏背包
+        static Item Search(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide, Set<String> bookmarkedIds) {
+            return new Search(player, item, guide, bookmarkedIds);
         }
 
         static Item Research(Player player, SlimefunItem item, JEGSlimefunGuideImplementation guide) {
@@ -417,6 +423,62 @@ public interface OnDisplay {
             }
 
             return Research(player, slimefunItem, guide);
+        }
+
+        /**
+         * Displays a SlimefunItem with a pre-fetched set of bookmarked IDs, so that rendering a
+         * whole page of search results only reads the bookmark backpack once.
+         *
+         * @param player
+         *         the player to display for
+         * @param slimefunItem
+         *         the item to display
+         * @param type
+         *         the display type
+         * @param guide
+         *         the guide implementation
+         * @param bookmarkedIds
+         *         the pre-fetched bookmarked IDs of the player
+         *
+         * @return the display item
+         */
+        // 缓存需要: 传入整页预取的收藏 ID，避免每个物品各读一次收藏背包
+        static Item display(Player player, SlimefunItem slimefunItem, DisplayType type, JEGSlimefunGuideImplementation guide, Set<String> bookmarkedIds) {
+            if (type == DisplayType.Search) {
+                if (!JEGSlimefunGuideImplementation.hasPermission0(player, slimefunItem)) {
+                    return NoPermission(player, slimefunItem, guide);
+                }
+
+                return Search(player, slimefunItem, guide, bookmarkedIds);
+            }
+
+            return display(player, slimefunItem, type, guide);
+        }
+
+        /**
+         * Displays a SlimefunItem with a pre-fetched set of bookmarked IDs, so that rendering a
+         * whole page of search results only reads the bookmark backpack once.
+         *
+         * @param player
+         *         the player to display for
+         * @param slimefunItem
+         *         the item to display
+         * @param type
+         *         the display type
+         * @param guide
+         *         the guide implementation
+         * @param bookmarkedIds
+         *         the pre-fetched bookmarked IDs of the player
+         *
+         * @return the display item
+         */
+        // 缓存需要: 传入整页预取的收藏 ID，避免每个物品各读一次收藏背包
+        static Item display(Player player, SlimefunItem slimefunItem, DisplayType type, SlimefunGuideImplementation guide, Set<String> bookmarkedIds) {
+            if (guide instanceof JEGSlimefunGuideImplementation jeg) {
+                return display(player, slimefunItem, type, jeg, bookmarkedIds);
+            }
+
+            return display(player, slimefunItem, type, guide);
         }
 
         static Item display(Player player, @Nullable ItemStack itemStack, DisplayType type, SlimefunGuideImplementation guide) {
@@ -506,11 +568,13 @@ public interface OnDisplay {
             private final Player player;
             private final SlimefunItem item;
             private final JEGSlimefunGuideImplementation guide;
+            // 缓存需要: 收藏 ID 由整页预取后传入，避免每个物品各读一次收藏背包，避免大量SQL请求
+            private final Set<String> bookmarkedIds;
 
             @Override
             public void at(ChestMenu menu, int slot, int page) {
                 io.github.thebusybiscuit.slimefun4.api.items.ItemGroup itemGroup = item.getItemGroup();
-                List<String> additionLore = List.of(
+                List<String> additionLore = new ArrayList<>(List.of(
                     "",
                     ChatColors.color(String.format(
                         "&8\u21E8 &f%s&f - %s", LocalHelper.getAddonName(
@@ -519,7 +583,10 @@ public interface OnDisplay {
                         )
                         , LocalHelper.getDisplayName(itemGroup, player)
                     ))
-                );
+                ));
+                additionLore.add(ChatColors.color(bookmarkedIds.contains(item.getId())
+                    ? Lang.t("on-display.unbookmark-item-f")
+                    : Lang.t("on-display.bookmark-item-f")));
 
                 ItemStack icon = Converter.getItem(item instanceof CustomIconDisplay cid ?
                     cid.getCustomIcon() :
@@ -540,7 +607,7 @@ public interface OnDisplay {
                 menu.addItem(
                     slot,
                     PatchScope.SearchItem.patch(player, icon),
-                    OnClick.Item.Normal.create(guide, menu, page, item)
+                    OnClick.Item.Search.create(guide, menu, page, item)
                 );
             }
         }

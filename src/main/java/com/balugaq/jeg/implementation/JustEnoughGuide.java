@@ -52,6 +52,7 @@ import com.balugaq.jeg.utils.UUIDUtils;
 import com.balugaq.jeg.utils.formatter.Formats;
 import com.balugaq.jeg.utils.platform.PlatformUtil;
 import com.balugaq.jeg.utils.platform.scheduler.TaskScheduler;
+import com.github.houbb.opencc4j.support.data.impl.OpenccDatas;
 import com.tcoded.folialib.FoliaLib;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -160,9 +161,9 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     private int javaVersion = 0;
 
     public JustEnoughGuide() {
-        this.author = "balugaq";
-        this.repo = "JustEnoughGuide";
-        this.branch = "master";
+        author = "balugaq";
+        repo = "JustEnoughGuide";
+        branch = "master";
     }
 
     public static BookmarkManager getBookmarkManager() {
@@ -274,7 +275,7 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     @Nullable
     @Override
     public String getBugTrackerURL() {
-        return MessageFormat.format("https://github.com/{0}/{1}/issues/", this.author, this.repo);
+        return MessageFormat.format("https://github.com/{0}/{1}/issues/", author, repo);
     }
 
     /**
@@ -316,29 +317,36 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
             return;
         }
 
-        this.foliaLib = new FoliaLib(JustEnoughGuide.getInstance());
+        foliaLib = new FoliaLib(JustEnoughGuide.getInstance());
         PlatformUtil.initialize();
-        this.scheduler = TaskScheduler.create();
+        scheduler = TaskScheduler.create();
 
         getLogger().info("Loading config...");
         saveDefaultConfig();
-        this.configManager = new ConfigManager(this);
-        this.configManager.load();
+        configManager = new ConfigManager(this);
+        configManager.load();
 
         getLogger().info("Loading dependencies...");
         loadLibraries();
+
+        try {
+            configManager.processSharedChars(OpenccDatas.stChar().data().getDataMap().entrySet());
+            configManager.processSharedChars(OpenccDatas.twStChar().data().getDataMap().entrySet());
+        } catch (Exception e) {
+            Debug.warn(e);
+        }
 
         Lang.load(this);
         LocalHelper.load();
         Formats.load();
 
         getLogger().info("Registering listeners...");
-        this.listenerManager = new ListenerManager(this);
-        this.listenerManager.load();
+        listenerManager = new ListenerManager(this);
+        listenerManager.load();
 
         getLogger().info("Registering commands");
-        this.commandManager = new CommandManager(this);
-        this.commandManager.load();
+        commandManager = new CommandManager(this);
+        commandManager.load();
 
         getLogger().info("Replacing guide...");
         Map<SlimefunGuideMode, SlimefunGuideImplementation> newGuides = new EnumMap<>(SlimefunGuideMode.class);
@@ -352,8 +360,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
 
         getLogger().info("Loading bookmarks...");
-        this.bookmarkManager = new BookmarkManager(this);
-        this.bookmarkManager.load();
+        bookmarkManager = new BookmarkManager(this);
+        bookmarkManager.load();
 
         getLogger().info("Loading item groups...");
         GroupSetup.setup();
@@ -367,8 +375,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
 
         ItemsSetup.setup(this);
 
-        this.rtsBackpackManager = new RTSBackpackManager(this);
-        this.rtsBackpackManager.load();
+        rtsBackpackManager = new RTSBackpackManager(this);
+        rtsBackpackManager.load();
 
         setupServerUUID();
         SearchGroup.load();
@@ -380,8 +388,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         IntegrationManager.scheduleRun(JEGGuideSettings::sortOptions);
 
         getLogger().info("Adapting other plugins...");
-        this.integrationManager = new IntegrationManager(this);
-        this.integrationManager.load();
+        integrationManager = new IntegrationManager(this);
+        integrationManager.load();
 
         getLogger().info("Trying auto-update...");
         tryUpdate();
@@ -438,32 +446,32 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
         }
 
         // Managers
-        if (this.bookmarkManager != null) {
-            this.bookmarkManager.unload();
+        if (bookmarkManager != null) {
+            bookmarkManager.unload();
         }
 
-        if (this.integrationManager != null) {
-            this.integrationManager.unload();
+        if (integrationManager != null) {
+            integrationManager.unload();
         }
 
-        if (this.commandManager != null) {
-            this.commandManager.unload();
+        if (commandManager != null) {
+            commandManager.unload();
         }
 
-        if (this.listenerManager != null) {
-            this.listenerManager.unload();
+        if (listenerManager != null) {
+            listenerManager.unload();
         }
 
-        if (this.rtsBackpackManager != null) {
-            this.rtsBackpackManager.unload();
+        if (rtsBackpackManager != null) {
+            rtsBackpackManager.unload();
         }
 
-        if (this.metrics != null) {
-            this.metrics.shutdown();
+        if (metrics != null) {
+            metrics.shutdown();
         }
 
-        if (this.configManager != null) {
-            this.configManager.unload();
+        if (configManager != null) {
+            configManager.unload();
         }
 
         ReplacementCardAdapter.getReplacementCards().clear();
@@ -477,18 +485,18 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
     public void onDisable() {
         unloadInternal();
 
-        this.bookmarkManager = null;
-        this.integrationManager = null;
-        this.commandManager = null;
-        this.listenerManager = null;
-        this.rtsBackpackManager = null;
-        this.metrics = null;
-        this.configManager = null;
+        bookmarkManager = null;
+        integrationManager = null;
+        commandManager = null;
+        listenerManager = null;
+        rtsBackpackManager = null;
+        metrics = null;
+        configManager = null;
         Debug.setPlugin(null);
 
         // Other fields
-        this.minecraftVersion = null;
-        this.javaVersion = 0;
+        minecraftVersion = null;
+        javaVersion = 0;
 
         // Clear instance
         instance = null;
@@ -510,8 +518,8 @@ public class JustEnoughGuide extends JavaPlugin implements SlimefunAddon {
      * @return true if the environment is compatible, false otherwise
      */
     private boolean environmentCheck() {
-        this.minecraftVersion = MinecraftVersion.current();
-        this.javaVersion = NumberUtils.getJavaVersion();
+        minecraftVersion = MinecraftVersion.current();
+        javaVersion = NumberUtils.getJavaVersion();
         if (minecraftVersion == null) {
             getLogger().warning("Failed to get the Minecraft version!");
             return false;

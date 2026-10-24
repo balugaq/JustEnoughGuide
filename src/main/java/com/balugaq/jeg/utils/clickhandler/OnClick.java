@@ -873,6 +873,7 @@ public interface OnClick {
         Normal Normal = new Normal();
         ItemMark ItemMark = new ItemMark();
         Bookmark Bookmark = new Bookmark();
+        Search Search = new Search();
         Research Research = new Research();
 
         ObjectImmutableList<Item> subKeybinds = ObjectImmutableList.of(Normal, ItemMark, Bookmark, Research);
@@ -1152,6 +1153,57 @@ public interface OnClick {
 
                     return super.create(guide, menu, page, slimefunItem).onClick(event, player, slot, item, action);
                 });
+            }
+        }
+
+        /**
+         * 搜索结果界面专用键位:
+         *   - F键: 收藏/取消收藏物品
+         * 其余按键行为继承 {@link Normal}。
+         *
+         * @author balugaq
+         * @since 2.2
+         */
+        @NullMarked
+        class Search extends Normal {
+            public static final ObjectImmutableList<Action> listActions = ObjectImmutableList.of(
+                Action.of("f", Lang.t("keybind.item.bookmark-toggle"), Material.WRITABLE_BOOK, (guide, player, slot, slimefunItem, item, clickAction, menu, page) -> {
+                    if (slimefunItem == null) slimefunItem = SlimefunItem.getByItem(item);
+                    if (slimefunItem == null) return;
+                    SlimefunItem finalSlimefunItem = slimefunItem;
+
+                    if (JustEnoughGuide.getBookmarkManager().isBookmarked(player, finalSlimefunItem)) {
+                        JustEnoughGuide.getBookmarkManager().removeBookmark(player, finalSlimefunItem);
+                        Lang.sendMessage(player, "guide.removed-from-bookmark");
+                        GuideUtil.refreshCurrentPage(player);
+                        return;
+                    }
+
+                    EventUtil.callEvent(new GuideEvents.CollectItemEvent(
+                            player, item, slot, clickAction, menu, guide
+                    )).ifSuccess(() -> {
+                        JustEnoughGuide.getBookmarkManager().addBookmark(player, finalSlimefunItem);
+                        Lang.sendMessage(player, "guide.added-to-bookmark");
+                        player.playSound(player.getLocation(), Sounds.COLLECTED_ITEM, 1f, 1f);
+                        GuideUtil.refreshCurrentPage(player);
+                        return false;
+                    });
+                })
+            );
+
+            @Override
+            public Material material() {
+                return Material.NAME_TAG;
+            }
+
+            @Override
+            public String name() {
+                return Lang.t("keybind.category.search");
+            }
+
+            @Override
+            public ObjectImmutableList<Action> listActions() {
+                return merge(super.listActions(), listActions);
             }
         }
 

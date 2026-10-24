@@ -40,6 +40,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -295,6 +297,58 @@ public class BookmarkManager extends AbstractManager {
         }
 
         return bookmarkedItems;
+    }
+
+    /**
+     * Gets the IDs of all bookmarked items and item groups of the player in one backpack read.
+     * <p>
+     * Item group IDs are prefixed with {@code itemgroup:}, item IDs are raw Slimefun item IDs.
+     *
+     * @param player
+     *         the player to get bookmarked IDs for
+     *
+     * @return an immutable set of bookmarked IDs, empty if the player has no bookmark backpack; never null
+     */
+    public Set<String> getBookmarkIds(Player player) {
+        PlayerBackpack backpack = getBookmarkBackpack(player);
+        if (backpack == null) {
+            return Collections.emptySet();
+        }
+
+        ItemStack bookmarksItem = backpack.getInventory().getItem(DATA_ITEM_SLOT);
+        if (bookmarksItem == null || bookmarksItem.getType() == Material.AIR) {
+            return Collections.emptySet();
+        }
+
+        if (!isBookmarksItem(bookmarksItem, player)) {
+            return Collections.emptySet();
+        }
+
+        ItemMeta itemMeta = bookmarksItem.getItemMeta();
+        if (itemMeta == null) {
+            return Collections.emptySet();
+        }
+
+        List<String> lore = itemMeta.getLore();
+        if (lore == null || lore.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        return new HashSet<>(lore);
+    }
+
+    /**
+     * Checks whether the given SlimefunItem is bookmarked by the player.
+     *
+     * @param player
+     *         the player to check
+     * @param slimefunItem
+     *         the item to check
+     *
+     * @return true if the item is bookmarked by the player
+     */
+    public boolean isBookmarked(Player player, SlimefunItem slimefunItem) {
+        return getBookmarkIds(player).contains(slimefunItem.getId());
     }
 
     public void removeBookmark(Player player, SlimefunItem slimefunItem) {

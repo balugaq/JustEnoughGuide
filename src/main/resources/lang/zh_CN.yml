@@ -59,6 +59,7 @@ guide:
   # {0}: 按键名
   key-not-found: "&c未找到按键: {0}"
   added-to-bookmark: "&a已添加到收藏列表!"
+  removed-from-bookmark: "&e已从收藏列表移除!"
   no-permission-guide: "&c你没有权限打开粘液科技指南书"
   jeg-module-disabled: "&cJEG 模块未启用。你不能打开 JEG 使用指南。"
   rts-unavailable: "&c实时搜索在此版本不可用，请联系服主以寻求帮助。"
@@ -539,6 +540,7 @@ keybind:
     item: "物品"
     bookmark: "书签"
     item-mark: "标记物品"
+    search: "搜索结果"
     research: "研究"
     common: "常规"
   common:
@@ -562,6 +564,7 @@ keybind:
   item:
     remove-mark: "删除标记的物品"
     mark: "物品标记"
+    bookmark-toggle: "收藏/取消收藏物品"
     search-display-name: "搜索配方展示物品的名字涉及此物品的名字的物品"
     share: "分享物品"
     search-usage: "搜索物品作用"
@@ -626,6 +629,8 @@ on-display:
   unbookmark-group: "&e右键以取消收藏物品组"
   unbookmark-item: "&e右键以取消收藏物品"
   bookmark-item: "&e左键点击以收藏物品"
+  bookmark-item-f: "&e按 F 键以收藏物品"
+  unbookmark-item-f: "&a★ 已收藏 &7(按 F 键取消收藏)"
   click-unlock: "&a> 单击解锁"
   requires: "&7需要 &b"
   # {0}: 金额

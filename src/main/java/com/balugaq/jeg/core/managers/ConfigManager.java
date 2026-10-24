@@ -134,13 +134,6 @@ public class ConfigManager extends AbstractManager {
             this.SHARED_CHARS = rawSharedChars;
         }
 
-        try {
-            processSharedChars(OpenccDatas.stChar().data().getDataMap().entrySet());
-            processSharedChars(OpenccDatas.twStChar().data().getDataMap().entrySet());
-        } catch (Exception e) {
-            Debug.warn(e);
-        }
-
         List<String> rawMainFormat = cfg.getStringList("custom-format.main");
         if (rawMainFormat == null || rawMainFormat.isEmpty()) {
             this.MAIN_FORMAT = new ArrayList<>();
@@ -589,7 +582,7 @@ public class ConfigManager extends AbstractManager {
         return LOGITECH_MACHINE_STACKABLE_DISPLAY;
     }
 
-    private void processSharedChars(Set<Map.Entry<String, List<String>>> data) {
+    public void processSharedChars(Set<Map.Entry<String, List<String>>> data) {
         for (Pair<String, String> p : data.stream().map(e -> new Pair<>(e.getKey(), e.getValue().getFirst())).toList()) {
             if (p.first().length() != p.second().length()) {
                 continue;
