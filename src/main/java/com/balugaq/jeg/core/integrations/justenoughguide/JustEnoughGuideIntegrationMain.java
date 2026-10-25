@@ -15,10 +15,6 @@
  *
  */
 
-/**
- * @author balugaq
- * @since 1.9
- */
 package com.balugaq.jeg.core.integrations.justenoughguide;
 
 import com.balugaq.jeg.core.lang.Lang;
@@ -44,17 +40,21 @@ import com.balugaq.jeg.implementation.option.ShareOutGuideOption;
 import com.balugaq.jeg.implementation.option.SlimefunIdDisplayGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.MinecraftVersion;
+import com.balugaq.jeg.utils.ReflectionUtil;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunChunkData;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -144,6 +144,15 @@ public class JustEnoughGuideIntegrationMain implements Integration {
                 count++;
             }
             Debug.info("Added recipe completion buttons to " + count + " machines");
+            Slimefun.getDatabaseManager().getBlockDataController().getAllLoadedChunkData().stream()
+                .map(SlimefunChunkData::getAllBlockData)
+                .flatMap(Collection::stream)
+                .forEach(bd -> {
+                    if (bd.getBlockMenu() != null) {
+                        var n = new BlockMenu(Slimefun.getRegistry().getMenuPresets().get(bd.getBlockMenu().getPreset().getID()), bd.getLocation());
+                        ReflectionUtil.setValue(bd, "menu", n);
+                    }
+                });
         }
     }
 
