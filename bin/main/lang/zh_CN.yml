@@ -1,0 +1,1246 @@
+# ============================================================================
+#  JustEnoughGuide 语言文件（zh_CN）
+# ============================================================================
+# 说明：
+#   - config.yml 里的 `language: zh_CN` 决定加载哪个语言文件（对应本目录下的 <language>.yml）。
+#   - 插件首次启动时会把内置语言文件原样复制到 plugins/JustEnoughGuide/lang/ 下；
+#     之后以磁盘上的文件为准，插件内置的版本只作为缺键兜底，不会被改写。
+#   - 颜色代码用 &（如 &a 绿色），占位符用 {0} {1} ...，按 sendMessage/t 传入的参数顺序替换；
+#     参数不足时占位符原样保留。
+#   - 文本里的单引号、双引号等字符可以直接写，不需要转义。
+#   - icons 节点（供 Lang.getIcon 使用）：
+#       icons:
+#         example:
+#           material: BOOK   # 可选，默认 PAPER；须为有效的原版材质名
+#           name: "&b示例图标"
+#           lore: |-         # 支持 |- 多行字符串，也支持 - 列表写法
+#             第一行
+#             第二行
+#   - 命名约定：
+#       * 带 *-prefix / *-suffix 后缀的键用于 Adventure 组件拼装（纯文本，不带颜色码，
+#         颜色由代码里的 NamedTextColor 指定）；同名无后缀的键是 legacy 通道（含颜色码）的整句版本。
+# ============================================================================
+
+commands:
+  help:
+    - "&aJEG Commands:"
+    - "&a/jeg help - Show this help message"
+    - "&a/jeg reload - Reload JEG plugin"
+    - "&a/jeg cache <section> <key>"
+    - "&a/jeg disable - Disable JEG plugin"
+    - "&a/jeg gteg - Get Guide Tier Editor"
+    - "&a/jeg categories - View all the groups"
+    - "&a/jeg share - Share the item on your hand"
+    - "&a/jeg viewitem <Slimefun Item> - View Slimefun item"
+    - "&a/jeg search [item name] - Search item on hand or search your input"
+    - "&a/jeg timings - View Slimefun machine performance"
+  timings:
+    # {0}: 详细模式后缀（详细模式为“（详细模式）”，否则为空）
+    collecting: "&e[JustEnoughGuide] 正在采集性能数据{0}..."
+    unavailable: "&c性能监视器不可用，请稍后再试"
+    verbose-suffix: "（详细模式）"
+  # {0}: 物品 ID
+  cannot-view-item: "&c无法查看 ID 为 {0} 的物品"
+  put-item-on-hand: "&c请将物品放在手上"
+  must-hold-item: "&c你必须手持一个物品在手上"
+
+guide:
+  no-bookmark: "&c你还没有收藏任何物品!"
+  # {0}: 物品组显示名
+  group-selected: "&a已选择物品组: &e{0}"
+  group-selected-for-swap: "&a已选择待交换的物品组: &e{0}"
+  group-bookmarked: "&a已收藏物品组: &e{0}"
+  # {0} {1}: 交换前后的物品组显示名
+  group-swapped: "&a已交换物品组排序: &e{0} &7<-> &e{1}"
+  internal-error: "&4服务器发生了一个内部错误. 请联系管理员处理."
+  settings-disabled-in-mode: "&c当前模式下不能打开设置界面!"
+  too-frequent: "&c你的使用频率过高，请稍后使用!"
+  cooldown: "&c这个功能正在冷却中..."
+  # {0}: 按键名
+  key-not-found: "&c未找到按键: {0}"
+  added-to-bookmark: "&a已添加到收藏列表!"
+  removed-from-bookmark: "&e已从收藏列表移除!"
+  no-permission-guide: "&c你没有权限打开粘液科技指南书"
+  jeg-module-disabled: "&cJEG 模块未启用。你不能打开 JEG 使用指南。"
+  rts-unavailable: "&c实时搜索在此版本不可用，请联系服主以寻求帮助。"
+  # {0}: 当前服务器版本, {1}: 支持库最高版本
+  rts-unavailable-version: "&c实时搜索在当前服务器版本 {0} 无法使用，实时搜索支持库最高支持版本为 {1}"
+  rts-check-failed: "&c无法检查实时搜索，相关功能已禁用"
+  rts-incompatible: "&c不兼容的版本! 无法使用实时搜索"
+  rts-search-title: "在下方输入搜索内容"
+  share:
+    # {0}: 玩家名, {1}: 物品名
+    message: "&a{0} &e分享了 &7[{1}&r&7]&e <点击搜索>"
+    click-to-search: "&e点击搜索"
+
+recipe-complete:
+  plugin-disabled: "&cJustEnoughGuide 附属已被禁用，配方补全功能无法使用"
+  # {0}: 取消原因
+  cancelled: "&c[配方补全] 此次配方补全被取消，原因：{0}"
+  cancelled-reason-unknown: "未知"
+  no-space: "&c[配方补全] 没有足够的位置放置材料！"
+  # {0}: 可放置份数, {1}: 目标份数, {2}: 百分比
+  insufficient-space: "&e[配方补全] 可供放置材料的位置不足！至多放置 {0} / {1} 份材料！({2}%)"
+  # {0}: 物品与数量描述
+  cannot-place: "&c[配方补全] 无法放置物品: {0}"
+  # {0}: 物品名（可点击，运行时以哨兵占位并拆分嵌入组件）
+  trying: "===尝试补全 {0} 的材料==="
+  # {0}: 配方深度
+  hover-recipe-depth: "配方深度:{0}"
+  # {0}: 物品名（可点击，运行时以哨兵占位并拆分嵌入组件）, {1}: 数量描述
+  missing: "[配方补全] 缺少 {0} x{1}"
+  # {0}: 物品名
+  last-item: "&6上次补全物品: {0}"
+  # {0}: 次数描述
+  click-left: "&a左键&e点击物品补全 {0}"
+  # {0}: 次数描述
+  click-right: "&a右键&e点击物品补全 {0}"
+  in-progress: "&a你正在进行配方补全，如果是误触进入，请点击这里"
+  # {0}: 总数量, {1}: 组数
+  amount-stacks: "{0} ({1} 组)"
+  # {0}: 总数量, {1}: 组数, {2}: 零头个数
+  amount-with-stacks: "{0} ({1} 组 + {2} 个)"
+  open-recipe-hover: "点击打开物品配方"
+
+# /sf banitem/unbanitem 等替换卡适配指令的反馈
+rc:
+  # {0}: 指令名
+  taken-over: "&e[JustEnoughGuide] JustEnoughGuide 已接管 {0} 指令的执行。如出现 bug，请反馈至 https://github.com/balugaq/JustEnoughGuide"
+  companion-unbanned: "&a[JustEnoughGuide] 已解禁配方补全伴生物品 {0}."
+  companion-unbanned-prefix: "[JustEnoughGuide] 已解禁配方补全伴生物品 "
+  # {0}: 数量
+  companion-unbanned-all: "&a[JustEnoughGuide] 已解禁 {0} 个配方补全伴生物品."
+  companion-already-unbanned-all: "&c[JustEnoughGuide] {0} 个配方补全伴生物品均已是解禁状态."
+  item-already-unbanned: "&c[JustEnoughGuide] 物品 {0} 已是解禁状态."
+  item-already-unbanned-prefix: "[JustEnoughGuide] 物品 "
+  item-already-unbanned-suffix: " 已是解禁状态."
+  item-unbanned: "&a[JustEnoughGuide] 已解禁物品 {0}."
+  item-unbanned-prefix: "[JustEnoughGuide] 已解禁物品 "
+  companion-banned: "&a[JustEnoughGuide] 已禁用配方补全伴生物品 {0}."
+  companion-banned-prefix: "[JustEnoughGuide] 已禁用配方补全伴生物品 "
+  companion-banned-all: "&a[JustEnoughGuide] 已禁用 {0} 个配方补全伴生物品."
+  companion-already-banned-all: "&c[JustEnoughGuide] {0} 个配方补全伴生物品均已是禁用状态."
+  item-already-banned: "&c[JustEnoughGuide] 物品 {0} 已经是禁用状态."
+  item-already-banned-prefix: "[JustEnoughGuide] 物品 "
+  item-already-banned-suffix: " 已经是禁用状态."
+  item-banned: "&a[JustEnoughGuide] 已禁用物品 {0}."
+  item-banned-prefix: "[JustEnoughGuide] 已禁用物品 "
+
+# Models 静态图标 / 注册物品的文案。lore 中整行形如 {models.xxx} 的行会被替换为对应键的翻译（用于复用公共说明行）。
+models:
+  book-mechanism-1: "&a左键&e点击打开配方书"
+  book-mechanism-2: "&a右键&e点击可再次补全"
+  book-mechanism-3: "&e补全后再次&aShift+右键&e点击配方书补全64次"
+  gui-mechanism-1: "&a左键&e点击物品补全1次"
+  gui-mechanism-2: "&a右键&e点击物品补全64次"
+  rts-item:
+    name: "&b实时搜索"
+  special-menu-item:
+    name: "&b超大配方"
+    lore:
+      - ""
+      - "&a点击打开超大配方(若有)"
+  input-text-icon:
+    name: "&f搜索: &7在上方输入搜索词"
+    lore:
+      - "&fTips:"
+      - "&7 - &e左侧物品为返回键"
+      - "&7 - &e中间物品为按键上一页"
+      - "&7 - &e右侧物品为按键下一页"
+  jeg-guide-group:
+    name: "&bJEG 高阶指南书使用指南"
+  hidden-items-group:
+    name: "&c隐藏物品"
+  nexcavate-items-group:
+    name: "&b文明复兴物品"
+  vanilla-items-group:
+    name: "&7原版物品"
+  recipe-completable-group:
+    name: "&b支持配方补全的机器"
+  jeg-items-group:
+    name: "&b配方补全书"
+  replacement-cards-group:
+    name: "&b替换卡 - 伴生物品"
+  banned-items-group:
+    name: "&c已禁用的物品"
+  multi-block-builder-items-group:
+    name: "&b多方块建筑物品"
+  recipe-complete-guide:
+    name: "&b配方补全书"
+    lore:
+      - ""
+      - "&f点击进行配方补全（使用方法见说明）"
+      - "{models.book-mechanism-1}"
+      - "{models.book-mechanism-2}"
+      - "{models.book-mechanism-3}"
+  usage-info:
+    name: "&a使用方法"
+    lore:
+      - ""
+      - "&f1. &e将配方补全书放到你的物品栏里"
+      - "&f2. &e右键打开任意一个适配配方补全的机器界面（如快捷机器）"
+      - "&f3. &e然后左键点击配方补全书"
+      - "&f4. &e选择你要补全的物品"
+  mechanism:
+    name: "&a机制"
+    lore:
+      - ""
+      - "&7优先使用玩家背包中的物品进行补全配方"
+      - "&7如果连接了网络，会尝试在网络中获取配方材料（仅网络拓展有效）"
+      - "&7如果连接了AE网络，会尝试在AE网络中获取配方材料"
+      - "&7连接解释: "
+      - "&7被进行配方补全的机器界面所对应的机器的东西南北上下任一方向紧贴的方块连接了网络/AE网络"
+      - "&7即视为被进行配方补全的机器界面所对应的机器连接了网络/AE网络（不占用网络/AE网络节点）"
+      - ""
+      - "&9===配方书点击机制==="
+      - "{models.book-mechanism-1}"
+      - "{models.book-mechanism-2}"
+      - "{models.book-mechanism-3}"
+      - "&9===补全界面点击机制==="
+      - "{models.gui-mechanism-1}"
+      - "{models.gui-mechanism-2}"
+      - "&e可在设置中更改左右键补全的次数"
+  supported-addons-info:
+    name: "&a对以下附属的部分机器适配了配方补全"
+    lore:
+      - "&7如需适配更多可在 JustEnoughGuide GitHub 提交 issue"
+      - ""
+      - "&7- &a多方块结构"
+      - "&7- &a快捷机器"
+      - "&7- &a乱序技艺 2.0-Preview"
+      - "&7- &a乱序技艺 2.0"
+      - "&7- &a乱序技艺 2.0 改版"
+      - "&7- &a无尽贪婪"
+      - "&7- &a无尽贪婪2"
+      - "&7- &a逻辑工艺"
+      - "&7- &a网络"
+      - "&7- &a网络拓展"
+      - "&7- &a黑曜石科技"
+      - "&7- &a粘液AE"
+      - "&7- &a蓬松机器"
+      - "&7- &a粘液匠魂"
+      - "&7- &a星系"
+      - "&7- &a美食家"
+      - "&7- &aRyken自定义附属"
+      - "&7- &a基岩科技"
+      - "&7- &a炼金术自传"
+      - "&7- &a粘土科技"
+      - "&7- &a无底存储"
+      - "&7- &a简易工具"
+      - "&7- &a农耕工艺"
+      - "&7- &a化学工程"
+      - "&7- &a无尽压缩"
+      - "&7- &a魔法"
+      - "&7- &a青山科技"
+      - "&7- &a迷狱生机"
+  jeg-recipe-complete-button:
+    name: "&6配方补全"
+    lore:
+      - "&7点击打开配方补全界面"
+      - "&9===配方书点击机制==="
+      - "{models.book-mechanism-1}"
+      - "{models.book-mechanism-2}"
+      - "{models.book-mechanism-3}"
+      - "&e可在设置中更改左右键补全的次数"
+  item-mark-background:
+    name: "&a&l添加收藏物"
+    lore:
+      - ""
+      - "&7左键物品添加到收藏中"
+  slimefun-recipe-edit:
+    name: "&a&lSlimeFunRecipe 配方编辑器"
+    lore:
+      - ""
+      - "&e点击打开配方编辑器"
+  custom-lag-block:
+    name: "&a自定义延时器"
+    lore:
+      - "&a放置后打开界面，可设定该机器粘液刻耗时"
+      - "&c仅 OP 可使用"
+
+# 新手指南书（JEG 使用指南）中的运行时提示
+guidebook:
+  no-slimefun: "&c无法执行操作，请检查 Slimefun 是否正确安装。"
+  no-slimefun-instance: "&c无法获取 Slimefun 实例，无法使用此功能。"
+  feature-disabled: "&c功能未启用，无法使用此功能。"
+  no-profile: "&c无法获取玩家资料，请检查是否正确安装 Slimefun。"
+  no-example-item: "&c无法获取示例物品，请检查是否正确安装 Slimefun。"
+  item-disabled: "&c该物品已被禁用，无法展示示例"
+  need-beginner: "&c此功能需要您在设置中启用新手指引。"
+
+  # JEG 使用指南书的各功能条目（name + lore 列表）
+  features:
+    header:
+      name: "&bJEG 使用指南"
+      lore:
+        - "&b作者: 大香蕉 (balugaq)"
+        - "&bJEG 优化了粘液科技的指南，使其更人性化。"
+        - "&b查看以下指南书以快速上手 JEG 增加的功能。"
+    pinyin:
+      name: "&b功能: 拼音搜索"
+      lore:
+        - "&b介绍: 你可以通过拼音搜索指南来快速找到你想要的物品。"
+        - "&b点击尝试功能。"
+    search-page:
+      name: "&b功能: 搜索翻页"
+      lore:
+        - "&b介绍: 你可以在搜索中翻页来浏览更多搜索结果。"
+        - "&b点击尝试功能。"
+    bookmark:
+      name: "&b功能: 标记物品"
+      lore:
+        - "&b介绍: 你可以打开一个物品组，对于支持的附属。"
+        - "&b      你可以点击物品组界面下方的“书”图标以进入标记状态。"
+        - "&a      点击返回按钮以退出标记状态。"
+        - "&b点击尝试功能。"
+    bookmark-view:
+      name: "&b功能: 查阅标记物品"
+      lore:
+        - "&b介绍: 你可以查看你标记过的物品。"
+        - "&b      你可以点击物品组界面下方的“下界之星”图标以查看标记过的物品。"
+        - "&a      点击返回按钮以退出查看状态。"
+        - "&b点击尝试功能。"
+    jump-group:
+      name: "&b功能: 跳转物品组"
+      lore:
+        - "&b介绍: 当你在查阅一个物品的配方时，你可以快速跳转到所需物品所属的物品组。"
+        - "&b      你可以 Shift + 左键 点击所需物品，以快速跳转到该物品所属的物品组。"
+        - "&b点击尝试功能。"
+    quick-search:
+      name: "&b功能: 快速搜索"
+      lore:
+        - "&b介绍: 当你在查阅一个物品的配方时，你可以快速搜索物品、材料、配方类型的名字"
+        - "&b      你可以 Shift + 右键 点击所需物品，你可以快速搜索物品、材料、配方类型的名字"
+        - "&b点击尝试功能。"
+    portable-research:
+      name: "&b功能: 便携研究"
+      lore:
+        - "&b介绍: 你可以当你在查看物品的配方时，如果有未解锁的物品，可以点击以快速解锁。"
+        - "&b点击尝试功能。"
+    smart-search:
+      name: "&b功能: 智能搜索"
+      lore:
+        - "&b介绍: 当你使用搜索时，会自动搜索相关的机器，并添加到显示列表中"
+        - "&c     不支持拼音搜索。"
+        - "&b点击尝试功能。"
+    # {0}: 过滤符, {1}: 示例过滤表达式
+    filter-recipe-item:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以通过在开头或末尾添加 {0}<recipe_item_name> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 配方使用的物品的名字包含 \"电池\" 的物品"
+        - "&c      不支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    filter-recipe-type:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以在开头或末尾添加 {0}<recipe_type_name> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 配方类型名称包含 \"工作台\" 的物品"
+        - "&c      不支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    filter-display-item:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以在开头或末尾添加 {0}<display_item_name> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 配方展示涉及的物品的名字包含 \"铜粉\" 的物品"
+        - "&c      不支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    filter-addon:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以在开头或末尾添加 {0}<addon_name> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 附属名称包含 \"粘液科技\" 的物品"
+        - "&c      不支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    filter-item-name:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以在开头或末尾添加 {0}<item_name> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 物品名称包含 \"电池\" 的物品"
+        - "&b      支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    filter-item-lore:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以在开头或末尾添加 {0}<item_lore> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 物品描述包含 \"胡萝卜\" 的物品"
+        - "&b      支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    filter-material:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以在开头或末尾添加 {0}<material_name> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 物品材质名称包含 \"iron\" 的物品"
+        - "&c      不支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    filter-full-name:
+      name: "&b功能: 搜索拓展"
+      lore:
+        - "&b介绍: 你可以在开头或末尾添加 {0}<item_name> 来指定搜索范围"
+        - "&b      例如: {1} 附加搜索 名字完全为 \"铝锭\" 的物品"
+        - "&c      不支持拼音搜索。"
+        - "&c      附加搜索会组合生效"
+        - "&b点击尝试功能。"
+    name-print:
+      name: "&b功能: 名称打印"
+      lore:
+        - "&b介绍: 你可以在任意物品上按 Q 键，以将此物品分享给其他玩家"
+        - "&b点击尝试功能"
+
+multiblock:
+  # {0}: 多方块名称
+  build-success: "&a多方块 {0} 搭建成功！"
+  build-failed: "&c多方块 {0} 搭建失败！"
+
+# 搜索模式（Issue #125）：玩家可在指南设置中切换，默认值由服务端配置的 language 推导。
+# 中日韩模式沿用字符索引匹配（中文可启用拼音）；拉丁模式整串（含空格）相关度匹配；朴素模式仅 contains。
+search-mode:
+  # {0}: 当前模式（带色码）
+  name: "&b搜索模式: {0}"
+  lore:
+    - ""
+    - "&7选择搜索框的匹配方式:"
+    - "&7- 中日韩: 按物品名逐字索引匹配，中文可启用拼音"
+    - "&7- 拉丁: 整串(含空格)相关度匹配，适合英文等拉丁语种"
+    - "&7- 朴素: 仅匹配名字包含搜索词的物品"
+    - ""
+    # {0}: 目标模式
+    - "&7⇨ &e点击切换为 {0}"
+  mode-cjk: "&a中日韩搜索"
+  mode-latin: "&b拉丁语种搜索"
+  mode-naive: "&e朴素搜索"
+
+hud:
+  input-reach: "&a请输入粘液HUD显示距离"
+  # {0}: 最大值
+  input-range-invalid: "请输入 1 ~ {0} 之间的正整数"
+  reach:
+    name: "&a粘液HUD显示距离"
+    lore:
+      - ""
+      # {0}: 当前值, {1}: 上限
+      - "&7当前距离: {0} (限制范围: 1~{1})"
+      - "&7⇨ &e点击设置距离"
+  machine-info-location:
+    # {0}: 位置显示（带色码）
+    name: "&bHUD显示机器信息位置: {0}"
+    lore:
+      - ""
+      - "&7你现在可以自主选择是否"
+      - "&7在使用SlimeHUD显示机器信息时"
+      - "&7将机器信息显示在Boss栏或动作栏"
+      - ""
+      # {0}: 目标位置（纯文本）
+      - "&7⇨ &e点击切换为使用 {0} 显示机器信息"
+    loc-bossbar: "&aBoss栏"
+    loc-actionbar: "&b动作栏"
+    loc-default: "&e默认设置"
+    target-bossbar: "动作栏"
+    target-actionbar: "默认设置"
+    target-default: "Boss栏"
+  vanilla-block:
+    name: "&b原版方块HUD显示: {0}"
+    lore:
+      - "&7你现在可以选择是否"
+      - "&7在使用SlimeHUD显示方块信息时"
+      - "&7允许显示原版方块的信息"
+    click: "&7⇨ &e点击 {1} 原版方块HUD显示"
+  # SlimeHUD 方块状态描述词
+  states:
+    closed: "关上的"
+    ignited: "点燃的"
+    lit: "点亮的"
+    waterlogged: "含水的"
+    snowy: "覆雪的"
+    moist: "湿润的"
+    activated: "激活的"
+    night: "夜间的"
+    locked: "锁定的"
+    playing: "正在播放音乐的"
+    extended: "伸长的"
+    short: "短的"
+    can-summon: "可召唤监守者的"
+    screeching: "正在尖啸的"
+    unstable: "不稳定的"
+    triggered: "被触发的"
+    ominous: "不详的"
+    has-eyes: " (有眼睛)"
+
+# 附属数值显示 / 物品 patch lore（EMCTech / FinalTECH / LogiTech）
+integration:
+  emc-output: "&7输出EMC: &6{0}"
+  finaltech-input: "&7新乱序输入EMC: &6{0}"
+  finaltech-output: "&7新乱序输出EMC: &6{0}"
+  finaltech-v1-input: "&7旧乱序输入EMC: &6{0}"
+  finaltech-v1-output: "&7旧乱序输出EMC: &6{0}"
+  logitech-stackable: "&a可使用逻辑工艺-堆叠配方机器堆叠"
+  logitech-generator: "&a可使用逻辑工艺-量子发电机超频装置堆叠"
+  logitech-material-generator: "&a可使用逻辑工艺-堆叠生成器堆叠"
+  finaltech-dust-open: "&a单击打开无序/有序尘埃配方补全配置界面"
+  finaltech-dust-title: "&a无序/有序尘埃配方补全配置"
+  logitech-open: "&a单击打开 {0}"
+  logitech-false-title: "&aFALSE 配方补全配置"
+  logitech-true-title: "&aTRUE 配方补全配置"
+  finaltech-dust-cancel: "&c输入槽中有物品"
+
+# 设置界面（Slimefun 版本 / 源码 / Wiki / 附属数量 图标）
+settings:
+  version:
+    localization-credit: "&f汉化 By StarWishsama"
+    dont-screenshot: "&c请不要将此版本信息截图到 Discord/GitHub 反馈 Bug"
+    feedback-localization: "&c而是优先到汉化页面反馈"
+  source:
+    lore:
+      - ""
+      # {0}: 经过时间, {1}: forks, {2}: stars
+      - "&7最近活动于: &a{0} 前"
+      - "&7Forks: &e{1}"
+      - "&7Stars: &e{2}"
+      - "&7&oSlimefun 4 是一个由社区参与的项目,"
+      - "&7&o源代码可以在 GitHub 上找到"
+      - "&7&o如果你想让这个项目持续下去"
+      - "&7&o你可以考虑对项目做出贡献"
+      - ""
+      - "&7⇨ &e点击前往汉化版 GitHub 仓库"
+  wiki:
+    lore:
+      - ""
+      - "&7你需要对物品或机器方面的帮助吗?"
+      - "&7你不知道要干什么?"
+      - "&7查看我们的由社区维护的维基"
+      - "&7并考虑成为一名编辑者!"
+      - ""
+      - "&7⇨ &e点击前往非官方中文 Wiki"
+  addons:
+    lore:
+      - ""
+      - "&7Slimefun 是一个大型项目，但附属插件的存在"
+      - "&7能让 Slimefun 真正的发光发亮"
+      - "&7看一看它们，也许你要寻找的附属插件就在那里!"
+      - ""
+      # {0}: 已安装附属数量
+      - "&7该服务器已安装附属插件: &b{0}"
+      - ""
+      - "&7⇨ &e点击查看 Slimefun4 可用的附属插件"
+
+# 按键绑定系统的动作分类与动作名
+keybind:
+  # {0}: 按键名, {1}: 动作名
+  set: "&a已设置 {0} -> {1}"
+  category:
+    item-group: "物品组"
+    recipe-type: "配方类型"
+    item: "物品"
+    bookmark: "书签"
+    item-mark: "标记物品"
+    search: "搜索结果"
+    research: "研究"
+    common: "常规"
+  common:
+    default: "默认"
+    none: "无操作"
+  item-group:
+    cheat-placeholder: "作弊模式 - 获取对应的物品组占位符"
+    cheat-copy-key: "作弊模式 - 复制物品组的key"
+    copy-key-hover: "&e点击复制物品组的key"
+    cheat-copy-class: "作弊模式 - 复制物品组的class"
+    copy-class-hover: "&e点击复制物品组的class"
+    bookmark-or-select: "收藏物品组/选择待交换的物品组"
+    remove-mark: "删除标记的物品组"
+  recipe-type:
+    share: "分享配方类型"
+    find-users: "查找使用此配方类型的物品"
+    open-group: "打开配方类型所在物品组"
+    find-related: "查找相关物品/机器"
+    cheat-copy-id: "作弊模式 - 复制配方类型ID"
+    copy-id-hover: "&e点击复制配方类型的ID"
+  item:
+    remove-mark: "删除标记的物品"
+    mark: "物品标记"
+    bookmark-toggle: "收藏/取消收藏物品"
+    search-display-name: "搜索配方展示物品的名字涉及此物品的名字的物品"
+    share: "分享物品"
+    search-usage: "搜索物品作用"
+    open-group-or-take: "打开物品所在物品组/OP: 取下物品"
+    find-related: "查找相关物品"
+    cheat-clone: "作弊模式 - 复制物品"
+    cheat-take: "作弊模式 - 取出物品"
+    cheat-copy-id: "作弊模式 - 复制粘液物品ID"
+    copy-id-hover: "&e点击复制粘液物品的ID"
+  research:
+    research-item: "研究物品"
+
+# 自定义延时方块（CustomLagBlock）
+lag-block:
+  # {0}: 当前延时 ms
+  current: "&e当前延时: {0} ms"
+  clear: "&e点击以清除延时"
+  # {0}: 增量 ms
+  increase: "&a点击增加 {0} ms 延时"
+  # {0}: 减量 ms
+  decrease: "&c点击减少 {0} ms 延时"
+
+# 其他杂项
+misc:
+  unknown-recipe: "&4我们不知道如何展示该配方 :/"
+  unknown-addon: "未知附属"
+  click-copy: "点击复制"
+  group-tier-book: "&a物品组调位书"
+  vanilla-items-title: "原版物品"
+  keybind-select-parent: "&6选择你要编辑的按键控制集"
+  keybind-select-sub: "&6选择你要编辑的按键控制子集"
+  keybind-select-single: "&6选择你要编辑的按键控制"
+  easter-egg-name: "&6&l彩蛋"
+  easter-egg-lore: "&6&l爱来自 JustEnoughGuide"
+
+# MomoTech 配方补全配置
+momotech:
+  creative-open: "&a单击打开{0}"
+  creative-title: "&a原始物质配方补全配置"
+  none-open: "&a单击打开{0}"
+  none-title: "&aNONE配方补全配置"
+  quantity-open: "&a单击打开量化插件配方补全配置界面"
+  quantity-title: "&a量化插件配方补全配置"
+
+# GuideUtil 各界面按钮与标题
+guide-util:
+  bookmark-list-button: "&e&l收藏物列表"
+  bookmark-item-button: "&e&l收藏物品"
+  cer-button: "&e&l性价比界面（仅供参考）"
+  # {0}: 按键名, {1}: 动作名
+  keybind-action: "&7按下 {0} 时 ({1})"
+  back-left: "&f左键: &7返回上一页"
+  back-shift: "&fShift + 左键: &7返回主菜单"
+  rc-gui-title: "&e配方补全数量设置"
+  rc-edit-left: "&a点击下方按钮以编辑左键配方补全的次数"
+  rc-edit-right: "&a点击下方按钮以编辑右键配方补全的次数"
+  # {0}: 当前次数描述
+  rc-current: "&e当前次数: {0}"
+
+# 指南内物品/物品组展示的收藏操作提示
+on-display:
+  unbookmark-group: "&e右键以取消收藏物品组"
+  unbookmark-item: "&e右键以取消收藏物品"
+  bookmark-item: "&e左键点击以收藏物品"
+  bookmark-item-f: "&e按 F 键以收藏物品"
+  unbookmark-item-f: "&a★ 已收藏 &7(按 F 键取消收藏)"
+  click-unlock: "&a> 单击解锁"
+  requires: "&7需要 &b"
+  # {0}: 金额
+  cost-currency: "{0} 游戏币"
+  # {0}: 等级
+  cost-level: "{0} 级经验"
+
+# /jeg categories 物品组大全界面
+categories:
+  menu-title: "&6物品组大全"
+  copy-hint: "&a点击复制到聊天栏"
+  # {0}: 要复制的内容
+  copy-hover: "&d点击复制: {0}"
+  copy-action: "&d点击复制"
+  prev-page: "&a上一页"
+  next-page: "&a下一页"
+
+# CER 性价比界面
+cer:
+  menu-title: "&a性价比预览（仅供参考）"
+  recipe:
+    # {0}: 配方序号
+    name: "&a配方#{0}"
+    # {0}: 机器制作难度, {1}: 耗时(tick), {2}: 能耗描述
+    lore:
+      - "&a机器制作难度: {0}"
+      - "&a耗时: {1}"
+      - "&a{2}"
+  energy-none: "耗电: 无"
+  # {0}: 耗电量
+  energy-consume: "耗电: {0}"
+  # {0}: 产电量
+  energy-produce: "产电: {0}"
+  input-arrow: "&a输入 →"
+  input-arrow-rev: "&a← 输入"
+  output-arrow: "&6输出 →"
+  # {0}: 性价比
+  cer-line: "&a性价比: {0}"
+
+# 通用状态词（设置选项开关用）
+common:
+  state-on: "&a启用"
+  state-off: "&4禁用"
+  enable: "启用"
+  disable: "禁用"
+
+option:
+  recipe-completion:
+    input-times: "请输入单次要补全的次数"
+    # {0}: 上限
+    input-range: "请输入 1 ~ {0} 之间的正整数"
+    # {0}: 次数描述
+    set: "&a已设置补全次数为 {0}"
+  # 物品设置类选项（AbstractItemSettingsGuideOption）
+  item-settings:
+    not-set-name: "&c未设置物品"
+    not-set-lore: "&c手持物品点击设置"
+    air-name: "&f空气"
+    set-lore: "&c已设置物品"
+  # 开关型选项：name 的 {0} 为状态（&a启用/&4禁用），lore 末行的 {0} 为动作（禁用/启用）
+  beginners-guide:
+    name: "&b新手指引: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在查阅一个物品的时候"
+      - "&7Shift+右键点击搜索这个物品的名字."
+      - ""
+      - "&7⇨ &e点击 {0} 新手指引"
+  cer-patch:
+    name: "&b性价比显示: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在搜索一个物品的全名的时候"
+      - "&7在搜出的相关机器上显示"
+      - "&7使用这个机器制作这个物品的性价比"
+      - ""
+      - "&7⇨ &e点击 {0} 性价比显示"
+  fireworks:
+    name: "&b烟花特效: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在解锁一个新物品的时候"
+      - "&7展示烟花特效."
+      - ""
+      - "&7⇨ &e点击 {0} 烟花特效"
+  guide-mode:
+    # {0}: 当前模式显示名
+    name: "Slimefun 指南样式: {0}"
+    normal: "普通模式"
+    cheat: "作弊模式"
+    click: "单击修改指南样式"
+  keybinds-open: "&a单击打开指南书按键控制界面"
+  notice-missing-material:
+    name: "&b告知缺失的材料: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择"
+      - "&7当你使用配方补全时"
+      - "&7如果材料不足"
+      - "&7是否告知缺失的材料"
+      - ""
+      - "&7⇨ &e点击 {0} 告知缺失的材料"
+  open-big-recipe:
+    name: "&b自动打开大配方菜单: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在查阅一个物品的时候"
+      - "&7是否自动打开其大配方菜单. (若有)"
+      - ""
+      - "&7⇨ &e点击 {0} 自动打开大配方菜单"
+  share-in:
+    name: "&b接收分享的物品: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择"
+      - "&7当他人分享一个物品时"
+      - "&7是否接收那个玩家发送的推送消息"
+      - ""
+      - "&7⇨ &e点击 {0} 接收分享的物品"
+  share-out:
+    name: "&b向他人分享物品: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择"
+      - "&7在粘液书中的物品上按 Q 时"
+      - "&7是否向他人分享这个物品"
+      - ""
+      - "&7⇨ &e点击 {0} 向他人分享物品"
+  slimefun-id-display:
+    name: "&b粘液物品ID显示: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在查阅一个物品的时候"
+      - "&7显示它的粘液ID"
+      - ""
+      - "&7⇨ &e点击 {0} 粘液物品ID显示"
+  recipe-complete-open-mode:
+    # {0}: 模式显示（带色码）
+    name: "&b配方补全打开模式: {0}"
+    # {0}: 目标模式（纯文本）
+    click: "&7⇨ &e点击切换配方补全打开模式为 {0}"
+    mode-inherit: "&4继承上一次打开的界面"
+    mode-new: "&a打开新界面"
+    target-inherit: "继承上一次打开的界面"
+    target-new: "打开新界面"
+  recipe-complete-open: "&a单击打开配方补全设置界面"
+  emc-display:
+    name: "&bEMC值显示: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在查阅一个新物品的时候"
+      - "&7显示它的EMC数值"
+      - ""
+      - "&7注: 此EMC数值为EMCTech中的数值"
+      - "&7不等同于乱序等附属的数值"
+      - "&7⇨ &e点击 {0} EMC值显示"
+  finaltech-display:
+    name: "&b新乱序EMC值显示: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在查阅一个新物品的时候"
+      - "&7显示它的新乱序EMC数值"
+      - ""
+      - "&7注: 此EMC数值为"
+      - "&7新乱序中的数值"
+      - "&7不等同于旧乱序, EMCTech等附属的数值"
+      - "&7⇨ &e点击 {0} 新乱序EMC值显示"
+  finaltech-v1-display:
+    name: "&b旧乱序EMC值显示: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在查阅一个新物品的时候"
+      - "&7显示它的旧乱序EMC数值"
+      - ""
+      - "&7注: 此EMC数值为"
+      - "&7旧乱序中的数值"
+      - "&7不等同于新乱序, EMCTech等附属的数值"
+      - "&7⇨ &e点击 {0} 旧乱序EMC值显示"
+  machine-stackable-display:
+    name: "&b逻辑工艺-堆叠显示: {0}"
+    lore:
+      - ""
+      - "&7你现在可以选择是否"
+      - "&7在查阅一个物品的时候"
+      - "&7显示它是否能被逻辑工艺的堆叠机器堆叠"
+      - ""
+      - "&7⇨ &e点击 {0} 逻辑工艺-堆叠显示"
+  nearby-container:
+    name: "&a配方补全自动抓取"
+    lore:
+      - "&7配方补全自动抓取，即在配方补全获取材料时"
+      - "&7从周围的粘液容器中获取原材料"
+      - "&e仅支持粘液容器"
+      # {0}: 当前值, {1}: 上限
+      - "&7当前半径范围: {0} (限制范围: 0~{1})"
+      - "&7⇨ &e点击设置配方补全自动抓取范围"
+    # 以下为原有的输入交互文案
+    input-reach: "&a请输入配方补全自动抓取范围"
+    # {0}: 上限
+    input-range: "请输入 0 ~ {0} 之间的正整数"
+  recursive:
+    name: "&a配方补全深度"
+    lore:
+      - "&7配方补全深度越大，需要的时间越长"
+      - "&7如果遇到一个材料不存在，会尝试补全"
+      - "&7这个材料的材料，以此类推，此过程视为一层深度"
+      - ""
+      # {0}: 当前值, {1}: 上限
+      - "&7当前深度: {0} (限制范围: 1~{1})"
+      - "&7⇨ &e点击设置深度"
+    input-depth: "&a请输入配方补全深度"
+    # {0}: 上限
+    input-range: "请输入 1 ~ {0} 之间的正整数"
+
+# 配方补全次数行为（CompletionBehaviour）的显示名与图标
+behaviour:
+  single:
+    display: "1 个物品"
+  stack:
+    display: "1 组物品"
+  icon:
+    # {0}: 当前行为描述
+    name: "&a单次补全 {0}"
+    lore: "&a点击以设置"
+  stack-64:
+    display: "64 个物品"
+  custom:
+    display: "自定义个物品"
+  times:
+    once: "1 组"
+    suffix: " 次"
+
+# /jeg timings 性能报告（发给接收者的组件文本）
+profiler:
+  title: "===== JEG - Slimefun 性能分析器 ====="
+  tick-total: "Tick 总用时："
+  ticker-period: "Ticker 运行周期："
+  rating-label: "性能评分: "
+  machine-label: "机器 | "
+  chunk-label: "区块 | "
+  plugin-label: "插件 | "
+  block-label: "方块 | "
+  machine-id: "机器 ID"
+  machine-total: "机器总耗时"
+  chunk-id: "区块位置"
+  chunk-total: "区块总耗时"
+  plugin-id: "插件 ID"
+  plugin-total: "插件总耗时"
+  block-time: "机器耗时 (ms)"
+  block-count: "方块数"
+  top-chunk: "最耗时区块"
+  top-block: "最耗时方块"
+  tp-top-chunk: "点击传送到最耗时区块"
+  tp-top-machine: "点击传送到最耗时机器"
+  tp-prefix: "点击传送: "
+  tp-center-suffix: " 中心"
+  hover-detail: " (悬停查看详情)"
+  no-permission: "你没有权限使用此指令!"
+  no-verbose-permission: "&c[JustEnoughGuide] 你没有权限使用 --verbose 参数！"
+
+
+# ============================================================================
+# 附属英文名 -> 中文名对照表（LocalHelper.addonLocals 数据源）
+# 键为附属的内部英文名（大小写敏感），值为指南中显示的中文名。
+# 支持 & 颜色码；config.yml 的 local-translate 配置会在此表之上叠加覆盖。
+# ============================================================================
+addon-names:
+  Slimefun: "粘液科技"
+  ColoredEnderChests: "彩色末影箱"
+  DyedBackpacks: "染色背包"
+  EnderCargo: "末影货运接口"
+  EcoPower: "环保能源"
+  ElectricSpawners: "电动刷怪笼"
+  ExoticGarden: "异域花园"
+  ExtraGear: "更多装备"
+  ExtraHeads: "更多头颅"
+  HotbarPets: "背包宠物"
+  luckyblocks-sf: "幸运方块" # Same as SlimefunLuckyBlocks
+  RedstoneConnector: "红石连接器"
+  PrivateStorage: "私人储存"
+  SlimefunOreChunks: "更多矿石块"
+  SlimyTreeTaps: "粘液木龙头"
+  SoulJars: "灵魂罐"
+  MoreTools: "更多工具"
+  LiteXpansion: "工业"
+  MobCapturer: "生物捕捉"
+  SoundMuffler: "消音器"
+  ExtraTools: "额外工具"
+  TranscEndence: "末地科技"
+  Liquid: "液体"
+  SlimefunWarfare: "战争工艺"
+  InfernalExpansion: "下界工艺"
+  FluffyMachines: "蓬松机器"
+  SlimyRepair: "粘液物品修复"
+  InfinityExpansion: "无尽贪婪" # Avoid conflict with InfinityExpansion-Changed
+  FoxyMachines: "神秘科技"
+  GlobalWarming: "全球变暖"
+  GlobiaMachines: "全球机器"
+  DynaTech: "动力科技"
+  GeneticChickengineering: "鸡因工程" # Same as GeneticChickengineering-Reborn
+  GeneticChickengineering-Reborn: "鸡因工程" # Same as GeneticChickengineering
+  ClayTech: "粘土科技" # Same as ClayTech-Fixed
+  ClayTech-Fixed: "粘土科技" # Same as ClayTech
+  SpaceTech: "太空科技" # Same as SpaceTech-Fixed
+  SpaceTech-Fixed: "太空科技" # Same as SpaceTech
+  FNAmplifications: "FN科技"
+  SimpleMaterialGenerators: "简单材料生成器"
+  Netheopoiesis: "下界乌托邦"
+  Networks: "网络" # Avoid conflict with Networks-Changed, (sometimes it is NetworksExpansion)
+  EMC2: "等价交换(EMC2)" # Avoid conflict with EquivalencyTech
+  Nexcavate: "文明复兴"
+  SimpleStorage: "简易储存"
+  SimpleUtils: "简易工具"
+  AlchimiaVitae: "炼金术自传"
+  SlimeTinker: "粘液匠魂"
+  PotionExpansion: "药剂科技"
+  FlowerPower: "源之花"
+  Galactifun: "星际"
+  Galactifun2: "星际2"
+  ElementManipulation: "化学工程"
+  CrystamaeHistoria: "魔法水晶编年史"
+  DankTech: "无底储存"
+  DankTech2: "无底储存2"
+  Networks-Changed: "网络(心孜改版)" # Avoid conflict with Networks
+  VillagerUtil: "村民工具"
+  MissileWarfare: "导弹科技"
+  SensibleToolbox: "STB/未来科技"
+  Endrex: "末地拓展"
+  Bump: "Bump魔法"
+  FinalTech: "乱序技艺" # Same as FinalTECH
+  FinalTECH: "乱序技艺" # Same as FinalTech
+  SlimefunLuckyBlocks: "幸运方块" # Same as luckyblocks-sf
+  FutureTech: "未来科技"
+  DemonicExpansion: "魑魅拓展"
+  BedrockTechnology: "基岩科技"
+  SlimefunItemExpansion: "更多物品"
+  SupplementalServiceableness: "更多日用物品"
+  GuizhanCraft: "鬼斩科技"
+  Magmanimous: "熔岩之息"
+  UltimateGenerators-RC27: "终极发电机" # Same as UltimateGenerators
+  UltimateGenerators: "终极发电机" # Same as UltimateGenerators-RC27
+  UltimateGenerators2: "终极发电机2"
+  CrispyMachine: "酥脆科技"
+  Chocoholics: "虫火谷工艺" # Same as ChocoHills
+  ChocoHills: "虫火谷工艺" # Same as Chocoholics
+  draconic: "龙之研究" # Same as DracFun
+  DracFun: "龙之研究" # Same as draconic
+  EzSFAddon: "EZ科技" # Same as EzTech, EzSlimeFunAddon
+  EzTech: "EZ科技" # Same as EzSFAddon, EzSlimeFunAddon
+  EzSlimeFunAddon: "EZ科技" # Same as EzSFAddon, EzTech
+  RandomExpansion: "随机拓展"
+  SlimyBees: "林业蜜蜂"
+  ObsidianExpansion: "黑曜石科技"
+  EMCTech: "EMC科技"
+  RelicsOfCthonia: "克苏尼亚遗物"
+  Supreme: "至尊研究院"
+  DyeBench: "染色科技"
+  MiniBlocks: "迷你方块"
+  SpiritsUnchained: "灵魂巧匠"
+  Cultivation: "农耕工艺"
+  Gastronomicon: "美食家"
+  SmallSpace: "小世界"
+  BetterReactor: "工业反应堆" # Avoid conflict with Fusion
+  VillagerTrade: "村民交易"
+  SlimeFrame: "粘液战甲"
+  AdvancedTech: "先进科技"
+  Quaptics: "量子光学"
+  CompressionCraft: "压缩工艺"
+  ThermalFun: "灼岩科技"
+  FastMachines: "快捷机器"
+  MomoTech: "乱码科技"
+  LogicTech: "逻辑工艺" # Same as LogicTECH, a SlimefunCustomizer configuration
+  LogiTech: "逻辑工艺" # Same as LogiTECH, a Slimefun addon
+  LogicTECH: "逻辑工艺" # Same as LogicTech
+  LogiTECH: "逻辑工艺" # Same as LogiTech
+  SlimeAEPlugin: "能源与应用2"
+  SlimeChem: "粘液化学"
+  WilderNether: "迷狱生机"
+  MapJammers: "地图干扰"
+  Cakecraft: "蛋糕工艺" # Same as MyFirstAddon
+  SFMobDrops: "自定义生物掉落"
+  Drugfun: "自定义医药用品"
+  SlimefunNukes: "粘液核弹"
+  SlimeCustomizer: "自定义粘液附属" # Avoid conflict with RaySlimefunAddon, RykenSlimefunCustomizer, RykenSlimeCustomizer
+  RykenSlimeCustomizer: "Ryken自定义附属" # Same as RykenSlimefunCustomizer, avoid conflict with RaySlimefunAddon
+  RykenSlimefunCustomizer: "Ryken自定义附属" # Same as RykenSlimeCustomizer, avoid conflict with RaySlimefunAddon
+  FinalTECH-Changed: "乱序技艺-改版"
+  BloodAlchemy: "血炼金工艺" # Same as BloodyAlchemy
+  Laboratory: "实验室"
+  MobEngineering: "生物工程"
+  TsingshanTechnology: "青山科技" # Same as TsingshanTechnology-Fixed
+  TsingshanTechnology-Fixed: "青山科技" # Same as TsingshanTechnology
+  PomaExpansion: "高级安卓机器人"
+  BuildingStaff: "建筑魔杖"
+  IDreamOfEasy: "易梦"
+  Magic8Ball: "魔法8号球"
+  InfinityExpansionAutomation: "无尽自动化"
+  ZeroTech: "澪数工艺"
+  Ex-Limus: "新手工具" # Same as ExLimus
+  NotEnoughAddons: "多彩科技"
+  SFWorldEdit: "粘液创世神[SW]" # Avoid conflict with SlimefunWorldedit
+  RSCEditor: "RSC编辑器"
+  JustEnoughGuide: "更好的粘液书"
+  SummaryHelper: "粘液刻管理"
+  HardcoreSlimefun: "硬核粘液"
+  SFCalc: "粘液计算器"
+  SfChunkInfo: "区块信息"
+  SlimefunAdvancements: "自定义粘液任务"
+  SlimeHUD: "方块信息显示" # Same as SlimeHUDPlus
+  SlimeHUDPlus: "方块信息显示" # Same as SlimeHUD
+  RaySlimefunAddon: "高级自定义粘液附属" # Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
+  SCrafter: "SC科技" # Same as SlimefunZT
+  CrispyMachines: "酥脆机器"
+  DimensionTraveler: "维度旅者"
+  HardlessMachine: "弹跳工具"
+  XingChengCraft: "星辰工艺" # Same as XingChenCraft, XingCheng_Craft
+  XingChenCraft: "星辰工艺" # Same as XingChengCraft, XingCheng_Craft
+  DefoLiationTech: "落叶科技" # Same as DefoliationTech
+  HaimanTech2: "海曼科技院"
+  HaimanTech: "海曼科技"
+  InfiniteExtensionV2: "无尽扩展V2"
+  InfiniteExtension: "无尽扩展"
+  OrangeTech: "橘子科技"
+  GreedAndCreation: "贪婪与创世"
+  BocchiTechnology: "波奇科技" # Same as Bocchi_Technology
+  Bocchi_Technology: "波奇科技" # Same as BocchiTechnology
+  OreTech: "矿物科技"
+  HLGtech: "生物科技" # Avoid conflict with MobTech
+  InfiniteExtensionV2-Reconfiguration: "无尽扩展V2-改版"
+  BigSnakeTech: "大蛇科技" # Same as BigSnake-Tech
+  BigSnake-Tech: "大蛇科技" # Same as BigSnakeTech
+  EpoTech: "纪元科技"
+  EnchanterLimit: "限制附魔机"
+  BlockLimiter: "方块限制"
+  SfItemsExporter: "粘液物品导出"
+  SlimeGlue: "粘液胶"
+  KeepSoulbound: "高级灵魂绑定"
+  SlimeFunItemBanned: "禁用物品"
+  Azap: "狱刑"
+  CringleBosses: "混沌Boss"
+  SlimefunNotchApple: "粘液Notch旗帜图案"
+  Huolaiy: "火莱伊工艺"
+  WonderfulTransmitter: "奇妙发射器"
+  OreGeneration: "矿物生成器" # Avoid conflict with Mineralgenerator
+  OreGenerationExtension: "矿物生成器拓展"
+  SlimeSec: "安全粘液"
+  Paradoxium: "凤凰科技"
+  LuckyPandas: "幸运熊猫"
+  PhoenixSciences: "凤凰科学"
+  DarkMatter: "夜魅"
+  GeneticManipulation: "遗传学基因"
+  MoneyAndThings: "固态货币"
+  BeyondHorizons: "以太"
+  ChestTerminal: "箱子终端"
+  Hohenheim: "嬗变工艺" # Same as hohenheim
+  BetterFarming: "高级农场" # Same as betterfarming
+  NewBeginnings: "新生" # Same as New-Beginnings
+  EndCombat: "终焉"
+  EnderPanda: "末地熊猫"
+  SlimeVoid: "虚无粘液" # Same as SlimefunVoid
+  ArcaneExploration: "怪物强化"
+  MagicXpansion: "霊幻之梦"
+  SlimeQuest: "粘液任务"
+  CompressedMachines: "压缩机器"
+  DisguiseCookie: "伪装曲奇"
+  FireSlime: "碳泥科技"
+  NetherEnough: "深渊幻章"
+  BarrelWiper: "蓬松拆桶器"
+  BearFluidTanks: "熊式储液罐"
+  Tofu-Addons: "豆腐工艺"
+  AdditionalWeaponry: "武器工厂"
+  BoxOfChocolates: "巧克力工艺"
+  MagicPowder: "魔芋工艺" # Same as magic-powder
+  XpCreator: "造物主工艺"
+  SlimefunCombat: "原子弹模型"
+  ObsidianArmor: "黑曜石合金装甲" # Same as Obsidian-Armor
+  FinalGenerations: "世代同堂"
+  Fusion: "工业反应堆 Fusion" # Avoid conflict with BetterReactor
+  Slimedustry: "粘液工业"
+  Spikes: "更多地刺"
+  SlimeRP: "现代工厂"
+  Brewery: "酿酒" # Avoid conflict with BreweryMenu
+  EquivalencyTech: "等价交换(ET)" # Avoid conflict with EMC2
+  GeyserHeads: "互通头颅材质"
+  VariousClutter: "杂乱物品"
+  Mineralgenerator: "Mineral 矿物生成器" # Avoid conflict with OreGeneration
+  CivilizationEvolution: "AG科技" # Avoid conflict with AgTech, ProductState
+  RemiliasUtilities: "雷米科技"
+  BetterChests: "更好的箱子"
+  SlimeFood: "粘液美食"
+  SlimeVision: "粘液可视化"
+  WorldeditSlimefun: "粘液创世神[WS]" # Avoid conflict with SFWorldedit
+  MinimizeFactory: "最小化工厂"
+  InfinityCompress: "无尽压缩"
+  SlimeFrameExtension: "粘液战甲扩展"
+  BreweryMenu: "酿酒GUI" # Avoid conflict with Brewery
+  MySlimefunAddon: "自制拓展"
+  MyFirstAddon: "蛋糕工艺" # Same as Cakecraft
+  StackMachine: "堆叠机器" # Avoid conflict with SlimefunStackMachine
+  SlimefunStackMachine: "粘液堆叠机器" # Avoid conflict with StackMachine
+  CraftableEnchantments: "附魔工艺"
+  sj_Expansion: "sjの粘液拓展"
+  SlimefunZT: "SC科技" # Same as SCraft
+  SlimefunAddon: "CAPTAINchad12自制拓展" # Unbelievable...
+  AngleTech: "倾斜科技"
+  magicexpansion: "魔法拓展" # Same as MagicExpansion, avoid conflict with Magic
+  MagicExpansion: "魔法拓展" # Same as magicexpansion, avoid conflict with Magic
+  SlimefunHopper: "粘液漏斗"
+  SlimefunAccessor: "远程访问器"
+  ExoticGardenComplex: "异域花园" # Same as ExoticGarden
+  magic-powder: "魔芋工艺" # Same as MagicPowder
+  Obsidian-Armor: "黑曜石合金装甲" # Same as ObsidianArmor
+  BloodyAlchemy: "血炼金工艺" # Same as BloodAlchemy
+  hohenheim: "嬗变工艺" # Same as Hohenheim
+  HALsAddon: "终界之地" # Same as slimestack
+  slimestack: "终界之地" # Same as HALsAddon
+  SlimefunVoid: "虚无粘液" # Same as SlimeVoid
+  betterfarming: "高级农场" # Same as BetterFarming
+  New-Beginnings: "新生" # Same as NewBeginnings
+  ExLimus: "新手工具" # Same as Ex-Limus
+  Aeterum: "众神之马"
+  PoseidonAddon: "浪涌科技"
+  Aircraft: "粘液飞机"
+  InfinityExpansion2: "无尽贪婪2"
+  EtherTech: "虚素科技"
+  SlimefunTimeit: "性能监视器"
+  AsianStarProgram: "亚星计划"
+  AgTech: "AG科技 - RSC" # Avoid conflict with CivilizationEvolution, ProductState
+  CavernTech: "洞穴科技"
+  Creation: "创世"
+  Greed: "贪婪"
+  HoosierTech: "胡希尔科技"
+  HorizonsGears: "地平线装甲"
+  langui: "懒鬼科技"
+  Magic: "魔法" # Same as MagicExpansion, magicexpansion
+  MetaCoin: "数字硬币"
+  MobSimulationPlus: "生物芯片扩展"
+  MoreUniqueTools: "更多奇妙的工具"
+  PinksheepTech: "粉羊科技"
+  PinksheepTech_EpoTech: "纪元拓展"
+  RepairStation: "SC修复站" # Same as SlimeCustomizerRepairStation
+  SlimeCustomizerRepairStation: "SC修复站" # Same as RepairStation
+  SlimefunNetherTech2: "下界科技2"
+  snion: "工业驱动"
+  SuperFood: "超级食品"
+  Typhfun: "Typhfun"
+  WolfyMachines: "狼之机器"
+  XingCheng_Craft: "星辰工艺" # Same as XingChengCraft, XingChenCraft
+  WorldTaste: "尘世百味"
+  Automation: "粘液电脑"
+  MobTech: "生物科技(MT)" # Avoid conflict with HLGTech
+  Strophodungeons: "地牢迷宫"
+  SFTeacher: "粘液科技教程"
+  Slimefunexpansion: "粘液科技拓展"
+  HiveCorporation: "H公司"
+  BlackFishTech: "黑鱼科技"
+  MerakTech: "天璇科技"
+  TinselStar: "箔澜星"
+  Annihilation_Tech: "湮灭科技" # Same as AnnihilationTech
+  AnnihilationTech: "湮灭科技" # Same as Annihilation_Tech
+  HiServerTech: "Hi世界科技"
+  DefoliationTech: "落叶科技" # Same as DefoLiationTech
+  HeadQuantumStorage: "头颅版量子存储"
+  LengShangTech: "冷殇科技"
+  MuzhouTech: "暮舟科技"
+  DFD_InfiniteExtensionV2: "DFD - 无尽V2重构版"
+  DFD_Expand: "DFD - 缘落科技"
+  Blocktreetech: "方块树"
+  TinCraft: "&kabc &fTinCraft &kabc&r"
+  InfinityExpansion-Changed: "无尽贪婪(心孜改版)" # Avoid conflict with InfinityExpansion
+  fm_tech: "浮木科技"
+  Supermarket: "超能力机器"
+  HseerTech: "HseerMC科技"
+  ZeroSequenceTechnique: "零序技艺"
+  OriginTech: "起源工艺"
+  SimpleTech: "简单科技"
+  Komutech: "口木科技"
+  SlimefunInfiniteBlocks: "粘液无尽方块"
+  RSC_YunQi_History: "云启文明"
+  fvvtech: "fvv科技"
+  AeroDragonTech: "飞龙科技"
+  REGS: "沐莱物语"
+  FengQi_Tech: "风起科技"
+  YINGMO: "樱沫科技" # Same as SakuraLoveTech
+  PandaTech: "熊猫科技"
+  GLTC121: "GLTC联合协议"
+  GLTC: "GLTC联合协议" # GLTC的jar版本
+  SLTech: "SL科技"
+  EpoTech_Branch: "EpoTech分支版"
+  SakuraLoveTech: "樱沫科技" # Same as YINGMO
+  SlimeBotania: "植物魔法"
+  ProductState: "AG科技 - PS" # Avoid conflict with CivilizationEvolution, AgTech
+  NEKO_TECH: "猫娘科技"
+  GalaxyTech: "星河科技"
+  xingmian: "星眠科技"
+  SlimeEasy: "简易粘液"
+  TangranTech: "糖然科技"
+
+# icons:
+#   example:
+#     material: BOOK
+#     name: "&b示例图标"
+#     lore: |-
+#       &7这是一段示例 lore
+#       &8第二行

@@ -1,0 +1,703 @@
+#file: noinspection GrazieInspection
+
+# 语言文件选择：对应插件内置 lang/ 目录（或 plugins/JustEnoughGuide/lang/）下的 <language>.yml。
+# 想换语言（或自建一份翻译）就把 zh_CN 改成对应的文件名，如 en_US（前提是该文件存在）。
+language: zh_CN
+
+# 是否开启自动更新：插件启动时从 Guizhan Build 检查并下载最新版。
+# 想手动管理插件版本（自己换 jar）就改成 false。
+auto-update: true
+
+# 指南界面标题，支持 & 色码。
+# 想改指南书顶部显示的文字（比如去掉署名、换个标题）就改这两行。
+guide:
+  survival-guide-title: "&2&lSlimefun 指南 (生存模式)         &e&l爱来自 JustEnoughGuide"
+  cheat-guide-title: "&c&lSlimefun 指南 (作弊模式)         &e&l爱来自 JustEnoughGuide"
+
+# 各项功能改进的总开关：不想用某个功能，就把对应一行改成 false。
+improvements:
+  # 是否启用拼音搜索（用全拼或首字母搜索中文物品名，如 nj 搜到"凝胶"）。
+  # 服务器玩家都用中文名搜索，可以改成 false。
+  pinyin-search: true
+  # 是否启用书签系统（在指南里收藏常用物品、快速访问）。
+  # 不想要收藏功能就改成 false，相关按钮会一并隐藏。
+  bookmark: true
+  # 是否启用实时搜索（RTS：在铁砧界面里边输入边出结果）。
+  # 不想让铁砧被搜索占用就改成 false。
+  rts-search: true
+  # Deprecated - 该功能已废弃
+  # 是否在指南设置里提供"新手引导"选项（给新手展示功能帮助页）。
+  # 老玩家为主的服务器可以改成 false 隐藏该选项。
+  beginner-option: true
+  # 是否启用 EMC科技（EMCTech）附属的物品 EMC 值显示。
+  # 服务器装了 EMCTech 并想在指南里看 EMC 值就保持 true，没装则无需改动。
+  emc-display-option: true
+  # 是否启用乱序技艺 FinalTech（v1 旧版）附属的 EMC 值显示。
+  # 服务器装的是 FinalTech 旧版本时才有意义，其余情况无需改动。
+  finaltech-emc-display-option: true
+  # 是否启用乱序技艺 FinalTECH（v2 及改版 v3）附属的 EMC 值显示。
+  # 服务器装的是 FinalTECH 新版本或改版时才有意义，其余情况无需改动。
+  finalTECH-emc-display-option: true
+  # 是否允许玩家在指南中分享物品（预留开关，当前版本暂未实际启用）。
+  item-shareable: true
+  # 是否为适配的机器在配方页添加 CER 机器数据分析按钮（查看产能/耗电统计）。
+  # 该功能统计开销较大：服务器卡顿或用不到就保持/改成 false，需要时改 true。
+  cer-patch: false
+  # 是否允许玩家自定义的指南按键绑定生效（点击原按键位置时自动重定向到映射后的功能）。
+  # 想强制所有玩家使用默认按键布局就改成 false。
+  allow-action-redirect: true
+  # 是否在指南中启用 Logitech 附属"可堆叠机器"的堆叠信息显示。
+  # 没装 Logitech 或不需要堆叠显示就改成 false。
+  logitech-machine-stackable-display: true
+  # 是否在指南设置里提供"显示 Slimefun 物品 ID"选项（玩家可在游戏内自行开关）。
+  # 不希望玩家查看物品 ID 就改成 false。
+  slimefun-id-display: true
+
+# 是否禁止在粘液容器（箱子、机器等 Slimefun 界面）中交互收纳袋（Bundle）。
+# 出现过收纳袋导致的物品异常/刷物品就保持 true；确认无此类问题想方便搬运可改 false。
+disable-bundle-interaction: true
+
+# 是否对来自不同附属的物品替换卡在配方补全进行互通处理（不同附属的替换卡可互相替代使用）。
+# 不希望配方补全使用物品替换卡进行补全时，可改为 false。
+adapt-replacement-cards: true
+
+# 禁止产生伴生物品（配方补全时配套生成的替换卡物品）的物品 ID 列表，填 Slimefun 物品 ID。
+# 某个物品的替换卡出问题（比如被当真材料用掉）就把它加进来。
+no-replacement-card-companion-item-ids: [ ]
+
+# 禁止产生伴生物品的附属列表，填附属插件名。
+# 某个附属的所有物品都不想生成替换卡就把附属名加进来。
+no-replacement-card-companion-addons: [ ]
+
+# 是否在配方补全适配的机器界面中自动添加配方补全按钮。
+# 不想机器界面被自动改动、只想从指南发起补全就改成 false。
+auto-add-recipe-complete-button: true
+
+# 禁止自动添加配方补全按钮的粘液方块列表，填 Slimefun 物品 ID。
+# 某台机器加按钮后有冲突/显示异常就把它的 ID 加进来。
+no-auto-add-recipe-complete-blocks: [ ]
+
+# 禁止自动添加配方补全按钮的粘液附属列表，填附属插件名。
+# 某个附属的所有机器都不想自动加按钮就把附属名加进来。
+no-auto-add-recipe-complete-addons: [ ]
+
+# 搜索黑名单：普通搜索（非限定词）时，名字包含以下任意词的物品不会出现在结果里。
+# 觉得搜索结果太杂（比如一堆"快捷"系列机器）就往里加词；一个词一行。
+blacklist:
+  - "快捷"
+
+# 搜索禁用表：无论什么搜索方式，名字包含以下任意词的物品一律搜不到。
+# 想彻底隐藏某些物品的搜索入口就往里加词。
+banlist: []
+
+# 相似字互通表：同一组内的字符在搜索时视为等同（如输入"荧"也能搜到"萤"）。
+# 玩家常用错别字/别称搜不到东西时，把错字和正确字放进同一组即可。
+shared-chars:
+  - "粘黏"
+  - "荧萤"
+  - "机器级"
+  - "灵零"
+  - "动力"
+  - "拆反"
+  - "解向"
+  - "地下"
+  - "狱界届"
+  - "无不"
+  - "法可"
+  - "存储"
+  - "曼鳗蛮慢"
+  - "0〇零澪θΦφ"
+  - "I1①壹初"
+  - "2②贰"
+  - "3③叁"
+  - "4④肆亖"
+  - "5⑤五伍"
+  - "6⑥六陆"
+  - "7⑦七"
+  - "8⑧八"
+  - "9⑨九"
+  - "牛奶"
+  - "奶桶"
+  - "熔岩"
+  - "岩浆"
+  - "蛋旦"
+  - "抑异"
+  - "郁域"
+  - "鸡基只坤"
+  - "监坚"
+  - "暮慕睦墓"
+  - "舟州洲粥"
+  - "蜂蜜"
+  - "竿杆"
+  - "鱼渔"
+  - "沙砂"
+  - "携捷"
+  - "红赤绯"
+  - "翡翠绿"
+  - "蓝青靛"
+  - "拴栓"
+  - "魔权"
+  - "aα"
+  - "bβ"
+  - "yγ"
+  - "kκ"
+  - "Χχ"
+  - "wω"
+  - "tτ"
+  - "pρ"
+  - "兀π"
+
+# 是否开启配方补全.
+# 不想要这个功能就改成 false。
+recipe-complete: true
+
+# 单次配方补全的最大数量（防止一次补全太多导致卡顿或物品溢出）。
+# 觉得单次补全太少就调大，想限制玩家行为就调小。
+max-recipe-completion-times: 3456
+
+# 指南各界面布局：每一行 9 个字符对应一排箱子格，字符含义见各布局上方注释。
+# 想挪动某个按钮/内容的位置，直接调整字符在字符串中的位置即可（保持 9 列不变）。
+custom-format:
+  # 粘液书主界面
+  # B = 背景板
+  # b = 返回
+  # T = 设置
+  # R = 实时搜索（功能未开启则为背景板显示）
+  # C = 收藏物列表（功能未开启则为背景板显示）
+  # S = 搜索
+  # G = 物品组
+  # P = 上一页
+  # N = 下一页
+  main:
+    - "BTBBBBRSB"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "BPBBCBBNB"
+  # 父分类界面
+  # B = 背景板
+  # b = 返回
+  # R = 实时搜索（功能未开启则为背景板显示）
+  # C = 收藏物列表（功能未开启则为背景板显示）
+  # S = 搜索
+  # G = 物品组
+  # P = 上一页
+  # N = 下一页
+  nested-group:
+    - "BbBBBBRSB"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "GGGGGGGGG"
+    - "BPBBCBBNB"
+  # 物品分类
+  # B = 背景板
+  # b = 返回
+  # R = 实时搜索（功能未开启则为背景板显示）
+  # C = 收藏物列表（功能未开启则为背景板显示）
+  # c = 收藏物品（功能未开启则为背景板显示）
+  # S = 搜索
+  # i = 物品
+  # P = 上一页
+  # N = 下一页
+  sub-group:
+    - "BbBBBBRSB"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "BPBcCBBNB"
+  # 配方展示
+  # B = 背景板
+  # b = 返回
+  # R = 实时搜索（功能未开启则为背景板显示）
+  # C = 收藏物列表（功能未开启则为背景板显示）
+  # S = 搜索
+  # r = 材料
+  # w = Wiki 链接
+  # t = 配方类型
+  # i = 输出物品
+  # E = 超大配方
+  # K = SlimeFunRecipe 配方编辑（若有）
+  recipe:
+    - "bK rrr  w"
+    - " t rrr i "
+    - "m  rrr  E"
+  # 配方展示 - 原版物品
+  # B = 背景板
+  # b = 返回
+  # R = 实时搜索（功能未开启则为背景板显示）
+  # C = 收藏物列表（功能未开启则为背景板显示）
+  # S = 搜索
+  # r = 材料
+  # w = Wiki 链接
+  # t = 配方类型
+  # i = 输出物品
+  # P = 上一页
+  # N = 下一页
+  # m = 性价比（无性价比信息则为空气显示）
+  recipe-vanilla:
+    - "b  rrr  w"
+    - " t rrr i "
+    - "   rrr   "
+    - "BPBBBBBNB"
+  # 配方展示 - 配方展示物品
+  # B = 背景板
+  # b = 返回
+  # R = 实时搜索（功能未开启则为背景板显示）
+  # C = 收藏物列表（功能未开启则为背景板显示）
+  # S = 搜索
+  # r = 材料
+  # w = Wiki 链接
+  # t = 配方类型
+  # i = 输出物品
+  # E = 超大配方
+  # P = 上一页
+  # N = 下一页
+  # d = 配方展示
+  # m = 性价比（无性价比信息则为空气显示）
+  # K = SlimeFunRecipe 配方编辑（若有）
+  recipe-display:
+    - "bK rrr  w"
+    - " t rrr i "
+    - "m  rrr  E"
+    - "BPBBBBBNB"
+    - "ddddddddd"
+    - "ddddddddd"
+  # 指南帮助
+  # B = 背景板
+  # b = 返回
+  # R = 实时搜索（功能未开启则为背景板显示）
+  # C = 收藏物列表（功能未开启则为背景板显示）
+  # S = 搜索
+  # A = 作者信息
+  # h = 功能展示
+  # P = 上一页
+  # N = 下一页
+  helper:
+    - "BbBBBBRSB"
+    - "B   A   B"
+    - "BhhhhhhhB"
+    - "BhhhhhhhB"
+    - "BhhhhhhhB"
+    - "BPBBCBBNB"
+  # 设置
+  # B = 背景板
+  # b = 返回
+  # s = 贡献者
+  # v = 版本
+  # u = 源代码
+  # W = 维基
+  # o = 指南选项
+  # P = 上一页
+  # l = 附属插件
+  # z = 非官方版提示（官方版则为背景板显示）
+  # U = 该功能暂未推出
+  # N = 下一页
+  settings:
+    - "bBsBvBuBW"
+    - "BBBBBBBBB"
+    - "BoooooooB"
+    - "BoooooooB"
+    - "BBBBBBBBB"
+    - "BPlBzBUNB"
+  # 贡献者
+  # B = 背景板
+  # b = 返回
+  # p = 贡献者
+  # P = 上一页
+  # N = 下一页
+  contributors:
+    - "BbBBBBBBB"
+    - "ppppppppp"
+    - "ppppppppp"
+    - "ppppppppp"
+    - "ppppppppp"
+    - "BPBBBBBNB"
+  # 按键绑定集
+  # B = 背景板
+  # b = 返回
+  # i = 按键绑定子集
+  keybinds:
+    - "BbBBBBBBB"
+    - "BiiiiiiiB"
+    - "BiiiiiiiB"
+    - "BiiiiiiiB"
+    - "BiiiiiiiB"
+    - "BPBBBBBNB"
+  # 按键绑定子集
+  # B = 背景板
+  # b = 返回
+  # x = 原按键
+  # y = 分隔板
+  # z = 映射按键
+  keybind:
+    - "BbBBBBBBB"
+    - "BxyzBxyzB"
+    - "BxyzBxyzB"
+    - "BxyzBxyzB"
+    - "BxyzBxyzB"
+    - "BPBBBBBNB"
+  # 按键选择
+  # B = 背景板
+  # b = 返回
+  # i = 按键
+  action-select:
+    - "BbBBBBBBB"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "BPBBBBBNB"
+
+# 附属中文显示名映射表：这里配置的"附属英文 ID: 中文名"会显示在指南的附属名等处。
+# 想给某个附属加/改中文显示名就加一行或改一行；支持 & 色码。
+# 翻译参考:
+# https://slimefun-wiki.guizhanss.cn/Addons/
+# https://github.com/orgs/SlimefunGuguProject/repositories
+# https://github.com/haiman233
+local-translate:
+  Slimefun: "粘液科技"
+  ColoredEnderChests: "彩色末影箱"
+  DyedBackpacks: "染色背包"
+  EnderCargo: "末影货运接口"
+  EcoPower: "环保能源"
+  ElectricSpawners: "电动刷怪笼"
+  ExoticGarden: "异域花园"
+  ExtraGear: "更多装备"
+  ExtraHeads: "更多头颅"
+  HotbarPets: "背包宠物"
+  luckyblocks-sf: "幸运方块" # Same as SlimefunLuckyBlocks
+  RedstoneConnector: "红石连接器"
+  PrivateStorage: "私人储存"
+  SlimefunOreChunks: "更多矿石块"
+  SlimyTreeTaps: "粘液木龙头"
+  SoulJars: "灵魂罐"
+  MoreTools: "更多工具"
+  LiteXpansion: "工业"
+  MobCapturer: "生物捕捉"
+  SoundMuffler: "消音器"
+  ExtraTools: "额外工具"
+  TranscEndence: "末地科技"
+  Liquid: "液体"
+  SlimefunWarfare: "战争工艺"
+  InfernalExpansion: "下界工艺"
+  FluffyMachines: "蓬松机器"
+  SlimyRepair: "粘液物品修复"
+  InfinityExpansion: "无尽贪婪" # Avoid conflict with InfinityExpansion-Changed
+  FoxyMachines: "神秘科技"
+  GlobalWarming: "全球变暖"
+  GlobiaMachines: "全球机器"
+  DynaTech: "动力科技"
+  GeneticChickengineering: "鸡因工程" # Same as GeneticChickengineering-Reborn
+  GeneticChickengineering-Reborn: "鸡因工程" # Same as GeneticChickengineering
+  ClayTech: "粘土科技" # Same as ClayTech-Fixed
+  ClayTech-Fixed: "粘土科技" # Same as ClayTech
+  SpaceTech: "太空科技" # Same as SpaceTech-Fixed
+  SpaceTech-Fixed: "太空科技" # Same as SpaceTech
+  FNAmplifications: "FN科技"
+  SimpleMaterialGenerators: "简单材料生成器"
+  Netheopoiesis: "下界乌托邦"
+  Networks: "网络" # Avoid conflict with Networks-Changed, (sometimes it is NetworksExpansion)
+  EMC2: "等价交换(EMC2)" # Avoid conflict with EquivalencyTech
+  Nexcavate: "文明复兴"
+  SimpleStorage: "简易储存"
+  SimpleUtils: "简易工具"
+  AlchimiaVitae: "炼金术自传"
+  SlimeTinker: "粘液匠魂"
+  PotionExpansion: "药剂科技"
+  FlowerPower: "源之花"
+  Galactifun: "星际"
+  Galactifun2: "星际2"
+  ElementManipulation: "化学工程"
+  CrystamaeHistoria: "魔法水晶编年史"
+  DankTech: "无底储存"
+  DankTech2: "无底储存2"
+  Networks-Changed: "网络(心孜改版)" # Avoid conflict with Networks
+  VillagerUtil: "村民工具"
+  MissileWarfare: "导弹科技"
+  SensibleToolbox: "STB/未来科技"
+  Endrex: "末地拓展"
+  Bump: "Bump魔法"
+  FinalTech: "乱序技艺" # Same as FinalTECH
+  FinalTECH: "乱序技艺" # Same as FinalTech
+  SlimefunLuckyBlocks: "幸运方块" # Same as luckyblocks-sf
+  FutureTech: "未来科技"
+  DemonicExpansion: "魑魅拓展"
+  BedrockTechnology: "基岩科技"
+  SlimefunItemExpansion: "更多物品"
+  SupplementalServiceableness: "更多日用物品"
+  GuizhanCraft: "鬼斩科技"
+  Magmanimous: "熔岩之息"
+  UltimateGenerators-RC27: "终极发电机" # Same as UltimateGenerators
+  UltimateGenerators: "终极发电机" # Same as UltimateGenerators-RC27
+  UltimateGenerators2: "终极发电机2"
+  CrispyMachine: "酥脆科技"
+  Chocoholics: "虫火谷工艺" # Same as ChocoHills
+  ChocoHills: "虫火谷工艺" # Same as Chocoholics
+  draconic: "龙之研究" # Same as DracFun
+  DracFun: "龙之研究" # Same as draconic
+  EzSFAddon: "EZ科技" # Same as EzTech, EzSlimeFunAddon
+  EzTech: "EZ科技" # Same as EzSFAddon, EzSlimeFunAddon
+  EzSlimeFunAddon: "EZ科技" # Same as EzSFAddon, EzTech
+  RandomExpansion: "随机拓展"
+  SlimyBees: "林业蜜蜂"
+  ObsidianExpansion: "黑曜石科技"
+  EMCTech: "EMC科技"
+  RelicsOfCthonia: "克苏尼亚遗物"
+  Supreme: "至尊研究院"
+  DyeBench: "染色科技"
+  MiniBlocks: "迷你方块"
+  SpiritsUnchained: "灵魂巧匠"
+  Cultivation: "农耕工艺"
+  Gastronomicon: "美食家"
+  SmallSpace: "小世界"
+  BetterReactor: "工业反应堆" # Avoid conflict with Fusion
+  VillagerTrade: "村民交易"
+  SlimeFrame: "粘液战甲"
+  AdvancedTech: "先进科技"
+  Quaptics: "量子光学"
+  CompressionCraft: "压缩工艺"
+  ThermalFun: "灼岩科技"
+  FastMachines: "快捷机器"
+  MomoTech: "乱码科技"
+  LogicTech: "逻辑工艺" # Same as LogicTECH, a SlimefunCustomizer configuration
+  LogiTech: "逻辑工艺" # Same as LogiTECH, a Slimefun addon
+  LogicTECH: "逻辑工艺" # Same as LogicTech
+  LogiTECH: "逻辑工艺" # Same as LogiTech
+  SlimeAEPlugin: "能源与应用2"
+  SlimeChem: "粘液化学"
+  WilderNether: "迷狱生机"
+  MapJammers: "地图干扰"
+  Cakecraft: "蛋糕工艺" # Same as MyFirstAddon
+  SFMobDrops: "自定义生物掉落"
+  Drugfun: "自定义医药用品"
+  SlimefunNukes: "粘液核弹"
+  SlimeCustomizer: "自定义粘液附属" # Avoid conflict with RaySlimefunAddon, RykenSlimefunCustomizer, RykenSlimeCustomizer
+  RykenSlimeCustomizer: "Ryken自定义附属" # Same as RykenSlimefunCustomizer, avoid conflict with RaySlimefunAddon
+  RykenSlimefunCustomizer: "Ryken自定义附属" # Same as RykenSlimeCustomizer, avoid conflict with RaySlimefunAddon
+  FinalTECH-Changed: "乱序技艺-改版"
+  BloodAlchemy: "血炼金工艺" # Same as BloodyAlchemy
+  Laboratory: "实验室"
+  MobEngineering: "生物工程"
+  TsingshanTechnology: "青山科技" # Same as TsingshanTechnology-Fixed
+  TsingshanTechnology-Fixed: "青山科技" # Same as TsingshanTechnology
+  PomaExpansion: "高级安卓机器人"
+  BuildingStaff: "建筑魔杖"
+  IDreamOfEasy: "易梦"
+  Magic8Ball: "魔法8号球"
+  InfinityExpansionAutomation: "无尽自动化"
+  ZeroTech: "澪数工艺"
+  Ex-Limus: "新手工具" # Same as ExLimus
+  NotEnoughAddons: "多彩科技"
+  SFWorldEdit: "粘液创世神[SW]" # Avoid conflict with SlimefunWorldedit
+  RSCEditor: "RSC编辑器"
+  JustEnoughGuide: "更好的粘液书"
+  SummaryHelper: "粘液刻管理"
+  HardcoreSlimefun: "硬核粘液"
+  SFCalc: "粘液计算器"
+  SfChunkInfo: "区块信息"
+  SlimefunAdvancements: "自定义粘液任务"
+  SlimeHUD: "方块信息显示" # Same as SlimeHUDPlus
+  SlimeHUDPlus: "方块信息显示" # Same as SlimeHUD
+  RaySlimefunAddon: "高级自定义粘液附属" # Avoid conflict with SlimeCustomizer, RykenSlimefunCustomizer, RykenSlimeCustomizer
+  SCrafter: "SC科技" # Same as SlimefunZT
+  CrispyMachines: "酥脆机器"
+  DimensionTraveler: "维度旅者"
+  HardlessMachine: "弹跳工具"
+  XingChengCraft: "星辰工艺" # Same as XingChenCraft, XingCheng_Craft
+  XingChenCraft: "星辰工艺" # Same as XingChengCraft, XingCheng_Craft
+  DefoLiationTech: "落叶科技" # Same as DefoliationTech
+  HaimanTech2: "海曼科技院"
+  HaimanTech: "海曼科技"
+  InfiniteExtensionV2: "无尽扩展V2"
+  InfiniteExtension: "无尽扩展"
+  OrangeTech: "橘子科技"
+  GreedAndCreation: "贪婪与创世"
+  BocchiTechnology: "波奇科技" # Same as Bocchi_Technology
+  Bocchi_Technology: "波奇科技" # Same as BocchiTechnology
+  OreTech: "矿物科技"
+  HLGtech: "生物科技" # Avoid conflict with MobTech
+  InfiniteExtensionV2-Reconfiguration: "无尽扩展V2-改版"
+  BigSnakeTech: "大蛇科技" # Same as BigSnake-Tech
+  BigSnake-Tech: "大蛇科技" # Same as BigSnakeTech
+  EpoTech: "纪元科技"
+  EnchanterLimit: "限制附魔机"
+  BlockLimiter: "方块限制"
+  SfItemsExporter: "粘液物品导出"
+  SlimeGlue: "粘液胶"
+  KeepSoulbound: "高级灵魂绑定"
+  SlimeFunItemBanned: "禁用物品"
+  Azap: "狱刑"
+  CringleBosses: "混沌Boss"
+  SlimefunNotchApple: "粘液Notch旗帜图案"
+  Huolaiy: "火莱伊工艺"
+  WonderfulTransmitter: "奇妙发射器"
+  OreGeneration: "矿物生成器" # Avoid conflict with Mineralgenerator
+  OreGenerationExtension: "矿物生成器拓展"
+  SlimeSec: "安全粘液"
+  Paradoxium: "凤凰科技"
+  LuckyPandas: "幸运熊猫"
+  PhoenixSciences: "凤凰科学"
+  DarkMatter: "夜魅"
+  GeneticManipulation: "遗传学基因"
+  MoneyAndThings: "固态货币"
+  BeyondHorizons: "以太"
+  ChestTerminal: "箱子终端"
+  Hohenheim: "嬗变工艺" # Same as hohenheim
+  BetterFarming: "高级农场" # Same as betterfarming
+  NewBeginnings: "新生" # Same as New-Beginnings
+  EndCombat: "终焉"
+  EnderPanda: "末地熊猫"
+  SlimeVoid: "虚无粘液" # Same as SlimefunVoid
+  ArcaneExploration: "怪物强化"
+  MagicXpansion: "霊幻之梦"
+  SlimeQuest: "粘液任务"
+  CompressedMachines: "压缩机器"
+  DisguiseCookie: "伪装曲奇"
+  FireSlime: "碳泥科技"
+  NetherEnough: "深渊幻章"
+  BarrelWiper: "蓬松拆桶器"
+  BearFluidTanks: "熊式储液罐"
+  Tofu-Addons: "豆腐工艺"
+  AdditionalWeaponry: "武器工厂"
+  BoxOfChocolates: "巧克力工艺"
+  MagicPowder: "魔芋工艺" # Same as magic-powder
+  XpCreator: "造物主工艺"
+  SlimefunCombat: "原子弹模型"
+  ObsidianArmor: "黑曜石合金装甲" # Same as Obsidian-Armor
+  FinalGenerations: "世代同堂"
+  Fusion: "工业反应堆 Fusion" # Avoid conflict with BetterReactor
+  Slimedustry: "粘液工业"
+  Spikes: "更多地刺"
+  SlimeRP: "现代工厂"
+  Brewery: "酿酒" # Avoid conflict with BreweryMenu
+  EquivalencyTech: "等价交换(ET)" # Avoid conflict with EMC2
+  GeyserHeads: "互通头颅材质"
+  VariousClutter: "杂乱物品"
+  Mineralgenerator: "Mineral 矿物生成器" # Avoid conflict with OreGeneration
+  CivilizationEvolution: "AG科技" # Avoid conflict with AgTech, ProductState
+  RemiliasUtilities: "雷米科技"
+  BetterChests: "更好的箱子"
+  SlimeFood: "粘液美食"
+  SlimeVision: "粘液可视化"
+  WorldeditSlimefun: "粘液创世神[WS]" # Avoid conflict with SFWorldedit
+  MinimizeFactory: "最小化工厂"
+  InfinityCompress: "无尽压缩"
+  SlimeFrameExtension: "粘液战甲扩展"
+  BreweryMenu: "酿酒GUI" # Avoid conflict with Brewery
+  MySlimefunAddon: "自制拓展"
+  MyFirstAddon: "蛋糕工艺" # Same as Cakecraft
+  StackMachine: "堆叠机器" # Avoid conflict with SlimefunStackMachine
+  SlimefunStackMachine: "粘液堆叠机器" # Avoid conflict with StackMachine
+  CraftableEnchantments: "附魔工艺"
+  sj_Expansion: "sjの粘液拓展"
+  SlimefunZT: "SC科技" # Same as SCraft
+  SlimefunAddon: "CAPTAINchad12自制拓展" # Unbelievable...
+  AngleTech: "倾斜科技"
+  magicexpansion: "魔法拓展" # Same as MagicExpansion, avoid conflict with Magic
+  MagicExpansion: "魔法拓展" # Same as magicexpansion, avoid conflict with Magic
+  SlimefunHopper: "粘液漏斗"
+  SlimefunAccessor: "远程访问器"
+  ExoticGardenComplex: "异域花园" # Same as ExoticGarden
+  magic-powder: "魔芋工艺" # Same as MagicPowder
+  Obsidian-Armor: "黑曜石合金装甲" # Same as ObsidianArmor
+  BloodyAlchemy: "血炼金工艺" # Same as BloodAlchemy
+  hohenheim: "嬗变工艺" # Same as Hohenheim
+  HALsAddon: "终界之地" # Same as slimestack
+  slimestack: "终界之地" # Same as HALsAddon
+  SlimefunVoid: "虚无粘液" # Same as SlimeVoid
+  betterfarming: "高级农场" # Same as BetterFarming
+  New-Beginnings: "新生" # Same as NewBeginnings
+  ExLimus: "新手工具" # Same as Ex-Limus
+  Aeterum: "众神之马"
+  PoseidonAddon: "浪涌科技"
+  Aircraft: "粘液飞机"
+  InfinityExpansion2: "无尽贪婪2"
+  EtherTech: "虚素科技"
+  SlimefunTimeit: "性能监视器"
+  AsianStarProgram: "亚星计划"
+  AgTech: "AG科技 - RSC" # Avoid conflict with CivilizationEvolution, ProductState
+  CavernTech: "洞穴科技"
+  Creation: "创世"
+  Greed: "贪婪"
+  HoosierTech: "胡希尔科技"
+  HorizonsGears: "地平线装甲"
+  langui: "懒鬼科技"
+  Magic: "魔法" # Same as MagicExpansion, magicexpansion
+  MetaCoin: "数字硬币"
+  MobSimulationPlus: "生物芯片扩展"
+  MoreUniqueTools: "更多奇妙的工具"
+  PinksheepTech: "粉羊科技"
+  PinksheepTech_EpoTech: "纪元拓展"
+  RepairStation: "SC修复站" # Same as SlimeCustomizerRepairStation
+  SlimeCustomizerRepairStation: "SC修复站" # Same as RepairStation
+  SlimefunNetherTech2: "下界科技2"
+  snion: "工业驱动"
+  SuperFood: "超级食品"
+  Typhfun: "Typhfun"
+  WolfyMachines: "狼之机器"
+  XingCheng_Craft: "星辰工艺" # Same as XingChengCraft, XingChenCraft
+  WorldTaste: "尘世百味"
+  Automation: "粘液电脑"
+  MobTech: "生物科技(MT)" # Avoid conflict with HLGTech
+  Strophodungeons: "地牢迷宫"
+  SFTeacher: "粘液科技教程"
+  Slimefunexpansion: "粘液科技拓展"
+  HiveCorporation: "H公司"
+  BlackFishTech: "黑鱼科技"
+  MerakTech: "天璇科技"
+  TinselStar: "箔澜星"
+  Annihilation_Tech: "湮灭科技" # Same as AnnihilationTech
+  AnnihilationTech: "湮灭科技" # Same as Annihilation_Tech
+  HiServerTech: "Hi世界科技"
+  DefoliationTech: "落叶科技" # Same as DefoLiationTech
+  HeadQuantumStorage: "头颅版量子存储"
+  LengShangTech: "冷殇科技"
+  MuzhouTech: "暮舟科技"
+  DFD_InfiniteExtensionV2: "DFD - 无尽V2重构版"
+  DFD_Expand: "DFD - 缘落科技"
+  Blocktreetech: "方块树"
+  TinCraft: "&kabc &fTinCraft &kabc&r"
+  InfinityExpansion-Changed: "无尽贪婪(心孜改版)" # Avoid conflict with InfinityExpansion
+  fm_tech: "浮木科技"
+  Supermarket: "超能力机器"
+  HseerTech: "HseerMC科技"
+  ZeroSequenceTechnique: "零序技艺"
+  OriginTech: "起源工艺"
+  SimpleTech: "简单科技"
+  Komutech: "口木科技"
+  SlimefunInfiniteBlocks: "粘液无尽方块"
+  RSC_YunQi_History: "云启文明"
+  fvvtech: "fvv科技"
+  AeroDragonTech: "飞龙科技"
+  REGS: "沐莱物语"
+  FengQi_Tech: "风起科技"
+  YINGMO: "樱沫科技" # Same as SakuraLoveTech
+  PandaTech: "熊猫科技"
+  GLTC121: "GLTC联合协议"
+  GLTC: "GLTC联合协议" # GLTC的jar版本
+  SLTech: "SL科技"
+  EpoTech_Branch: "EpoTech分支版"
+  SakuraLoveTech: "樱沫科技" # Same as YINGMO
+  SlimeBotania: "植物魔法"
+  ProductState: "AG科技 - PS" # Avoid conflict with CivilizationEvolution, AgTech
+  NEKO_TECH: "猫娘科技"
+  GalaxyTech: "星河科技"
+  xingmian: "星眠科技"
+  SlimeEasy: "简易粘液"
+  TangranTech: "糖然科技"
+
+# 调试模式：输出大量调试日志，普通服务器保持 false。
+# 排查问题时在插件作者指导下开启，平时别开。
+# Do not change this value unless you know what you are doing.
+debug: false
+
+data:
+  # 配置文件版本号，由插件自动维护用于迁移配置。
+  # 手动改动无效且可能导致配置迁移异常，请勿修改。
+  # Do not change this value unless you know what you are doing.
+  config-version: 20260925
+
+# 接口误用警告：当其他附属错误调用 JEG 的点击接口时，是否在后台打印警告堆栈。
+# 后台被该警告刷屏且确认不影响使用时可改成 false 关闭警告。
+click-print-warning: true
