@@ -687,6 +687,7 @@ local-translate:
   SlimeEasy: "简易粘液"
   TangranTech: "糖然科技"
   LengShangEvo: "冷殇科技evo"
+  gs: "构思技艺"
 
 # 调试模式：输出大量调试日志，普通服务器保持 false。
 # 排查问题时在插件作者指导下开启，平时别开。
