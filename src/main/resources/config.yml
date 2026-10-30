@@ -675,6 +675,7 @@ local-translate:
   YINGMO: "樱沫科技" # Same as SakuraLoveTech
   PandaTech: "熊猫科技"
   GLTC121: "GLTC联合协议"
+  GLTC: "GLTC联合协议" # GLTC的jar版本
   SLTech: "SL科技"
   EpoTech_Branch: "EpoTech分支版"
   SakuraLoveTech: "樱沫科技" # Same as YINGMO
@@ -684,6 +685,9 @@ local-translate:
   GalaxyTech: "星河科技"
   xingmian: "星眠科技"
   SlimeEasy: "简易粘液"
+  TangranTech: "糖然科技"
+  LengShangEvo: "冷殇科技evo"
+  gs: "构思技艺"
 
 # 调试模式：输出大量调试日志，普通服务器保持 false。
 # 排查问题时在插件作者指导下开启，平时别开。
