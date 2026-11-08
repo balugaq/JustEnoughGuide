@@ -26,11 +26,9 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -198,7 +196,6 @@ public enum FilterType {
         return getFirstSymbol();
     }
 
-    @ApiStatus.Obsolete
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public String getFirstSymbol() {
         return getSymbols().stream().findFirst().get();
@@ -213,7 +210,6 @@ public enum FilterType {
      * @since 1.1
      */
     @NullMarked
-    @ApiStatus.Obsolete
     public interface Filter {
         boolean apply(Player player, SlimefunItem item, String filterValue, boolean pinyin);
     }
@@ -223,7 +219,6 @@ public enum FilterType {
      * @since 2.1
      */
     @NullMarked
-    @ApiStatus.Obsolete
     public interface Flag {
         Type type();
         String flag();
@@ -233,12 +228,10 @@ public enum FilterType {
             return flag().length();
         }
 
-        @ApiStatus.Obsolete
         static PrefixFlag prefix(String flag) {
             return new PrefixFlag(flag);
         }
 
-        @ApiStatus.Obsolete
         static SuffixFlag suffix(String flag) {
             return new SuffixFlag(flag);
         }
@@ -248,7 +241,6 @@ public enum FilterType {
          * @since 2.1
          */
         @NullMarked
-        @ApiStatus.Obsolete
         record PrefixFlag(String flag) implements Flag {
             @Override
             public Type type() {
@@ -266,7 +258,6 @@ public enum FilterType {
          * @since 2.1
          */
         @NullMarked
-        @ApiStatus.Obsolete
         record SuffixFlag(String flag) implements Flag {
             @Override
             public Type type() {
@@ -284,7 +275,6 @@ public enum FilterType {
          * @since 2.1
          */
         @NullMarked
-        @ApiStatus.Obsolete
         enum Type {
             PREFIX,
             SUFFIX

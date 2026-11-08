@@ -20,6 +20,7 @@ package com.balugaq.jeg.api.recipe_complete.source;
 import com.balugaq.jeg.api.objects.enums.ClickSide;
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import com.balugaq.jeg.implementation.option.RecipeCompletionGuideOption;
 import com.balugaq.jeg.utils.Debug;
@@ -100,7 +101,8 @@ public interface SlimefunRecipeCompletion extends ItemSource {
             return;
         }
 
-        RecipeCompletionUtils.completeRecipeWithGuide(session);
+        session.setInteractor(ContainerInteractor.slimefun(session.getMenu(), session.isUnordered(), session.getIngredientSlots()));
+        ItemSource.completeRecipeWithGuide(session);
         if (reopenMenu) actualMenu.open(session.getPlayer());
         if (callback != null) callback.run();
         session.complete();

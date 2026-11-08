@@ -17,14 +17,18 @@
 
 package com.balugaq.jeg.api.recipe_complete;
 
+import com.balugaq.jeg.api.recipe_complete.inject.RecipeCompletableInjector;
 import com.balugaq.jeg.core.listeners.RecipeCompletableListener;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,14 +36,14 @@ import java.util.Set;
  * @since 1.9
  */
 @SuppressWarnings("unused")
-@ApiStatus.Obsolete
 @NullMarked
 public class RecipeCompletableRegistry {
+    private static final Map<SlimefunItem, RecipeCompletableInjector> injectors = new HashMap<>();
+
     /**
      * @param slimefunItem the {@link SlimefunItem} to add
      * @see RecipeCompletableListener.NotApplicable
      */
-    @ApiStatus.Obsolete
     public static void addNotApplicableItem(SlimefunItem slimefunItem) {
         RecipeCompletableListener.addNotApplicableItem(slimefunItem);
     }
@@ -48,50 +52,55 @@ public class RecipeCompletableRegistry {
      * @param slimefunItem the {@link SlimefunItem} to remove
      * @see RecipeCompletableListener.NotApplicable
      */
-    @ApiStatus.Obsolete
     public static void removeNotApplicableItem(SlimefunItem slimefunItem) {
         RecipeCompletableListener.removeNotApplicableItem(slimefunItem);
     }
 
-    @ApiStatus.Obsolete
     public static void registerRecipeCompletable(
         SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots) {
         RecipeCompletableListener.registerRecipeCompletable(slimefunItem, slots);
     }
 
-    @ApiStatus.Obsolete
     public static void registerRecipeCompletable(
         SlimefunItem slimefunItem, @Range(from = 0, to = 53) int[] slots, boolean unordered) {
         RecipeCompletableListener.registerRecipeCompletable(slimefunItem, slots, unordered);
     }
 
-    @ApiStatus.Obsolete
     public static void unregisterRecipeCompletable(SlimefunItem slimefunItem) {
         RecipeCompletableListener.unregisterRecipeCompletable(slimefunItem);
     }
 
-    @ApiStatus.Obsolete
     public static void registerPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemSeeker itemGetter) {
         RecipeCompletableListener.registerPlayerInventoryItemGetter(itemGetter);
     }
 
-    @ApiStatus.Obsolete
     public static void unregisterPlayerInventoryItemGetter(NamespacedKey key) {
         RecipeCompletableListener.unregisterPlayerInventoryItemGetter(key);
     }
 
-    @ApiStatus.Obsolete
     public static void unregisterPlayerInventoryItemGetter(RecipeCompletableListener.PlayerInventoryItemSeeker itemGetter) {
         RecipeCompletableListener.unregisterPlayerInventoryItemGetter(itemGetter.getKey());
     }
 
-    @ApiStatus.Obsolete
     public static Collection<RecipeCompletableListener.PlayerInventoryItemSeeker> getPlayerInventoryItemGetters() {
         return RecipeCompletableListener.PLAYER_INVENTORY_ITEM_GETTERS.values();
     }
 
-    @ApiStatus.Obsolete
     public static Set<SlimefunItem> getAllRecipeCompletableBlocks() {
         return RecipeCompletableListener.INGREDIENT_SLOTS.keySet();
+    }
+
+    public static void registerRecipeCompletableInjector(RecipeCompletableInjector injector) {
+        injectors.put(injector.getSlimefunItem(), injector);
+    }
+
+    public static void unregisterRecipeCompletableInjector(RecipeCompletableInjector injector) {
+        injectors.remove(injector.getSlimefunItem());
+    }
+
+    @Contract("null -> null")
+    public static @Nullable RecipeCompletableInjector getRecipeCompletableInjector(@Nullable SlimefunItem slimefunItem) {
+        if (slimefunItem == null) return null;
+        return injectors.get(slimefunItem);
     }
 }

@@ -92,6 +92,7 @@ public class RecipeCompletionUtils {
     }
 
     public static @Nullable List<@Nullable RecipeChoice> getSpecialRecipe(Player player, ItemStack itemStack, @Nullable SlimefunItem sf) {
+        // 支持自定义修改物品配方
         for (var handler : RecipeCompleteProvider.getSpecialRecipeHandlers()) {
             var r = handler.get(player, itemStack, sf);
             if (r != null) return r;
@@ -553,13 +554,5 @@ public class RecipeCompletionUtils {
         });
 
         return total.get();
-    }
-
-    @CanIgnoreReturnValue
-    public static boolean completeRecipeWithGuide(RecipeCompleteSession session) {
-        BlockMenu blockMenu = session.getMenu();
-        boolean unordered = session.isUnordered();
-        int[] ingredientSlots = session.getIngredientSlots();
-        return ItemSource.completeRecipeWithGuide(session, ContainerInteractor.slimefun(blockMenu, unordered, ingredientSlots));
     }
 }

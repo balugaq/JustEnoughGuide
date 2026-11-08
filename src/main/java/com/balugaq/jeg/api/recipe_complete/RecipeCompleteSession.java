@@ -19,6 +19,7 @@ package com.balugaq.jeg.api.recipe_complete;
 
 import com.balugaq.jeg.api.objects.events.GuideEvents;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
+import com.balugaq.jeg.api.recipe_complete.source.ContainerInteractor;
 import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
 import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -39,6 +40,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +50,7 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,13 +76,15 @@ public class RecipeCompleteSession {
     private @UnknownNullability Inventory inventory;
     private @UnknownNullability BlockMenu menu;
     private ClickAction clickAction;
-    private @Nullable SlimefunItem slimefunItem;
+    private SlimefunItem slimefunItem;
     private @Range(from = 0, to = 53) int[] ingredientSlots;
     private boolean unordered;
     private @Positive int recipeDepth;
     private @NonNegative int pushed;
     private int times;
     private boolean expired;
+    private ContainerInteractor interactor;
+    private List<@Nullable RecipeChoice> choices;
 
     @Nullable
     public static RecipeCompleteSession create(BlockMenu menu, Player player, ClickAction clickAction, @Range(from = 0, to = 53) int[] ingredientSlots, boolean unordered, int recipeDepth) {

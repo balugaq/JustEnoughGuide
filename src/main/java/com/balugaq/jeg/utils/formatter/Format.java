@@ -28,7 +28,6 @@ import lombok.Setter;
 import lombok.ToString;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -54,7 +53,6 @@ public abstract class Format {
 
     public abstract void loadMapping();
 
-    @ApiStatus.Obsolete
     public void loadMapping(List<String> format) {
         int index = -1;
         for (String string : format) {
@@ -67,12 +65,10 @@ public abstract class Format {
         }
     }
 
-    @ApiStatus.Obsolete
     public List<Integer> getChars(String s) {
         return getChars(s.toCharArray()[0]);
     }
 
-    @ApiStatus.Obsolete
     public List<Integer> getChars(char c) {
         if (cached.containsKey(c)) {
             return cached.get(c);

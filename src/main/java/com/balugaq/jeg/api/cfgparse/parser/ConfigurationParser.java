@@ -22,7 +22,6 @@ import com.balugaq.jeg.api.cfgparse.annotations.Key;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -45,10 +44,8 @@ import java.util.Set;
  */
 @SuppressWarnings({"unchecked", "unused"})
 @UtilityClass
-@ApiStatus.Obsolete
 @NullMarked
 public class ConfigurationParser {
-    @ApiStatus.Obsolete
     public static <T> T parse(final ConfigurationSection section, final Class<T> clazz) {
         Method method;
         try {
@@ -108,7 +105,6 @@ public class ConfigurationParser {
         return consturctObject(clazz, read);
     }
 
-    @ApiStatus.Obsolete
     public static <T> T consturctObject(final Class<T> clazz, final LinkedHashMap<Field, @Nullable Object> read) {
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
@@ -147,7 +143,6 @@ public class ConfigurationParser {
     }
 
     @SuppressWarnings("rawtypes")
-    @ApiStatus.Obsolete
     public static <T> @Nullable T parseValue(final Class<T> clazz, final @Nullable Object value) {
         if (value == null) {
             Class<?>[] interfaces = clazz.getInterfaces();

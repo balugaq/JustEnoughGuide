@@ -21,11 +21,9 @@ import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.implementation.groups.GroupSetup;
 import com.balugaq.jeg.utils.Models;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -41,7 +39,6 @@ public class ItemsSetup {
     public static final JEGSlimefunItem SUPPORTED_ADDONS_INFO;
     public static final CustomLagBlock CUSTOM_LAG_BLOCK;
     @SuppressWarnings("unused")
-    @ApiStatus.Obsolete
     public static final JEGSlimefunItem JEG_BUTTON;
 
     static {

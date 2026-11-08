@@ -25,6 +25,7 @@ import com.balugaq.jeg.implementation.option.RecipeCompletionGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.RecipeCompletionUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
@@ -70,6 +71,7 @@ public interface VanillaRecipeCompletion extends ItemSource {
         session.setEvent(event);
         int times = RecipeCompletionGuideOption.get(session.getPlayer(), event.getClickedItem(), ClickSide.from(clickAction, reopenInventory));
 
+        session.setSlimefunItem(SlimefunItem.getByItem(event.getClickedItem()));
         session.setTarget(session.getBlock().getLocation());
         session.setTimes(times);
         if (!session.canStart()) {
@@ -79,7 +81,8 @@ public interface VanillaRecipeCompletion extends ItemSource {
             return;
         }
 
-        RecipeCompletionUtils.completeRecipeWithGuide(session);
+        session.setInteractor(ContainerInteractor.vanilla(session.getInventory(), session.isUnordered(), session.getIngredientSlots()));
+        ItemSource.completeRecipeWithGuide(session);
         if (reopenInventory) session.getPlayer().openInventory(session.getInventory());
         if (callback != null) callback.run();
         session.complete();

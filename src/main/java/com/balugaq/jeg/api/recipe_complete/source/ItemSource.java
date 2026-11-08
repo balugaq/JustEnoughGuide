@@ -17,12 +17,15 @@
 
 package com.balugaq.jeg.api.recipe_complete.source;
 
+import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
+import com.balugaq.jeg.api.recipe_complete.inject.RecipeCompletableInjector;
 import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import com.balugaq.jeg.utils.StackUtils;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -51,6 +54,7 @@ public interface ItemSource {
     JavaPlugin plugin();
 
     // 返回这个 session 是否可以从这个 source 获取物品
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean handleable(RecipeCompleteSession session);
 
     /**
@@ -71,7 +75,8 @@ public interface ItemSource {
         return 20;
     }
 
-    static boolean completeRecipeWithGuide(RecipeCompleteSession session, ContainerInteractor interactor) {
+    @CanIgnoreReturnValue
+    static boolean completeRecipeWithGuide(RecipeCompleteSession session) {
         Debug.debug("handling " + session + " :completeRecipeWithGuide");
         var event = session.getEvent();
         var ingredientSlots = session.getIngredientSlots();
@@ -87,50 +92,62 @@ public interface ItemSource {
             return false;
         }
 
-        var success = completeRecipeWithGuide(session, clickedItem, session.getSlimefunItem(), session.getTimes(), interactor);
+        var success = completeRecipeWithGuide(session, clickedItem, session.getSlimefunItem(), session.getTimes());
         RecipeCompletionUtils.handleMissingMaterial(session);
         return success;
     }
 
-    static boolean completeRecipeWithGuide(RecipeCompleteSession session, ItemStack targetItem, @Nullable SlimefunItem sf, int times, ContainerInteractor interactor) {
+    static boolean completeRecipeWithGuide(RecipeCompleteSession session, ItemStack targetItem, SlimefunItem sf, int times) {
         Debug.debug("handling " + session + " :completeRecipeWithGuide#sub");
-        var event = session.getEvent();
-        var ingredientSlots = session.getIngredientSlots();
-        var recipeDepth = session.getRecipeDepth();
 
-        Player player = GuideUtil.updatePlayer(event.getPlayer());
+        Player player = GuideUtil.updatePlayer(session.getEvent().getPlayer());
         if (player == null) return false;
-        event.setCancelled(true);
+        session.getEvent().setCancelled(true);
 
         // involves amounts in choices
-        List<@Nullable RecipeChoice> choices = RecipeCompletionUtils.getRecipe(player, sf, targetItem);
+        List<@Nullable RecipeChoice> choices = RecipeCompletionUtils.getRecipe(player, session.getSlimefunItem(), targetItem);
         if (choices == null) {
             RecipeCompletionUtils.sendMissingMaterial(player, targetItem, session.getTimes());
             return false;
         }
+        session.setChoices(choices);
+
+        // 支持针对机器本体自定义处理
+        if (session.getMenu() != null) {
+            var theMachine = session.getMenu().getPreset().getSlimefunItem();
+            var injector = RecipeCompletableRegistry.getRecipeCompletableInjector(theMachine);
+            if (injector != null) {
+                // 处理 Injector
+                if (!injector.inject(session, sf, times)) {
+                    // inject 返回 true 时才继续执行原本的逻辑
+                    return false;
+                }
+            }
+        }
 
         int maxTimes = times;
 
-        var craftResult = RecipeCompletionUtils.maxCraftable(maxTimes, interactor, choices);
+        // 计算实际可最大合成数
+        var craftResult = RecipeCompletionUtils.maxCraftable(maxTimes, session.getInteractor(), choices);
         if (craftResult.leftInt() <= 0) {
             // 无法放置
             Lang.sendMessage(player, "recipe-complete.no-space");
             return false;
         }
 
-        if (craftResult.leftInt() < times) {
+        if (craftResult.leftInt() < session.getTimes()) {
             // 可供放置的位置不足，这部分另外提醒
             Lang.sendMessage(player, "recipe-complete.insufficient-space",
-                craftResult.leftInt(), times, craftResult.leftInt() * 100 / times);
+                craftResult.leftInt(), session.getTimes(), craftResult.leftInt() * 100 / session.getTimes());
         }
 
-        maxTimes = craftResult.leftInt();
+        maxTimes = craftResult.leftInt(); // actual max times
 
         // 获取物品并推送
         Map<ItemStack, Integer> missingMap = new HashMap<>();
         Map<ItemStack, Integer> pushFailed = new HashMap<>();
         for (int i = 0; i < choices.size(); i++) {
-            if (i >= ingredientSlots.length) break;
+            if (i >= session.getIngredientSlots().length) break;
 
             RecipeChoice choice = choices.get(i);
             if (choice == null) continue;
@@ -140,12 +157,12 @@ public interface ItemSource {
             var preferred = craftResult.right().getOrDefault(key, IntSet.of());
             // Issue #64
             // 防止出现目标容器在计算期间容量变化导致无法推送物品
-            if (!interactor.fits(itemStack, i, preferred)) continue;
+            if (!session.getInteractor().fits(itemStack, i, preferred)) continue;
 
             int amt = itemStack.getAmount() * maxTimes;
             int receivedAmount = (int) RecipeCompleteProvider.getItemStack(session, itemStack, amt);
             if (receivedAmount < amt) {
-                if (session.isExpired() || !RecipeCompletionUtils.depthInRange(player, recipeDepth + 1)) {
+                if (session.isExpired() || !RecipeCompletionUtils.depthInRange(player, session.getRecipeDepth() + 1)) {
                     RecipeCompletionUtils.sendMissingMaterial(player, itemStack, amt - receivedAmount);
                 } else {
                     // schedule -> 补全材料的材料配方
@@ -155,7 +172,7 @@ public interface ItemSource {
 
             if (receivedAmount > 0) {
                 var stk = StackUtils.getAsQuantity(itemStack, receivedAmount);
-                interactor.pushItem(stk, i, preferred);
+                session.getInteractor().pushItem(stk, i, preferred);
                 // 防止出现目标容器在计算期间容量变化导致无法推送物品
                 session.setPushed(session.getPushed() + receivedAmount - stk.getAmount());
                 if (stk.getAmount() > 0) {
@@ -166,7 +183,7 @@ public interface ItemSource {
 
         boolean sendHeadMessage = false;
         if (!missingMap.isEmpty()) {
-            if (RecipeCompletionUtils.depthInRange(player, recipeDepth + 1)) {
+            if (RecipeCompletionUtils.depthInRange(player, session.getRecipeDepth() + 1)) {
                 for (var e : missingMap.entrySet()) {
                     if (!sendHeadMessage) {
                         sendHeadMessage(player, targetItem, session.getRecipeDepth());
@@ -178,7 +195,7 @@ public interface ItemSource {
                         RecipeCompletionUtils.sendMissingMaterial(player, e.getKey(), e.getValue());
                     } else {
                         session.setRecipeDepth(session.getRecipeDepth() + 1);
-                        completeRecipeWithGuide(session, e.getKey(), sf2, e.getValue(), interactor);
+                        completeRecipeWithGuide(session, e.getKey(), sf2, e.getValue());
                         session.setRecipeDepth(session.getRecipeDepth() - 1);
                     }
                 }

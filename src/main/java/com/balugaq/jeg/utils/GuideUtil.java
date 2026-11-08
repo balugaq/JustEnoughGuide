@@ -20,7 +20,6 @@ package com.balugaq.jeg.utils;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.editor.GroupResorter;
 import com.balugaq.jeg.api.groups.BaseGroup;
-import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.groups.CERRecipeGroup;
 import com.balugaq.jeg.api.groups.MixedGroup;
 import com.balugaq.jeg.api.groups.RTSSearchGroup;
@@ -41,6 +40,7 @@ import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.api.recipe_complete.CompletionBehaviour;
 import com.balugaq.jeg.core.integrations.slimefunrecipe.SlimeFunRecipeIntegrationMain;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.core.listeners.GuideListener;
 import com.balugaq.jeg.core.listeners.RTSListener;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -85,7 +85,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
@@ -417,12 +416,10 @@ public class GuideUtil {
         return getSlimefunGuide(SlimefunGuideMode.SURVIVAL_MODE);
     }
 
-    @ApiStatus.Obsolete
     public static SlimefunGuideImplementation getSlimefunGuide(SlimefunGuideMode mode) {
         return Slimefun.getRegistry().getSlimefunGuide(mode);
     }
 
-    @ApiStatus.Obsolete
     @Nullable
     public static JEGSlimefunGuideImplementation getJEGGuide(SlimefunGuideMode mode) {
         var guide = getSlimefunGuide(mode);
