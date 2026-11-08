@@ -17,7 +17,6 @@
 
 package com.balugaq.jeg.core.listeners;
 
-import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.ClickSide;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
@@ -29,17 +28,15 @@ import com.balugaq.jeg.api.patches.JEGGuideHistory;
 import com.balugaq.jeg.api.recipe_complete.CompletionBehaviour;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
 import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
-import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
 import com.balugaq.jeg.core.integrations.justenoughguide.ShulkerBoxPlayerInventoryItemSeeker;
 import com.balugaq.jeg.core.integrations.networks.QuantumStoragePlayerInventoryItemSeeker;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.items.ItemsSetup;
 import com.balugaq.jeg.implementation.option.RecipeCompleteOpenModeGuideOption;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.KeyUtil;
-import com.balugaq.jeg.utils.Models;
-import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;

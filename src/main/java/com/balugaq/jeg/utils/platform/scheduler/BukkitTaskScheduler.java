@@ -17,7 +17,6 @@
 
 package com.balugaq.jeg.utils.platform.scheduler;
 
-import lombok.Getter;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jspecify.annotations.NullMarked;
 

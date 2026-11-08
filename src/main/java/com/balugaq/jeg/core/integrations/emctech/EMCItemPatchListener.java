@@ -17,10 +17,10 @@
 
 package com.balugaq.jeg.core.integrations.emctech;
 
-import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import org.bukkit.entity.Player;

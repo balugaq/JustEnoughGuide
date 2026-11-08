@@ -17,9 +17,9 @@
 
 package com.balugaq.jeg.core.integrations.slimehud;
 
-import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.patches.JEGGuideSettings;
 import com.balugaq.jeg.core.integrations.Integration;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.MinecraftVersion;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;

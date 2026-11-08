@@ -22,37 +22,23 @@ import com.balugaq.jeg.api.objects.events.SlimefunTickEndEvent;
 import com.balugaq.jeg.api.objects.events.SlimefunTickStartEvent;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.jeg.utils.ReflectionUtil;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.services.profiler.PerformanceInspector;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.PerformanceRating;
 import io.github.thebusybiscuit.slimefun4.core.services.profiler.SlimefunProfiler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
 /**
@@ -69,9 +55,9 @@ public class JEGProfiler extends SlimefunProfiler {
 
     private static @Nullable JEGProfiler instance;
 
-    private volatile Object2BooleanOpenHashMap<CommandSender> waiting = new Object2BooleanOpenHashMap<>();
+    private final Object2BooleanOpenHashMap<CommandSender> waiting = new Object2BooleanOpenHashMap<>();
 
-    private volatile ConcurrentLinkedQueue<TimedSample> queue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<TimedSample> queue = new ConcurrentLinkedQueue<>();
 
     private boolean isCompleteReport = true;
 

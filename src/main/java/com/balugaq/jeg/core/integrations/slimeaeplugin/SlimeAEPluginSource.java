@@ -18,8 +18,8 @@
 package com.balugaq.jeg.core.integrations.slimeaeplugin;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
+import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import me.ddggdd135.guguslimefunlib.items.ItemKey;
 import me.ddggdd135.slimeae.api.interfaces.IStorage;
 import me.ddggdd135.slimeae.api.items.ItemRequest;

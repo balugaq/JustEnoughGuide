@@ -17,11 +17,11 @@
 
 package com.balugaq.jeg.api.groups;
 
-import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.CERCalculator;
 import com.balugaq.jeg.api.cost.please_set_cer_patch_to_false_in_config_when_you_see_this.ValueTable;
 import com.balugaq.jeg.api.objects.collection.Pair;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.GuideUtil;
 import com.balugaq.jeg.utils.compatibility.Converter;
 import com.balugaq.jeg.utils.formatter.Format;

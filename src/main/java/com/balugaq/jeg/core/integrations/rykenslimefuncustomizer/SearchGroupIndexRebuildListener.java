@@ -22,7 +22,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.lins.mmmjjkx.rykenslimefuncustomizer.events.AddonDisableEvent;
 import org.lins.mmmjjkx.rykenslimefuncustomizer.events.AddonEnableEvent;
-import org.lins.mmmjjkx.rykenslimefuncustomizer.events.AddonLoadEvent;
 
 /**
  * @author balugaq

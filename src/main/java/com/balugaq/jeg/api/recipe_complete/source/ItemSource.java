@@ -19,7 +19,6 @@ package com.balugaq.jeg.api.recipe_complete.source;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompletableRegistry;
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.inject.RecipeCompletableInjector;
 import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.GuideUtil;
@@ -27,7 +26,6 @@ import com.balugaq.jeg.utils.RecipeCompletionUtils;
 import com.balugaq.jeg.utils.StackUtils;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;

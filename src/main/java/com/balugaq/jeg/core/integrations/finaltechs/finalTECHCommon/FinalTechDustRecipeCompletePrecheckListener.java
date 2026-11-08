@@ -17,9 +17,9 @@
 
 package com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon;
 
-import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.events.RecipeCompleteEvents;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
+import com.balugaq.jeg.core.lang.Lang;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Getter;
 import lombok.Setter;

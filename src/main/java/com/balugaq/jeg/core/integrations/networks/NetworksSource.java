@@ -18,8 +18,8 @@
 package com.balugaq.jeg.core.integrations.networks;
 
 import com.balugaq.jeg.api.recipe_complete.RecipeCompleteSession;
-import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.api.recipe_complete.source.ItemSource;
+import com.balugaq.jeg.api.recipe_complete.source.RecipeCompleteProvider;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
 import com.balugaq.netex.api.interfaces.FeedbackSendable;
 import io.github.sefiraat.networks.network.NetworkRoot;

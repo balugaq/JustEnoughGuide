@@ -29,6 +29,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.Values;
 import com.balugaq.jeg.api.groups.SearchGroup;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.core.profiler.JEGProfiler;
 import com.balugaq.jeg.core.profiler.JEGProfilerManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -45,10 +46,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
-
-import static com.balugaq.jeg.core.lang.Lang.sendMessage;
-
-import com.balugaq.jeg.core.lang.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -64,6 +61,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import static com.balugaq.jeg.core.lang.Lang.sendMessage;
 
 /**
  * @author balugaq

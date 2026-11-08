@@ -17,10 +17,10 @@
 
 package com.balugaq.jeg.core.integrations.finaltechs.finalTECHCommon;
 
-import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.api.objects.enums.PatchScope;
 import com.balugaq.jeg.api.objects.events.PatchEvent;
 import com.balugaq.jeg.core.integrations.ItemPatchListener;
+import com.balugaq.jeg.core.lang.Lang;
 import com.balugaq.jeg.utils.Debug;
 import com.balugaq.jeg.utils.ReflectionUtil;
 import com.balugaq.jeg.utils.StackUtils;
