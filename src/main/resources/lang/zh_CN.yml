@@ -23,17 +23,20 @@
 
 commands:
   help:
-    - "&aJEG Commands:"
-    - "&a/jeg help - Show this help message"
-    - "&a/jeg reload - Reload JEG plugin"
-    - "&a/jeg cache <section> <key>"
-    - "&a/jeg disable - Disable JEG plugin"
-    - "&a/jeg gteg - Get Guide Tier Editor"
-    - "&a/jeg categories - View all the groups"
-    - "&a/jeg share - Share the item on your hand"
-    - "&a/jeg viewitem <Slimefun Item> - View Slimefun item"
-    - "&a/jeg search [item name] - Search item on hand or search your input"
-    - "&a/jeg timings - View Slimefun machine performance"
+    - "&aJEG 命令:"
+    - "&a/jeg help - 显示此帮助信息"
+    - "&a/jeg reload - 重载 JEG 插件"
+    - "&a/jeg cache <分区> <键>"
+    - "&a/jeg disable - 禁用 JEG 插件"
+    - "&a/jeg gteg - 获取物品组等级编辑器"
+    - "&a/jeg categories - 查看所有物品组"
+    - "&a/jeg share - 分享手中的物品"
+    - "&a/jeg viewitem <Slimefun 物品> - 查看 Slimefun 物品"
+    - "&a/jeg search [物品名称] - 搜索手中物品或你输入的内容"
+    - "&a/jeg timings - 查看 Slimefun 机器性能"
+    - "&a/jeg sf timings - 执行 Slimefun 原版 /sf timings"
+    - "&a/jeg sf banitem <id> - 执行 Slimefun 原版 /sf banitem"
+    - "&a/jeg sf unbanitem <id> - 执行 Slimefun 原版 /sf unbanitem"
   timings:
     # {0}: 详细模式后缀（详细模式为“（详细模式）”，否则为空）
     collecting: "&e[JustEnoughGuide] 正在采集性能数据{0}..."

@@ -30,6 +30,7 @@ import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.Values;
 import com.balugaq.jeg.api.groups.SearchGroup;
 import com.balugaq.jeg.core.lang.Lang;
+import com.balugaq.jeg.core.listeners.ReplacementCardAdaptItemListener;
 import com.balugaq.jeg.core.profiler.JEGProfiler;
 import com.balugaq.jeg.core.profiler.JEGProfilerManager;
 import com.balugaq.jeg.implementation.JustEnoughGuide;
@@ -46,6 +47,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.common.ChatColors;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.inventory.ItemStackHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -245,6 +247,48 @@ public class JEGCommands extends BaseCommand {
 
         sendMessage(sender, "commands.timings.collecting", verbose ? Lang.t("commands.timings.verbose-suffix") : "");
         profiler.requestReport(sender, verbose);
+    }
+
+    // ---- /sf 系列被接管命令的原版逃生通道：参数原样透传给 Slimefun ----
+
+    @Subcommand("sf timings")
+    @CommandPermission("slimefun.command.timings")
+    @Description("Run Slimefun's original /sf timings")
+    @Syntax("[--verbose|--avg|--low]")
+    public void onSfTimings(CommandSender sender, String... args) {
+        dispatchOriginal(sender, "sf timings", args);
+    }
+
+    @Subcommand("sf banitem")
+    @CommandPermission("slimefun.command.banitem")
+    @Description("Run Slimefun's original /sf banitem")
+    @Syntax("<Slimefun Item ID>")
+    public void onSfBanitem(CommandSender sender, String... args) {
+        dispatchOriginal(sender, "sf banitem", args);
+    }
+
+    @Subcommand("sf unbanitem")
+    @CommandPermission("slimefun.command.unbanitem")
+    @Description("Run Slimefun's original /sf unbanitem")
+    @Syntax("<Slimefun Item ID>")
+    public void onSfUnbanitem(CommandSender sender, String... args) {
+        dispatchOriginal(sender, "sf unbanitem", args);
+    }
+
+    private static void dispatchOriginal(CommandSender sender, String subCommand, String... args) {
+        StringBuilder command = new StringBuilder(subCommand);
+        for (String arg : args) {
+            if (!arg.isBlank()) {
+                command.append(' ').append(arg);
+            }
+        }
+
+        ReplacementCardAdaptItemListener.passThrough();
+        try {
+            Bukkit.dispatchCommand(sender, command.toString());
+        } finally {
+            ReplacementCardAdaptItemListener.endPassThrough();
+        }
     }
 
     // ---- Categories 命令的 GUI 辅助（原 CategoriesCommand 静态逻辑平移）----

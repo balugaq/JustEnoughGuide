@@ -18,6 +18,8 @@
 package com.balugaq.jeg.core.listeners;
 
 import com.balugaq.jeg.core.lang.Lang;
+import com.balugaq.jeg.core.profiler.JEGProfiler;
+import com.balugaq.jeg.core.profiler.JEGProfilerManager;
 import com.balugaq.jeg.implementation.items.ReplacementCardAdapter;
 import com.balugaq.jeg.utils.ClipboardUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -49,6 +51,19 @@ import java.util.UUID;
 public class ReplacementCardAdaptItemListener implements Listener {
     private static final Set<UUID> noticedPlayers = new HashSet<>();
     private static boolean noticedConsole = false;
+    private static final Set<UUID> timingsNoticedPlayers = new HashSet<>();
+    private static boolean timingsNoticedConsole = false;
+
+    // /jeg sf <cmd> 透传原版时置位，使本监听器放行而不重复接管
+    private static final ThreadLocal<Boolean> PASS_THROUGH = ThreadLocal.withInitial(() -> false);
+
+    public static void passThrough() {
+        PASS_THROUGH.set(true);
+    }
+
+    public static void endPassThrough() {
+        PASS_THROUGH.remove();
+    }
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent e) {
@@ -62,11 +77,60 @@ public class ReplacementCardAdaptItemListener implements Listener {
 
     @SuppressWarnings("unused")
     public void preprocessEvent(Cancellable event, CommandSender sender, String command) {
+        if (PASS_THROUGH.get()) {
+            return;
+        }
+
         if (command.startsWith("sf banitem") || command.startsWith("slimefun banitem")) {
             banitem(sender, command);
         } else if (command.startsWith("sf unbanitem") || command.startsWith("slimefun unbanitem")) {
             unbanitem(sender, command);
+        } else if (command.startsWith("sf timings") || command.startsWith("slimefun timings")) {
+            timings(event, sender, command);
         }
+    }
+
+    /**
+     * 完全接管 /sf timings：取消原版事件，改走 JEG 的精确性能报告。
+     */
+    public void timings(Cancellable event, CommandSender sender, String command) {
+        event.setCancelled(true);
+
+        if (sender instanceof Player player) {
+            if (!timingsNoticedPlayers.contains(player.getUniqueId())) {
+                sendNotice(sender, "/sf timings");
+                timingsNoticedPlayers.add(player.getUniqueId());
+            }
+        } else {
+            if (!timingsNoticedConsole) {
+                sendNotice(sender, "/sf timings");
+                timingsNoticedConsole = true;
+            }
+        }
+
+        if (!sender.isOp() && !sender.hasPermission("slimefun.command.timings")
+            && !(sender instanceof ConsoleCommandSender)) {
+            Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
+            return;
+        }
+
+        JEGProfiler profiler = JEGProfilerManager.profiler();
+        if (profiler == null) {
+            Lang.sendMessage(sender, "commands.timings.unavailable");
+            return;
+        }
+
+        String[] args = command.split(" ");
+        boolean verbose = false;
+        for (int i = 1; i < args.length; i++) {
+            if ("--verbose".equalsIgnoreCase(args[i])) {
+                verbose = true;
+                break;
+            }
+        }
+
+        Lang.sendMessage(sender, "commands.timings.collecting", verbose ? Lang.t("commands.timings.verbose-suffix") : "");
+        profiler.requestReport(sender, verbose);
     }
 
     private void sendNotice(CommandSender sender, String command) {
